@@ -1,0 +1,89 @@
+{
+    "sign_in": "Se connecter",
+    "sign_up": "S'inscrire",
+    "sign_up_subtitle": "Créez un compte pour commencer",
+    "email": "E-mail",
+    "email_or_phone": "E-mail ou numéro de téléphone",
+    "password": "Mot de passe",
+    "confirm_password": "Confirmez le mot de passe",
+    "first_name": "Prénom",
+    "last_name": "Nom de famille",
+    "birth_date": "Date de naissance",
+    "birth_date_hint": "Sélectionnez votre date de naissance",
+    "phone_number": "Numéro de téléphone",
+    "address": "Adresse",
+    "city": "Ville",
+    "state": "État / Province",
+    "country": "Pays",
+    "already_have_account": "Vous avez déjà un compte ?",
+    "dont_have_account": "Vous n'avez pas de compte ?",
+    "or": "Ou",
+    "book_an_appointment": "Prendre un rendez-vous",
+    "sign_in_subtitle": "Connectez-vous pour continuer",
+    "remember_me": "Se souvenir de moi",
+    "forgot_password": "Mot de passe oublié ?",
+    "sign_in_with_google": "Se connecter avec Google",
+    "sign_in_with_apple": "Se connecter avec Apple",
+    "sign_up_with_google": "S'inscrire avec Google",
+    "sign_up_with_apple": "S'inscrire avec Apple",
+    "signin_success_message": "Bienvenue {name}",
+    "signin_error_message": "Erreur : {message}",
+    "signup_success_message": "Compte créé avec succès",
+    "signup_error_message": "Erreur : {message}",
+    "passwords_do_not_match": "Les mots de passe ne correspondent pas",
+    "accept_terms_error": "Veuillez accepter les Conditions et la Politique de confidentialité",
+    "field_required": "Ce champ est requis",
+    "algerian_phone_error": "Veuillez saisir un numéro algérien valide",
+    "upload_profile_picture": "Télécharger la photo de profil",
+    "upload_photo_hint": "Touchez pour ajouter ou mettre à jour votre photo de profil",
+    "change_photo": "Changer la photo",
+    "remove_photo": "Supprimer la photo",
+    "i_accept": "J'accepte",
+    "terms_and_policy": "Conditions et Politique de confidentialité",
+    "home": {
+        "welcome_message": "Voici ce qui se passe aujourd'hui",
+        "appointments": {
+            "title": "Rendez-vous à venir",
+            "subtitle": "Gérez l'agenda des patients du jour"
+        },
+        "quick_actions": {
+            "title": "Actions rapides",
+            "add_offer": "Ajouter une nouvelle offre",
+            "manage_calendar": "Gérer le calendrier",
+            "view_reports": "Voir les rapports"
+        },
+        "services_manage": {
+            "title": "Gestion des services",
+            "subtitle": "Consultez, mettez à jour et publiez vos offres",
+            "prompt": "Appuyez sur la carte ci-dessus pour charger vos services.",
+            "loading": "Chargement de vos services...",
+            "error": "Impossible de charger vos services",
+            "retry": "Réessayer",
+            "empty": "Vous n'avez pas encore ajouté de services.",
+            "list_title": "Vos services actifs",
+            "more": "+{count} services supplémentaires"
+        }
+    },
+    "shell": {
+        "nav_home": "Accueil",
+        "nav_services": "Services",
+        "nav_hospitals": "Hôpitaux",
+        "nav_profile": "Profil",
+        "badge_new": "Nouveau",
+        "drawer_settings": "Paramètres",
+        "drawer_default_name": "Dr NavCare",
+        "drawer_default_email": "doctor@navcare.com",
+        "drawer_verify_phone": "Vérifier le numéro",
+        "language": {
+            "en": "Anglais",
+            "ar": "Arabe",
+            "fr": "Français"
+        },
+        "app_bar": {
+            "menu": "Ouvrir le menu",
+            "support": "Support",
+            "favorites": "Favoris",
+            "notifications": "Notifications"
+        }
+    }
+}

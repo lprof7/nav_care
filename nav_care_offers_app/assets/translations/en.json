@@ -1,0 +1,89 @@
+{
+    "sign_in": "Sign In",
+    "sign_up": "Sign Up",
+    "sign_up_subtitle": "Create an account to get started",
+    "email": "Email",
+    "email_or_phone": "E-mail or Phone Number",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "birth_date": "Birth Date",
+    "birth_date_hint": "Select your birth date",
+    "phone_number": "Phone Number",
+    "address": "Address",
+    "city": "City",
+    "state": "State / Province",
+    "country": "Country",
+    "already_have_account": "Already have an account?",
+    "dont_have_account": "Don't have an account?",
+    "or": "Or",
+    "book_an_appointment": "Book an appointment",
+    "sign_in_subtitle": "Sign in to continue",
+    "remember_me": "Remember me",
+    "forgot_password": "Forgot password?",
+    "sign_in_with_google": "Sign in with Google",
+    "sign_in_with_apple": "Sign in with Apple",
+    "sign_up_with_google": "Sign up with Google",
+    "sign_up_with_apple": "Sign up with Apple",
+    "signin_success_message": "Welcome {name}",
+    "signin_error_message": "Error: {message}",
+    "signup_success_message": "Account created successfully",
+    "signup_error_message": "Error: {message}",
+    "passwords_do_not_match": "Passwords do not match",
+    "accept_terms_error": "Please accept the Terms & Privacy Policy",
+    "field_required": "This field is required",
+    "algerian_phone_error": "Enter a valid Algerian phone number",
+    "upload_profile_picture": "Upload profile picture",
+    "upload_photo_hint": "Tap to add or update your profile photo",
+    "change_photo": "Change photo",
+    "remove_photo": "Remove photo",
+    "i_accept": "I accept",
+    "terms_and_policy": "Terms & Privacy Policy",
+    "shell": {
+        "nav_home": "Home",
+        "nav_services": "Services",
+        "nav_hospitals": "Hospitals",
+        "nav_profile": "Profile",
+        "badge_new": "New",
+        "drawer_settings": "Settings",
+        "drawer_default_name": "Dr. NavCare",
+        "drawer_default_email": "doctor@navcare.com",
+        "drawer_verify_phone": "Verify phone number",
+        "language": {
+            "en": "English",
+            "ar": "Arabic",
+            "fr": "French"
+        },
+        "app_bar": {
+            "menu": "Open menu",
+            "support": "Support",
+            "favorites": "Favorites",
+            "notifications": "Notifications"
+        }
+    },
+    "home": {
+        "welcome_message": "Here's what's happening today",
+        "appointments": {
+            "title": "Upcoming appointments",
+            "subtitle": "Manage today's patient schedule"
+        },
+        "quick_actions": {
+            "title": "Quick actions",
+            "add_offer": "Add new offer",
+            "manage_calendar": "Manage calendar",
+            "view_reports": "View reports"
+        },
+        "services_manage": {
+            "title": "Manage services",
+            "subtitle": "Review, update, and publish your offerings",
+            "prompt": "Tap the card above to load your services.",
+            "loading": "Loading your services...",
+            "error": "We couldn't load your services",
+            "retry": "Try again",
+            "empty": "You haven't added any services yet.",
+            "list_title": "Your active services",
+            "more": "+{count} more services"
+        }
+    }
+}

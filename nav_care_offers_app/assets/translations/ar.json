@@ -1,0 +1,89 @@
+{
+    "sign_in": "تسجيل الدخول",
+    "sign_up": "إنشاء حساب",
+    "sign_up_subtitle": "أنشئ حساباً للبدء",
+    "email": "البريد الإلكتروني",
+    "email_or_phone": "البريد الإلكتروني أو رقم الهاتف",
+    "password": "كلمة المرور",
+    "confirm_password": "تأكيد كلمة المرور",
+    "first_name": "الاسم الأول",
+    "last_name": "اسم العائلة",
+    "birth_date": "تاريخ الميلاد",
+    "birth_date_hint": "اختر تاريخ ميلادك",
+    "phone_number": "رقم الهاتف",
+    "address": "العنوان",
+    "city": "المدينة",
+    "state": "الولاية / المحافظة",
+    "country": "البلد",
+    "already_have_account": "لديك حساب مسبقاً؟",
+    "dont_have_account": "ليس لديك حساب؟",
+    "or": "أو",
+    "book_an_appointment": "احجز موعداً",
+    "sign_in_subtitle": "سجل الدخول للمتابعة",
+    "remember_me": "تذكرني",
+    "forgot_password": "هل نسيت كلمة المرور؟",
+    "sign_in_with_google": "تسجيل الدخول باستخدام جوجل",
+    "sign_in_with_apple": "تسجيل الدخول باستخدام أبل",
+    "sign_up_with_google": "إنشاء حساب باستخدام جوجل",
+    "sign_up_with_apple": "إنشاء حساب باستخدام أبل",
+    "signin_success_message": "مرحباً {name}",
+    "signin_error_message": "خطأ: {message}",
+    "signup_success_message": "تم إنشاء الحساب بنجاح",
+    "signup_error_message": "خطأ: {message}",
+    "passwords_do_not_match": "كلمتا المرور غير متطابقتين",
+    "accept_terms_error": "يرجى قبول الشروط وسياسة الخصوصية",
+    "field_required": "هذا الحقل مطلوب",
+    "algerian_phone_error": "يرجى إدخال رقم هاتف جزائري صالح",
+    "upload_profile_picture": "تحميل صورة الملف الشخصي",
+    "upload_photo_hint": "اضغط لإضافة أو تحديث صورة الملف الشخصي",
+    "change_photo": "تغيير الصورة",
+    "remove_photo": "إزالة الصورة",
+    "i_accept": "أوافق",
+    "terms_and_policy": "الشروط وسياسة الخصوصية",
+    "home": {
+        "welcome_message": "إليك ما يحدث اليوم",
+        "appointments": {
+            "title": "المواعيد القادمة",
+            "subtitle": "قم بإدارة جدول مرضى اليوم"
+        },
+        "quick_actions": {
+            "title": "إجراءات سريعة",
+            "add_offer": "إضافة عرض جديد",
+            "manage_calendar": "إدارة التقويم",
+            "view_reports": "عرض التقارير"
+        },
+        "services_manage": {
+            "title": "إدارة الخدمات",
+            "subtitle": "راجع عروضك وحدّثها وانشر الجديد",
+            "prompt": "اضغط على البطاقة في الأعلى لجلب خدماتك.",
+            "loading": "جارٍ تحميل خدماتك...",
+            "error": "تعذّر تحميل الخدمات",
+            "retry": "إعادة المحاولة",
+            "empty": "لم تقم بإضافة خدمات بعد.",
+            "list_title": "خدماتك النشطة",
+            "more": "+{count} خدمات أخرى"
+        }
+    },
+    "shell": {
+        "nav_home": "الرئيسية",
+        "nav_services": "الخدمات",
+        "nav_hospitals": "المستشفيات",
+        "nav_profile": "الملف الشخصي",
+        "badge_new": "جديد",
+        "drawer_settings": "الإعدادات",
+        "drawer_default_name": "د. ناف كير",
+        "drawer_default_email": "doctor@navcare.com",
+        "drawer_verify_phone": "تأكيد رقم الهاتف",
+        "language": {
+            "en": "الإنجليزية",
+            "ar": "العربية",
+            "fr": "الفرنسية"
+        },
+        "app_bar": {
+            "menu": "فتح القائمة",
+            "support": "الدعم",
+            "favorites": "المفضلة",
+            "notifications": "الإشعارات"
+        }
+    }
+}

@@ -17,10 +17,10 @@ class HomePage extends StatelessWidget {
       children: const [
         _BecomeDoctorBanner(),
         AdsSectionView(),
-        RecentServicesSection(),
         FeaturedServicesSection(),
         HospitalsChoiceSection(),
         DoctorsChoiceSection(),
+        RecentServicesSection(),
       ],
     );
   }
