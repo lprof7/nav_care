@@ -21,15 +21,6 @@ import '../../data/authentication/signup/services/remote_signup_service.dart';
 import '../../data/authentication/signup/signup_repository.dart';
 import '../../presentation/features/authentication/signup/viewmodel/signup_cubit.dart';
 
-import '../../presentation/features/services/service_creation/viewmodel/service_creation_cubit.dart';
-import '../../data/hospitals/hospital_creation/services/hospital_creation_service.dart';
-import '../../data/hospitals/hospital_creation/services/remote_hospital_creation_service.dart';
-import '../../data/hospitals/hospital_creation/hospital_creation_repository.dart';
-import '../../presentation/features/hospitals/hospital_creation/viewmodel/hospital_creation_cubit.dart';
-import '../../data/hospitals/hospital_packages/services/hospital_packages_service.dart';
-import '../../data/hospitals/hospital_packages/services/remote_hospital_packages_service.dart';
-import '../../data/hospitals/hospital_packages/hospital_packages_repository.dart';
-import '../../presentation/features/hospitals/hospital_packages/viewmodel/hospital_packages_cubit.dart';
 import '../../data/hospitals/hospitals_remote_service.dart';
 import '../../data/hospitals/hospitals_repository.dart';
 import '../../presentation/features/home/sections/hospitals_choice/viewmodel/hospitals_choice_cubit.dart';
@@ -99,22 +90,4 @@ Future<void> configureDependencies(AppConfig config) async {
       () => RemoteServiceCreationService(sl<ApiClient>()));
   sl.registerLazySingleton<ServiceCreationRepository>(
       () => ServiceCreationRepository(sl<ServiceCreationService>()));
-  sl.registerFactory<ServiceCreationCubit>(
-      () => ServiceCreationCubit(sl<ServiceCreationRepository>()));
-
-  // Hospital creation
-  sl.registerLazySingleton<HospitalCreationService>(
-      () => RemoteHospitalCreationService(sl<ApiClient>()));
-  sl.registerLazySingleton<HospitalCreationRepository>(
-      () => HospitalCreationRepository(sl<HospitalCreationService>()));
-  sl.registerFactory<HospitalCreationCubit>(
-      () => HospitalCreationCubit(sl<HospitalCreationRepository>()));
-
-  // Hospital packages
-  sl.registerLazySingleton<HospitalPackagesService>(
-      () => RemoteHospitalPackagesService(sl<ApiClient>()));
-  sl.registerLazySingleton<HospitalPackagesRepository>(
-      () => HospitalPackagesRepository(sl<HospitalPackagesService>()));
-  sl.registerFactory<HospitalPackagesCubit>(
-      () => HospitalPackagesCubit(sl<HospitalPackagesRepository>()));
 }
