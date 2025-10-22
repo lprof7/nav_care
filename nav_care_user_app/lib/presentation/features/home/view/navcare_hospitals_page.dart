@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/hospitals/models/hospital_model.dart';
@@ -42,7 +43,7 @@ class NavcareHospitalsPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () => _openDetails(context, hospital),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -164,6 +165,12 @@ class NavcareHospitalsPage extends StatelessWidget {
               },
             ),
     );
+  }
+
+  void _openDetails(BuildContext context, HospitalModel hospital) {
+    final targetId = hospital.id.isNotEmpty ? hospital.id : hospital.name;
+    final encodedId = Uri.encodeComponent(targetId);
+    context.push('/hospitals/$encodedId', extra: hospital);
   }
 }
 

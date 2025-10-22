@@ -7,16 +7,18 @@ class HospitalsRepository {
 
   HospitalsRepository({required this.remoteService});
 
+  int _normalizeLimit(int limit) {
+    if (limit < 1) return 1;
+    if (limit > 20) return 20;
+    return limit;
+  }
+
   Future<List<HospitalModel>> getFakeNavcareHospitalsChoice() async {
     return FakeHospitalsChoiceResponse.getFakeHospitalsChoice();
   }
 
   Future<List<HospitalModel>> getNavcareHospitalsChoice({int limit = 6}) async {
-    final requestLimit = limit < 1
-        ? 1
-        : limit > 20
-            ? 20
-            : limit;
+    final requestLimit = _normalizeLimit(limit);
     final result =
         await remoteService.listHospitals(page: 1, limit: requestLimit);
 
@@ -51,6 +53,44 @@ class HospitalsRepository {
         .whereType<Map<String, dynamic>>()
         .map(HospitalModel.fromJson)
         .toList(growable: false);
+  }
+
+  Future<List<HospitalModel>> getCombinedNavcareHospitalsChoice({
+    int limit = 6,
+  }) async {
+    final normalizedLimit = _normalizeLimit(limit);
+
+    // --- FAKE DATA (temporary stub - remove once API stabilizes) ---
+    final fakeHospitals = await getFakeNavcareHospitalsChoice();
+
+    List<HospitalModel> apiHospitals = const [];
+    Exception? remoteFailure;
+
+    try {
+      // --- API DATA (remote source) ---
+      apiHospitals = await getNavcareHospitalsChoice(limit: normalizedLimit);
+    } catch (error) {
+      remoteFailure = error is Exception ? error : Exception(error.toString());
+    }
+
+    final merged = <String, HospitalModel>{};
+    for (final hospital in apiHospitals) {
+      merged[hospital.id] = hospital;
+    }
+    for (final hospital in fakeHospitals) {
+      merged.putIfAbsent(hospital.id, () => hospital);
+    }
+
+    final hospitals = merged.values.toList(growable: false);
+    if (normalizedLimit > 0 && hospitals.length > normalizedLimit) {
+      return hospitals.take(normalizedLimit).toList(growable: false);
+    }
+
+    if (hospitals.isEmpty && remoteFailure != null) {
+      throw remoteFailure;
+    }
+
+    return hospitals;
   }
 
   String? _extractMessage(dynamic message) {
