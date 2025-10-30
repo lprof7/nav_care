@@ -3,12 +3,14 @@ import 'responses/fake_hospitals_choice_response.dart';
 import 'hospitals_remote_service.dart';
 
 class HospitalsRepository {
-  final HospitalsRemoteService remoteService;
+  // ignore: unused_field
+  final HospitalsRemoteService _remoteService;
 
-  HospitalsRepository({required this.remoteService});
+  HospitalsRepository({required HospitalsRemoteService remoteService})
+      : _remoteService = remoteService;
 
-  Future<List<HospitalModel>> getFakeNavcareHospitalsChoice() async {
-    return FakeHospitalsChoiceResponse.getFakeHospitalsChoice();
+  Future<List<HospitalModel>> getFakeNavcareHospitalsChoice() {
+    return Future.value(FakeHospitalsChoiceResponse.getFakeHospitalsChoice());
   }
 
   Future<List<HospitalModel>> getNavcareHospitalsChoice({int limit = 6}) async {
@@ -17,59 +19,61 @@ class HospitalsRepository {
         : limit > 20
             ? 20
             : limit;
-    final result =
-        await remoteService.listHospitals(page: 1, limit: requestLimit);
 
-    if (!result.isSuccess || result.data == null) {
-      final errorMessage =
-          result.error?.message ?? 'Failed to load NavCare hospitals.';
-      throw Exception(errorMessage);
+    final hospitals = await getFakeNavcareHospitalsChoice();
+    if (hospitals.isEmpty) {
+      return hospitals;
     }
 
-    final payload = result.data!;
-    final success = payload['success'] == true;
-    if (!success) {
-      throw Exception(_extractMessage(payload['message']) ??
-          'Failed to load NavCare hospitals.');
-    }
-
-    final List hospitalsData;
-
-    if (payload['data'] is Map<String, dynamic>) {
-      final data = payload['data'] as Map<String, dynamic>;
-      if (data['hospitals'] is Map<String, dynamic>) {
-        final hospitals = data['hospitals'] as Map<String, dynamic>;
-        hospitalsData = hospitals['data'] as List<dynamic>? ?? const [];
-      } else {
-        hospitalsData = const <dynamic>[];
-      }
-    } else {
-      hospitalsData = const <dynamic>[];
-    }
-
-    return hospitalsData
-        .whereType<Map<String, dynamic>>()
-        .map(HospitalModel.fromJson)
-        .toList(growable: false);
+    final cappedLimit =
+        requestLimit > hospitals.length ? hospitals.length : requestLimit;
+    return hospitals.sublist(0, cappedLimit);
   }
 
-  String? _extractMessage(dynamic message) {
-    if (message is String && message.isNotEmpty) {
-      return message;
+  Future<List<HospitalModel>> getNavcareFeaturedHospitals({int limit = 3}) async {
+    final requestLimit = limit < 1
+        ? 1
+        : limit > 10
+            ? 10
+            : limit;
+
+    final hospitals = await getFakeNavcareHospitalsChoice();
+    if (hospitals.isEmpty) {
+      return hospitals;
     }
-    if (message is Map<String, dynamic>) {
-      final localized = [
-        message['ar'],
-        message['fr'],
-        message['en'],
-      ].whereType<String>().firstWhere(
-            (value) => value.isNotEmpty,
-            orElse: () => '',
-          );
-      if (localized.isNotEmpty) {
-        return localized;
-      }
+
+    final sorted = [...hospitals]
+      ..sort((a, b) => b.rating.compareTo(a.rating));
+    final cappedLimit =
+        requestLimit > sorted.length ? sorted.length : requestLimit;
+    return sorted.sublist(0, cappedLimit);
+  }
+
+  Future<List<HospitalModel>> getNavcareFeaturedClinics({int limit = 6}) async {
+    final requestLimit = limit < 1
+        ? 1
+        : limit > 15
+            ? 15
+            : limit;
+
+    final hospitals = await getFakeNavcareHospitalsChoice();
+    if (hospitals.isEmpty) {
+      return hospitals;
     }
-    return null;
+
+    final clinics = hospitals.where((hospital) {
+      final facilityType = hospital.facilityType.trim().toLowerCase();
+      final field = hospital.field.trim().toLowerCase();
+      return facilityType.contains('clinic') || field.contains('clinic');
+    }).toList(growable: false);
+
+    if (clinics.isEmpty) {
+      return clinics;
+    }
+
+    final sorted = [...clinics]..sort((a, b) => b.rating.compareTo(a.rating));
+    final cappedLimit =
+        requestLimit > sorted.length ? sorted.length : requestLimit;
+    return sorted.sublist(0, cappedLimit);
   }
 }

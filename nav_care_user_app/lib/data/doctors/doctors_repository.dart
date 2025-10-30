@@ -3,12 +3,14 @@ import 'responses/fake_doctors_choice_response.dart';
 import 'doctors_remote_service.dart';
 
 class DoctorsRepository {
-  final DoctorsRemoteService remoteService;
+  // ignore: unused_field
+  final DoctorsRemoteService _remoteService;
 
-  DoctorsRepository({required this.remoteService});
+  DoctorsRepository({required DoctorsRemoteService remoteService})
+      : _remoteService = remoteService;
 
-  Future<List<DoctorModel>> getFakeNavcareDoctorsChoice() async {
-    return FakeDoctorsChoiceResponse.getFakeDoctorsChoice();
+  Future<List<DoctorModel>> getFakeNavcareDoctorsChoice() {
+    return Future.value(FakeDoctorsChoiceResponse.getFakeDoctorsChoice());
   }
 
   Future<List<DoctorModel>> getNavcareDoctorsChoice({int limit = 6}) async {
@@ -17,49 +19,31 @@ class DoctorsRepository {
         : limit > 20
             ? 20
             : limit;
-    final result =
-        await remoteService.listDoctors(page: 1, limit: requestLimit);
-
-    if (!result.isSuccess || result.data == null) {
-      final message =
-          result.error?.message ?? 'Failed to load NavCare doctors.';
-      throw Exception(message);
+    final doctors = await getFakeNavcareDoctorsChoice();
+    if (doctors.isEmpty) {
+      return doctors;
     }
 
-    final payload = result.data!;
-    if (payload['success'] != true) {
-      throw Exception(_extractMessage(payload['message']) ??
-          'Failed to load NavCare doctors.');
-    }
-
-    final data = payload['data'];
-    final doctorsList = (data is Map<String, dynamic>)
-        ? data['doctors'] as List<dynamic>? ?? const []
-        : const <dynamic>[];
-
-    return doctorsList
-        .whereType<Map<String, dynamic>>()
-        .map(DoctorModel.fromJson)
-        .toList(growable: false);
+    final cappedLimit =
+        requestLimit > doctors.length ? doctors.length : requestLimit;
+    return doctors.sublist(0, cappedLimit);
   }
 
-  String? _extractMessage(dynamic message) {
-    if (message is String && message.isNotEmpty) {
-      return message;
+  Future<List<DoctorModel>> getNavcareFeaturedDoctors({int limit = 3}) async {
+    final requestLimit = limit < 1
+        ? 1
+        : limit > 10
+            ? 10
+            : limit;
+    final doctors = await getFakeNavcareDoctorsChoice();
+    if (doctors.isEmpty) {
+      return doctors;
     }
-    if (message is Map<String, dynamic>) {
-      final localized = [
-        message['ar'],
-        message['fr'],
-        message['en'],
-      ].whereType<String>().firstWhere(
-            (value) => value.isNotEmpty,
-            orElse: () => '',
-          );
-      if (localized.isNotEmpty) {
-        return localized;
-      }
-    }
-    return null;
+
+    final sorted = [...doctors]
+      ..sort((a, b) => b.rating.compareTo(a.rating));
+    final cappedLimit =
+        requestLimit > sorted.length ? sorted.length : requestLimit;
+    return sorted.sublist(0, cappedLimit);
   }
 }

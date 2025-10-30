@@ -63,7 +63,7 @@ class _FeaturedServicesBody extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               SizedBox(
-                height: 190,
+                height: 142.5,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: state.services.length,

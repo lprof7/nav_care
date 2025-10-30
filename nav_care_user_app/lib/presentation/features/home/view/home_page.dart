@@ -35,9 +35,9 @@ class _BecomeDoctorBanner extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -67,7 +67,7 @@ class _BecomeDoctorBanner extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _BannerText(theme),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
                       _BannerButton(colorScheme),
                     ],
                   );
@@ -94,7 +94,7 @@ class _BannerText extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         Text(
           'home.banner.become_doctor.subtitle'.tr(),
           style: theme.textTheme.bodyMedium,
@@ -118,7 +118,7 @@ class _BannerButton extends StatelessWidget {
       style: FilledButton.styleFrom(
         backgroundColor: colorScheme.primary,
         foregroundColor: colorScheme.onPrimary,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
