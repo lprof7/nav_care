@@ -31,7 +31,7 @@ class _AdsSectionBody extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: AspectRatio(
-            aspectRatio: 16 / 9,
+            aspectRatio: 64 / 27,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Stack(

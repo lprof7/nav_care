@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import '../sections/ads/view/ads_section.dart';
 import '../sections/recent_services/view/recent_services_section.dart';
 import '../sections/featured_services/view/featured_services_section.dart';
-import '../sections/hospitals_choice/view/hospitals_choice_section.dart';
 import '../sections/doctors_choice/view/doctors_choice_section.dart';
+import '../sections/hospitals_choice/view/hospitals_choice_section.dart';
+import '../sections/featured_hospitals/view/featured_hospitals_section.dart';
+import '../sections/featured_doctors/view/featured_doctors_section.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -20,6 +22,8 @@ class HomePage extends StatelessWidget {
         FeaturedServicesSection(),
         HospitalsChoiceSection(),
         DoctorsChoiceSection(),
+        FeaturedHospitalsSection(),
+        FeaturedDoctorsSection(),
         RecentServicesSection(),
       ],
     );
@@ -35,9 +39,9 @@ class _BecomeDoctorBanner extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -67,7 +71,7 @@ class _BecomeDoctorBanner extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _BannerText(theme),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
                       _BannerButton(colorScheme),
                     ],
                   );
@@ -94,7 +98,7 @@ class _BannerText extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         Text(
           'home.banner.become_doctor.subtitle'.tr(),
           style: theme.textTheme.bodyMedium,
@@ -118,7 +122,7 @@ class _BannerButton extends StatelessWidget {
       style: FilledButton.styleFrom(
         backgroundColor: colorScheme.primary,
         foregroundColor: colorScheme.onPrimary,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),

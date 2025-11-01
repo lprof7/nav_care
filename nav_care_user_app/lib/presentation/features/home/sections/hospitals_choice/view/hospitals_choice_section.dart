@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/hospitals/models/hospital_model.dart';
@@ -105,7 +104,7 @@ class _HospitalCard extends StatelessWidget {
     return SizedBox(
       width: 260,
       child: GestureDetector(
-        onTap: () => _openDetails(context),
+        onTap: () {},
         child: ClipRRect(
           borderRadius: BorderRadius.circular(24),
           child: Stack(
@@ -144,7 +143,7 @@ class _HospitalCard extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Icon(
-                            Icons.local_hospital_rounded,
+                            Icons.monitor_heart,
                             size: 14,
                             color: Colors.white,
                           ),
@@ -186,12 +185,6 @@ class _HospitalCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _openDetails(BuildContext context) {
-    final targetId = hospital.id.isNotEmpty ? hospital.id : hospital.name;
-    final encodedId = Uri.encodeComponent(targetId);
-    context.push('/hospitals/$encodedId', extra: hospital);
   }
 }
 

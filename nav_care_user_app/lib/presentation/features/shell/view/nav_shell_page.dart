@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nav_care_user_app/presentation/features/home/view/home_page.dart';
+import 'package:nav_care_user_app/presentation/features/search/view/search_page.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/shell/nav_shell_app_bar.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/shell/nav_shell_destination.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/shell/nav_shell_drawer.dart';
@@ -39,8 +40,9 @@ class NavShellPage extends StatelessWidget {
             ),
             body: IndexedStack(
               index: state.currentIndex,
-              children:
-                  destinations.map((destination) => destination.content).toList(),
+              children: destinations
+                  .map((destination) => destination.content)
+                  .toList(),
             ),
             bottomNavigationBar: NavShellNavBar(
               currentIndex: state.currentIndex,
@@ -67,9 +69,9 @@ class NavShellPage extends StatelessWidget {
         content: const _PlaceholderSection(titleKey: 'shell.nav_services'),
       ),
       NavShellDestination(
-        label: 'shell.nav_hospitals'.tr(),
-        icon: Icons.local_hospital_rounded,
-        content: const _PlaceholderSection(titleKey: 'shell.nav_hospitals'),
+        label: 'shell.nav_search'.tr(),
+        icon: Icons.search_rounded,
+        content: const SearchPage(),
       ),
       NavShellDestination(
         label: 'shell.nav_profile'.tr(),

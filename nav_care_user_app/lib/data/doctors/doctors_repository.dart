@@ -1,14 +1,15 @@
 import 'models/doctor_model.dart';
-import 'responses/fake_doctors_choice_response.dart';
 import 'doctors_remote_service.dart';
+import 'responses/fake_doctors_choice_response.dart';
+import 'responses/fake_featured_doctors_response.dart';
 
 class DoctorsRepository {
   final DoctorsRemoteService remoteService;
 
   DoctorsRepository({required this.remoteService});
 
-  Future<List<DoctorModel>> getFakeNavcareDoctorsChoice() async {
-    return FakeDoctorsChoiceResponse.getFakeDoctorsChoice();
+  Future<List<DoctorModel>> getFakeNavcareDoctorsChoice() {
+    return Future.value(FakeDoctorsChoiceResponse.getFakeDoctorsChoice());
   }
 
   Future<List<DoctorModel>> getNavcareDoctorsChoice({int limit = 6}) async {
@@ -26,21 +27,46 @@ class DoctorsRepository {
       throw Exception(message);
     }
 
-    final payload = result.data!;
-    if (payload['success'] != true) {
-      throw Exception(_extractMessage(payload['message']) ??
-          'Failed to load NavCare doctors.');
+    final doctorMaps = _extractDoctorMaps(result.data);
+    if (doctorMaps.isEmpty) {
+      return const [];
     }
 
-    final data = payload['data'];
-    final doctorsList = (data is Map<String, dynamic>)
-        ? data['doctors'] as List<dynamic>? ?? const []
-        : const <dynamic>[];
-
-    return doctorsList
-        .whereType<Map<String, dynamic>>()
+    return doctorMaps
+        .take(requestLimit)
         .map(DoctorModel.fromJson)
         .toList(growable: false);
+  }
+
+  Future<List<DoctorModel>> getNavcareFeaturedDoctors({int limit = 3}) async {
+    try {
+      return await getFeaturedDoctors(limit: limit);
+    } on UnimplementedError {
+      return getFakeFeaturedDoctors(limit: limit);
+    }
+  }
+
+  Future<List<DoctorModel>> getFeaturedDoctors({int limit = 6}) {
+    // TODO: connect to remote service once endpoint is available
+    throw UnimplementedError();
+  }
+
+  Future<List<DoctorModel>> getFakeFeaturedDoctors({int limit = 6}) async {
+    final requestLimit = limit < 1
+        ? 1
+        : limit > 12
+            ? 12
+            : limit;
+
+    final doctors = FakeFeaturedDoctorsResponse.getFakeFeaturedDoctors();
+    if (doctors.isEmpty) {
+      return doctors;
+    }
+
+    final sorted = [...doctors]..sort((a, b) => b.rating.compareTo(a.rating));
+    final cappedLimit =
+        requestLimit > sorted.length ? sorted.length : requestLimit;
+    return sorted.sublist(0, cappedLimit);
   }
 
   String? _extractMessage(dynamic message) {
@@ -61,5 +87,34 @@ class DoctorsRepository {
       }
     }
     return null;
+  }
+
+  List<Map<String, dynamic>> _extractDoctorMaps(dynamic source) {
+    if (source is List) {
+      return source
+          .whereType<Map<String, dynamic>>()
+          .toList(growable: false);
+    }
+
+    if (source is Map<String, dynamic>) {
+      const candidateKeys = ['data', 'doctors', 'docs', 'items', 'results'];
+      for (final key in candidateKeys) {
+        if (!source.containsKey(key)) continue;
+        final extracted = _extractDoctorMaps(source[key]);
+        if (extracted.isNotEmpty) {
+          return extracted;
+        }
+      }
+
+      // Fallback: inspect nested map values
+      for (final value in source.values) {
+        final extracted = _extractDoctorMaps(value);
+        if (extracted.isNotEmpty) {
+          return extracted;
+        }
+      }
+    }
+
+    return <Map<String, dynamic>>[];
   }
 }

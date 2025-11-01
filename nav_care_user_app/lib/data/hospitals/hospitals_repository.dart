@@ -1,115 +1,88 @@
 import 'models/hospital_model.dart';
+import 'responses/fake_featured_hospitals_response.dart';
 import 'responses/fake_hospitals_choice_response.dart';
 import 'hospitals_remote_service.dart';
 
 class HospitalsRepository {
-  final HospitalsRemoteService remoteService;
+  // ignore: unused_field
+  final HospitalsRemoteService _remoteService;
 
-  HospitalsRepository({required this.remoteService});
+  HospitalsRepository({required HospitalsRemoteService remoteService})
+      : _remoteService = remoteService;
 
-  int _normalizeLimit(int limit) {
-    if (limit < 1) return 1;
-    if (limit > 20) return 20;
-    return limit;
-  }
-
-  Future<List<HospitalModel>> getFakeNavcareHospitalsChoice() async {
-    return FakeHospitalsChoiceResponse.getFakeHospitalsChoice();
+  Future<List<HospitalModel>> getFakeNavcareHospitalsChoice() {
+    return Future.value(FakeHospitalsChoiceResponse.getFakeHospitalsChoice());
   }
 
   Future<List<HospitalModel>> getNavcareHospitalsChoice({int limit = 6}) async {
-    final requestLimit = _normalizeLimit(limit);
-    final result =
-        await remoteService.listHospitals(page: 1, limit: requestLimit);
+    final requestLimit = limit < 1
+        ? 1
+        : limit > 20
+            ? 20
+            : limit;
 
-    if (!result.isSuccess || result.data == null) {
-      final errorMessage =
-          result.error?.message ?? 'Failed to load NavCare hospitals.';
-      throw Exception(errorMessage);
+    final hospitals = await getFakeNavcareHospitalsChoice();
+    if (hospitals.isEmpty) {
+      return hospitals;
     }
 
-    final payload = result.data!;
-    final success = payload['success'] == true;
-    if (!success) {
-      throw Exception(_extractMessage(payload['message']) ??
-          'Failed to load NavCare hospitals.');
-    }
-
-    final List hospitalsData;
-
-    if (payload['data'] is Map<String, dynamic>) {
-      final data = payload['data'] as Map<String, dynamic>;
-      if (data['hospitals'] is Map<String, dynamic>) {
-        final hospitals = data['hospitals'] as Map<String, dynamic>;
-        hospitalsData = hospitals['data'] as List<dynamic>? ?? const [];
-      } else {
-        hospitalsData = const <dynamic>[];
-      }
-    } else {
-      hospitalsData = const <dynamic>[];
-    }
-
-    return hospitalsData
-        .whereType<Map<String, dynamic>>()
-        .map(HospitalModel.fromJson)
-        .toList(growable: false);
+    final cappedLimit =
+        requestLimit > hospitals.length ? hospitals.length : requestLimit;
+    return hospitals.sublist(0, cappedLimit);
   }
 
-  Future<List<HospitalModel>> getCombinedNavcareHospitalsChoice({
-    int limit = 6,
-  }) async {
-    final normalizedLimit = _normalizeLimit(limit);
-
-    // --- FAKE DATA (temporary stub - remove once API stabilizes) ---
-    final fakeHospitals = await getFakeNavcareHospitalsChoice();
-
-    List<HospitalModel> apiHospitals = const [];
-    Exception? remoteFailure;
-
-    try {
-      // --- API DATA (remote source) ---
-      apiHospitals = await getNavcareHospitalsChoice(limit: normalizedLimit);
-    } catch (error) {
-      remoteFailure = error is Exception ? error : Exception(error.toString());
-    }
-
-    final merged = <String, HospitalModel>{};
-    for (final hospital in apiHospitals) {
-      merged[hospital.id] = hospital;
-    }
-    for (final hospital in fakeHospitals) {
-      merged.putIfAbsent(hospital.id, () => hospital);
-    }
-
-    final hospitals = merged.values.toList(growable: false);
-    if (normalizedLimit > 0 && hospitals.length > normalizedLimit) {
-      return hospitals.take(normalizedLimit).toList(growable: false);
-    }
-
-    if (hospitals.isEmpty && remoteFailure != null) {
-      throw remoteFailure;
-    }
-
-    return hospitals;
+  Future<List<HospitalModel>> getNavcareFeaturedHospitals({int limit = 3}) {
+    return getFakeFeaturedHospitals(limit: limit);
   }
 
-  String? _extractMessage(dynamic message) {
-    if (message is String && message.isNotEmpty) {
-      return message;
+  Future<List<HospitalModel>> getNavcareFeaturedClinics({int limit = 6}) async {
+    final requestLimit = limit < 1
+        ? 1
+        : limit > 15
+            ? 15
+            : limit;
+
+    final hospitals = await getFakeNavcareHospitalsChoice();
+    if (hospitals.isEmpty) {
+      return hospitals;
     }
-    if (message is Map<String, dynamic>) {
-      final localized = [
-        message['ar'],
-        message['fr'],
-        message['en'],
-      ].whereType<String>().firstWhere(
-            (value) => value.isNotEmpty,
-            orElse: () => '',
-          );
-      if (localized.isNotEmpty) {
-        return localized;
-      }
+
+    final clinics = hospitals.where((hospital) {
+      final facilityType = hospital.facilityType.trim().toLowerCase();
+      final field = hospital.field.trim().toLowerCase();
+      return facilityType.contains('clinic') || field.contains('clinic');
+    }).toList(growable: false);
+
+    if (clinics.isEmpty) {
+      return clinics;
     }
-    return null;
+
+    final sorted = [...clinics]..sort((a, b) => b.rating.compareTo(a.rating));
+    final cappedLimit =
+        requestLimit > sorted.length ? sorted.length : requestLimit;
+    return sorted.sublist(0, cappedLimit);
+  }
+
+  Future<List<HospitalModel>> getFeaturedHospitals({int limit = 6}) {
+    // TODO: replace with real API implementation
+    throw UnimplementedError();
+  }
+
+  Future<List<HospitalModel>> getFakeFeaturedHospitals({int limit = 6}) async {
+    final requestLimit = limit < 1
+        ? 1
+        : limit > 12
+            ? 12
+            : limit;
+
+    final hospitals =
+        FakeFeaturedHospitalsResponse.getFakeFeaturedHospitals();
+    if (hospitals.isEmpty) {
+      return hospitals;
+    }
+
+    final cappedLimit =
+        requestLimit > hospitals.length ? hospitals.length : requestLimit;
+    return hospitals.sublist(0, cappedLimit);
   }
 }

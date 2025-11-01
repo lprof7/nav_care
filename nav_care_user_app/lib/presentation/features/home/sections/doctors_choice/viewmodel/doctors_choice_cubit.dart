@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../data/doctors/doctors_repository.dart';
@@ -21,7 +23,6 @@ class DoctorsChoiceCubit extends Cubit<DoctorsChoiceState> {
 
     try {
       final doctors = await _repository.getNavcareDoctorsChoice(limit: 6);
-
       if (isClosed) return; // حماية بعد await
       _safeEmit(
         state.copyWith(

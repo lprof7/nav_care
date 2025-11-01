@@ -6,8 +6,13 @@ import 'package:nav_care_user_app/data/doctors/models/doctor_model.dart';
 
 class NavcareDoctorsPage extends StatelessWidget {
   final List<DoctorModel> doctors;
+  final String titleKey;
 
-  const NavcareDoctorsPage({super.key, required this.doctors});
+  const NavcareDoctorsPage({
+    super.key,
+    required this.doctors,
+    this.titleKey = 'home.doctors_choice.title',
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +20,7 @@ class NavcareDoctorsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('home.doctors_choice.title'.tr()),
+        title: Text(titleKey.tr()),
       ),
       body: doctors.isEmpty
           ? Center(
@@ -24,159 +29,189 @@ class NavcareDoctorsPage extends StatelessWidget {
                 style: textTheme.bodyLarge,
               ),
             )
-          : GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.7,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-              ),
-              itemCount: doctors.length,
-              itemBuilder: (context, index) {
-                final doctor = doctors[index];
-                final bio = doctor.bioForLocale(context.locale.languageCode);
-                final baseUrl = sl<AppConfig>().api.baseUrl;
-                final coverPath = doctor.coverImage(baseUrl: baseUrl);
-                final avatarPath = doctor.avatarImage(baseUrl: baseUrl);
-                final displayName = doctor.displayName.trim().isNotEmpty
-                    ? doctor.displayName
-                    : doctor.specialty;
-                final specialtyLabel = doctor.specialty.trim().isNotEmpty
-                    ? doctor.specialty
-                    : 'home.doctors_choice.title'.tr();
-                final colorScheme = Theme.of(context).colorScheme;
+          : LayoutBuilder(
+              builder: (context, constraints) {
+                final maxWidth = constraints.maxWidth;
+                int crossAxisCount = 1;
+                double childAspectRatio = 0.92;
 
-                return Card(
-                  clipBehavior: Clip.antiAlias,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                if (maxWidth >= 1200) {
+                  crossAxisCount = 4;
+                  childAspectRatio = 0.78;
+                } else if (maxWidth >= 900) {
+                  crossAxisCount = 3;
+                  childAspectRatio = 0.8;
+                } else if (maxWidth >= 600) {
+                  crossAxisCount = 2;
+                  childAspectRatio = 0.75;
+                }
+
+                return GridView.builder(
+                  padding: const EdgeInsets.all(16),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxisCount,
+                    childAspectRatio: childAspectRatio,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
                   ),
-                  child: InkWell(
-                    onTap: () {},
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              _DoctorCover(path: coverPath),
-                              Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.black.withOpacity(0.15),
-                                      Colors.black.withOpacity(0.45),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              if (doctor.rating > 0)
-                                Positioned(
-                                  top: 12,
-                                  right: 12,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 4,
-                                    ),
+                  itemCount: doctors.length,
+                  itemBuilder: (context, index) {
+                    final doctor = doctors[index];
+                    final bio =
+                        doctor.bioForLocale(context.locale.languageCode);
+                    final baseUrl = sl<AppConfig>().api.baseUrl;
+                    final coverPath = doctor.coverImage(baseUrl: baseUrl);
+                    final avatarPath = doctor.avatarImage(baseUrl: baseUrl);
+                    final displayName = doctor.displayName.trim().isNotEmpty
+                        ? doctor.displayName
+                        : doctor.specialty;
+                    final specialtyLabel = doctor.specialty.trim().isNotEmpty
+                        ? doctor.specialty
+                        : 'home.doctors_choice.title'.tr();
+                    final colorScheme = Theme.of(context).colorScheme;
+
+                    return Card(
+                      clipBehavior: Clip.antiAlias,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: InkWell(
+                        onTap: () {},
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            AspectRatio(
+                              aspectRatio: 16 / 9,
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: [
+                                  _DoctorCover(path: coverPath),
+                                  Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.black.withOpacity(0.55),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(
-                                          Icons.star_rounded,
-                                          size: 16,
-                                          color: Colors.amber,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          doctor.rating.toStringAsFixed(1),
-                                          style: textTheme.labelSmall?.copyWith(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ],
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.black.withOpacity(0.15),
+                                          Colors.black.withOpacity(0.45),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                            ],
-                          ),
-                        ),
-                        if (avatarPath != null)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 12),
-                            child: _DoctorAvatar(path: avatarPath, radius: 30),
-                          )
-                        else
-                          const SizedBox(height: 16),
-                        Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                displayName,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                specialtyLabel,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: textTheme.bodySmall?.copyWith(
-                                  color: colorScheme.primary,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                bio,
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                style: textTheme.bodySmall,
-                              ),
-                              if (doctor.email != null &&
-                                  doctor.email!.trim().isNotEmpty) ...[
-                                const SizedBox(height: 10),
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.email_outlined,
-                                      size: 16,
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Expanded(
-                                      child: Text(
-                                        doctor.email!,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: textTheme.bodySmall?.copyWith(
-                                          color: colorScheme.onSurfaceVariant,
+                                  if (doctor.rating > 0)
+                                    Positioned(
+                                      top: 12,
+                                      right: 12,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.55),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Icon(
+                                              Icons.star_rounded,
+                                              size: 16,
+                                              color: Colors.amber,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              doctor.rating.toStringAsFixed(1),
+                                              style: textTheme.labelSmall
+                                                  ?.copyWith(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
+                                ],
+                              ),
+                            ),
+                            if (avatarPath != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 12),
+                                child:
+                                    _DoctorAvatar(path: avatarPath, radius: 30),
+                              )
+                            else
+                              const SizedBox(height: 16),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      displayName,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: textTheme.titleMedium?.copyWith(
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      specialtyLabel,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: textTheme.bodySmall?.copyWith(
+                                        color: colorScheme.primary,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Expanded(
+                                      child: Text(
+                                        bio,
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: textTheme.bodySmall,
+                                      ),
+                                    ),
+                                    if (doctor.email != null &&
+                                        doctor.email!.trim().isNotEmpty) ...[
+                                      const SizedBox(height: 12),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.email_outlined,
+                                            size: 16,
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Expanded(
+                                            child: Text(
+                                              doctor.email!,
+                                              maxLines: 1,
+                                              overflow:
+                                                  TextOverflow.ellipsis,
+                                              style: textTheme.bodySmall
+                                                  ?.copyWith(
+                                                color: colorScheme
+                                                    .onSurfaceVariant,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ],
                                 ),
-                              ],
-                            ],
-                          ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  },
                 );
               },
             ),

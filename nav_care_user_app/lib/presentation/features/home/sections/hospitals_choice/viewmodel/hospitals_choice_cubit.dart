@@ -13,8 +13,7 @@ class HospitalsChoiceCubit extends Cubit<HospitalsChoiceState> {
   Future<void> loadHospitals() async {
     emit(state.copyWith(status: HospitalsChoiceStatus.loading));
     try {
-      final hospitals =
-          await _repository.getCombinedNavcareHospitalsChoice(limit: 6);
+      final hospitals = await _repository.getNavcareHospitalsChoice(limit: 6);
       emit(
         state.copyWith(
           status: HospitalsChoiceStatus.loaded,

@@ -65,7 +65,7 @@ class NavShellPage extends StatelessWidget {
       ),
       NavShellDestination(
         label: 'shell.nav_services'.tr(),
-        icon: Icons.medical_services_rounded,
+        icon: Icons.vaccines,
         content: const _PlaceholderSection(titleKey: 'shell.nav_services'),
       ),
       NavShellDestination(

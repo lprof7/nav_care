@@ -21,12 +21,22 @@ import '../../data/authentication/signup/services/remote_signup_service.dart';
 import '../../data/authentication/signup/signup_repository.dart';
 import '../../presentation/features/authentication/signup/viewmodel/signup_cubit.dart';
 
+import '../../presentation/features/services/service_creation/viewmodel/service_creation_cubit.dart';
+import '../../data/hospitals/hospital_creation/services/hospital_creation_service.dart';
+import '../../data/hospitals/hospital_creation/services/remote_hospital_creation_service.dart';
+import '../../data/hospitals/hospital_creation/hospital_creation_repository.dart';
+import '../../presentation/features/hospitals/hospital_creation/viewmodel/hospital_creation_cubit.dart';
 import '../../data/hospitals/hospitals_remote_service.dart';
 import '../../data/hospitals/hospitals_repository.dart';
 import '../../presentation/features/home/sections/hospitals_choice/viewmodel/hospitals_choice_cubit.dart';
+import '../../presentation/features/home/sections/featured_hospitals/viewmodel/featured_hospitals_cubit.dart';
 import '../../data/doctors/doctors_remote_service.dart';
 import '../../data/doctors/doctors_repository.dart';
 import '../../presentation/features/home/sections/doctors_choice/viewmodel/doctors_choice_cubit.dart';
+import '../../presentation/features/home/sections/featured_doctors/viewmodel/featured_doctors_cubit.dart';
+import '../../data/search/search_remote_service.dart';
+import '../../data/search/search_repository.dart';
+import '../../presentation/features/search/viewmodel/search_cubit.dart';
 
 final sl = GetIt.instance;
 Future<void> configureDependencies(AppConfig config) async {
@@ -52,24 +62,23 @@ Future<void> configureDependencies(AppConfig config) async {
       () => HospitalsRepository(remoteService: sl<HospitalsRemoteService>()));
   sl.registerFactory<HospitalsChoiceCubit>(
       () => HospitalsChoiceCubit(repository: sl<HospitalsRepository>()));
+  sl.registerFactory<FeaturedHospitalsCubit>(
+      () => FeaturedHospitalsCubit(repository: sl<HospitalsRepository>()));
+
   sl.registerLazySingleton<DoctorsRemoteService>(
       () => DoctorsRemoteService(apiClient: sl<ApiClient>()));
   sl.registerLazySingleton<DoctorsRepository>(
       () => DoctorsRepository(remoteService: sl<DoctorsRemoteService>()));
   sl.registerFactory<DoctorsChoiceCubit>(
       () => DoctorsChoiceCubit(repository: sl<DoctorsRepository>()));
-
-  // Remote service
-  sl.registerSingleton<RemoteExampleService>(
-      RemoteExampleService(sl<ApiClient>()));
-
-  // Bind abstract service to remote by default
-  sl.registerSingleton<ExampleService>(sl<RemoteExampleService>());
-
-  // Repository (concrete)
-  sl.registerLazySingleton<ExampleRepository>(() => ExampleRepository(
-        remote: sl<RemoteExampleService>(),
-      ));
+  sl.registerFactory<FeaturedDoctorsCubit>(
+      () => FeaturedDoctorsCubit(repository: sl<DoctorsRepository>()));
+  sl.registerLazySingleton<SearchRemoteService>(
+      () => SearchRemoteService(apiClient: sl<ApiClient>()));
+  sl.registerLazySingleton<SearchRepository>(
+      () => SearchRepository(remoteService: sl<SearchRemoteService>()));
+  sl.registerFactory<SearchCubit>(
+      () => SearchCubit(repository: sl<SearchRepository>()));
 
   // Signin
   sl.registerLazySingleton<SigninService>(
@@ -90,4 +99,14 @@ Future<void> configureDependencies(AppConfig config) async {
       () => RemoteServiceCreationService(sl<ApiClient>()));
   sl.registerLazySingleton<ServiceCreationRepository>(
       () => ServiceCreationRepository(sl<ServiceCreationService>()));
+  sl.registerFactory<ServiceCreationCubit>(
+      () => ServiceCreationCubit(sl<ServiceCreationRepository>()));
+
+  // Hospital creation
+  sl.registerLazySingleton<HospitalCreationService>(
+      () => RemoteHospitalCreationService(sl<ApiClient>()));
+  sl.registerLazySingleton<HospitalCreationRepository>(
+      () => HospitalCreationRepository(sl<HospitalCreationService>()));
+  sl.registerFactory<HospitalCreationCubit>(
+      () => HospitalCreationCubit(sl<HospitalCreationRepository>()));
 }
