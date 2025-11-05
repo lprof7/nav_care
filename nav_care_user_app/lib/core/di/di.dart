@@ -7,6 +7,7 @@ import '../network/dio_client.dart';
 import '../network/api_client.dart';
 import '../storage/secure_token_store.dart';
 import '../storage/token_store.dart';
+import '../storage/user_store.dart';
 
 // example entity wires:
 import '../../data/example/services/remote_service.dart';
@@ -15,17 +16,21 @@ import '../../data/example/repository.dart';
 import '../../data/authentication/signin/services/signin_service.dart';
 import '../../data/authentication/signin/services/remote_signin_service.dart';
 import '../../data/authentication/signin/signin_repository.dart';
+import '../../data/authentication/logout/logout_repository.dart';
 import '../../presentation/features/authentication/signin/viewmodel/signin_cubit.dart';
+import '../../presentation/features/authentication/logout/viewmodel/logout_cubit.dart';
 import '../../data/authentication/signup/services/signup_service.dart';
 import '../../data/authentication/signup/services/remote_signup_service.dart';
 import '../../data/authentication/signup/signup_repository.dart';
 import '../../presentation/features/authentication/signup/viewmodel/signup_cubit.dart';
 
 import '../../presentation/features/services/service_creation/viewmodel/service_creation_cubit.dart';
+import '../../data/appointments/remote_appointment_service.dart';
+import '../../data/appointments/appointment_repository.dart';
+import '../../presentation/features/appointments/appointment_creation/viewmodel/appointment_creation_cubit.dart';
 import '../../data/hospitals/hospital_creation/services/hospital_creation_service.dart';
 import '../../data/hospitals/hospital_creation/services/remote_hospital_creation_service.dart';
 import '../../data/hospitals/hospital_creation/hospital_creation_repository.dart';
-import '../../presentation/features/hospitals/hospital_creation/viewmodel/hospital_creation_cubit.dart';
 import '../../data/hospitals/hospitals_remote_service.dart';
 import '../../data/hospitals/hospitals_repository.dart';
 import '../../presentation/features/home/sections/hospitals_choice/viewmodel/hospitals_choice_cubit.dart';
@@ -44,6 +49,7 @@ Future<void> configureDependencies(AppConfig config) async {
 
   // Storage
   sl.registerLazySingleton<TokenStore>(() => SecureTokenStore());
+  sl.registerLazySingleton<UserStore>(() => SharedPrefsUserStore());
 
   // Local service (token/cache)
   // sl.registerSingleton<LocalExampleService>(LocalExampleService());
@@ -84,8 +90,11 @@ Future<void> configureDependencies(AppConfig config) async {
   sl.registerLazySingleton<SigninService>(
       () => RemoteSigninService(sl<ApiClient>()));
   sl.registerLazySingleton<SigninRepository>(
-      () => SigninRepository(sl<SigninService>(), sl<TokenStore>()));
+      () => SigninRepository(sl<SigninService>(), sl<TokenStore>(), sl<UserStore>()));
+  sl.registerLazySingleton<LogoutRepository>(() =>
+      LogoutRepository(tokenStore: sl<TokenStore>(), userStore: sl<UserStore>()));
   sl.registerFactory<SigninCubit>(() => SigninCubit(sl<SigninRepository>()));
+  sl.registerFactory<LogoutCubit>(() => LogoutCubit(sl<LogoutRepository>()));
 
   // Signup
   sl.registerLazySingleton<SignupService>(
@@ -107,6 +116,12 @@ Future<void> configureDependencies(AppConfig config) async {
       () => RemoteHospitalCreationService(sl<ApiClient>()));
   sl.registerLazySingleton<HospitalCreationRepository>(
       () => HospitalCreationRepository(sl<HospitalCreationService>()));
-  sl.registerFactory<HospitalCreationCubit>(
-      () => HospitalCreationCubit(sl<HospitalCreationRepository>()));
+
+  // Appointment creation
+  sl.registerLazySingleton<RemoteAppointmentService>(
+      () => RemoteAppointmentService(apiClient: sl<ApiClient>()));
+  sl.registerLazySingleton<AppointmentRepository>(
+      () => AppointmentRepository(remoteService: sl<RemoteAppointmentService>()));
+  sl.registerFactory<AppointmentCreationCubit>(
+      () => AppointmentCreationCubit(repository: sl<AppointmentRepository>()));
 }

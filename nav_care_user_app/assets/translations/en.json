@@ -30,6 +30,8 @@
     "signin_error_message": "Error: {message}",
     "signup_success_message": "Account created successfully",
     "signup_error_message": "Error: {message}",
+    "logout_success_message": "You have signed out.",
+    "logout_error_message": "Unable to sign out: {message}",
     "passwords_do_not_match": "Passwords do not match",
     "accept_terms_error": "Please accept the Terms & Privacy Policy",
     "field_required": "This field is required",
@@ -45,6 +47,7 @@
     "shell.nav_profile": "Profile",
     "shell.badge_new": "New",
     "shell.drawer_settings": "Settings",
+    "shell.drawer_logout": "Sign out",
     "shell.drawer_default_name": "Nav Care User",
     "shell.drawer_default_email": "user@navcare.com",
     "shell.drawer_verify_phone": "Verify phone",
@@ -170,5 +173,14 @@
     "home.search.filters.rating.max_default": "5",
     "services.detail.about": "About the provider",
     "services.detail.service_overview": "Service overview",
-    "services.detail.make_appointment": "Make an appointment"
+    "services.detail.make_appointment": "Make an appointment",
+    "add_appointment_page_title": "Book Appointment",
+    "appointment_created_success": "Appointment created successfully!",
+    "appointment_created_failure": "Failed to create appointment.",
+    "loading": "Loading...",
+    "service_offering_label": "Service Offering ID",
+    "appointment_type_label": "Appointment Type",
+    "start_time_label": "Start Time",
+    "end_time_label": "End Time",
+    "create_appointment_button": "Create Appointment"
 }

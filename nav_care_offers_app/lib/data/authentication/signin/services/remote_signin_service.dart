@@ -7,8 +7,19 @@ class RemoteSigninService implements SigninService {
   RemoteSigninService(this._api);
 
   @override
-  Future<Result<Map<String, dynamic>>> signin(Map<String, dynamic> body) async {
-    return await _api.post(
+  Future<Result<Map<String, dynamic>>> loginUser(
+      Map<String, dynamic> body) async {
+    return _api.post(
+      _api.apiConfig.userLogin,
+      body: body,
+      parser: (json) => json as Map<String, dynamic>,
+    );
+  }
+
+  @override
+  Future<Result<Map<String, dynamic>>> loginDoctor(
+      Map<String, dynamic> body) async {
+    return _api.post(
       _api.apiConfig.login,
       body: body,
       parser: (json) => json as Map<String, dynamic>,

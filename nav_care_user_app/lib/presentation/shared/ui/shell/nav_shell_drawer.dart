@@ -12,6 +12,8 @@ class NavShellDrawer extends StatelessWidget {
   final Locale currentLocale;
   final List<Locale> supportedLocales;
   final ValueChanged<Locale> onLocaleChanged;
+  final VoidCallback? onLogoutTap;
+  final bool isLogoutLoading;
 
   const NavShellDrawer({
     super.key,
@@ -22,6 +24,8 @@ class NavShellDrawer extends StatelessWidget {
     required this.supportedLocales,
     required this.onLocaleChanged,
     this.onVerifyTap,
+    this.onLogoutTap,
+    this.isLogoutLoading = false,
   });
 
   @override
@@ -111,6 +115,29 @@ class NavShellDrawer extends StatelessWidget {
                 style: theme.textTheme.bodyMedium,
               ),
               onTap: () => Navigator.of(context).pop(),
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.logout_rounded,
+                color: theme.iconTheme.color,
+              ),
+              title: Text(
+                'shell.drawer_logout'.tr(),
+                style: theme.textTheme.bodyMedium,
+              ),
+              enabled: !isLogoutLoading,
+              trailing: isLogoutLoading
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : null,
+              onTap: () {
+                if (isLogoutLoading) return;
+                Navigator.of(context).pop();
+                onLogoutTap?.call();
+              },
             ),
           ],
         ),

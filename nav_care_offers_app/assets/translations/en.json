@@ -1,22 +1,8 @@
 {
     "sign_in": "Sign In",
-    "sign_up": "Sign Up",
-    "sign_up_subtitle": "Create an account to get started",
     "email": "Email",
     "email_or_phone": "E-mail or Phone Number",
     "password": "Password",
-    "confirm_password": "Confirm Password",
-    "first_name": "First Name",
-    "last_name": "Last Name",
-    "birth_date": "Birth Date",
-    "birth_date_hint": "Select your birth date",
-    "phone_number": "Phone Number",
-    "address": "Address",
-    "city": "City",
-    "state": "State / Province",
-    "country": "Country",
-    "already_have_account": "Already have an account?",
-    "dont_have_account": "Don't have an account?",
     "or": "Or",
     "book_an_appointment": "Book an appointment",
     "sign_in_subtitle": "Sign in to continue",
@@ -24,22 +10,17 @@
     "forgot_password": "Forgot password?",
     "sign_in_with_google": "Sign in with Google",
     "sign_in_with_apple": "Sign in with Apple",
-    "sign_up_with_google": "Sign up with Google",
-    "sign_up_with_apple": "Sign up with Apple",
     "signin_success_message": "Welcome {name}",
     "signin_error_message": "Error: {message}",
-    "signup_success_message": "Account created successfully",
-    "signup_error_message": "Error: {message}",
-    "passwords_do_not_match": "Passwords do not match",
-    "accept_terms_error": "Please accept the Terms & Privacy Policy",
+    "signin_account_not_found": "We couldn't find an account with those credentials.",
+    "signin_doctor_profile_required": "We found your user account, but you still need to complete your doctor profile.",
     "field_required": "This field is required",
-    "algerian_phone_error": "Enter a valid Algerian phone number",
-    "upload_profile_picture": "Upload profile picture",
-    "upload_photo_hint": "Tap to add or update your profile photo",
-    "change_photo": "Change photo",
-    "remove_photo": "Remove photo",
-    "i_accept": "I accept",
-    "terms_and_policy": "Terms & Privacy Policy",
+    "become_doctor_title": "Become a Doctor",
+    "become_doctor_heading": "Complete your doctor profile",
+    "become_doctor_description": "Hi {name}, to continue you need to confirm your professional information.",
+    "become_doctor_default_name": "Doctor",
+    "become_doctor_next_steps": "We'll guide you through the remaining steps shortly.",
+    "become_doctor_back_to_signin": "Back to sign in",
     "shell": {
         "nav_home": "Home",
         "nav_services": "Services",
@@ -84,6 +65,86 @@
             "empty": "You haven't added any services yet.",
             "list_title": "Your active services",
             "more": "+{count} more services"
+        }
+    },
+    "hospitals": {
+        "list": {
+            "title": "Hospital network",
+            "subtitle": "Organise your hospitals and clinics in one place",
+            "empty": "You haven't added any facilities yet.",
+            "error_network": "We couldn't reach the server. Check your connection and try again.",
+            "error_timeout": "The server is taking longer than expected. Please try again.",
+            "error_unauthorized": "Your session has expired. Please sign in again.",
+            "error_generic": "We couldn't load your hospitals right now."
+        },
+        "actions": {
+            "add": "Add hospital",
+            "reload": "Reload",
+            "retry": "Try again"
+        },
+        "stats": {
+            "clinics": "{0} clinics",
+            "doctors": "{0} doctors"
+        },
+        "facility_type": {
+            "hospital": "Hospital",
+            "clinic": "Clinic",
+            "unknown": "Facility"
+        },
+        "detail": {
+            "app_bar": "Hospital · {0}",
+            "facility_type": "Facility type",
+            "phone": "Contact phone",
+            "coordinates": "Location coordinates",
+            "manage_clinics": "Manage clinics",
+            "manage_doctors": "Manage doctors",
+            "clinics_title": "Clinics inside this hospital",
+            "doctors_title": "Associated doctors",
+            "edit": "Edit hospital",
+            "delete": "Delete hospital",
+            "deleting": "Deleting…",
+            "delete_confirm_title": "Delete hospital",
+            "delete_confirm_message": "Are you sure you want to remove this hospital? This action cannot be undone.",
+            "delete_cancel": "Cancel",
+            "delete_confirm": "Delete",
+            "delete_success": "Hospital removed successfully.",
+            "not_found": "We couldn't find the requested hospital."
+        },
+        "form": {
+            "create_title": "Add hospital",
+            "edit_title": "Edit hospital",
+            "name": "Facility name",
+            "description_en": "Description (English)",
+            "facility_type": {
+                "label": "Facility type",
+                "hospital": "Hospital",
+                "clinic": "Clinic",
+                "unknown": "Facility"
+            },
+            "phone_label": "Phone numbers",
+            "phone_hint": "+1234567890",
+            "coordinates": {
+                "label": "Coordinates",
+                "latitude": "Latitude",
+                "longitude": "Longitude"
+            },
+            "images": {
+                "label": "Images (URLs)",
+                "hint": "https://example.com/hospital.jpg"
+            },
+            "add_entry": "Add another",
+            "saving": "Saving…",
+            "save": "Save hospital",
+            "success_create": "Hospital created successfully.",
+            "success_update": "Hospital updated successfully."
+        },
+        "manage": {
+            "title": "{0}",
+            "clinics_title": "Manage clinics",
+            "doctors_title": "Manage doctors",
+            "clinics_description": "Soon you will be able to create, update, and organise your clinics from here.",
+            "doctors_description": "Soon you will be able to manage doctors associated with this hospital.",
+            "placeholder": "We are still building this experience. Stay tuned!"
         }
     }
 }

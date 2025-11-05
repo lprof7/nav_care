@@ -30,6 +30,8 @@
     "signin_error_message": "Erreur : {message}",
     "signup_success_message": "Compte créé avec succès",
     "signup_error_message": "Erreur : {message}",
+    "logout_success_message": "Vous êtes déconnecté.",
+    "logout_error_message": "Impossible de se déconnecter : {message}",
     "passwords_do_not_match": "Les mots de passe ne correspondent pas",
     "accept_terms_error": "Veuillez accepter les Conditions et la Politique de confidentialité",
     "field_required": "Ce champ est requis",
@@ -45,6 +47,7 @@
     "shell.nav_profile": "Profil",
     "shell.badge_new": "Nouveau",
     "shell.drawer_settings": "Paramètres",
+    "shell.drawer_logout": "Se déconnecter",
     "shell.drawer_default_name": "Utilisateur Nav Care",
     "shell.drawer_default_email": "user@navcare.com",
     "shell.drawer_verify_phone": "Vérifier le téléphone",
@@ -170,5 +173,14 @@
     "home.search.filters.rating.max_default": "5",
     "services.detail.about": "À propos du praticien",
     "services.detail.service_overview": "Présentation du service",
-    "services.detail.make_appointment": "Prendre rendez-vous"
+    "services.detail.make_appointment": "Prendre rendez-vous",
+    "add_appointment_page_title": "Prendre rendez-vous",
+    "appointment_created_success": "Rendez-vous créé avec succès !",
+    "appointment_created_failure": "Échec de la création du rendez-vous.",
+    "loading": "Chargement...",
+    "service_offering_label": "ID de l'offre de service",
+    "appointment_type_label": "Type de rendez-vous",
+    "start_time_label": "Heure de début",
+    "end_time_label": "Heure de fin",
+    "create_appointment_button": "Créer un rendez-vous"
 }

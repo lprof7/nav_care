@@ -19,6 +19,15 @@ class User {
       profilePicture: json['profilePicture'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'name': name,
+      'email': email,
+      'profilePicture': profilePicture,
+    };
+  }
 }
 
 class AuthResponse {

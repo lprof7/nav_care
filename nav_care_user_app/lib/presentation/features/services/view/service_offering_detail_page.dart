@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nav_care_user_app/data/search/models/search_models.dart';
 
 class ServiceOfferingDetailPage extends StatelessWidget {
@@ -96,166 +97,149 @@ class ServiceOfferingDetailPage extends StatelessWidget {
         _provider['specialty']?.toString() ?? item.description;
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 280,
-            pinned: true,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_rounded),
-              onPressed: () => Navigator.of(context).maybePop(),
-            ),
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                _serviceTitle(context),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  if (coverImage != null)
-                    Image.network(
-                      coverImage,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: theme.colorScheme.surfaceContainerHighest,
-                        child: const Icon(
-                          Icons.image_not_supported_rounded,
-                          size: 48,
-                        ),
-                      ),
-                    )
-                  else
-                    Container(
+      appBar: AppBar(
+        title: Text(_serviceTitle(context)),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => Navigator.of(context).maybePop(),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 24, 24, 120),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Cover Image
+              if (coverImage != null)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    coverImage,
+                    fit: BoxFit.cover,
+                    height: 200,
+                    width: double.infinity,
+                    errorBuilder: (context, error, stackTrace) => Container(
                       color: theme.colorScheme.surfaceContainerHighest,
+                      height: 200,
                       alignment: Alignment.center,
                       child: const Icon(
-                        Icons.image_rounded,
-                        size: 64,
-                      ),
-                    ),
-                  const DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.transparent,
-                          Colors.black54,
-                        ],
+                        Icons.image_not_supported_rounded,
+                        size: 48,
                       ),
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(24, 24, 24, 120),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CircleAvatar(
-                        radius: 32,
-                        backgroundColor:
-                            theme.colorScheme.surfaceContainerHighest,
-                        backgroundImage: providerAvatar != null
-                            ? NetworkImage(providerAvatar)
-                            : null,
-                        child: providerAvatar == null
-                            ? const Icon(Icons.person_rounded, size: 32)
-                            : null,
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              providerName,
-                              style: textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w700,
+                )
+              else
+                Container(
+                  color: theme.colorScheme.surfaceContainerHighest,
+                  height: 200,
+                  alignment: Alignment.center,
+                  child: const Icon(
+                    Icons.image_rounded,
+                    size: 64,
+                  ),
+                ),
+              const SizedBox(height: 24),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 32,
+                    backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                    backgroundImage: providerAvatar != null
+                        ? NetworkImage(providerAvatar)
+                        : null,
+                    child: providerAvatar == null
+                        ? const Icon(Icons.person_rounded, size: 32)
+                        : null,
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          providerName,
+                          style: textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        if (providerSpecialty != null &&
+                            providerSpecialty.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Text(
+                              providerSpecialty,
+                              style: textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.primary,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                            if (providerSpecialty != null &&
-                                providerSpecialty.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 4),
-                                child: Text(
-                                  providerSpecialty,
-                                  style: textTheme.bodyMedium?.copyWith(
-                                    color: theme.colorScheme.primary,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
-                    children: _buildInfoChips(context),
-                  ),
-                  const SizedBox(height: 24),
-                  if (item.description.isNotEmpty)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'services.detail.about'.tr(),
-                          style: textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
                           ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          item.description,
-                          style: textTheme.bodyMedium,
-                        ),
-                        const SizedBox(height: 24),
                       ],
                     ),
-                  if (_service['description_en'] != null)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'services.detail.service_overview'.tr(),
-                          style: textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          _service['description_${context.locale.languageCode}']
-                                  ?.toString() ??
-                              _service['description_en']?.toString() ??
-                              '',
-                          style: textTheme.bodyMedium,
-                        ),
-                        const SizedBox(height: 24),
-                      ],
-                    ),
+                  ),
                 ],
               ),
-            ),
+              const SizedBox(height: 24),
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: _buildInfoChips(context),
+              ),
+              const SizedBox(height: 24),
+              if (item.description.isNotEmpty)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'services.detail.about'.tr(),
+                      style: textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      item.description,
+                      style: textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              if (_service['description_en'] != null)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'services.detail.service_overview'.tr(),
+                      style: textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      _service['description_${context.locale.languageCode}']
+                              ?.toString() ??
+                          _service['description_en']?.toString() ??
+                          '',
+                      style: textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+            ],
           ),
-        ],
+        ),
       ),
       bottomNavigationBar: SafeArea(
         top: false,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: FilledButton(
-            onPressed: () {},
+            onPressed: () {
+              context.push('/appointments/create', extra: item.id);
+            },
             style: FilledButton.styleFrom(
               minimumSize: const Size.fromHeight(54),
               textStyle: theme.textTheme.titleMedium?.copyWith(

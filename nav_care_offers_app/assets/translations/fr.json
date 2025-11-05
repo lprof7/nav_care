@@ -1,22 +1,8 @@
 {
     "sign_in": "Se connecter",
-    "sign_up": "S'inscrire",
-    "sign_up_subtitle": "Créez un compte pour commencer",
     "email": "E-mail",
     "email_or_phone": "E-mail ou numéro de téléphone",
     "password": "Mot de passe",
-    "confirm_password": "Confirmez le mot de passe",
-    "first_name": "Prénom",
-    "last_name": "Nom de famille",
-    "birth_date": "Date de naissance",
-    "birth_date_hint": "Sélectionnez votre date de naissance",
-    "phone_number": "Numéro de téléphone",
-    "address": "Adresse",
-    "city": "Ville",
-    "state": "État / Province",
-    "country": "Pays",
-    "already_have_account": "Vous avez déjà un compte ?",
-    "dont_have_account": "Vous n'avez pas de compte ?",
     "or": "Ou",
     "book_an_appointment": "Prendre un rendez-vous",
     "sign_in_subtitle": "Connectez-vous pour continuer",
@@ -24,22 +10,17 @@
     "forgot_password": "Mot de passe oublié ?",
     "sign_in_with_google": "Se connecter avec Google",
     "sign_in_with_apple": "Se connecter avec Apple",
-    "sign_up_with_google": "S'inscrire avec Google",
-    "sign_up_with_apple": "S'inscrire avec Apple",
     "signin_success_message": "Bienvenue {name}",
     "signin_error_message": "Erreur : {message}",
-    "signup_success_message": "Compte créé avec succès",
-    "signup_error_message": "Erreur : {message}",
-    "passwords_do_not_match": "Les mots de passe ne correspondent pas",
-    "accept_terms_error": "Veuillez accepter les Conditions et la Politique de confidentialité",
+    "signin_account_not_found": "Nous n'avons trouvé aucun compte avec ces identifiants.",
+    "signin_doctor_profile_required": "Nous avons trouvé votre compte utilisateur, mais vous devez compléter votre profil de docteur.",
     "field_required": "Ce champ est requis",
-    "algerian_phone_error": "Veuillez saisir un numéro algérien valide",
-    "upload_profile_picture": "Télécharger la photo de profil",
-    "upload_photo_hint": "Touchez pour ajouter ou mettre à jour votre photo de profil",
-    "change_photo": "Changer la photo",
-    "remove_photo": "Supprimer la photo",
-    "i_accept": "J'accepte",
-    "terms_and_policy": "Conditions et Politique de confidentialité",
+    "become_doctor_title": "Devenir médecin",
+    "become_doctor_heading": "Complétez votre profil de docteur",
+    "become_doctor_description": "Bonjour {name}, pour continuer vous devez confirmer vos informations professionnelles.",
+    "become_doctor_default_name": "Docteur",
+    "become_doctor_next_steps": "Nous vous guiderons très bientôt à travers les étapes restantes.",
+    "become_doctor_back_to_signin": "Retour à la connexion",
     "home": {
         "welcome_message": "Voici ce qui se passe aujourd'hui",
         "appointments": {
@@ -84,6 +65,86 @@
             "support": "Support",
             "favorites": "Favoris",
             "notifications": "Notifications"
+        }
+    },
+    "hospitals": {
+        "list": {
+            "title": "Réseau hospitalier",
+            "subtitle": "Organisez vos hôpitaux et cliniques au même endroit",
+            "empty": "Vous n'avez pas encore ajouté de structure.",
+            "error_network": "Impossible de contacter le serveur. Vérifiez votre connexion puis réessayez.",
+            "error_timeout": "Le serveur met plus de temps que prévu à répondre. Merci de réessayer.",
+            "error_unauthorized": "Votre session a expiré. Veuillez vous reconnecter.",
+            "error_generic": "Impossible de charger vos hôpitaux pour le moment."
+        },
+        "actions": {
+            "add": "Ajouter un hôpital",
+            "reload": "Recharger",
+            "retry": "Réessayer"
+        },
+        "stats": {
+            "clinics": "{0} cliniques",
+            "doctors": "{0} médecins"
+        },
+        "facility_type": {
+            "hospital": "Hôpital",
+            "clinic": "Clinique",
+            "unknown": "Établissement"
+        },
+        "detail": {
+            "app_bar": "Hôpital · {0}",
+            "facility_type": "Type d'établissement",
+            "phone": "Téléphone de contact",
+            "coordinates": "Coordonnées",
+            "manage_clinics": "Gérer les cliniques",
+            "manage_doctors": "Gérer les médecins",
+            "clinics_title": "Cliniques au sein de cet hôpital",
+            "doctors_title": "Médecins associés",
+            "edit": "Modifier l'hôpital",
+            "delete": "Supprimer l'hôpital",
+            "deleting": "Suppression…",
+            "delete_confirm_title": "Supprimer l'hôpital",
+            "delete_confirm_message": "Êtes-vous sûr de vouloir supprimer cet hôpital ? Cette action est irréversible.",
+            "delete_cancel": "Annuler",
+            "delete_confirm": "Supprimer",
+            "delete_success": "Hôpital supprimé avec succès.",
+            "not_found": "Impossible de trouver l'hôpital demandé."
+        },
+        "form": {
+            "create_title": "Ajouter un hôpital",
+            "edit_title": "Modifier l'hôpital",
+            "name": "Nom de l'établissement",
+            "description_en": "Description (anglais)",
+            "facility_type": {
+                "label": "Type d'établissement",
+                "hospital": "Hôpital",
+                "clinic": "Clinique",
+                "unknown": "Établissement"
+            },
+            "phone_label": "Numéros de téléphone",
+            "phone_hint": "+1234567890",
+            "coordinates": {
+                "label": "Coordonnées",
+                "latitude": "Latitude",
+                "longitude": "Longitude"
+            },
+            "images": {
+                "label": "Images (URL)",
+                "hint": "https://exemple.com/hopital.jpg"
+            },
+            "add_entry": "Ajouter un champ",
+            "saving": "Enregistrement…",
+            "save": "Enregistrer l'hôpital",
+            "success_create": "Hôpital créé avec succès.",
+            "success_update": "Hôpital mis à jour avec succès."
+        },
+        "manage": {
+            "title": "{0}",
+            "clinics_title": "Gérer les cliniques",
+            "doctors_title": "Gérer les médecins",
+            "clinics_description": "Vous pourrez bientôt créer, mettre à jour et organiser vos cliniques ici.",
+            "doctors_description": "Vous pourrez bientôt gérer les médecins liés à cet hôpital.",
+            "placeholder": "Nous préparons actuellement cette expérience. Restez connectés !"
         }
     }
 }

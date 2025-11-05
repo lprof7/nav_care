@@ -170,5 +170,14 @@
     "home.search.filters.rating.max_default": "5",
     "services.detail.about": "نبذة عن مقدم الخدمة",
     "services.detail.service_overview": "نظرة عامة على الخدمة",
-    "services.detail.make_appointment": "احجز موعداً"
+    "services.detail.make_appointment": "احجز موعداً",
+    "add_appointment_page_title": "حجز موعد",
+    "appointment_created_success": "تم إنشاء الموعد بنجاح!",
+    "appointment_created_failure": "فشل إنشاء الموعد.",
+    "loading": "جاري التحميل...",
+    "service_offering_label": "معرف عرض الخدمة",
+    "appointment_type_label": "نوع الموعد",
+    "start_time_label": "وقت البدء",
+    "end_time_label": "وقت الانتهاء",
+    "create_appointment_button": "إنشاء موعد"
 }

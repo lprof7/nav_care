@@ -18,6 +18,11 @@ class SigninFailure extends SigninState {
   SigninFailure(this.message);
 }
 
+class SigninRequiresDoctorProfile extends SigninState {
+  final User user;
+  SigninRequiresDoctorProfile(this.user);
+}
+
 class SigninCubit extends Cubit<SigninState> {
   final SigninRepository _signinRepository;
 
@@ -31,7 +36,16 @@ class SigninCubit extends Cubit<SigninState> {
     });
     result.fold(
       onFailure: (failure) => emit(SigninFailure(failure.message)),
-      onSuccess: (doctor) => emit(SigninSuccess(doctor)),
+      onSuccess: (outcome) {
+        switch (outcome.resolution) {
+          case SigninResolution.doctorAuthenticated:
+            emit(SigninSuccess(outcome.doctor!));
+            break;
+          case SigninResolution.requiresDoctorProfile:
+            emit(SigninRequiresDoctorProfile(outcome.user));
+            break;
+        }
+      },
     );
   }
 }

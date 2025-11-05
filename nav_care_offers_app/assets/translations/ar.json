@@ -1,22 +1,8 @@
 {
     "sign_in": "تسجيل الدخول",
-    "sign_up": "إنشاء حساب",
-    "sign_up_subtitle": "أنشئ حساباً للبدء",
     "email": "البريد الإلكتروني",
     "email_or_phone": "البريد الإلكتروني أو رقم الهاتف",
     "password": "كلمة المرور",
-    "confirm_password": "تأكيد كلمة المرور",
-    "first_name": "الاسم الأول",
-    "last_name": "اسم العائلة",
-    "birth_date": "تاريخ الميلاد",
-    "birth_date_hint": "اختر تاريخ ميلادك",
-    "phone_number": "رقم الهاتف",
-    "address": "العنوان",
-    "city": "المدينة",
-    "state": "الولاية / المحافظة",
-    "country": "البلد",
-    "already_have_account": "لديك حساب مسبقاً؟",
-    "dont_have_account": "ليس لديك حساب؟",
     "or": "أو",
     "book_an_appointment": "احجز موعداً",
     "sign_in_subtitle": "سجل الدخول للمتابعة",
@@ -24,22 +10,17 @@
     "forgot_password": "هل نسيت كلمة المرور؟",
     "sign_in_with_google": "تسجيل الدخول باستخدام جوجل",
     "sign_in_with_apple": "تسجيل الدخول باستخدام أبل",
-    "sign_up_with_google": "إنشاء حساب باستخدام جوجل",
-    "sign_up_with_apple": "إنشاء حساب باستخدام أبل",
     "signin_success_message": "مرحباً {name}",
     "signin_error_message": "خطأ: {message}",
-    "signup_success_message": "تم إنشاء الحساب بنجاح",
-    "signup_error_message": "خطأ: {message}",
-    "passwords_do_not_match": "كلمتا المرور غير متطابقتين",
-    "accept_terms_error": "يرجى قبول الشروط وسياسة الخصوصية",
+    "signin_account_not_found": "لا يوجد حساب مطابق لهذه البيانات.",
+    "signin_doctor_profile_required": "تم العثور على حسابك، لكن يجب استكمال ملفك كطبيب قبل المتابعة.",
     "field_required": "هذا الحقل مطلوب",
-    "algerian_phone_error": "يرجى إدخال رقم هاتف جزائري صالح",
-    "upload_profile_picture": "تحميل صورة الملف الشخصي",
-    "upload_photo_hint": "اضغط لإضافة أو تحديث صورة الملف الشخصي",
-    "change_photo": "تغيير الصورة",
-    "remove_photo": "إزالة الصورة",
-    "i_accept": "أوافق",
-    "terms_and_policy": "الشروط وسياسة الخصوصية",
+    "become_doctor_title": "كن طبيباً",
+    "become_doctor_heading": "أكمل ملفك كطبيب",
+    "become_doctor_description": "مرحباً {name}، للمتابعة نحتاج إلى تأكيد معلوماتك المهنية.",
+    "become_doctor_default_name": "دكتور",
+    "become_doctor_next_steps": "سنرشدك قريباً إلى الخطوات المتبقية.",
+    "become_doctor_back_to_signin": "العودة إلى تسجيل الدخول",
     "home": {
         "welcome_message": "إليك ما يحدث اليوم",
         "appointments": {
@@ -84,6 +65,86 @@
             "support": "الدعم",
             "favorites": "المفضلة",
             "notifications": "الإشعارات"
+        }
+    },
+    "hospitals": {
+        "list": {
+            "title": "شبكة المستشفيات",
+            "subtitle": "نظّم مستشفياتك وعياداتك في مكان واحد",
+            "empty": "لم تقم بإضافة أي منشأة بعد.",
+            "error_network": "تعذر الاتصال بالخادم. تأكد من الاتصال بالإنترنت ثم حاول مرة أخرى.",
+            "error_timeout": "الخادم يستغرق وقتاً أطول من المتوقع. حاول مجدداً.",
+            "error_unauthorized": "انتهت صلاحية الجلسة. يرجى تسجيل الدخول من جديد.",
+            "error_generic": "تعذر تحميل قائمة المستشفيات حالياً."
+        },
+        "actions": {
+            "add": "إضافة مستشفى",
+            "reload": "إعادة التحميل",
+            "retry": "حاول مرة أخرى"
+        },
+        "stats": {
+            "clinics": "{0} عيادة",
+            "doctors": "{0} طبيب"
+        },
+        "facility_type": {
+            "hospital": "مستشفى",
+            "clinic": "عيادة",
+            "unknown": "منشأة"
+        },
+        "detail": {
+            "app_bar": "المستشفى · {0}",
+            "facility_type": "نوع المنشأة",
+            "phone": "هاتف التواصل",
+            "coordinates": "الإحداثيات",
+            "manage_clinics": "إدارة العيادات",
+            "manage_doctors": "إدارة الأطباء",
+            "clinics_title": "العيادات داخل المستشفى",
+            "doctors_title": "الأطباء المرتبطون",
+            "edit": "تعديل المستشفى",
+            "delete": "حذف المستشفى",
+            "deleting": "جارٍ الحذف...",
+            "delete_confirm_title": "حذف المستشفى",
+            "delete_confirm_message": "هل أنت متأكد من حذف هذا المستشفى؟ لا يمكن التراجع عن هذه العملية.",
+            "delete_cancel": "إلغاء",
+            "delete_confirm": "حذف",
+            "delete_success": "تم حذف المستشفى بنجاح.",
+            "not_found": "تعذر العثور على المستشفى المطلوب."
+        },
+        "form": {
+            "create_title": "إضافة مستشفى",
+            "edit_title": "تعديل المستشفى",
+            "name": "اسم المنشأة",
+            "description_en": "الوصف (بالإنجليزية)",
+            "facility_type": {
+                "label": "نوع المنشأة",
+                "hospital": "مستشفى",
+                "clinic": "عيادة",
+                "unknown": "منشأة"
+            },
+            "phone_label": "أرقام الهاتف",
+            "phone_hint": "+1234567890",
+            "coordinates": {
+                "label": "الإحداثيات",
+                "latitude": "خط العرض",
+                "longitude": "خط الطول"
+            },
+            "images": {
+                "label": "الصور (روابط)",
+                "hint": "https://example.com/hospital.jpg"
+            },
+            "add_entry": "إضافة حقل جديد",
+            "saving": "جارٍ الحفظ...",
+            "save": "حفظ المستشفى",
+            "success_create": "تم إنشاء المستشفى بنجاح.",
+            "success_update": "تم تحديث المستشفى بنجاح."
+        },
+        "manage": {
+            "title": "{0}",
+            "clinics_title": "إدارة العيادات",
+            "doctors_title": "إدارة الأطباء",
+            "clinics_description": "قريباً ستتمكن من إنشاء العيادات وإدارتها من هنا.",
+            "doctors_description": "قريباً ستتمكن من إدارة الأطباء المرتبطين بهذا المستشفى.",
+            "placeholder": "نقوم حالياً ببناء هذه الشاشة. ترقبونا!"
         }
     }
 }

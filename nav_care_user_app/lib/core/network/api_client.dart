@@ -29,6 +29,7 @@ class ApiClient {
       final res = await _dio.post(path, data: body);
       return Result.success(parser(res.data));
     } on DioException catch (e) {
+      print(e);
       return Result.failure(_mapDio(e));
     }
   }

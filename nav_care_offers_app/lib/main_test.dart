@@ -49,11 +49,18 @@ class TestApp extends StatelessWidget {
                 onFailure: (failure) {
                   debugPrint('Test Failed: ${failure.message}');
                 },
-                onSuccess: (user) {
-                  debugPrint('Test Succeeded:');
-                  debugPrint('User ID: ${user.id}');
-                  debugPrint('User Name: ${user.bioAr}');
-                  debugPrint('User Email: ${user.bioEn}');
+                onSuccess: (outcome) {
+                  switch (outcome.resolution) {
+                    case SigninResolution.doctorAuthenticated:
+                      debugPrint('Doctor login succeeded:');
+                      debugPrint('Doctor ID: ${outcome.doctor?.id}');
+                      debugPrint('Doctor Name: ${outcome.doctor?.user.name}');
+                      break;
+                    case SigninResolution.requiresDoctorProfile:
+                      debugPrint(
+                          'User needs to complete doctor profile: ${outcome.user.name}');
+                      break;
+                  }
                 },
               );
             },

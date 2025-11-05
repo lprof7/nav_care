@@ -4,8 +4,7 @@ import 'package:nav_care_user_app/presentation/features/shell/view/nav_shell_pag
 
 import '../../presentation/features/authentication/signup/view/signup_page.dart';
 import '../../presentation/features/services/service_creation/view/add_service_page.dart';
-import '../../presentation/features/hospitals/hospital_creation/view/add_hospital_page.dart';
-import '../../presentation/features/hospitals/hospital_packages/view/add_hospital_packages_page.dart';
+import '../../presentation/features/appointments/appointment_creation/view/add_appointment_page.dart';
 
 final appRouter = GoRouter(
   routes: [
@@ -16,13 +15,10 @@ final appRouter = GoRouter(
     GoRoute(
         path: '/services/create', builder: (ctx, st) => const AddServicePage()),
     GoRoute(
-        path: '/hospitals/create',
-        builder: (ctx, st) => const AddHospitalPage()),
-    GoRoute(
-      path: '/hospitals/:id/packages/add',
-      builder: (ctx, st) => AddHospitalPackagesPage(
-        hospitalId: st.pathParameters['id'] ?? '',
-      ),
-    ),
+        path: '/appointments/create',
+        builder: (ctx, st) {
+          final serviceOfferingId = st.extra as String;
+          return AddAppointmentPage(serviceOfferingId: serviceOfferingId);
+        }),
   ],
 );

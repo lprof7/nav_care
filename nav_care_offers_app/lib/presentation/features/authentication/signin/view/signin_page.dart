@@ -61,15 +61,24 @@ class SigninPage extends StatelessWidget {
                       listener: (context, state) {
                         if (state is SigninSuccess) {
                           context.go('/home');
-                        } else if (state is SigninFailure) {
-                          debugPrint(state.message);
+                        } else if (state is SigninRequiresDoctorProfile) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(
-                                'signin_error_message'.tr(
+                              content:
+                                  Text('signin_doctor_profile_required'.tr()),
+                            ),
+                          );
+                          context.go('/become-doctor', extra: state.user);
+                        } else if (state is SigninFailure) {
+                          debugPrint(state.message);
+                          final message = state.message.startsWith('signin_')
+                              ? state.message.tr()
+                              : 'signin_error_message'.tr(
                                   namedArgs: {'message': state.message},
-                                ),
-                              ),
+                                );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(message),
                             ),
                           );
                         }
@@ -209,27 +218,6 @@ class _SigninFormState extends State<SigninForm> {
                     : null,
               );
             },
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'dont_have_account'.tr(),
-                style: textTheme.bodyMedium?.copyWith(
-                  color: secondaryTextColor,
-                ),
-              ),
-              TextButton(
-                onPressed: () => context.go('/signup'),
-                child: Text(
-                  'sign_up'.tr(),
-                  style: textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
           ),
           const SizedBox(height: 24),
           Row(
