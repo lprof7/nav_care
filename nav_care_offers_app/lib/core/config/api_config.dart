@@ -8,7 +8,7 @@ class ApiConfig {
   String get register => '$baseUrl/api/users/auth/register';
 
   // Doctor services
-  String get doctorServices => '$baseUrl/api/doctors/services';
+  String get doctorServices => '$baseUrl/api/doctors/me/services';
 
   // Hospitals
   String get hospitals => '$baseUrl/api/hospitals';

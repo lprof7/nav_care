@@ -120,9 +120,9 @@ class _AddAppointmentPageState extends State<AddAppointmentPage> {
                           border: const OutlineInputBorder(),
                         ),
                         value: _selectedType,
-                        items: const [
-                          DropdownMenuItem(value: 'in_person', child: Text('In Person')),
-                          DropdownMenuItem(value: 'virtual', child: Text('Virtual')),
+                        items: [
+                          DropdownMenuItem(value: 'in_person', child: Text('in_person_appointment'.tr())),
+                          DropdownMenuItem(value: 'virtual', child: Text('virtual_appointment'.tr())),
                         ],
                         onChanged: (value) {
                           setState(() {

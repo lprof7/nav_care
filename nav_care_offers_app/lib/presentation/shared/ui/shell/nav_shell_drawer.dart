@@ -1,5 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nav_care_offers_app/core/di/di.dart';
+import 'package:nav_care_offers_app/presentation/features/authentication/auth_cubit.dart';
 
 import '../../../shared/theme/colors.dart';
 import 'nav_shell_destination.dart';
@@ -112,6 +115,22 @@ class NavShellDrawer extends StatelessWidget {
                 style: theme.textTheme.bodyMedium,
               ),
               onTap: () => Navigator.of(context).pop(),
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.logout_rounded,
+                color: theme.colorScheme.error,
+              ),
+              title: Text(
+                'shell.drawer_logout'.tr(),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+              onTap: () {
+                Navigator.of(context).pop();
+                context.read<AuthCubit>().logout();
+              },
             ),
           ],
         ),

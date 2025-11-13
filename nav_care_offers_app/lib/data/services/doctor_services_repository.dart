@@ -20,6 +20,7 @@ class DoctorServicesRepository {
       limit: limit,
       active: active,
     );
+    print(response.isSuccess); 
 
     if (!response.isSuccess || response.data == null) {
       return Result.failure(response.error ?? const Failure.unknown());

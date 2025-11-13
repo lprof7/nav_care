@@ -31,8 +31,8 @@ class HospitalsRepository {
     return hospitals.sublist(0, cappedLimit);
   }
 
-  Future<List<HospitalModel>> getNavcareFeaturedHospitals({int limit = 3}) {
-    return getFakeFeaturedHospitals(limit: limit);
+  Future<List<HospitalModel>> getNavcareFeaturedHospitals({int limit = 3}) async {
+    return getFeaturedHospitals(limit: limit);
   }
 
   Future<List<HospitalModel>> getNavcareFeaturedClinics({int limit = 6}) async {
@@ -63,9 +63,33 @@ class HospitalsRepository {
     return sorted.sublist(0, cappedLimit);
   }
 
-  Future<List<HospitalModel>> getFeaturedHospitals({int limit = 6}) {
-    // TODO: replace with real API implementation
-    throw UnimplementedError();
+  Future<List<HospitalModel>> getFeaturedHospitals({int limit = 6}) async {
+    final requestLimit = limit < 1
+        ? 1
+        : limit > 20
+            ? 20
+            : limit;
+    final result = await _remoteService.listBoostedHospitals(
+      type: 'nav_care',
+      page: 1,
+      limit: requestLimit,
+    );
+
+    if (!result.isSuccess || result.data == null) {
+      final message =
+          _extractMessage(result.error?.message) ?? 'Failed to load featured hospitals.';
+      throw Exception(message);
+    }
+
+    final hospitalMaps = _extractHospitalMaps(result.data);
+    if (hospitalMaps.isEmpty) {
+      return const [];
+    }
+
+    return hospitalMaps
+        .take(requestLimit)
+        .map(HospitalModel.fromJson)
+        .toList(growable: false);
   }
 
   Future<List<HospitalModel>> getFakeFeaturedHospitals({int limit = 6}) async {
@@ -84,5 +108,53 @@ class HospitalsRepository {
     final cappedLimit =
         requestLimit > hospitals.length ? hospitals.length : requestLimit;
     return hospitals.sublist(0, cappedLimit);
+  }
+  String? _extractMessage(dynamic message) {
+    if (message is String && message.isNotEmpty) {
+      return message;
+    }
+    if (message is Map<String, dynamic>) {
+      final localized = [
+        message['ar'],
+        message['fr'],
+        message['en'],
+      ].whereType<String>().firstWhere(
+            (value) => value.isNotEmpty,
+            orElse: () => '',
+          );
+      if (localized.isNotEmpty) {
+        return localized;
+      }
+    }
+    return null;
+  }
+
+  List<Map<String, dynamic>> _extractHospitalMaps(dynamic source) {
+    if (source is List) {
+      return source
+          .whereType<Map<String, dynamic>>()
+          .toList(growable: false);
+    }
+
+    if (source is Map<String, dynamic>) {
+      const candidateKeys = ['data', 'hospitals', 'docs', 'items', 'results'];
+      for (final key in candidateKeys) {
+        if (!source.containsKey(key)) continue;
+        final extracted = _extractHospitalMaps(source[key]);
+        if (extracted.isNotEmpty) {
+          return extracted;
+        }
+      }
+
+      // Fallback: inspect nested map values
+      for (final value in source.values) {
+        final extracted = _extractHospitalMaps(value);
+        if (extracted.isNotEmpty) {
+          return extracted;
+        }
+      }
+    }
+
+    return <Map<String, dynamic>>[];
   }
 }

@@ -19,7 +19,6 @@ class RemoteHospitalsService implements HospitalsService {
     final query = <String, dynamic>{};
     if (page != null) query['page'] = page;
     if (limit != null) query['limit'] = limit;
-
     return _apiClient.get(
       _config.userHospitals,
       query: query.isEmpty ? null : query,
@@ -30,6 +29,7 @@ class RemoteHospitalsService implements HospitalsService {
   @override
   Future<Result<Map<String, dynamic>>> submitHospital(
       Map<String, dynamic> body) {
+
     return _apiClient.post(
       _config.hospitals,
       body: body,
@@ -46,8 +46,13 @@ class RemoteHospitalsService implements HospitalsService {
   }
 
   Map<String, dynamic> _parseMap(dynamic value) {
-    if (value is Map<String, dynamic>) return value;
+    print("value");
+    if (value is Map<String, dynamic>) {
+
+      // print(value);
+      return value;};
     if (value is Map) {
+      // print(value);
       return value.map(
         (key, dynamic val) => MapEntry(key.toString(), val),
       );

@@ -22,6 +22,7 @@ import '../../data/hospitals/models/hospital.dart';
 import '../../presentation/features/hospitals/viewmodel/hospital_list_cubit.dart';
 import '../../presentation/features/hospitals/viewmodel/hospital_detail_cubit.dart';
 import '../../presentation/features/hospitals/viewmodel/hospital_form_cubit.dart';
+import '../../presentation/features/authentication/auth_cubit.dart'; // Import AuthCubit
 
 final sl = GetIt.instance;
 Future<void> configureDependencies(AppConfig config) async {
@@ -38,7 +39,7 @@ Future<void> configureDependencies(AppConfig config) async {
   ).build();
   sl.registerSingleton<ApiClient>(ApiClient(dio, sl<AppConfig>().api));
 
-  // Signin
+  // Authentication
   sl.registerLazySingleton<SigninService>(
       () => RemoteSigninService(sl<ApiClient>()));
   sl.registerLazySingleton<SigninRepository>(() => SigninRepository(
@@ -47,6 +48,7 @@ Future<void> configureDependencies(AppConfig config) async {
         sl<DoctorStore>(),
       ));
   sl.registerFactory<SigninCubit>(() => SigninCubit(sl<SigninRepository>()));
+  sl.registerSingleton<AuthCubit>(AuthCubit(SecureDoctorStore())); // Register AuthCubit
 
   // Doctor services
   sl.registerLazySingleton<DoctorServicesService>(

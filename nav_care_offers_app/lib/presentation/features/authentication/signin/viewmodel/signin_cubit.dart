@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/data/authentication/models.dart';
 import 'package:nav_care_offers_app/data/authentication/signin/signin_repository.dart';
+import 'package:nav_care_offers_app/presentation/features/authentication/auth_cubit.dart';
 
 abstract class SigninState {}
 
@@ -39,6 +41,7 @@ class SigninCubit extends Cubit<SigninState> {
       onSuccess: (outcome) {
         switch (outcome.resolution) {
           case SigninResolution.doctorAuthenticated:
+            sl<AuthCubit>().login(outcome.user!);
             emit(SigninSuccess(outcome.doctor!));
             break;
           case SigninResolution.requiresDoctorProfile:

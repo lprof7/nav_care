@@ -56,7 +56,7 @@ class ServiceOfferingDetailPage extends StatelessWidget {
     if (item.price != null) {
       addChip(
         Icons.attach_money_rounded,
-        '${'home.search.filters.currency_symbol'.tr()}${item.price!.toStringAsFixed(0)}',
+        '${item.price!.toStringAsFixed(0)}',
       );
     }
     if (item.rating != null) {

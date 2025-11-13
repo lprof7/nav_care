@@ -48,6 +48,7 @@
     "shell.drawer_default_name": "مستخدم ناف كير",
     "shell.drawer_default_email": "user@navcare.com",
     "shell.drawer_verify_phone": "تأكيد الهاتف",
+    "shell.drawer_logout": "تسجيل الخروج",
     "shell.language.en": "الإنجليزية",
     "shell.language.ar": "العربية",
     "shell.language.fr": "الفرنسية",
@@ -179,5 +180,7 @@
     "appointment_type_label": "نوع الموعد",
     "start_time_label": "وقت البدء",
     "end_time_label": "وقت الانتهاء",
-    "create_appointment_button": "إنشاء موعد"
+    "create_appointment_button": "إنشاء موعد",
+    "in_person_appointment": "شخصيًا",
+    "virtual_appointment": "افتراضي"
 }

@@ -182,5 +182,7 @@
     "appointment_type_label": "Type de rendez-vous",
     "start_time_label": "Heure de début",
     "end_time_label": "Heure de fin",
-    "create_appointment_button": "Créer un rendez-vous"
+    "create_appointment_button": "Créer un rendez-vous",
+    "in_person_appointment": "En personne",
+    "virtual_appointment": "Virtuel"
 }

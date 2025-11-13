@@ -16,11 +16,7 @@ class FeaturedDoctorsCubit extends Cubit<FeaturedDoctorsState> {
 
     try {
       List<DoctorModel> doctors;
-      try {
         doctors = await _repository.getFeaturedDoctors(limit: 6);
-      } on UnimplementedError {
-        doctors = await _repository.getFakeFeaturedDoctors(limit: 6);
-      }
 
       emit(
         state.copyWith(

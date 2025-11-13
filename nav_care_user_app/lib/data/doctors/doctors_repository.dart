@@ -46,9 +46,33 @@ class DoctorsRepository {
     }
   }
 
-  Future<List<DoctorModel>> getFeaturedDoctors({int limit = 6}) {
-    // TODO: connect to remote service once endpoint is available
-    throw UnimplementedError();
+  Future<List<DoctorModel>> getFeaturedDoctors({int limit = 6}) async {
+    final requestLimit = limit < 1
+        ? 1
+        : limit > 20
+            ? 20
+            : limit;
+    final result = await remoteService.listBoostedDoctors(
+      type: 'featured',
+      page: 1,
+      limit: requestLimit,
+    );
+
+    if (!result.isSuccess || result.data == null) {
+      final message =
+          _extractMessage(result.error?.message) ?? 'Failed to load featured doctors.';
+      throw Exception(message);
+    }
+
+    final doctorMaps = _extractDoctorMaps(result.data);
+    if (doctorMaps.isEmpty) {
+      return const [];
+    }
+
+    return doctorMaps
+        .take(requestLimit)
+        .map(DoctorModel.fromJson)
+        .toList(growable: false);
   }
 
   Future<List<DoctorModel>> getFakeFeaturedDoctors({int limit = 6}) async {

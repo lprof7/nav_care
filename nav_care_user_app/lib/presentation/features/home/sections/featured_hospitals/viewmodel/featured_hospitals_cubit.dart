@@ -16,11 +16,7 @@ class FeaturedHospitalsCubit extends Cubit<FeaturedHospitalsState> {
 
     try {
       List<HospitalModel> hospitals;
-      try {
         hospitals = await _repository.getFeaturedHospitals(limit: 5);
-      } on UnimplementedError {
-        hospitals = await _repository.getFakeFeaturedHospitals(limit: 5);
-      }
 
       emit(
         state.copyWith(

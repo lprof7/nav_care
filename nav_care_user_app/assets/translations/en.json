@@ -182,5 +182,7 @@
     "appointment_type_label": "Appointment Type",
     "start_time_label": "Start Time",
     "end_time_label": "End Time",
-    "create_appointment_button": "Create Appointment"
+    "create_appointment_button": "Create Appointment",
+    "in_person_appointment": "In Person",
+    "virtual_appointment": "Virtual"
 }

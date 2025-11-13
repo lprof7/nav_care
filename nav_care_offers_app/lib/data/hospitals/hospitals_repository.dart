@@ -48,28 +48,23 @@ class HospitalsRepository {
   }
 
   Future<Result<Hospital>> submitHospital(HospitalPayload payload) async {
-    final response = await _service.submitHospital(payload.toJson());
-
-    if (!response.isSuccess || response.data == null) {
-      return Result.failure(response.error ?? const Failure.unknown());
-    }
-
     try {
-      final data = _extractDataMap(response.data!);
-      Hospital hospital;
-      if (data['hospital'] is Map<String, dynamic>) {
-        hospital = Hospital.fromJson(data['hospital'] as Map<String, dynamic>);
-      } else if (data['data'] is Map<String, dynamic>) {
-        hospital = Hospital.fromJson(data['data'] as Map<String, dynamic>);
-      } else {
-        hospital = Hospital.fromJson(data);
-      }
+      final response =
+          await _service.submitHospital(payload.toJson());
+
+
+
+      final data = response.data;
+      final rawHospital = data?['hospital'] ?? data?['data'] ?? data;
+      final hospital = Hospital.fromJson(
+          rawHospital is Map<String, dynamic> ? rawHospital : {});
 
       _cache = _upsert(_cache, hospital);
       return Result.success(hospital);
-    } catch (_) {
+    } catch (e) {
+      print(e);
       return Result.failure(
-        const Failure.server(message: 'Unable to parse hospital response'),
+        const Failure.server(message: 'Failed to submit hospital'),
       );
     }
   }

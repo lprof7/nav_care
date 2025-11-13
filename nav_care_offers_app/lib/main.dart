@@ -4,16 +4,18 @@ import 'package:nav_care_offers_app/app.dart';
 import 'package:nav_care_offers_app/core/config/app_config.dart';
 import 'package:nav_care_offers_app/core/config/config_loader.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
-import 'package:nav_care_offers_app/core/storage/token_store.dart';
+import 'package:nav_care_offers_app/presentation/features/authentication/auth_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await ConfigLoader.load(AppEnv.development);
   await configureDependencies(AppConfig.fromEnv());
-  final token = await sl<TokenStore>().getToken();
-  final initialRoute =
-      (token != null && token.isNotEmpty) ? '/home' : '/signin';
+
+  await sl<AuthCubit>().checkAuthStatus();
+  final initialRoute = sl<AuthCubit>().state.status == AuthStatus.authenticated
+      ? '/home'
+      : '/signin';
 
   runApp(
     EasyLocalization(
@@ -23,7 +25,7 @@ void main() async {
         Locale('fr'),
       ],
       path: 'assets/translations',
-      startLocale: Locale('ar'),
+      startLocale: Locale('en'),
       fallbackLocale: const Locale('ar'),
       child: MyApp(initialRoute: initialRoute),
     ),

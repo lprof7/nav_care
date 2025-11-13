@@ -19,4 +19,20 @@ class DoctorsRemoteService {
       parser: (json) => json as Map<String, dynamic>,
     );
   }
+  
+    Future<Result<Map<String, dynamic>>> listBoostedDoctors({
+      required String type,
+      int page = 1,
+      int limit = 10,
+    }) {
+      return _apiClient.get<Map<String, dynamic>>(
+        '/api/doctors/boosted',
+        query: {
+          'type': type,
+          'page': page,
+          'limit': limit,
+        },
+        parser: (json) => json as Map<String, dynamic>,
+      );
+    }
 }
