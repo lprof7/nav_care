@@ -311,7 +311,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
         .where((value) => value.isNotEmpty)
         .toList();
 
-    if (_selectedImages.isEmpty) {
+    if (_selectedImages.isEmpty && cubit.state.isSubmitting) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('hospitals.form.images_required'.tr())),
       );

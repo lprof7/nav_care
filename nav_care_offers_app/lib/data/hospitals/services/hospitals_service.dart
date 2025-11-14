@@ -12,4 +12,8 @@ abstract class HospitalsService {
   Future<Result<Map<String, dynamic>>> submitHospital(HospitalPayload payload);
 
   Future<Result<Map<String, dynamic>>> deleteHospital(String hospitalId);
+
+  Future<Result<Map<String, dynamic>>> updateHospital(HospitalPayload payload);
+
+  Future<Result<Map<String, dynamic>>> accessHospitalToken(String hospitalId);
 }

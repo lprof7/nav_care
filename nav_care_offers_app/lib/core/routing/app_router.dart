@@ -7,9 +7,12 @@ import 'package:nav_care_offers_app/presentation/features/authentication/become_
 import 'package:nav_care_offers_app/presentation/features/authentication/signin/view/signin_page.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/view/hospital_detail_page.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/view/hospital_form_page.dart';
-import 'package:nav_care_offers_app/presentation/features/hospitals/view/manage/manage_placeholder_page.dart';
-import 'package:nav_care_offers_app/presentation/features/hospitals/view/manage/manage_target.dart';
 import 'package:nav_care_offers_app/presentation/features/shell/view/nav_shell_page.dart';
+import 'package:nav_care_offers_app/presentation/features/clinics/view/clinics_list_page.dart';
+import 'package:nav_care_offers_app/presentation/features/clinics/viewmodel/clinics_cubit.dart';
+import 'package:nav_care_offers_app/presentation/features/doctors/view/doctors_list_page.dart';
+import 'package:nav_care_offers_app/presentation/features/doctors/viewmodel/doctors_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 GoRouter createAppRouter({String initialLocation = '/'}) {
   return GoRouter(
@@ -51,33 +54,22 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
         },
       ),
       GoRoute(
-        path: '/hospitals/:id/manage/:target',
+        path: '/hospitals/:hospitalId/clinics',
         builder: (ctx, st) {
-          final id = st.pathParameters['id'] ?? '';
-          final targetParam = st.pathParameters['target'] ?? 'clinics';
-          final repository = sl<HospitalsRepository>();
-          final extra = st.extra;
-
-          ManageTarget target =
-              targetParam == 'doctors' ? ManageTarget.doctors : ManageTarget.clinics;
-          Hospital? hospital = repository.findById(id);
-
-          if (extra is Map) {
-            final rawHospital = extra['hospital'];
-            if (rawHospital is Hospital) {
-              hospital = rawHospital;
-            }
-            final rawTarget = extra['target'];
-            if (rawTarget is ManageTarget) {
-              target = rawTarget;
-            }
-          }
-
-          hospital ??= Hospital(id: id, name: 'Hospital');
-
-          return HospitalManagePlaceholderPage(
-            hospital: hospital,
-            target: target,
+          final hospitalId = st.pathParameters['hospitalId'] ?? '';
+          return BlocProvider(
+            create: (context) => sl<ClinicsCubit>(),
+            child: ClinicsListPage(hospitalId: hospitalId),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/hospitals/:hospitalId/doctors',
+        builder: (ctx, st) {
+          final hospitalId = st.pathParameters['hospitalId'] ?? '';
+          return BlocProvider(
+            create: (context) => sl<DoctorsCubit>(),
+            child: DoctorsListPage(hospitalId: hospitalId),
           );
         },
       ),

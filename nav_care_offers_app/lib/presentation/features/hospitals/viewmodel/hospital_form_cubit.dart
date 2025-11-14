@@ -16,7 +16,9 @@ class HospitalFormCubit extends Cubit<HospitalFormState> {
 
   Future<void> submit(HospitalPayload payload) async {
     emit(state.copyWith(isSubmitting: true, errorMessage: null));
-    final result = await _repository.submitHospital(payload);
+    final result = state.isEditing
+        ? await _repository.updateHospital(payload)
+        : await _repository.submitHospital(payload);
     result.fold(
       onFailure: (failure) => emit(state.copyWith(
         isSubmitting: false,

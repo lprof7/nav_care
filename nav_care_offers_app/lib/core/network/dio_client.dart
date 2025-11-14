@@ -18,7 +18,13 @@ class DioClient {
     ));
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
-        final token = tokenStore == null ? null : await tokenStore!.getToken();
+        String? token;
+        if (options.extra['useHospitalToken'] == true) {
+          token = tokenStore == null ? null : await tokenStore!.getHospitalToken();
+        } else {
+          token = tokenStore == null ? null : await tokenStore!.getToken();
+        }
+
         if (token != null && token.isNotEmpty) {
           options.headers['Authorization'] = 'Bearer $token';
         }

@@ -1,25 +1,36 @@
-class PageMeta {
-  final int page;
-  final int pageSize;
-  final int total;
-  final int totalPages;
-  const PageMeta(
-      {required this.page,
-      required this.pageSize,
-      required this.total,
-      required this.totalPages});
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'pagination.freezed.dart';
+part 'pagination.g.dart';
+
+@freezed
+class PageMeta with _$PageMeta {
+  const factory PageMeta({
+    required int page,
+    required int limit,
+    required int total,
+    required int pages,
+    @Default(false) bool hasNextPage,
+    @Default(false) bool hasPrevPage,
+    int? nextPage,
+    int? prevPage,
+  }) = _PageMeta;
+
+  factory PageMeta.fromJson(Map<String, dynamic> json) => _$PageMetaFromJson(json);
 }
 
-class Paged<T> {
-  final List<T> items;
-  final PageMeta? meta; // page/pageSize format
-  final int? offset; // for offset/limit format
-  final int? limit;
-  final String? nextCursor; // for cursor-based format
-  const Paged(
-      {required this.items,
-      this.meta,
-      this.offset,
-      this.limit,
-      this.nextCursor});
+@freezed
+class Pagination with _$Pagination {
+  const factory Pagination({
+    required int total,
+    required int page,
+    required int limit,
+    required int pages,
+    required bool hasNextPage,
+    required bool hasPrevPage,
+    int? nextPage,
+    int? prevPage,
+  }) = _Pagination;
+
+  factory Pagination.fromJson(Map<String, dynamic> json) => _$PaginationFromJson(json);
 }

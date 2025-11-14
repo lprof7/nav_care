@@ -6,6 +6,8 @@ class HospitalDetailState extends Equatable {
   final bool isDeleted;
   final String? errorMessage;
   final String? successMessageKey;
+  final bool isFetchingToken;
+  final String? hospitalToken;
 
   const HospitalDetailState({
     required this.hospital,
@@ -13,6 +15,8 @@ class HospitalDetailState extends Equatable {
     this.isDeleted = false,
     this.errorMessage,
     this.successMessageKey,
+    this.isFetchingToken = false,
+    this.hospitalToken,
   });
 
   HospitalDetailState copyWith({
@@ -21,6 +25,8 @@ class HospitalDetailState extends Equatable {
     bool? isDeleted,
     String? errorMessage,
     String? successMessageKey,
+    bool? isFetchingToken,
+    String? hospitalToken,
   }) {
     return HospitalDetailState(
       hospital: hospital ?? this.hospital,
@@ -28,6 +34,8 @@ class HospitalDetailState extends Equatable {
       isDeleted: isDeleted ?? this.isDeleted,
       errorMessage: errorMessage,
       successMessageKey: successMessageKey,
+      isFetchingToken: isFetchingToken ?? this.isFetchingToken,
+      hospitalToken: hospitalToken ?? this.hospitalToken,
     );
   }
 
@@ -38,5 +46,7 @@ class HospitalDetailState extends Equatable {
         isDeleted,
         errorMessage,
         successMessageKey,
+        isFetchingToken,
+        hospitalToken,
       ];
 }

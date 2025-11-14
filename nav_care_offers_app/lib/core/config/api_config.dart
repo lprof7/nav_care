@@ -13,5 +13,5 @@ class ApiConfig {
   // Hospitals
   String get hospitals => '$baseUrl/api/hospitals';
   String get userHospitals => '$baseUrl/api/hospitals/user';
-  String hospitalById(String id) => '$baseUrl/api/hospitals/$id';
+  String hospitalById(String id) => '$baseUrl/api/hospitals/access/$id';
 }

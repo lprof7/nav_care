@@ -71,6 +71,46 @@ class HospitalsRepository {
     }
   }
 
+  Future<Result<Hospital>> updateHospital(HospitalPayload payload) async {
+    try {
+      final response = await _service.updateHospital(payload);
+
+      if (!response.isSuccess || response.data == null) {
+        return Result.failure(response.error ?? const Failure.unknown());
+      }
+
+      final data = response.data;
+      final rawHospital = data?['hospital'] ?? data?['data'] ?? data;
+      final hospital = Hospital.fromJson(
+          rawHospital is Map<String, dynamic> ? rawHospital : {},
+          baseUrl: _service.baseUrl);
+
+      _cache = _upsert(_cache, hospital);
+      return Result.success(hospital);
+    } catch (e) {
+      return Result.failure(
+        const Failure.server(message: 'Failed to update hospital'),
+      );
+    }
+  }
+
+  Future<Result<String>> accessHospitalToken(String hospitalId) async {
+    final response = await _service.accessHospitalToken(hospitalId);
+
+    if (!response.isSuccess || response.data == null) {
+      return Result.failure(response.error ?? const Failure.unknown());
+    }
+
+    try {
+      final token = response.data!['data']['token'] as String;
+      return Result.success(token);
+    } catch (e) {
+      return Result.failure(
+        const Failure.server(message: 'Failed to parse hospital token'),
+      );
+    }
+  }
+
   Future<Result<String>> deleteHospital(String hospitalId) async {
     final response = await _service.deleteHospital(hospitalId);
 

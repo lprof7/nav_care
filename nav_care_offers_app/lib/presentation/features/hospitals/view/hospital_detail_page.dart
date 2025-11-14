@@ -8,7 +8,6 @@ import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/hospital_detail_cubit.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 
-import 'manage/manage_target.dart';
 
 class HospitalDetailPage extends StatelessWidget {
   final String hospitalId;
@@ -30,8 +29,9 @@ class HospitalDetailPage extends StatelessWidget {
     }
 
     return BlocProvider(
-      create: (_) =>
-          sl<HospitalDetailCubit>(param1: hospital)..refreshFromRepository(),
+      create: (_) => sl<HospitalDetailCubit>(param1: hospital)
+        ..refreshFromRepository()
+        ..getHospitalToken(),
       child: const _HospitalDetailView(),
     );
   }
@@ -127,7 +127,7 @@ class _HospitalDetailView extends StatelessWidget {
                     Expanded(
                       child: FilledButton.icon(
                         onPressed: () =>
-                            _openManage(context, hospital, ManageTarget.clinics),
+                            _openManage(context, hospital, 'clinics'),
                         icon: const Icon(Icons.maps_home_work_outlined),
                         label: Text('hospitals.detail.manage_clinics'.tr()),
                       ),
@@ -136,7 +136,7 @@ class _HospitalDetailView extends StatelessWidget {
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: () =>
-                            _openManage(context, hospital, ManageTarget.doctors),
+                            _openManage(context, hospital, 'doctors'),
                         icon: const Icon(Icons.groups_2_outlined),
                         label: Text('hospitals.detail.manage_doctors'.tr()),
                       ),
@@ -265,11 +265,12 @@ class _HospitalDetailView extends StatelessWidget {
   void _openManage(
     BuildContext context,
     Hospital hospital,
-    ManageTarget target,
+    String target,
   ) {
-    final pathSuffix = target == ManageTarget.clinics ? 'clinics' : 'doctors';
     context.push(
-      '/hospitals/${hospital.id}/manage/$pathSuffix',
+      target == 'clinics'
+          ? '/hospitals/${hospital.id}/clinics'
+          : '/hospitals/${hospital.id}/doctors',
       extra: {
         'hospital': hospital,
         'target': target,
