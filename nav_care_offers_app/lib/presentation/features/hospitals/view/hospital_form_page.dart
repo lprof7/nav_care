@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
 import 'package:nav_care_offers_app/data/hospitals/models/hospital_payload.dart';
@@ -35,11 +36,10 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _descriptionController;
-  late final TextEditingController _latitudeController;
-  late final TextEditingController _longitudeController;
+  late final TextEditingController _addressController;
   final List<TextEditingController> _phoneControllers = [];
-  final List<TextEditingController> _imageControllers = [];
-  FacilityType _facilityType = FacilityType.hospital;
+  final List<XFile> _selectedImages = []; // Changed to store XFile
+  final ImagePicker _picker = ImagePicker(); // Image picker instance
 
   @override
   void initState() {
@@ -47,33 +47,22 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     _nameController = TextEditingController(text: widget.initial?.name ?? '');
     _descriptionController =
         TextEditingController(text: widget.initial?.descriptionEn ?? '');
-    _latitudeController = TextEditingController(
-      text: widget.initial?.coordinates?.latitude.toString() ?? '',
-    );
-    _longitudeController = TextEditingController(
-      text: widget.initial?.coordinates?.longitude.toString() ?? '',
-    );
-    _facilityType = widget.initial?.facilityType ?? FacilityType.hospital;
-    _initDynamicControllers(
+    _addressController =
+        TextEditingController(text: widget.initial?.address ?? '');
+    _initPhoneControllers(
       source: widget.initial?.phones ?? const [],
       target: _phoneControllers,
     );
-    _initDynamicControllers(
-      source: widget.initial?.images ?? const [],
-      target: _imageControllers,
-    );
+    // For existing images, we will not load them into XFile as it's meant for local files.
+    // They will be handled by the display logic if widget.initial?.images is not empty.
   }
 
   @override
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
-    _latitudeController.dispose();
-    _longitudeController.dispose();
+    _addressController.dispose();
     for (final controller in _phoneControllers) {
-      controller.dispose();
-    }
-    for (final controller in _imageControllers) {
       controller.dispose();
     }
     super.dispose();
@@ -126,10 +115,9 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                     decoration: InputDecoration(
                       labelText: 'hospitals.form.name'.tr(),
                     ),
-                    validator: (value) =>
-                        value == null || value.trim().isEmpty
-                            ? 'field_required'.tr()
-                            : null,
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? 'field_required'.tr()
+                        : null,
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
@@ -138,42 +126,24 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                       labelText: 'hospitals.form.description_en'.tr(),
                     ),
                     maxLines: 4,
-                    validator: (value) =>
-                        value == null || value.trim().isEmpty
-                            ? 'field_required'.tr()
-                            : null,
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? 'field_required'.tr()
+                        : null,
                   ),
                   const SizedBox(height: 20),
-                  _SectionLabel(label: 'hospitals.form.facility_type.label'.tr()),
-                  const SizedBox(height: 8),
-                  DropdownButtonFormField<FacilityType>(
-                    initialValue: _facilityType,
+                  TextFormField(
+                    controller: _addressController,
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                      labelText: 'hospitals.form.address'.tr(),
                     ),
-                    items: FacilityType.values
-                        .where((type) => type != FacilityType.unknown)
-                        .map(
-                          (type) => DropdownMenuItem(
-                            value: type,
-                            child: Text(type
-                                .translationKey('hospitals.form.facility_type')
-                                .tr()),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() => _facilityType = value);
-                      }
-                    },
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? 'field_required'.tr()
+                        : null,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   _SectionLabel(label: 'hospitals.form.phone_label'.tr()),
                   const SizedBox(height: 8),
-                  ..._buildDynamicFields(
+                  ..._buildDynamicTextFields(
                     controllers: _phoneControllers,
                     hint: 'hospitals.form.phone_hint'.tr(),
                     onAdd: _addPhoneField,
@@ -183,46 +153,42 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  _SectionLabel(label: 'hospitals.form.coordinates.label'.tr()),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _latitudeController,
-                          keyboardType:
-                              const TextInputType.numberWithOptions(decimal: true),
-                          decoration: InputDecoration(
-                            labelText:
-                                'hospitals.form.coordinates.latitude'.tr(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _longitudeController,
-                          keyboardType:
-                              const TextInputType.numberWithOptions(decimal: true),
-                          decoration: InputDecoration(
-                            labelText:
-                                'hospitals.form.coordinates.longitude'.tr(),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
                   _SectionLabel(label: 'hospitals.form.images.label'.tr()),
                   const SizedBox(height: 8),
-                  ..._buildDynamicFields(
-                    controllers: _imageControllers,
-                    hint: 'hospitals.form.images.hint'.tr(),
-                    onAdd: _addImageField,
-                    onRemove: (index) => _removeField(
-                      index,
-                      _imageControllers,
-                    ),
+                  ..._selectedImages
+                      .map((image) => Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: Row(
+                              children: [
+                                Expanded(child: Text(image.name)),
+                                IconButton(
+                                  icon: const Icon(Icons.remove_circle_outline),
+                                  onPressed: () => _removeSelectedImage(image),
+                                ),
+                              ],
+                            ),
+                          ))
+                      .toList(),
+                  if (widget.initial?.images != null &&
+                      widget.initial!.images.isNotEmpty)
+                    ...widget.initial!.images
+                        .map((imageUrl) => Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      child: Text(imageUrl
+                                          .split('/')
+                                          .last)), // Display file name
+                                  // No remove button for existing images from API
+                                ],
+                              ),
+                            ))
+                        .toList(),
+                  TextButton.icon(
+                    onPressed: _pickImage,
+                    icon: const Icon(Icons.add_photo_alternate),
+                    label: Text('hospitals.form.add_image'.tr()),
                   ),
                   const SizedBox(height: 32),
                   SafeArea(
@@ -241,7 +207,8 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                               ),
                             )
                           : const Icon(Icons.check_outlined),
-                      onPressed: state.isSubmitting ? null : () => _submit(context),
+                      onPressed:
+                          state.isSubmitting ? null : () => _submit(context),
                     ),
                   ),
                 ],
@@ -253,7 +220,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     );
   }
 
-  void _initDynamicControllers({
+  void _initPhoneControllers({
     required List<String> source,
     required List<TextEditingController> target,
   }) {
@@ -266,7 +233,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     }
   }
 
-  List<Widget> _buildDynamicFields({
+  List<Widget> _buildDynamicTextFields({
     required List<TextEditingController> controllers,
     required String hint,
     required VoidCallback onAdd,
@@ -312,8 +279,19 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     setState(() => _phoneControllers.add(TextEditingController()));
   }
 
-  void _addImageField() {
-    setState(() => _imageControllers.add(TextEditingController()));
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImages.add(pickedFile);
+      });
+    }
+  }
+
+  void _removeSelectedImage(XFile image) {
+    setState(() {
+      _selectedImages.remove(image);
+    });
   }
 
   void _removeField(int index, List<TextEditingController> controllers) {
@@ -332,26 +310,23 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
         .map((controller) => controller.text.trim())
         .where((value) => value.isNotEmpty)
         .toList();
-    final images = _imageControllers
-        .map((controller) => controller.text.trim())
-        .where((value) => value.isNotEmpty)
-        .toList();
-    final latitude = double.tryParse(_latitudeController.text.trim());
-    final longitude = double.tryParse(_longitudeController.text.trim());
-    HospitalCoordinates? coordinates;
-    if (latitude != null && longitude != null) {
-      coordinates =
-          HospitalCoordinates(latitude: latitude, longitude: longitude);
+
+    if (_selectedImages.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('hospitals.form.images_required'.tr())),
+      );
+      return;
     }
 
     final payload = HospitalPayload(
       id: widget.initial?.id,
       name: _nameController.text.trim(),
       descriptionEn: _descriptionController.text.trim(),
+      address: _addressController.text.trim(), // Added address
       phones: phones,
-      coordinates: coordinates,
-      facilityType: _facilityType,
-      images: images,
+      // Coordinates will be set to 0,0 in HospitalPayload
+      // FacilityType will be set to Hospital in HospitalPayload
+      images: _selectedImages, // Pass XFile list directly
     );
 
     cubit.submit(payload);

@@ -5,6 +5,8 @@ import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/doctors/models/doctor_model.dart';
 import 'package:nav_care_user_app/presentation/features/home/view/navcare_doctors_page.dart';
+import 'package:nav_care_user_app/presentation/features/home/sections/ads/view/ads_section.dart';
+import 'package:nav_care_user_app/presentation/features/home/sections/ads/viewmodel/ads_section_cubit.dart';
 
 import '../viewmodel/doctors_choice_cubit.dart';
 import '../viewmodel/doctors_choice_state.dart';
@@ -58,6 +60,12 @@ class _DoctorsChoiceBody extends StatelessWidget {
                   title: 'home.doctors_choice.title'.tr(),
                   actionLabel: 'home.doctors_choice.see_more'.tr(),
                   onTap: () => _openSeeMore(context, state.doctors),
+                ),
+                const SizedBox(height: 16),
+                // New AdsSectionView for Doctors Choice
+                BlocProvider(
+                  create: (_) => sl<AdsSectionCubit>(),
+                  child: const AdsSectionView(),
                 ),
                 const SizedBox(height: 16),
                 SizedBox(

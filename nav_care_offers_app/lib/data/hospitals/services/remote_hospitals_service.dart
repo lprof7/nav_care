@@ -1,6 +1,10 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:nav_care_offers_app/core/config/api_config.dart';
 import 'package:nav_care_offers_app/core/network/api_client.dart';
 import 'package:nav_care_offers_app/core/responses/result.dart';
+import 'package:nav_care_offers_app/data/hospitals/models/hospital_payload.dart';
+import 'package:cross_file/cross_file.dart';
 
 import 'hospitals_service.dart';
 
@@ -8,6 +12,9 @@ class RemoteHospitalsService implements HospitalsService {
   RemoteHospitalsService(this._apiClient);
 
   final ApiClient _apiClient;
+
+  @override
+  String get baseUrl => _apiClient.apiConfig.baseUrl;
 
   ApiConfig get _config => _apiClient.apiConfig;
 
@@ -28,11 +35,25 @@ class RemoteHospitalsService implements HospitalsService {
 
   @override
   Future<Result<Map<String, dynamic>>> submitHospital(
-      Map<String, dynamic> body) {
+      HospitalPayload payload) async {
+    final formData = FormData.fromMap(payload.toJson());
+
+    for (final image in payload.images) {
+      final bytes = await image.readAsBytes(); // Read file as bytes
+      formData.files.add(MapEntry(
+        'images',
+        MultipartFile.fromBytes(bytes, filename: image.name),
+      ));
+    }
+
+    // For debugging, print FormData fields and files
+    print("FormData fields: ${formData.fields}");
+    print(
+        "FormData files: ${formData.files.map((e) => e.key + ': ' + (e.value.filename ?? 'N/A')).toList()}");
 
     return _apiClient.post(
       _config.hospitals,
-      body: body,
+      body: formData,
       parser: _parseMap,
     );
   }
@@ -46,13 +67,10 @@ class RemoteHospitalsService implements HospitalsService {
   }
 
   Map<String, dynamic> _parseMap(dynamic value) {
-    print("value");
     if (value is Map<String, dynamic>) {
-
-      // print(value);
-      return value;};
+      return value;
+    }
     if (value is Map) {
-      // print(value);
       return value.map(
         (key, dynamic val) => MapEntry(key.toString(), val),
       );

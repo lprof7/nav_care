@@ -129,14 +129,17 @@
                 "longitude": "خط الطول"
             },
             "images": {
-                "label": "الصور (روابط)",
+                "label": "الصور",
                 "hint": "https://example.com/hospital.jpg"
             },
+            "add_image": "إضافة صورة",
+            "address": "العنوان",
             "add_entry": "إضافة حقل جديد",
             "saving": "جارٍ الحفظ...",
             "save": "حفظ المستشفى",
             "success_create": "تم إنشاء المستشفى بنجاح.",
-            "success_update": "تم تحديث المستشفى بنجاح."
+            "success_update": "تم تحديث المستشفى بنجاح.",
+            "images_required": "صورة واحدة على الأقل مطلوبة."
         },
         "manage": {
             "title": "{0}",

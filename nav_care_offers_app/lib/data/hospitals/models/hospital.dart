@@ -8,6 +8,7 @@ class Hospital extends Equatable {
   final String? descriptionEn;
   final String? descriptionFr;
   final String? descriptionAr;
+  final String? address; // New address field
   final List<String> phones;
   final HospitalCoordinates? coordinates;
   final FacilityType facilityType;
@@ -24,6 +25,7 @@ class Hospital extends Equatable {
     this.descriptionEn,
     this.descriptionFr,
     this.descriptionAr,
+    this.address, // Add to constructor
     this.phones = const [],
     this.coordinates,
     this.facilityType = FacilityType.unknown,
@@ -36,18 +38,21 @@ class Hospital extends Equatable {
 
   static const _unknownName = 'Unnamed facility';
 
-  factory Hospital.fromJson(Map<String, dynamic> json) {
+  factory Hospital.fromJson(Map<String, dynamic> json,
+      {required String baseUrl}) {
     final id = (json['_id'] ?? json['id'])?.toString();
-    final rawName = json['name']?.toString() ?? json['display_name']?.toString();
+    final rawName =
+        json['name']?.toString() ?? json['display_name']?.toString();
     final descriptionEn = json['description_en']?.toString();
     final descriptionFr = json['description_fr']?.toString();
     final descriptionAr = json['description_ar']?.toString();
 
     final rawData = json['data'];
     if (rawData is Map<String, dynamic>) {
-      return Hospital.fromJson({
-        ...rawData,
-      });
+      return Hospital.fromJson(
+        {...rawData},
+        baseUrl: baseUrl,
+      );
     }
 
     final rawClinics = json['clinics'];
@@ -60,11 +65,12 @@ class Hospital extends Equatable {
       descriptionEn: descriptionEn,
       descriptionFr: descriptionFr,
       descriptionAr: descriptionAr,
+      address: json['address']?.toString(), // Parse address
       phones: _parsePhones(json['phone'] ?? json['phones']),
       coordinates: HospitalCoordinates.fromJson(json['coordinates']),
       facilityType: FacilityTypeMapper.fromJson(json['facility_type']),
-      images: _parseStringList(json['images']),
-      clinics: _parseClinics(rawClinics),
+      images: _parseStringList(json['images'], baseUrl: baseUrl),
+      clinics: _parseClinics(rawClinics, baseUrl: baseUrl),
       doctors: _parseDoctors(rawDoctors),
       createdAt: _parseDate(json['created_at']),
       updatedAt: _parseDate(json['updated_at']),
@@ -78,6 +84,7 @@ class Hospital extends Equatable {
     String? descriptionEn,
     String? descriptionFr,
     String? descriptionAr,
+    String? address, // Add to copyWith
     List<String>? phones,
     HospitalCoordinates? coordinates,
     FacilityType? facilityType,
@@ -94,6 +101,7 @@ class Hospital extends Equatable {
       descriptionEn: descriptionEn ?? this.descriptionEn,
       descriptionFr: descriptionFr ?? this.descriptionFr,
       descriptionAr: descriptionAr ?? this.descriptionAr,
+      address: address ?? this.address, // Update address
       phones: phones ?? this.phones,
       coordinates: coordinates ?? this.coordinates,
       facilityType: facilityType ?? this.facilityType,
@@ -113,12 +121,15 @@ class Hospital extends Equatable {
       if (descriptionEn != null) 'description_en': descriptionEn,
       if (descriptionFr != null) 'description_fr': descriptionFr,
       if (descriptionAr != null) 'description_ar': descriptionAr,
+      if (address != null) 'address': address, // Add address to toJson
       if (phones.isNotEmpty) 'phones': phones,
       if (coordinates != null) 'coordinates': coordinates!.toJson(),
       'facility_type': facilityType.apiValue,
       if (images.isNotEmpty) 'images': images,
-      if (clinics.isNotEmpty) 'clinics': clinics.map((e) => e.toJson()).toList(),
-      if (doctors.isNotEmpty) 'doctors': doctors.map((e) => e.toJson()).toList(),
+      if (clinics.isNotEmpty)
+        'clinics': clinics.map((e) => e.toJson()).toList(),
+      if (doctors.isNotEmpty)
+        'doctors': doctors.map((e) => e.toJson()).toList(),
       if (createdAt != null) 'created_at': createdAt!.toIso8601String(),
       if (updatedAt != null) 'updated_at': updatedAt!.toIso8601String(),
     };
@@ -126,29 +137,47 @@ class Hospital extends Equatable {
 
   static List<String> _parsePhones(dynamic value) {
     if (value is Iterable) {
-      return value.map((item) => item.toString()).where((p) => p.isNotEmpty).toList();
+      return value
+          .map((item) => item.toString())
+          .where((p) => p.isNotEmpty)
+          .toList();
     }
     if (value is String && value.isNotEmpty) {
-      return value.split(RegExp(r'[,;]')).map((phone) => phone.trim()).where((p) => p.isNotEmpty).toList();
+      return value
+          .split(RegExp(r'[,;]'))
+          .map((phone) => phone.trim())
+          .where((p) => p.isNotEmpty)
+          .toList();
     }
     return const [];
   }
 
-  static List<String> _parseStringList(dynamic value) {
+  static List<String> _parseStringList(dynamic value,
+      {required String baseUrl}) {
     if (value is Iterable) {
-      return value.map((item) => item.toString()).where((item) => item.isNotEmpty).toList();
+      return value
+          .map((item) => item.toString())
+          .where((item) => item.isNotEmpty)
+          .map((item) => item.startsWith('http') ? item : '$baseUrl/$item')
+          .toList();
     }
     if (value is String && value.isNotEmpty) {
-      return value.split(RegExp(r'[,;]')).map((item) => item.trim()).where((item) => item.isNotEmpty).toList();
+      return value
+          .split(RegExp(r'[,;]'))
+          .map((item) => item.trim())
+          .where((item) => item.isNotEmpty)
+          .map((item) => item.startsWith('http') ? item : '$baseUrl/$item')
+          .toList();
     }
     return const [];
   }
 
-  static List<HospitalClinic> _parseClinics(dynamic value) {
+  static List<HospitalClinic> _parseClinics(dynamic value,
+      {required String baseUrl}) {
     if (value is Iterable) {
       return value
           .whereType<Map<String, dynamic>>()
-          .map(HospitalClinic.fromJson)
+          .map((json) => HospitalClinic.fromJson(json, baseUrl: baseUrl))
           .toList();
     }
     return const [];
@@ -156,7 +185,10 @@ class Hospital extends Equatable {
 
   static List<Doctor> _parseDoctors(dynamic value) {
     if (value is Iterable) {
-      return value.whereType<Map<String, dynamic>>().map(Doctor.fromJson).toList();
+      return value
+          .whereType<Map<String, dynamic>>()
+          .map(Doctor.fromJson)
+          .toList();
     }
     return const [];
   }
@@ -174,6 +206,7 @@ class Hospital extends Equatable {
         descriptionEn,
         descriptionFr,
         descriptionAr,
+        address, // Add to props
         phones,
         coordinates,
         facilityType,
@@ -200,16 +233,18 @@ class HospitalClinic extends Equatable {
     this.images = const [],
   });
 
-  factory HospitalClinic.fromJson(Map<String, dynamic> json) {
+  factory HospitalClinic.fromJson(Map<String, dynamic> json,
+      {required String baseUrl}) {
     final id = (json['_id'] ?? json['id'])?.toString() ?? '';
     final name = json['name']?.toString() ?? '';
 
     return HospitalClinic(
       id: id,
       name: name.isEmpty ? Hospital._unknownName : name,
-      description: json['description']?.toString() ?? json['description_en']?.toString(),
+      description:
+          json['description']?.toString() ?? json['description_en']?.toString(),
       phones: Hospital._parsePhones(json['phone'] ?? json['phones']),
-      images: Hospital._parseStringList(json['images']),
+      images: Hospital._parseStringList(json['images'], baseUrl: baseUrl),
     );
   }
 
@@ -281,9 +316,9 @@ extension FacilityTypeMapper on FacilityType {
   String get apiValue {
     switch (this) {
       case FacilityType.clinic:
-        return 'clinic';
+        return 'Clinic';
       case FacilityType.hospital:
-        return 'hospital';
+        return 'Hospital';
       case FacilityType.unknown:
         return 'unknown';
     }

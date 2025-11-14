@@ -1,30 +1,40 @@
 part of 'ads_section_cubit.dart';
 
+enum AdsSectionStatus { initial, loading, success, failure }
+
 class AdsSectionState extends Equatable {
-  final List<String> images;
+  final List<Advertising> advertisings;
   final int page;
+  final AdsSectionStatus status;
+  final String? message;
 
   const AdsSectionState({
-    required this.images,
-    required this.page,
+    this.advertisings = const [],
+    this.page = 0,
+    this.status = AdsSectionStatus.initial,
+    this.message,
   });
 
   int get currentIndex {
-    if (images.isEmpty) return 0;
-    final normalized = page % images.length;
-    return normalized < 0 ? normalized + images.length : normalized;
+    if (advertisings.isEmpty) return 0;
+    final normalized = page % advertisings.length;
+    return normalized < 0 ? normalized + advertisings.length : normalized;
   }
 
   AdsSectionState copyWith({
-    List<String>? images,
+    List<Advertising>? advertisings,
     int? page,
+    AdsSectionStatus? status,
+    String? message,
   }) {
     return AdsSectionState(
-      images: images ?? this.images,
+      advertisings: advertisings ?? this.advertisings,
       page: page ?? this.page,
+      status: status ?? this.status,
+      message: message ?? this.message,
     );
   }
 
   @override
-  List<Object> get props => [images, page];
+  List<Object?> get props => [advertisings, page, status, message];
 }

@@ -3,43 +3,53 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nav_care_user_app/data/advertising/advertising_repository.dart';
+import 'package:nav_care_user_app/data/advertising/models/advertising_model.dart';
 
 part 'ads_section_state.dart';
 
 class AdsSectionCubit extends Cubit<AdsSectionState> {
-  static const List<String> _defaultAssets = [
-    'assets/images/ads/1.jpg',
-    'assets/images/ads/2.jpg',
-    'assets/images/ads/3.jpg',
-    'assets/images/ads/4.jpg',
-    'assets/images/ads/5.jpg',
-  ];
+  final AdvertisingRepository _advertisingRepository;
 
-  AdsSectionCubit({List<String>? imageAssets})
-      : _images = imageAssets ?? _defaultAssets,
-        pageController = PageController(
-          initialPage: _computeInitialPage(imageAssets ?? _defaultAssets),
-        ),
-        super(
-          AdsSectionState(
-            images: imageAssets ?? _defaultAssets,
-            page: _computeInitialPage(imageAssets ?? _defaultAssets),
-          ),
-        ) {
-    _startAutoPlay();
+  AdsSectionCubit({required AdvertisingRepository advertisingRepository})
+      : _advertisingRepository = advertisingRepository,
+        pageController = PageController(initialPage: _computeInitialPage([])),
+        super(const AdsSectionState()) {
+    loadAdvertisings();
   }
 
   static const Duration _autoPlayInterval = Duration(seconds: 4);
   static const Duration _autoPlayDuration = Duration(milliseconds: 600);
   static const int _loopOffset = 1000;
 
-  final List<String> _images;
   final PageController pageController;
   Timer? _timer;
 
-  static int _computeInitialPage(List<String> images) {
-    if (images.isEmpty) return 0;
-    return images.length * _loopOffset;
+  static int _computeInitialPage(List<Advertising> advertisings) {
+    if (advertisings.isEmpty) return 0;
+    return advertisings.length * _loopOffset;
+  }
+
+  Future<void> loadAdvertisings() async {
+    emit(state.copyWith(status: AdsSectionStatus.loading));
+    final result =
+        await _advertisingRepository.getAdvertisings(position: 'featured');
+    result.fold(
+      onFailure: (failure) => emit(
+        state.copyWith(
+            status: AdsSectionStatus.failure, message: failure.message),
+      ),
+      onSuccess: (advertisings) {
+        emit(
+          state.copyWith(
+            status: AdsSectionStatus.success,
+            advertisings: advertisings,
+            page: _computeInitialPage(advertisings),
+          ),
+        );
+        _startAutoPlay();
+      },
+    );
   }
 
   void onPageChanged(int page) {
@@ -48,13 +58,13 @@ class AdsSectionCubit extends Cubit<AdsSectionState> {
   }
 
   void _startAutoPlay() {
-    if (state.images.isEmpty) return;
+    if (state.advertisings.isEmpty) return;
     _timer?.cancel();
     _timer = Timer.periodic(_autoPlayInterval, (_) => _goToNextPage());
   }
 
   void _restartAutoPlay() {
-    if (state.images.isEmpty) return;
+    if (state.advertisings.isEmpty) return;
     _timer?.cancel();
     _timer = Timer.periodic(_autoPlayInterval, (_) => _goToNextPage());
   }

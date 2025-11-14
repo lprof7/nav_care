@@ -42,10 +42,22 @@ import '../../presentation/features/home/sections/featured_doctors/viewmodel/fea
 import '../../data/search/search_remote_service.dart';
 import '../../data/search/search_repository.dart';
 import '../../presentation/features/search/viewmodel/search_cubit.dart';
+import '../../data/advertising/services/advertising_remote_service.dart';
+import '../../data/advertising/advertising_repository.dart';
+
+import '../../presentation/features/home/sections/ads/viewmodel/ads_section_cubit.dart';
 
 final sl = GetIt.instance;
 Future<void> configureDependencies(AppConfig config) async {
   sl.registerSingleton<AppConfig>(config);
+
+  // Advertisings
+  sl.registerLazySingleton<AdvertisingService>(
+      () => AdvertisingRemoteService(apiClient: sl<ApiClient>()));
+  sl.registerLazySingleton<AdvertisingRepository>(() =>
+      AdvertisingRepositoryImpl(advertisingService: sl<AdvertisingService>()));
+  sl.registerFactory<AdsSectionCubit>(() =>
+      AdsSectionCubit(advertisingRepository: sl<AdvertisingRepository>()));
 
   // Storage
   sl.registerLazySingleton<TokenStore>(() => SecureTokenStore());
@@ -89,10 +101,10 @@ Future<void> configureDependencies(AppConfig config) async {
   // Signin
   sl.registerLazySingleton<SigninService>(
       () => RemoteSigninService(sl<ApiClient>()));
-  sl.registerLazySingleton<SigninRepository>(
-      () => SigninRepository(sl<SigninService>(), sl<TokenStore>(), sl<UserStore>()));
-  sl.registerLazySingleton<LogoutRepository>(() =>
-      LogoutRepository(tokenStore: sl<TokenStore>(), userStore: sl<UserStore>()));
+  sl.registerLazySingleton<SigninRepository>(() =>
+      SigninRepository(sl<SigninService>(), sl<TokenStore>(), sl<UserStore>()));
+  sl.registerLazySingleton<LogoutRepository>(() => LogoutRepository(
+      tokenStore: sl<TokenStore>(), userStore: sl<UserStore>()));
   sl.registerFactory<SigninCubit>(() => SigninCubit(sl<SigninRepository>()));
   sl.registerFactory<LogoutCubit>(() => LogoutCubit(sl<LogoutRepository>()));
 
@@ -120,8 +132,8 @@ Future<void> configureDependencies(AppConfig config) async {
   // Appointment creation
   sl.registerLazySingleton<RemoteAppointmentService>(
       () => RemoteAppointmentService(apiClient: sl<ApiClient>()));
-  sl.registerLazySingleton<AppointmentRepository>(
-      () => AppointmentRepository(remoteService: sl<RemoteAppointmentService>()));
+  sl.registerLazySingleton<AppointmentRepository>(() =>
+      AppointmentRepository(remoteService: sl<RemoteAppointmentService>()));
   sl.registerFactory<AppointmentCreationCubit>(
       () => AppointmentCreationCubit(repository: sl<AppointmentRepository>()));
 }

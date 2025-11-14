@@ -129,14 +129,17 @@
                 "longitude": "Longitude"
             },
             "images": {
-                "label": "Images (URL)",
+                "label": "Images",
                 "hint": "https://exemple.com/hopital.jpg"
             },
+            "add_image": "Ajouter une image",
+            "address": "Adresse",
             "add_entry": "Ajouter un champ",
             "saving": "Enregistrement…",
             "save": "Enregistrer l'hôpital",
             "success_create": "Hôpital créé avec succès.",
-            "success_update": "Hôpital mis à jour avec succès."
+            "success_update": "Hôpital mis à jour avec succès.",
+            "images_required": "Au moins une image est requise."
         },
         "manage": {
             "title": "{0}",

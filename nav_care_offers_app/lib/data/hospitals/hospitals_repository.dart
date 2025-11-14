@@ -49,20 +49,22 @@ class HospitalsRepository {
 
   Future<Result<Hospital>> submitHospital(HospitalPayload payload) async {
     try {
-      final response =
-          await _service.submitHospital(payload.toJson());
+      final response = await _service.submitHospital(payload);
 
-
+      if (!response.isSuccess || response.data == null) {
+        return Result.failure(response.error ?? const Failure.unknown());
+      }
 
       final data = response.data;
       final rawHospital = data?['hospital'] ?? data?['data'] ?? data;
       final hospital = Hospital.fromJson(
-          rawHospital is Map<String, dynamic> ? rawHospital : {});
+          rawHospital is Map<String, dynamic> ? rawHospital : {},
+          baseUrl: _service.baseUrl);
 
       _cache = _upsert(_cache, hospital);
       return Result.success(hospital);
     } catch (e) {
-      print(e);
+      print("eroooooooooooooooooooo $e");
       return Result.failure(
         const Failure.server(message: 'Failed to submit hospital'),
       );
@@ -96,10 +98,10 @@ class HospitalsRepository {
     if (rawHospitals is Iterable) {
       hospitals = rawHospitals
           .whereType<Map<String, dynamic>>()
-          .map(Hospital.fromJson)
+          .map((json) => Hospital.fromJson(json, baseUrl: _service.baseUrl))
           .toList();
     } else if (rawHospitals is Map<String, dynamic>) {
-      hospitals = [Hospital.fromJson(rawHospitals)];
+      hospitals = [Hospital.fromJson(rawHospitals, baseUrl: _service.baseUrl)];
     } else {
       hospitals = const [];
     }
