@@ -1,13 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nav_care_offers_app/core/responses/failure.dart';
+import 'package:nav_care_offers_app/data/clinics/models/clinic_model.dart';
 import 'package:nav_care_offers_app/presentation/features/clinics/viewmodel/clinics_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/clinics/viewmodel/clinics_state.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
-import 'package:nav_care_offers_app/presentation/shared/ui/molecules/hospital_card.dart'; // Assuming a generic card for clinic
+import 'package:nav_care_offers_app/presentation/shared/ui/molecules/hospital_card.dart';
+import 'package:nav_care_offers_app/presentation/shared/theme/spacing.dart';
 
 class ClinicsListPage extends StatefulWidget {
   final String hospitalId;
@@ -29,121 +29,208 @@ class _ClinicsListPageState extends State<ClinicsListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('clinics_list_title'.tr()),
+        title: Text('hospitals.detail.manage_clinics'.tr()),
       ),
-      body: BlocBuilder<ClinicsCubit, ClinicsState>(
-        builder: (context, state) {
-          return state.when(
-            initial: () => const Center(child: CircularProgressIndicator()),
-            loading: () => const Center(child: CircularProgressIndicator()),
-            success: (clinicList) {
-              if (clinicList.data.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.info_outline, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant),
-                      const SizedBox(height: 16),
-                      Text(
-                        'no_clinics_available'.tr(),
-                        style: Theme.of(context).textTheme.headlineSmall,
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 24),
-                      AppButton(
-                        onPressed: () {
-                          context.push('/hospitals/${widget.hospitalId}/clinics/new');
-                        },
-                        text: 'add_new_clinic'.tr(),
-                      ),
-                    ],
-                  ),
-                );
-              }
-              return GridView.builder(
-                padding: const EdgeInsets.all(16.0),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16.0,
-                  mainAxisSpacing: 16.0,
-                  childAspectRatio: 0.8,
-                ),
-                itemCount: clinicList.data.length,
-                itemBuilder: (context, index) {
-                  final clinic = clinicList.data[index];
-                  return Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        // TODO: Navigate to clinic detail page
-                      },
-                      borderRadius: BorderRadius.circular(12),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.local_hospital, size: 48, color: Theme.of(context).colorScheme.primary),
-                            const SizedBox(height: 12),
-                            Text(
-                              clinic.name,
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.titleMedium,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'clinic'.tr(),
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                            ),
-                          ],
+      body: _ClinicsListView(hospitalId: widget.hospitalId),
+    );
+  }
+}
+
+class _ClinicsListView extends StatelessWidget {
+  final String hospitalId;
+  const _ClinicsListView({required this.hospitalId});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
+    return SafeArea(
+      bottom: false,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'hospitals.detail.clinics_title'.tr(),
+              style: textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'hospitals.manage.clinics_description'.tr(),
+              style: textTheme.titleMedium,
+            ),
+            const SizedBox(height: 24),
+            Expanded(
+              child: BlocBuilder<ClinicsCubit, ClinicsState>(
+                builder: (context, state) {
+                  return state.when(
+                    initial: () =>
+                        const Center(child: CircularProgressIndicator()),
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
+                    success: (clinicList) {
+                      if (clinicList.data.isEmpty) {
+                        return _EmptyView(
+                          messageKey: 'hospitals.manage.no_clinics_message',
+                          onReload: () => context
+                              .read<ClinicsCubit>()
+                              .getHospitalClinics(hospitalId),
+                        );
+                      }
+                      return RefreshIndicator(
+                        onRefresh: () => context
+                            .read<ClinicsCubit>()
+                            .getHospitalClinics(hospitalId),
+                        child: ListView.separated(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          itemBuilder: (ctx, index) {
+                            final clinic = clinicList.data[index];
+                            return HospitalCard(
+                              title: clinic.name,
+                              subtitle: _resolveDescription(
+                                  context.locale.languageCode, clinic),
+                              facilityLabel:
+                                  'hospitals.facility_type.clinic'.tr(),
+                              phoneLabel: clinic.phones.join(' · '),
+                              imageUrl: clinic.images.isNotEmpty
+                                  ? clinic.images.first
+                                  : null,
+                              onTap: () {
+                                // TODO: Navigate to clinic detail page
+                              },
+                            );
+                          },
+                          separatorBuilder: (ctx, _) =>
+                              const SizedBox(height: 20),
+                          itemCount: clinicList.data.length,
                         ),
-                      ),
-                    ),
+                      );
+                    },
+                    failure: (failure) {
+                      return _ErrorView(
+                        message: failure.message ?? 'unknown_error'.tr(),
+                        onRetry: () => context
+                            .read<ClinicsCubit>()
+                            .getHospitalClinics(hospitalId),
+                      );
+                    },
                   );
                 },
-              );
-            },
-            failure: (failure) {
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.error_outline, size: 64, color: Theme.of(context).colorScheme.error),
-                      const SizedBox(height: 16),
-                      Text(
-                        'error_fetching_clinics'.tr(args: [failure.message ?? 'unknown_error'.tr()]),
-                        style: Theme.of(context).textTheme.headlineSmall,
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 24),
-                      AppButton(
-                        onPressed: () {
-                          context.read<ClinicsCubit>().getHospitalClinics(widget.hospitalId);
-                        },
-                        text: 'retry'.tr(),
-                      ),
-                    ],
-                  ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            SafeArea(
+              top: false,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: AppButton(
+                  text: 'hospitals.actions.add'.tr(),
+                  icon: const Icon(Icons.add_rounded),
+                  onPressed: () => _openCreate(context, hospitalId),
                 ),
-              );
-            },
-          );
-        },
+              ),
+            ),
+          ],
+        ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.push('/hospitals/${widget.hospitalId}/clinics/new');
-        },
-        child: const Icon(Icons.add),
+    );
+  }
+
+  String? _resolveDescription(String locale, ClinicModel clinic) {
+    return clinic.description;
+  }
+
+  void _openCreate(BuildContext context, String hospitalId) {
+    final router = GoRouter.of(context);
+    router.push('/hospitals/$hospitalId/clinics/new');
+  }
+}
+
+class _EmptyView extends StatelessWidget {
+  final String messageKey;
+  final VoidCallback onReload;
+
+  const _EmptyView({
+    required this.messageKey,
+    required this.onReload,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.info_outline,
+            size: 48,
+            color: theme.colorScheme.primary,
+          ),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(
+              messageKey.tr(),
+              style: theme.textTheme.titleMedium,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextButton.icon(
+            onPressed: onReload,
+            icon: const Icon(Icons.refresh_rounded),
+            label: Text('hospitals.actions.reload'.tr()),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ErrorView extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+
+  const _ErrorView({
+    required this.message,
+    required this.onRetry,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final displayMessage =
+        message.startsWith('hospitals.') ? message.tr() : message;
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.error_outline,
+            size: 48,
+            color: theme.colorScheme.error,
+          ),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(
+              displayMessage,
+              style: theme.textTheme.titleMedium,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextButton.icon(
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh_rounded),
+            label: Text('hospitals.actions.retry'.tr()),
+          ),
+        ],
       ),
     );
   }

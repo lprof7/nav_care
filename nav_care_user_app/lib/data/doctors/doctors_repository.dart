@@ -59,8 +59,8 @@ class DoctorsRepository {
     );
 
     if (!result.isSuccess || result.data == null) {
-      final message =
-          _extractMessage(result.error?.message) ?? 'Failed to load featured doctors.';
+      final message = _extractMessage(result.error?.message) ??
+          'Failed to load featured doctors.';
       throw Exception(message);
     }
 
@@ -115,9 +115,7 @@ class DoctorsRepository {
 
   List<Map<String, dynamic>> _extractDoctorMaps(dynamic source) {
     if (source is List) {
-      return source
-          .whereType<Map<String, dynamic>>()
-          .toList(growable: false);
+      return source.whereType<Map<String, dynamic>>().toList(growable: false);
     }
 
     if (source is Map<String, dynamic>) {

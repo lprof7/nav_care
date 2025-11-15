@@ -7,17 +7,17 @@ class SecureTokenStore implements TokenStore {
   static const _hospitalTokenKey = 'hospital_token';
 
   @override
-  Future<String?> getToken() {
+  Future<String?> getUserToken() {
     return _storage.read(key: _authTokenKey);
   }
 
   @override
-  Future<void> setToken(String token) {
+  Future<void> setUserToken(String token) {
     return _storage.write(key: _authTokenKey, value: token);
   }
 
   @override
-  Future<void> clearToken() {
+  Future<void> clearUserToken() {
     return _storage.delete(key: _authTokenKey);
   }
 

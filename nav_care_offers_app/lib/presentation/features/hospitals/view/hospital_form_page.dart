@@ -90,7 +90,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
               ),
             ),
           );
-          context.pop(state.lastSaved);
+          context.pop(true); // Indicate success for refresh
         }
       },
       builder: (context, state) {

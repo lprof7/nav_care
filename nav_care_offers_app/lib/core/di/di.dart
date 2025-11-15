@@ -27,10 +27,19 @@ import '../../presentation/features/hospitals/viewmodel/hospital_form_cubit.dart
 import '../../data/clinics/services/clinics_service.dart';
 import '../../data/clinics/services/remote_clinics_service.dart';
 import '../../data/clinics/clinics_repository.dart';
+import '../../presentation/features/clinics/clinic_creation/viewmodel/clinic_creation_cubit.dart'; // Import ClinicCreationCubit
 import '../../data/doctors/services/doctors_service.dart';
 import '../../data/doctors/services/remote_doctors_service.dart';
 import '../../data/doctors/doctors_repository.dart';
 import '../../presentation/features/authentication/auth_cubit.dart'; // Import AuthCubit
+import '../../data/appointments/services/appointments_service.dart';
+import '../../data/appointments/services/remote_appointments_service.dart';
+import '../../data/appointments/appointments_repository.dart';
+import '../../presentation/features/appointments/viewmodel/appointments_cubit.dart';
+import '../../data/service_offerings/services/service_offerings_service.dart';
+import '../../data/service_offerings/services/remote_service_offerings_service.dart';
+import '../../data/service_offerings/service_offerings_repository.dart';
+import '../../presentation/features/service_offerings/viewmodel/service_offerings_cubit.dart';
 
 final sl = GetIt.instance;
 Future<void> configureDependencies(AppConfig config) async {
@@ -75,6 +84,14 @@ Future<void> configureDependencies(AppConfig config) async {
   sl.registerFactory<HospitalListCubit>(
       () => HospitalListCubit(sl<HospitalsRepository>()));
 
+  // Service offerings
+  sl.registerLazySingleton<ServiceOfferingsService>(
+      () => RemoteServiceOfferingsService(sl<ApiClient>()));
+  sl.registerLazySingleton<ServiceOfferingsRepository>(
+      () => ServiceOfferingsRepository(sl<ServiceOfferingsService>()));
+  sl.registerFactory<ServiceOfferingsCubit>(
+      () => ServiceOfferingsCubit(sl<ServiceOfferingsRepository>()));
+
   // Clinics
   sl.registerLazySingleton<ClinicsService>(
       () => RemoteClinicsService(sl<ApiClient>()));
@@ -83,15 +100,23 @@ Future<void> configureDependencies(AppConfig config) async {
   sl.registerFactory<ClinicsCubit>(
     () => ClinicsCubit(sl<ClinicsRepository>()),
   );
+  sl.registerFactory<ClinicCreationCubit>(() => ClinicCreationCubit(
+      sl<ClinicsRepository>())); // Register ClinicCreationCubit
+
+  // Appointments
+  sl.registerLazySingleton<AppointmentsService>(
+      () => RemoteAppointmentsService(sl<ApiClient>()));
+  sl.registerLazySingleton<AppointmentsRepository>(
+      () => AppointmentsRepository(sl<AppointmentsService>()));
+  sl.registerFactory<AppointmentsCubit>(
+      () => AppointmentsCubit(sl<AppointmentsRepository>()));
 
   // Doctors
   sl.registerLazySingleton<DoctorsService>(
       () => RemoteDoctorsService(sl<ApiClient>()));
   sl.registerLazySingleton<DoctorsRepository>(
       () => DoctorsRepository(sl<DoctorsService>()));
-        sl.registerFactory<DoctorsCubit>(
-    () => DoctorsCubit(sl<DoctorsRepository>())
-  );
+  sl.registerFactory<DoctorsCubit>(() => DoctorsCubit(sl<DoctorsRepository>()));
   sl.registerFactoryParam<HospitalDetailCubit, Hospital, void>(
     (hospital, _) => HospitalDetailCubit(
       sl<HospitalsRepository>(),

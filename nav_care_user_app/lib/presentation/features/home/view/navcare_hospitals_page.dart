@@ -6,19 +6,26 @@ import 'package:nav_care_user_app/data/hospitals/models/hospital_model.dart';
 
 class NavcareHospitalsPage extends StatelessWidget {
   final List<HospitalModel> hospitals;
+  final String titleKey;
+  final String emptyKey;
 
-  const NavcareHospitalsPage({super.key, required this.hospitals});
+  const NavcareHospitalsPage({
+    super.key,
+    required this.hospitals,
+    this.titleKey = 'home.hospitals_choice.title',
+    this.emptyKey = 'home.hospitals_choice.empty',
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('home.hospitals_choice.title'.tr()),
+        title: Text(titleKey.tr()),
       ),
       body: hospitals.isEmpty
           ? Center(
               child: Text(
-                'home.hospitals_choice.empty'.tr(),
+                emptyKey.tr(),
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             )

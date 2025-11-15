@@ -21,15 +21,13 @@ class SigninOutcome {
     this.doctor,
   });
 
-  factory SigninOutcome.doctorAuthenticated(Doctor doctor) =>
-      SigninOutcome._(
+  factory SigninOutcome.doctorAuthenticated(Doctor doctor) => SigninOutcome._(
         SigninResolution.doctorAuthenticated,
         user: doctor.user,
         doctor: doctor,
       );
 
-  factory SigninOutcome.requiresDoctorProfile(User user) =>
-      SigninOutcome._(
+  factory SigninOutcome.requiresDoctorProfile(User user) => SigninOutcome._(
         SigninResolution.requiresDoctorProfile,
         user: user,
       );
@@ -66,7 +64,7 @@ class SigninRepository {
       if (!doctorLogin.isSuccess || doctorLogin.data == null) {
         final failure = doctorLogin.error ?? const Failure.unknown();
         if (failure.type == FailureType.unauthorized) {
-          await _tokenStore.setToken(userAuth.token);
+          await _tokenStore.setUserToken(userAuth.token);
           final placeholder = Doctor(
             id: userAuth.user.id,
             user: userAuth.user,
@@ -81,7 +79,7 @@ class SigninRepository {
 
       final doctorPayload = _extractPayload(doctorLogin.data!);
       final doctorAuth = AuthResponse.fromJson(doctorPayload);
-      await _tokenStore.setToken(doctorAuth.token);
+      await _tokenStore.setUserToken(doctorAuth.token);
       final doctor = doctorAuth.doctor ??
           Doctor(
             id: doctorAuth.user.id,

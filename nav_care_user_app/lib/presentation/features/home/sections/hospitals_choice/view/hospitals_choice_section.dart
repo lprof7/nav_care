@@ -10,19 +10,29 @@ import '../viewmodel/hospitals_choice_cubit.dart';
 import '../viewmodel/hospitals_choice_state.dart';
 
 class HospitalsChoiceSection extends StatelessWidget {
-  const HospitalsChoiceSection({super.key});
+  const HospitalsChoiceSection({
+    super.key,
+    this.translationPrefix = 'home.hospitals_choice',
+  });
+
+  final String translationPrefix;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<HospitalsChoiceCubit>()..loadHospitals(),
-      child: const _HospitalsChoiceBody(),
+      child: _HospitalsChoiceBody(translationPrefix: translationPrefix),
     );
   }
 }
 
 class _HospitalsChoiceBody extends StatelessWidget {
-  const _HospitalsChoiceBody();
+  final String translationPrefix;
+
+  const _HospitalsChoiceBody({required this.translationPrefix});
+
+  String _tr(BuildContext context, String key) =>
+      '$translationPrefix.$key'.tr();
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +49,7 @@ class _HospitalsChoiceBody extends StatelessWidget {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
               child: Text(
-                state.message ?? 'home.hospitals_choice.error'.tr(),
+                state.message ?? _tr(context, 'error'),
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             );
@@ -51,8 +61,8 @@ class _HospitalsChoiceBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _SectionHeader(
-                  title: 'home.hospitals_choice.title'.tr(),
-                  actionLabel: 'home.hospitals_choice.see_more'.tr(),
+                  title: _tr(context, 'title'),
+                  actionLabel: _tr(context, 'see_more'),
                   onTap: () => _openSeeMore(context, state.hospitals),
                 ),
                 const SizedBox(height: 16),
@@ -79,7 +89,11 @@ class _HospitalsChoiceBody extends StatelessWidget {
   void _openSeeMore(BuildContext context, List<HospitalModel> hospitals) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => NavcareHospitalsPage(hospitals: hospitals),
+        builder: (_) => NavcareHospitalsPage(
+          hospitals: hospitals,
+          titleKey: '$translationPrefix.title',
+          emptyKey: '$translationPrefix.empty',
+        ),
       ),
     );
   }

@@ -23,7 +23,7 @@
     "become_doctor_back_to_signin": "Back to sign in",
     "shell": {
         "nav_home": "Home",
-        "nav_services": "Services",
+        "nav_appointments": "Appointments",
         "nav_hospitals": "Hospitals",
         "nav_profile": "Profile",
         "badge_new": "New",
@@ -47,7 +47,8 @@
         "welcome_message": "Here's what's happening today",
         "appointments": {
             "title": "Upcoming appointments",
-            "subtitle": "Manage today's patient schedule"
+            "subtitle": "Manage today's patient schedule",
+            "empty": "No appointments available yet."
         },
         "quick_actions": {
             "title": "Quick actions",
@@ -65,6 +66,30 @@
             "empty": "You haven't added any services yet.",
             "list_title": "Your active services",
             "more": "+{count} more services"
+        }
+    },
+    "appointments": {
+        "status": {
+            "pending": "Pending",
+            "confirmed": "Confirmed",
+            "completed": "Completed",
+            "cancelled": "Cancelled"
+        },
+        "edit": {
+            "title": "Update appointment",
+            "start_label": "Start time",
+            "end_label": "End time",
+            "status_label": "Status",
+            "cancel": "Cancel",
+            "submit": "Save changes"
+        },
+        "messages": {
+            "update_success": "Appointment updated successfully",
+            "update_failure": "Unable to update appointment"
+        },
+        "validation": {
+            "invalid_range": "End time must be after start time",
+            "invalid_dates": "Appointment dates are invalid"
         }
     },
     "hospitals": {
@@ -108,7 +133,8 @@
             "delete_cancel": "Cancel",
             "delete_confirm": "Delete",
             "delete_success": "Hospital removed successfully.",
-            "not_found": "We couldn't find the requested hospital."
+            "not_found": "We couldn't find the requested hospital.",
+            "manage_offerings": "Manage service offerings"
         },
         "form": {
             "create_title": "Add hospital",
@@ -148,6 +174,57 @@
             "clinics_description": "Soon you will be able to create, update, and organise your clinics from here.",
             "doctors_description": "Soon you will be able to manage doctors associated with this hospital.",
             "placeholder": "We are still building this experience. Stay tuned!"
+        }
+    },
+    "service_offerings": {
+        "list": {
+            "title": "Manage service offerings",
+            "heading": "Your service offerings",
+            "subtitle": "Review and update the offers attached to this hospital.",
+            "price": "Price: {0}",
+            "add": "Add service offering",
+            "empty": "No service offerings yet. Start by adding your first one.",
+            "reload": "Reload",
+            "retry": "Try again"
+        },
+        "detail": {
+            "title": "Service offering",
+            "not_found": "We couldn't find this service offering.",
+            "price": "Price: {0}",
+            "provider": "Provider",
+            "specialty": "Specialty",
+            "offers": "Included offers",
+            "no_offers": "No offers have been added to this service yet.",
+            "description": "Description",
+            "no_description": "No description available.",
+            "edit": "Edit"
+        },
+        "form": {
+            "create_title": "Add service offering",
+            "edit_title": "Edit service offering",
+            "description": "Fill in the details below to publish your hospital services.",
+            "service": "Service",
+            "price": "Price",
+            "price_invalid": "Enter a valid price",
+            "reload_services": "Reload services",
+            "offers": "Offers",
+            "offers_hint": "Separate items with commas",
+            "description_en": "Description (English)",
+            "description_ar": "Description (Arabic)",
+            "description_fr": "Description (French)",
+            "description_sp": "Description (Spanish)",
+            "create_button": "Create offering",
+            "update_button": "Update offering",
+            "select_service": "Please choose a service first.",
+            "error": "Unable to save the service offering",
+            "create_success": "Service offering created successfully.",
+            "update_success": "Service offering updated successfully."
+        },
+        "errors": {
+            "parse_list": "Unable to parse service offerings response",
+            "parse_detail": "Unable to load the selected service offering",
+            "parse_submit": "Unable to save the service offering",
+            "parse_catalog": "Unable to load the services catalog"
         }
     }
 }

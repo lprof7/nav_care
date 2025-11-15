@@ -11,6 +11,7 @@ class DoctorModel {
   final String? avatar;
   final String? userId;
   final String? email;
+  final String? phone;
   final List<String> affiliations;
 
   DoctorModel({
@@ -26,6 +27,7 @@ class DoctorModel {
     this.avatar,
     this.userId,
     this.email,
+    this.phone,
     this.affiliations = const [],
   });
 
@@ -49,6 +51,7 @@ class DoctorModel {
       avatar: (user?['profilePicture'] ?? user?['avatar']) as String?,
       userId: user?['_id']?.toString(),
       email: user?['email'] as String?,
+      phone: user?['phone']?.toString(),
       affiliations: (json['affiliations'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .where((value) => value.isNotEmpty)
@@ -73,6 +76,7 @@ class DoctorModel {
         'name': displayName,
         'email': email,
         'avatar': avatar,
+        'phone': phone,
       },
     };
   }

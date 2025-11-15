@@ -9,10 +9,15 @@ class ClinicModel with _$ClinicModel {
   const factory ClinicModel({
     required String id,
     required String name,
+    @Default([]) List<String> images,
+    String? description,
+    String? address,
+    @Default([]) List<String> phones,
     // Add other clinic properties as they become known
   }) = _ClinicModel;
 
-  factory ClinicModel.fromJson(Map<String, dynamic> json) => _$ClinicModelFromJson(json);
+  factory ClinicModel.fromJson(Map<String, dynamic> json) =>
+      _$ClinicModelFromJson(json);
 }
 
 @freezed
@@ -22,5 +27,6 @@ class ClinicListModel with _$ClinicListModel {
     required Pagination pagination,
   }) = _ClinicListModel;
 
-  factory ClinicListModel.fromJson(Map<String, dynamic> json) => _$ClinicListModelFromJson(json);
+  factory ClinicListModel.fromJson(Map<String, dynamic> json) =>
+      _$ClinicListModelFromJson(json);
 }

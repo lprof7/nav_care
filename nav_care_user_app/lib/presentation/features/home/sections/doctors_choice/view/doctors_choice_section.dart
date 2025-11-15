@@ -62,12 +62,6 @@ class _DoctorsChoiceBody extends StatelessWidget {
                   onTap: () => _openSeeMore(context, state.doctors),
                 ),
                 const SizedBox(height: 16),
-                // New AdsSectionView for Doctors Choice
-                BlocProvider(
-                  create: (_) => sl<AdsSectionCubit>(),
-                  child: const AdsSectionView(),
-                ),
-                const SizedBox(height: 16),
                 SizedBox(
                   height: 250,
                   child: ListView.separated(

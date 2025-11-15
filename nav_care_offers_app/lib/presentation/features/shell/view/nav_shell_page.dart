@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nav_care_offers_app/presentation/features/appointments/view/appointments_page.dart';
 import 'package:nav_care_offers_app/presentation/features/home/view/home_page.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/view/hospitals_feature_screen.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_app_bar.dart';
@@ -65,9 +66,9 @@ class NavShellPage extends StatelessWidget {
         badgeLabel: 'shell.badge_new'.tr(),
       ),
       NavShellDestination(
-        label: 'shell.nav_services'.tr(),
-        icon: Icons.vaccines,
-        content: const _PlaceholderSection(titleKey: 'shell.nav_services'),
+        label: 'shell.nav_appointments'.tr(),
+        icon: Icons.calendar_today_rounded,
+        content: const AppointmentsPage(),
       ),
       NavShellDestination(
         label: 'shell.nav_hospitals'.tr(),

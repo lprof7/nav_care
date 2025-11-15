@@ -10,23 +10,36 @@ class ApiClient {
   final ApiConfig apiConfig;
   ApiClient(this._dio, this.apiConfig);
 
-  Future<Result<T>> get<T>(String path,
-      {Map<String, dynamic>? query,
-      required FromJson<T> parser,
-      Map<String, String>? headers}) async {
+  Future<Result<T>> get<T>(
+    String path, {
+    Map<String, dynamic>? query,
+    required FromJson<T> parser,
+    Map<String, String>? headers,
+  }) async {
     try {
-      final res = await _dio.get(path,
-          queryParameters: query, options: Options(headers: headers));
+      final res = await _dio.get(
+        path,
+        queryParameters: query,
+        options: Options(headers: headers),
+      );
       return Result.success(parser(res.data));
     } on DioException catch (e) {
       return Result.failure(_mapDio(e));
     }
   }
 
-  Future<Result<T>> post<T>(String path,
-      {Object? body, required FromJson<T> parser}) async {
+  Future<Result<T>> post<T>(
+    String path, {
+    Object? body,
+    required FromJson<T> parser,
+    Map<String, String>? headers,
+  }) async {
     try {
-      final res = await _dio.post(path, data: body);
+      final res = await _dio.post(
+        path,
+        data: body,
+        options: Options(headers: headers),
+      );
       return Result.success(parser(res.data));
     } on DioException catch (e) {
       print(e);
@@ -34,20 +47,54 @@ class ApiClient {
     }
   }
 
-  Future<Result<T>> put<T>(String path,
-      {Object? body, required FromJson<T> parser}) async {
+  Future<Result<T>> put<T>(
+    String path, {
+    Object? body,
+    required FromJson<T> parser,
+    Map<String, String>? headers,
+  }) async {
     try {
-      final res = await _dio.put(path, data: body);
+      final res = await _dio.put(
+        path,
+        data: body,
+        options: Options(headers: headers),
+      );
       return Result.success(parser(res.data));
     } on DioException catch (e) {
       return Result.failure(_mapDio(e));
     }
   }
 
-  Future<Result<T>> delete<T>(String path,
-      {Object? body, required FromJson<T> parser}) async {
+  Future<Result<T>> patch<T>(
+    String path, {
+    Object? body,
+    required FromJson<T> parser,
+    Map<String, String>? headers,
+  }) async {
     try {
-      final res = await _dio.delete(path, data: body);
+      final res = await _dio.patch(
+        path,
+        data: body,
+        options: Options(headers: headers),
+      );
+      return Result.success(parser(res.data));
+    } on DioException catch (e) {
+      return Result.failure(_mapDio(e));
+    }
+  }
+
+  Future<Result<T>> delete<T>(
+    String path, {
+    Object? body,
+    required FromJson<T> parser,
+    Map<String, String>? headers,
+  }) async {
+    try {
+      final res = await _dio.delete(
+        path,
+        data: body,
+        options: Options(headers: headers),
+      );
       return Result.success(parser(res.data));
     } on DioException catch (e) {
       return Result.failure(_mapDio(e));

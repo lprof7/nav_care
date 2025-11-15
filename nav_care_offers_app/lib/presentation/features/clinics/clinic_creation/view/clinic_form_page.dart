@@ -1,0 +1,366 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:nav_care_offers_app/core/di/di.dart';
+import 'package:nav_care_offers_app/data/clinics/models/clinic_model.dart';
+import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
+import 'package:nav_care_offers_app/data/hospitals/models/hospital_payload.dart';
+import 'package:nav_care_offers_app/presentation/features/clinics/clinic_creation/viewmodel/clinic_creation_cubit.dart';
+import 'package:nav_care_offers_app/presentation/features/clinics/clinic_creation/viewmodel/clinic_creation_state.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
+import 'package:nav_care_offers_app/presentation/shared/theme/spacing.dart';
+
+class ClinicFormPage extends StatelessWidget {
+  final String hospitalId;
+  final ClinicModel? initial;
+
+  const ClinicFormPage({
+    super.key,
+    required this.hospitalId,
+    this.initial,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<ClinicCreationCubit>(),
+      child: _ClinicFormView(hospitalId: hospitalId, initial: initial),
+    );
+  }
+}
+
+class _ClinicFormView extends StatefulWidget {
+  final String hospitalId;
+  final ClinicModel? initial;
+
+  const _ClinicFormView({
+    required this.hospitalId,
+    this.initial,
+  });
+
+  @override
+  State<_ClinicFormView> createState() => _ClinicFormViewState();
+}
+
+class _ClinicFormViewState extends State<_ClinicFormView> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _nameController;
+  late final TextEditingController _descriptionController;
+  late final TextEditingController _addressController;
+  final List<TextEditingController> _phoneControllers = [];
+  final List<XFile> _selectedImages = [];
+  final ImagePicker _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.initial?.name ?? '');
+    _descriptionController = TextEditingController(
+        text:
+            widget.initial?.description ?? ''); // ClinicModel has 'description'
+    _addressController =
+        TextEditingController(text: widget.initial?.address ?? '');
+    _initPhoneControllers(
+      source: widget.initial?.phones ?? const [],
+      target: _phoneControllers,
+    );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _descriptionController.dispose();
+    _addressController.dispose();
+    for (final controller in _phoneControllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isEditing = widget.initial != null;
+
+    return BlocConsumer<ClinicCreationCubit, ClinicCreationState>(
+      listener: (context, state) {
+        state.mapOrNull(
+          success: (state) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  isEditing
+                      ? 'hospitals.form.success_update'.tr()
+                      : 'hospitals.form.success_create'.tr(),
+                ),
+              ),
+            );
+            context.pop(state.clinic);
+          },
+          failure: (state) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text(state.failure.message ?? 'unknown_error'.tr())),
+            );
+          },
+        );
+      },
+      builder: (context, state) {
+        final onPrimary = Theme.of(context).colorScheme.onPrimary;
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              isEditing
+                  ? 'hospitals.form.edit_title'.tr()
+                  : 'hospitals.form.create_title'.tr(),
+            ),
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      labelText: 'hospitals.form.name'.tr(),
+                    ),
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? 'field_required'.tr()
+                        : null,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  TextFormField(
+                    controller: _descriptionController,
+                    decoration: InputDecoration(
+                      labelText: 'hospitals.form.description_en'.tr(),
+                    ),
+                    maxLines: 4,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  TextFormField(
+                    controller: _addressController,
+                    decoration: InputDecoration(
+                      labelText: 'hospitals.form.address'.tr(),
+                    ),
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? 'field_required'.tr()
+                        : null,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  _SectionLabel(label: 'hospitals.form.phone_label'.tr()),
+                  const SizedBox(height: AppSpacing.sm),
+                  ..._buildDynamicTextFields(
+                    controllers: _phoneControllers,
+                    hint: 'hospitals.form.phone_hint'.tr(),
+                    onAdd: _addPhoneField,
+                    onRemove: (index) => _removeField(
+                      index,
+                      _phoneControllers,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  _SectionLabel(label: 'hospitals.form.images.label'.tr()),
+                  const SizedBox(height: AppSpacing.sm),
+                  ..._selectedImages
+                      .map((image) => Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: AppSpacing.sm),
+                            child: Row(
+                              children: [
+                                Expanded(child: Text(image.name)),
+                                IconButton(
+                                  icon: const Icon(Icons.remove_circle_outline),
+                                  onPressed: () => _removeSelectedImage(image),
+                                ),
+                              ],
+                            ),
+                          ))
+                      .toList(),
+                  if (widget.initial?.images != null &&
+                      widget.initial!.images.isNotEmpty)
+                    ...widget.initial!.images
+                        .map((imageUrl) => Padding(
+                              padding:
+                                  const EdgeInsets.only(bottom: AppSpacing.sm),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      child: Text(imageUrl
+                                          .split('/')
+                                          .last)), // Display file name
+                                  // No remove button for existing images from API
+                                ],
+                              ),
+                            ))
+                        .toList(),
+                  TextButton.icon(
+                    onPressed: _pickImage,
+                    icon: const Icon(Icons.add_photo_alternate),
+                    label: Text('hospitals.form.add_image'.tr()),
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
+                  SafeArea(
+                    top: false,
+                    child: AppButton(
+                      text: state.maybeMap(
+                        loading: (_) => 'hospitals.form.saving'.tr(),
+                        orElse: () => 'hospitals.form.save'.tr(),
+                      ),
+                      icon: state.maybeMap(
+                        loading: (_) => SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: onPrimary,
+                          ),
+                        ),
+                        orElse: () => const Icon(Icons.check_outlined),
+                      ),
+                      onPressed: state.maybeMap(
+                        loading: (_) => null,
+                        orElse: () => () => _submit(context),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _initPhoneControllers({
+    required List<String> source,
+    required List<TextEditingController> target,
+  }) {
+    if (source.isEmpty) {
+      target.add(TextEditingController());
+      return;
+    }
+    for (final value in source) {
+      target.add(TextEditingController(text: value));
+    }
+  }
+
+  List<Widget> _buildDynamicTextFields({
+    required List<TextEditingController> controllers,
+    required String hint,
+    required VoidCallback onAdd,
+    required void Function(int index) onRemove,
+  }) {
+    final fields = <Widget>[];
+    for (var i = 0; i < controllers.length; i++) {
+      fields.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: controllers[i],
+                  decoration: InputDecoration(hintText: hint),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              IconButton(
+                onPressed: controllers.length > 1 ? () => onRemove(i) : null,
+                icon: const Icon(Icons.remove_circle_outline),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    fields.add(
+      Align(
+        alignment: Alignment.centerLeft,
+        child: TextButton.icon(
+          onPressed: onAdd,
+          icon: const Icon(Icons.add),
+          label: Text('hospitals.form.add_entry'.tr()),
+        ),
+      ),
+    );
+    return fields;
+  }
+
+  void _addPhoneField() {
+    setState(() => _phoneControllers.add(TextEditingController()));
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImages.add(pickedFile);
+      });
+    }
+  }
+
+  void _removeSelectedImage(XFile image) {
+    setState(() {
+      _selectedImages.remove(image);
+    });
+  }
+
+  void _removeField(int index, List<TextEditingController> controllers) {
+    setState(() {
+      final controller = controllers.removeAt(index);
+      controller.dispose();
+      if (controllers.isEmpty) controllers.add(TextEditingController());
+    });
+  }
+
+  void _submit(BuildContext context) {
+    if (!_formKey.currentState!.validate()) return;
+    final cubit = context.read<ClinicCreationCubit>();
+
+    final phones = _phoneControllers
+        .map((controller) => controller.text.trim())
+        .where((value) => value.isNotEmpty)
+        .toList();
+
+    if (_selectedImages.isEmpty && (widget.initial?.images ?? []).isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('hospitals.form.images_required'.tr())),
+      );
+      return;
+    }
+
+    final payload = HospitalPayload(
+      id: widget.initial?.id,
+      name: _nameController.text.trim(),
+      descriptionEn: _descriptionController.text.trim(),
+      address: _addressController.text.trim(),
+      phones: phones,
+      images: _selectedImages,
+      facilityType: FacilityType.clinic, // This is a clinic form
+    );
+
+    cubit.submitClinic(payload);
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  final String label;
+
+  const _SectionLabel({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Text(
+      label,
+      style: theme.textTheme.labelLarge?.copyWith(
+        fontWeight: FontWeight.w600,
+      ),
+    );
+  }
+}

@@ -8,7 +8,6 @@ import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/hospital_detail_cubit.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 
-
 class HospitalDetailPage extends StatelessWidget {
   final String hospitalId;
   final Hospital? initial;
@@ -65,9 +64,7 @@ class _HospitalDetailView extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text('hospitals.detail.app_bar'.tr(
-              args: [hospital.displayName ?? hospital.name],
-            )),
+            title: Text('hospitals.list.title'.tr()),
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(20),
@@ -112,13 +109,13 @@ class _HospitalDetailView extends StatelessWidget {
                     value: hospital.phones.join(' · '),
                   ),
                 ],
-                if (hospital.coordinates != null) ...[
+                if (hospital.address != null &&
+                    hospital.address!.isNotEmpty) ...[
                   const SizedBox(height: 12),
                   _InfoTile(
                     icon: Icons.location_on_outlined,
-                    label: 'hospitals.detail.coordinates'.tr(),
-                    value: '(${hospital.coordinates!.latitude.toStringAsFixed(4)}, '
-                        '${hospital.coordinates!.longitude.toStringAsFixed(4)})',
+                    label: 'hospitals.form.address'.tr(),
+                    value: hospital.address!,
                   ),
                 ],
                 const SizedBox(height: 24),
@@ -142,6 +139,16 @@ class _HospitalDetailView extends StatelessWidget {
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () =>
+                        _openServiceOfferings(context, hospital),
+                    icon: const Icon(Icons.design_services_outlined),
+                    label: Text('hospitals.detail.manage_offerings'.tr()),
+                  ),
                 ),
                 const SizedBox(height: 24),
                 if (hospital.clinics.isNotEmpty) ...[
@@ -230,8 +237,14 @@ class _HospitalDetailView extends StatelessWidget {
   void _openEdit(BuildContext context, Hospital hospital) {
     final router = GoRouter.of(context);
     final cubit = context.read<HospitalDetailCubit>();
-    router.push('/hospitals/${hospital.id}/edit', extra: hospital).then((value) {
-      if (value is Hospital) {
+    router
+        .push('/hospitals/${hospital.id}/edit', extra: hospital)
+        .then((value) {
+      if (value == true) {
+        // Check for true to indicate successful edit
+        context.pop(true); // Pop true to trigger refresh in HospitalListCubit
+      } else if (value is Hospital) {
+        // Keep existing logic for Hospital object if needed
         cubit.updateHospital(value);
       }
     });
@@ -276,6 +289,10 @@ class _HospitalDetailView extends StatelessWidget {
         'target': target,
       },
     );
+  }
+
+  void _openServiceOfferings(BuildContext context, Hospital hospital) {
+    context.push('/hospitals/${hospital.id}/service-offerings', extra: hospital);
   }
 }
 

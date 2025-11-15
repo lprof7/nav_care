@@ -14,7 +14,8 @@ class HospitalsFeatureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<HospitalListCubit>()..fetchHospitals(page: 1, limit: 10),
+      create: (_) =>
+          sl<HospitalListCubit>()..fetchHospitals(page: 1, limit: 10),
       child: const _HospitalsListView(),
     );
   }
@@ -72,7 +73,18 @@ class _HospitalsListView extends StatelessWidget {
                     );
                   }
                   if (state is HospitalListSuccess) {
-                    final hospitals = state.hospitals;
+                    final hospitals = state.hospitals
+                        .where((hospital) =>
+                            hospital.facilityType == FacilityType.hospital)
+                        .toList();
+                    if (hospitals.isEmpty) {
+                      return _EmptyView(
+                        messageKey: 'hospitals.list.empty',
+                        onReload: () => context
+                            .read<HospitalListCubit>()
+                            .fetchHospitals(page: 1, limit: 10),
+                      );
+                    }
                     return RefreshIndicator(
                       onRefresh: () => context
                           .read<HospitalListCubit>()
@@ -144,27 +156,12 @@ class _HospitalsListView extends StatelessWidget {
   }
 
   String _facilityLabel(BuildContext context, Hospital hospital) {
-    final key =
-        hospital.facilityType.translationKey('hospitals.facility_type');
+    final key = hospital.facilityType.translationKey('hospitals.facility_type');
     return key.tr();
   }
 
   List<Widget> _buildFooter(BuildContext context, Hospital hospital) {
     final chips = <Widget>[];
-    if (hospital.clinics.isNotEmpty) {
-      chips.add(_StatChip(
-        icon: Icons.local_hospital_outlined,
-        label: 'hospitals.stats.clinics'
-            .tr(args: [hospital.clinics.length.toString()]),
-      ));
-    }
-    if (hospital.doctors.isNotEmpty) {
-      chips.add(_StatChip(
-        icon: Icons.person_outline,
-        label: 'hospitals.stats.doctors'
-            .tr(args: [hospital.doctors.length.toString()]),
-      ));
-    }
     return chips;
   }
 
@@ -182,8 +179,8 @@ class _HospitalsListView extends StatelessWidget {
     final router = GoRouter.of(context);
     final cubit = context.read<HospitalListCubit>();
     router.push('/hospitals/${hospital.id}', extra: hospital).then((value) {
-      if (value is Hospital) {
-        cubit.refreshFromCache();
+      if (value == true) {
+        cubit.fetchHospitals(page: 1, limit: 10); // Refresh all hospitals
       } else if (value == 'deleted') {
         cubit.removeHospital(hospital.id);
       }

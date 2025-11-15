@@ -36,7 +36,7 @@ class HospitalDetailCubit extends Cubit<HospitalDetailState> {
         errorMessage: failure.message,
       )),
       onSuccess: (token) {
-        _tokenStore.setToken(token); // Save the token persistently
+        _tokenStore.setHospitalToken(token); // Save the token persistently
         emit(state.copyWith(
           isFetchingToken: false,
           hospitalToken: token,
@@ -46,7 +46,8 @@ class HospitalDetailCubit extends Cubit<HospitalDetailState> {
   }
 
   Future<void> deleteHospital() async {
-    emit(state.copyWith(isDeleting: true, errorMessage: null, successMessageKey: null));
+    emit(state.copyWith(
+        isDeleting: true, errorMessage: null, successMessageKey: null));
     final result = await _repository.deleteHospital(state.hospital.id);
     result.fold(
       onFailure: (failure) => emit(state.copyWith(

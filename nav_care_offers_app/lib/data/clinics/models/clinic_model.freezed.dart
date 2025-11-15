@@ -22,6 +22,10 @@ ClinicModel _$ClinicModelFromJson(Map<String, dynamic> json) {
 mixin _$ClinicModel {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
+  List<String> get images => throw _privateConstructorUsedError;
+  String? get description => throw _privateConstructorUsedError;
+  String? get address => throw _privateConstructorUsedError;
+  List<String> get phones => throw _privateConstructorUsedError;
 
   /// Serializes this ClinicModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -39,7 +43,13 @@ abstract class $ClinicModelCopyWith<$Res> {
           ClinicModel value, $Res Function(ClinicModel) then) =
       _$ClinicModelCopyWithImpl<$Res, ClinicModel>;
   @useResult
-  $Res call({String id, String name});
+  $Res call(
+      {String id,
+      String name,
+      List<String> images,
+      String? description,
+      String? address,
+      List<String> phones});
 }
 
 /// @nodoc
@@ -59,6 +69,10 @@ class _$ClinicModelCopyWithImpl<$Res, $Val extends ClinicModel>
   $Res call({
     Object? id = null,
     Object? name = null,
+    Object? images = null,
+    Object? description = freezed,
+    Object? address = freezed,
+    Object? phones = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -69,6 +83,22 @@ class _$ClinicModelCopyWithImpl<$Res, $Val extends ClinicModel>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      images: null == images
+          ? _value.images
+          : images // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      description: freezed == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String?,
+      phones: null == phones
+          ? _value.phones
+          : phones // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ) as $Val);
   }
 }
@@ -81,7 +111,13 @@ abstract class _$$ClinicModelImplCopyWith<$Res>
       __$$ClinicModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String name});
+  $Res call(
+      {String id,
+      String name,
+      List<String> images,
+      String? description,
+      String? address,
+      List<String> phones});
 }
 
 /// @nodoc
@@ -99,6 +135,10 @@ class __$$ClinicModelImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? name = null,
+    Object? images = null,
+    Object? description = freezed,
+    Object? address = freezed,
+    Object? phones = null,
   }) {
     return _then(_$ClinicModelImpl(
       id: null == id
@@ -109,6 +149,22 @@ class __$$ClinicModelImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      images: null == images
+          ? _value._images
+          : images // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      description: freezed == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String?,
+      phones: null == phones
+          ? _value._phones
+          : phones // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -116,7 +172,15 @@ class __$$ClinicModelImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$ClinicModelImpl implements _ClinicModel {
-  const _$ClinicModelImpl({required this.id, required this.name});
+  const _$ClinicModelImpl(
+      {required this.id,
+      required this.name,
+      final List<String> images = const [],
+      this.description,
+      this.address,
+      final List<String> phones = const []})
+      : _images = images,
+        _phones = phones;
 
   factory _$ClinicModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$ClinicModelImplFromJson(json);
@@ -125,10 +189,31 @@ class _$ClinicModelImpl implements _ClinicModel {
   final String id;
   @override
   final String name;
+  final List<String> _images;
+  @override
+  @JsonKey()
+  List<String> get images {
+    if (_images is EqualUnmodifiableListView) return _images;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_images);
+  }
+
+  @override
+  final String? description;
+  @override
+  final String? address;
+  final List<String> _phones;
+  @override
+  @JsonKey()
+  List<String> get phones {
+    if (_phones is EqualUnmodifiableListView) return _phones;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_phones);
+  }
 
   @override
   String toString() {
-    return 'ClinicModel(id: $id, name: $name)';
+    return 'ClinicModel(id: $id, name: $name, images: $images, description: $description, address: $address, phones: $phones)';
   }
 
   @override
@@ -137,12 +222,24 @@ class _$ClinicModelImpl implements _ClinicModel {
         (other.runtimeType == runtimeType &&
             other is _$ClinicModelImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name));
+            (identical(other.name, name) || other.name == name) &&
+            const DeepCollectionEquality().equals(other._images, _images) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
+            (identical(other.address, address) || other.address == address) &&
+            const DeepCollectionEquality().equals(other._phones, _phones));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      name,
+      const DeepCollectionEquality().hash(_images),
+      description,
+      address,
+      const DeepCollectionEquality().hash(_phones));
 
   /// Create a copy of ClinicModel
   /// with the given fields replaced by the non-null parameter values.
@@ -163,7 +260,11 @@ class _$ClinicModelImpl implements _ClinicModel {
 abstract class _ClinicModel implements ClinicModel {
   const factory _ClinicModel(
       {required final String id,
-      required final String name}) = _$ClinicModelImpl;
+      required final String name,
+      final List<String> images,
+      final String? description,
+      final String? address,
+      final List<String> phones}) = _$ClinicModelImpl;
 
   factory _ClinicModel.fromJson(Map<String, dynamic> json) =
       _$ClinicModelImpl.fromJson;
@@ -172,6 +273,14 @@ abstract class _ClinicModel implements ClinicModel {
   String get id;
   @override
   String get name;
+  @override
+  List<String> get images;
+  @override
+  String? get description;
+  @override
+  String? get address;
+  @override
+  List<String> get phones;
 
   /// Create a copy of ClinicModel
   /// with the given fields replaced by the non-null parameter values.

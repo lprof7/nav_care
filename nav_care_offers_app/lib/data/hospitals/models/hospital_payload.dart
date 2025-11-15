@@ -5,26 +5,29 @@ import 'hospital.dart';
 class HospitalPayload {
   final String? id;
   final String name;
-  final String descriptionEn;
+  final String? descriptionEn; // Make descriptionEn optional
   final String address;
   final List<String> phones;
   final List<XFile> images;
+  final FacilityType facilityType; // Add facilityType
 
   HospitalPayload({
     this.id,
     required this.name,
-    required this.descriptionEn,
+    this.descriptionEn, // Make descriptionEn optional
     required this.address,
     this.phones = const [],
     this.images = const [],
+    this.facilityType = FacilityType.hospital, // Default to hospital
   });
 
   Map<String, dynamic> toJson() {
     final payload = <String, dynamic>{
       'name': name,
-      'description_en': descriptionEn,
+      if (descriptionEn != null)
+        'description_en': descriptionEn, // Conditionally add descriptionEn
       'address': address,
-      'facility_type': FacilityType.hospital.apiValue, // Always Hospital
+      'facility_type': facilityType.apiValue, // Use dynamic facilityType
       'coordinates':
           HospitalCoordinates(latitude: 0, longitude: 0).toJson(), // Always 0,0
     };

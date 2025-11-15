@@ -8,14 +8,28 @@ part of 'clinic_model.dart';
 
 _$ClinicModelImpl _$$ClinicModelImplFromJson(Map<String, dynamic> json) =>
     _$ClinicModelImpl(
-      id: json['id'] as String,
+      id: json['_id'] as String,
       name: json['name'] as String,
+      images: (json['images'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      description: json['description'] as String?,
+      address: json['address'] as String?,
+      phones: (json['phones'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$$ClinicModelImplToJson(_$ClinicModelImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
+      'images': instance.images,
+      'description': instance.description,
+      'address': instance.address,
+      'phones': instance.phones,
     };
 
 _$ClinicListModelImpl _$$ClinicListModelImplFromJson(

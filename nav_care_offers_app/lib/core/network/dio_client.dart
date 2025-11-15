@@ -20,9 +20,10 @@ class DioClient {
       onRequest: (options, handler) async {
         String? token;
         if (options.extra['useHospitalToken'] == true) {
-          token = tokenStore == null ? null : await tokenStore!.getHospitalToken();
+          token =
+              tokenStore == null ? null : await tokenStore!.getHospitalToken();
         } else {
-          token = tokenStore == null ? null : await tokenStore!.getToken();
+          token = tokenStore == null ? null : await tokenStore!.getUserToken();
         }
 
         if (token != null && token.isNotEmpty) {

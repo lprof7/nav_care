@@ -2,12 +2,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../sections/ads/view/ads_section.dart';
-import '../sections/recent_services/view/recent_services_section.dart';
 import '../sections/featured_services/view/featured_services_section.dart';
 import '../sections/doctors_choice/view/doctors_choice_section.dart';
 import '../sections/hospitals_choice/view/hospitals_choice_section.dart';
 import '../sections/featured_hospitals/view/featured_hospitals_section.dart';
 import '../sections/featured_doctors/view/featured_doctors_section.dart';
+import '../sections/recent_hospitals/view/recent_hospitals_section.dart';
+import '../sections/recent_service_offerings/view/recent_service_offerings_section.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -22,9 +23,11 @@ class HomePage extends StatelessWidget {
         FeaturedServicesSection(),
         HospitalsChoiceSection(),
         DoctorsChoiceSection(),
+        AdsSectionView(),
         FeaturedHospitalsSection(),
         FeaturedDoctorsSection(),
-        RecentServicesSection(),
+        RecentHospitalsSection(),
+        RecentServiceOfferingsSection(),
       ],
     );
   }

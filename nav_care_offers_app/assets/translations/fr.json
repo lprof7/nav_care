@@ -25,7 +25,8 @@
         "welcome_message": "Voici ce qui se passe aujourd'hui",
         "appointments": {
             "title": "Rendez-vous à venir",
-            "subtitle": "Gérez l'agenda des patients du jour"
+            "subtitle": "Gérez l'agenda des patients du jour",
+            "empty": "Aucun rendez-vous disponible pour le moment."
         },
         "quick_actions": {
             "title": "Actions rapides",
@@ -47,7 +48,7 @@
     },
     "shell": {
         "nav_home": "Accueil",
-        "nav_services": "Services",
+        "nav_appointments": "Rendez-vous",
         "nav_hospitals": "Hôpitaux",
         "nav_profile": "Profil",
         "badge_new": "Nouveau",
@@ -65,6 +66,30 @@
             "support": "Support",
             "favorites": "Favoris",
             "notifications": "Notifications"
+        }
+    },
+    "appointments": {
+        "status": {
+            "pending": "En attente",
+            "confirmed": "Confirmé",
+            "completed": "Terminé",
+            "cancelled": "Annulé"
+        },
+        "edit": {
+            "title": "Mettre à jour le rendez-vous",
+            "start_label": "Heure de début",
+            "end_label": "Heure de fin",
+            "status_label": "Statut",
+            "cancel": "Annuler",
+            "submit": "Enregistrer"
+        },
+        "messages": {
+            "update_success": "Rendez-vous mis à jour avec succès",
+            "update_failure": "Impossible de mettre à jour le rendez-vous"
+        },
+        "validation": {
+            "invalid_range": "L'heure de fin doit être postérieure à l'heure de début",
+            "invalid_dates": "Dates de rendez-vous invalides"
         }
     },
     "hospitals": {
@@ -108,7 +133,8 @@
             "delete_cancel": "Annuler",
             "delete_confirm": "Supprimer",
             "delete_success": "Hôpital supprimé avec succès.",
-            "not_found": "Impossible de trouver l'hôpital demandé."
+            "not_found": "Impossible de trouver l'hôpital demandé.",
+            "manage_offerings": "G?rer les offres de service"
         },
         "form": {
             "create_title": "Ajouter un hôpital",
@@ -148,6 +174,57 @@
             "clinics_description": "Vous pourrez bientôt créer, mettre à jour et organiser vos cliniques ici.",
             "doctors_description": "Vous pourrez bientôt gérer les médecins liés à cet hôpital.",
             "placeholder": "Nous préparons actuellement cette expérience. Restez connectés !"
+        }
+    },
+    "service_offerings": {
+        "list": {
+            "title": "G?rer les offres de service",
+            "heading": "Vos offres de service",
+            "subtitle": "Consultez et mettez ? jour les offres li?es ? cet h?pital.",
+            "price": "Prix : {0}",
+            "add": "Ajouter une offre de service",
+            "empty": "Aucune offre de service pour le moment. Ajoutez votre premi?re offre.",
+            "reload": "Actualiser",
+            "retry": "R?essayer"
+        },
+        "detail": {
+            "title": "Offre de service",
+            "not_found": "Nous n'avons pas trouv? cette offre de service.",
+            "price": "Prix : {0}",
+            "provider": "Prestataire",
+            "specialty": "Sp?cialit?",
+            "offers": "Avantages inclus",
+            "no_offers": "Aucun avantage n'a encore ?t? ajout?.",
+            "description": "Description",
+            "no_description": "Aucune description disponible.",
+            "edit": "Modifier"
+        },
+        "form": {
+            "create_title": "Ajouter une offre de service",
+            "edit_title": "Modifier l'offre de service",
+            "description": "Compl?tez les informations pour publier vos services.",
+            "service": "Service",
+            "price": "Prix",
+            "price_invalid": "Saisissez un prix valide",
+            "reload_services": "Recharger les services",
+            "offers": "Offres",
+            "offers_hint": "S?parez les ?l?ments par des virgules",
+            "description_en": "Description (anglais)",
+            "description_ar": "Description (arabe)",
+            "description_fr": "Description (fran?ais)",
+            "description_sp": "Description (espagnol)",
+            "create_button": "Cr?er l'offre",
+            "update_button": "Mettre ? jour l'offre",
+            "select_service": "Veuillez choisir un service au pr?alable.",
+            "error": "Impossible d'enregistrer l'offre de service",
+            "create_success": "Offre de service cr??e avec succ?s.",
+            "update_success": "Offre de service mise ? jour avec succ?s."
+        },
+        "errors": {
+            "parse_list": "Impossible de lire la liste des offres de service",
+            "parse_detail": "Impossible de charger l'offre s?lectionn?e",
+            "parse_submit": "Impossible d'enregistrer l'offre de service",
+            "parse_catalog": "Impossible de charger le catalogue des services"
         }
     }
 }

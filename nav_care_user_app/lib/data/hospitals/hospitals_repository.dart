@@ -1,6 +1,5 @@
 import 'models/hospital_model.dart';
 import 'responses/fake_featured_hospitals_response.dart';
-import 'responses/fake_hospitals_choice_response.dart';
 import 'hospitals_remote_service.dart';
 
 class HospitalsRepository {
@@ -10,10 +9,6 @@ class HospitalsRepository {
   HospitalsRepository({required HospitalsRemoteService remoteService})
       : _remoteService = remoteService;
 
-  Future<List<HospitalModel>> getFakeNavcareHospitalsChoice() {
-    return Future.value(FakeHospitalsChoiceResponse.getFakeHospitalsChoice());
-  }
-
   Future<List<HospitalModel>> getNavcareHospitalsChoice({int limit = 6}) async {
     final requestLimit = limit < 1
         ? 1
@@ -21,7 +16,7 @@ class HospitalsRepository {
             ? 20
             : limit;
 
-    final hospitals = await getFakeNavcareHospitalsChoice();
+    final hospitals = await _fetchHospitals(limit: requestLimit);
     if (hospitals.isEmpty) {
       return hospitals;
     }
@@ -31,7 +26,8 @@ class HospitalsRepository {
     return hospitals.sublist(0, cappedLimit);
   }
 
-  Future<List<HospitalModel>> getNavcareFeaturedHospitals({int limit = 3}) async {
+  Future<List<HospitalModel>> getNavcareFeaturedHospitals(
+      {int limit = 3}) async {
     return getFeaturedHospitals(limit: limit);
   }
 
@@ -42,7 +38,8 @@ class HospitalsRepository {
             ? 15
             : limit;
 
-    final hospitals = await getFakeNavcareHospitalsChoice();
+    final fetchLimit = ((requestLimit * 2).clamp(1, 40)).toInt();
+    final hospitals = await _fetchHospitals(limit: fetchLimit);
     if (hospitals.isEmpty) {
       return hospitals;
     }
@@ -76,8 +73,8 @@ class HospitalsRepository {
     );
 
     if (!result.isSuccess || result.data == null) {
-      final message =
-          _extractMessage(result.error?.message) ?? 'Failed to load featured hospitals.';
+      final message = _extractMessage(result.error?.message) ??
+          'Failed to load featured hospitals.';
       throw Exception(message);
     }
 
@@ -99,8 +96,7 @@ class HospitalsRepository {
             ? 12
             : limit;
 
-    final hospitals =
-        FakeFeaturedHospitalsResponse.getFakeFeaturedHospitals();
+    final hospitals = FakeFeaturedHospitalsResponse.getFakeFeaturedHospitals();
     if (hospitals.isEmpty) {
       return hospitals;
     }
@@ -109,6 +105,27 @@ class HospitalsRepository {
         requestLimit > hospitals.length ? hospitals.length : requestLimit;
     return hospitals.sublist(0, cappedLimit);
   }
+
+  Future<List<HospitalModel>> _fetchHospitals({
+    int page = 1,
+    int limit = 10,
+  }) async {
+    final result = await _remoteService.listHospitals(page: page, limit: limit);
+
+    if (!result.isSuccess || result.data == null) {
+      final message =
+          _extractMessage(result.error?.message) ?? 'Failed to load hospitals.';
+      throw Exception(message);
+    }
+
+    final hospitalMaps = _extractHospitalMaps(result.data);
+    if (hospitalMaps.isEmpty) {
+      return const [];
+    }
+
+    return hospitalMaps.map(HospitalModel.fromJson).toList(growable: false);
+  }
+
   String? _extractMessage(dynamic message) {
     if (message is String && message.isNotEmpty) {
       return message;
@@ -131,9 +148,7 @@ class HospitalsRepository {
 
   List<Map<String, dynamic>> _extractHospitalMaps(dynamic source) {
     if (source is List) {
-      return source
-          .whereType<Map<String, dynamic>>()
-          .toList(growable: false);
+      return source.whereType<Map<String, dynamic>>().toList(growable: false);
     }
 
     if (source is Map<String, dynamic>) {

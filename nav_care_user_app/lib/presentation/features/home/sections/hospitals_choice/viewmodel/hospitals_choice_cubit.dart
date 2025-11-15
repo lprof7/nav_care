@@ -20,11 +20,11 @@ class HospitalsChoiceCubit extends Cubit<HospitalsChoiceState> {
           hospitals: hospitals,
         ),
       );
-    } catch (error) {
+    } catch (_) {
       emit(
         state.copyWith(
           status: HospitalsChoiceStatus.failure,
-          message: error.toString(),
+          message: null,
         ),
       );
     }

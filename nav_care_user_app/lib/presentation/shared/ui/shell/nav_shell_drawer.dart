@@ -14,6 +14,14 @@ class NavShellDrawer extends StatelessWidget {
   final ValueChanged<Locale> onLocaleChanged;
   final VoidCallback? onLogoutTap;
   final bool isLogoutLoading;
+  final String? userName;
+  final String? userEmail;
+  final String? userPhone;
+  final String? userAvatar;
+  final bool isProfileLoading;
+  final String? profileError;
+  final VoidCallback? onProfileRetry;
+  final VoidCallback? onProfileTap;
 
   const NavShellDrawer({
     super.key,
@@ -26,6 +34,14 @@ class NavShellDrawer extends StatelessWidget {
     this.onVerifyTap,
     this.onLogoutTap,
     this.isLogoutLoading = false,
+    this.userName,
+    this.userEmail,
+    this.userPhone,
+    this.userAvatar,
+    this.isProfileLoading = false,
+    this.profileError,
+    this.onProfileRetry,
+    this.onProfileTap,
   });
 
   @override
@@ -46,6 +62,14 @@ class NavShellDrawer extends StatelessWidget {
                 currentLocale: currentLocale,
                 supportedLocales: supportedLocales,
                 onLocaleChanged: onLocaleChanged,
+                userName: userName,
+                userEmail: userEmail,
+                userPhone: userPhone,
+                userAvatar: userAvatar,
+                isProfileLoading: isProfileLoading,
+                profileError: profileError,
+                onProfileRetry: onProfileRetry,
+                onProfileTap: onProfileTap,
               ),
             ),
             Expanded(
@@ -84,8 +108,9 @@ class NavShellDrawer extends StatelessWidget {
                               child: Text(
                                 destination.label,
                                 style: theme.textTheme.bodyMedium?.copyWith(
-                                  fontWeight:
-                                      isSelected ? FontWeight.w600 : FontWeight.w500,
+                                  fontWeight: isSelected
+                                      ? FontWeight.w600
+                                      : FontWeight.w500,
                                   color: isSelected
                                       ? colorScheme.primary
                                       : theme.textTheme.bodyMedium?.color,
@@ -152,6 +177,14 @@ class _DrawerHeader extends StatelessWidget {
   final Locale currentLocale;
   final List<Locale> supportedLocales;
   final ValueChanged<Locale> onLocaleChanged;
+  final String? userName;
+  final String? userEmail;
+  final String? userPhone;
+  final String? userAvatar;
+  final bool isProfileLoading;
+  final String? profileError;
+  final VoidCallback? onProfileRetry;
+  final VoidCallback? onProfileTap;
 
   const _DrawerHeader({
     required this.onClose,
@@ -159,12 +192,28 @@ class _DrawerHeader extends StatelessWidget {
     required this.currentLocale,
     required this.supportedLocales,
     required this.onLocaleChanged,
+    this.userName,
+    this.userEmail,
+    this.userPhone,
+    this.userAvatar,
+    this.isProfileLoading = false,
+    this.profileError,
+    this.onProfileRetry,
+    this.onProfileTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final displayName = (userName != null && userName!.trim().isNotEmpty)
+        ? userName!.trim()
+        : 'shell.drawer_default_name'.tr();
+    final emailLabel = (userEmail != null && userEmail!.trim().isNotEmpty)
+        ? userEmail!.trim()
+        : 'shell.drawer_default_email'.tr();
+    final phoneLabel =
+        userPhone?.trim().isNotEmpty == true ? userPhone!.trim() : null;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -211,11 +260,15 @@ class _DrawerHeader extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 32,
                   backgroundColor: colorScheme.surface,
-                  child: Icon(
-                    Icons.person_rounded,
-                    color: colorScheme.primary,
-                    size: 32,
-                  ),
+                  backgroundImage:
+                      userAvatar != null ? NetworkImage(userAvatar!) : null,
+                  child: userAvatar == null
+                      ? Icon(
+                          Icons.person_rounded,
+                          color: colorScheme.primary,
+                          size: 32,
+                        )
+                      : null,
                 ),
               ),
               const SizedBox(width: 16),
@@ -224,7 +277,7 @@ class _DrawerHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'shell.drawer_default_name'.tr(),
+                      displayName,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                         color: AppColors.textOnPrimary,
@@ -232,11 +285,99 @@ class _DrawerHeader extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'shell.drawer_default_email'.tr(),
+                      emailLabel,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: AppColors.textOnPrimary.withValues(alpha: 0.72),
                       ),
                     ),
+                    if (phoneLabel != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        phoneLabel,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color:
+                              AppColors.textOnPrimary.withValues(alpha: 0.72),
+                        ),
+                      ),
+                    ],
+                    if (isProfileLoading) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.textOnPrimary,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'profile.drawer_status_loading'.tr(),
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: AppColors.textOnPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ] else if (profileError != null) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Icons.error_outline_rounded,
+                            color: AppColors.textOnPrimary,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              'profile.drawer_status_error'.tr(),
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: AppColors.textOnPrimary
+                                    .withValues(alpha: 0.9),
+                              ),
+                            ),
+                          ),
+                          if (onProfileRetry != null)
+                            TextButton(
+                              onPressed: onProfileRetry,
+                              style: TextButton.styleFrom(
+                                foregroundColor: AppColors.textOnPrimary,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 0,
+                                ),
+                              ),
+                              child: Text('profile.retry'.tr()),
+                            ),
+                        ],
+                      ),
+                    ],
+                    if (onProfileTap != null) ...[
+                      const SizedBox(height: 8),
+                      TextButton.icon(
+                        onPressed: onProfileTap,
+                        icon: const Icon(
+                          Icons.person_outline_rounded,
+                          size: 18,
+                          color: AppColors.textOnPrimary,
+                        ),
+                        label: Text(
+                          'profile.view_profile'.tr(),
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: AppColors.textOnPrimary,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          alignment: Alignment.centerLeft,
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),

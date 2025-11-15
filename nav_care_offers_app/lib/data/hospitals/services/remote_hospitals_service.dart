@@ -46,11 +46,6 @@ class RemoteHospitalsService implements HospitalsService {
       ));
     }
 
-    // For debugging, print FormData fields and files
-    print("FormData fields: ${formData.fields}");
-    print(
-        "FormData files: ${formData.files.map((e) => e.key + ': ' + (e.value.filename ?? 'N/A')).toList()}");
-
     return _apiClient.post(
       _config.hospitals,
       body: formData,
@@ -89,7 +84,7 @@ class RemoteHospitalsService implements HospitalsService {
   @override
   Future<Result<Map<String, dynamic>>> accessHospitalToken(String hospitalId) {
     return _apiClient.get(
-      _config.hospitalById(hospitalId)  ,
+      _config.hospitalById(hospitalId),
       parser: _parseMap,
     );
   }

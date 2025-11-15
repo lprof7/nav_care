@@ -28,6 +28,7 @@ import '../../presentation/features/services/service_creation/viewmodel/service_
 import '../../data/appointments/remote_appointment_service.dart';
 import '../../data/appointments/appointment_repository.dart';
 import '../../presentation/features/appointments/appointment_creation/viewmodel/appointment_creation_cubit.dart';
+import '../../presentation/features/appointments/my_appointments/viewmodel/my_appointments_cubit.dart';
 import '../../data/hospitals/hospital_creation/services/hospital_creation_service.dart';
 import '../../data/hospitals/hospital_creation/services/remote_hospital_creation_service.dart';
 import '../../data/hospitals/hospital_creation/hospital_creation_repository.dart';
@@ -44,8 +45,14 @@ import '../../data/search/search_repository.dart';
 import '../../presentation/features/search/viewmodel/search_cubit.dart';
 import '../../data/advertising/services/advertising_remote_service.dart';
 import '../../data/advertising/advertising_repository.dart';
+import '../../data/service_offerings/service_offerings_remote_service.dart';
+import '../../data/service_offerings/service_offerings_repository.dart';
+import '../../presentation/features/home/sections/recent_service_offerings/viewmodel/recent_service_offerings_cubit.dart';
 
 import '../../presentation/features/home/sections/ads/viewmodel/ads_section_cubit.dart';
+import '../../data/users/user_remote_service.dart';
+import '../../data/users/user_repository.dart';
+import '../../presentation/features/profile/viewmodel/user_profile_cubit.dart';
 
 final sl = GetIt.instance;
 Future<void> configureDependencies(AppConfig config) async {
@@ -97,6 +104,19 @@ Future<void> configureDependencies(AppConfig config) async {
       () => SearchRepository(remoteService: sl<SearchRemoteService>()));
   sl.registerFactory<SearchCubit>(
       () => SearchCubit(repository: sl<SearchRepository>()));
+  sl.registerLazySingleton<ServiceOfferingsRemoteService>(
+      () => ServiceOfferingsRemoteService(apiClient: sl<ApiClient>()));
+  sl.registerLazySingleton<ServiceOfferingsRepository>(() =>
+      ServiceOfferingsRepository(remote: sl<ServiceOfferingsRemoteService>()));
+  sl.registerFactory<RecentServiceOfferingsCubit>(() =>
+      RecentServiceOfferingsCubit(
+          repository: sl<ServiceOfferingsRepository>()));
+  sl.registerLazySingleton<UserRemoteService>(() => UserRemoteService(
+      apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
+  sl.registerLazySingleton<UserRepository>(
+      () => UserRepository(remoteService: sl<UserRemoteService>()));
+  sl.registerFactory<UserProfileCubit>(() => UserProfileCubit(
+      repository: sl<UserRepository>(), userStore: sl<UserStore>()));
 
   // Signin
   sl.registerLazySingleton<SigninService>(
@@ -131,9 +151,15 @@ Future<void> configureDependencies(AppConfig config) async {
 
   // Appointment creation
   sl.registerLazySingleton<RemoteAppointmentService>(
-      () => RemoteAppointmentService(apiClient: sl<ApiClient>()));
+      () => RemoteAppointmentService(
+            apiClient: sl<ApiClient>(),
+            tokenStore: sl<TokenStore>(),
+          ));
+
   sl.registerLazySingleton<AppointmentRepository>(() =>
       AppointmentRepository(remoteService: sl<RemoteAppointmentService>()));
   sl.registerFactory<AppointmentCreationCubit>(
       () => AppointmentCreationCubit(repository: sl<AppointmentRepository>()));
+  sl.registerFactory<MyAppointmentsCubit>(
+      () => MyAppointmentsCubit(sl<AppointmentRepository>()));
 }
