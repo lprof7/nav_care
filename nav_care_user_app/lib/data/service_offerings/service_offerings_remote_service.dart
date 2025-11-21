@@ -11,15 +11,17 @@ class ServiceOfferingsRemoteService {
     int page = 1,
     int limit = 10,
     String? providerId,
+    String? serviceId,
   }) {
     final query = <String, dynamic>{
       'page': page,
       'limit': limit,
       if (providerId != null && providerId.isNotEmpty) 'providerId': providerId,
+      if (serviceId != null && serviceId.isNotEmpty) 'service': serviceId,
     };
 
     return _apiClient.get<Map<String, dynamic>>(
-      '/api/service-offerings',
+      _apiClient.apiConfig.listServiceOfferings,
       query: query,
       parser: (json) {
         if (json is Map<String, dynamic>) {

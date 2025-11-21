@@ -7,7 +7,7 @@ part 'advertising_model.g.dart';
 @freezed
 class Advertising with _$Advertising {
   const factory Advertising({
-    required String id,
+    @JsonKey(name: '_id') required String id,
     required String owner,
     required String image,
     required String link,

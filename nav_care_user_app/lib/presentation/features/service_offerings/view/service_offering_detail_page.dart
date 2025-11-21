@@ -1,7 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nav_care_user_app/data/search/models/search_models.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/molecules/sign_in_required_card.dart';
 
 class ServiceOfferingDetailPage extends StatelessWidget {
   const ServiceOfferingDetailPage({
@@ -237,9 +240,7 @@ class ServiceOfferingDetailPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: FilledButton(
-            onPressed: () {
-              context.push('/appointments/create', extra: item.id);
-            },
+            onPressed: () => _handleAppointmentTap(context),
             style: FilledButton.styleFrom(
               minimumSize: const Size.fromHeight(54),
               textStyle: theme.textTheme.titleMedium?.copyWith(
@@ -250,6 +251,40 @@ class ServiceOfferingDetailPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void _handleAppointmentTap(BuildContext context) {
+    final authState = context.read<AuthSessionCubit>().state;
+    if (!authState.isAuthenticated) {
+      _showSignInPrompt(context);
+      return;
+    }
+    context.push('/appointments/create', extra: item.id);
+  }
+
+  void _showSignInPrompt(BuildContext context) {
+    final rootContext = context;
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
+          ),
+          child: SignInRequiredCard(
+            onSignIn: () {
+              Navigator.of(dialogContext).pop();
+              rootContext.go('/signin');
+            },
+            onCreateAccount: () {
+              Navigator.of(dialogContext).pop();
+              rootContext.go('/signup');
+            },
+            onGoogleSignIn: () {},
+          ),
+        );
+      },
     );
   }
 }

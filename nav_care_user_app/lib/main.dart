@@ -4,8 +4,7 @@ import 'package:nav_care_user_app/app.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/config/config_loader.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
-import 'package:nav_care_user_app/core/storage/token_store.dart';
-import 'package:nav_care_user_app/core/storage/user_store.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,13 +12,9 @@ void main() async {
   await ConfigLoader.load(AppEnv.development);
   await configureDependencies(AppConfig.fromEnv());
 
-  final tokenStore = sl<TokenStore>();
-  final userStore = sl<UserStore>();
-
-  String initialRoute = '/signin';
-  if (await tokenStore.getToken() != null && await userStore.getUser() != null) {
-    initialRoute = '/home';
-  }
+  await sl<AuthSessionCubit>().refreshSession();
+  final isAuthenticated = sl<AuthSessionCubit>().state.isAuthenticated;
+  final initialRoute = isAuthenticated ? '/home' : '/signin';
 
   runApp(
     EasyLocalization(

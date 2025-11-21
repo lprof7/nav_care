@@ -33,42 +33,30 @@ class SearchFilterSheet extends StatefulWidget {
 }
 
 class _SearchFilterSheetState extends State<SearchFilterSheet> {
-  late final TextEditingController _radiusCtrl;
   late final TextEditingController _cityCtrl;
   late final TextEditingController _stateCtrl;
   late final TextEditingController _countryCtrl;
   late final TextEditingController _minPriceCtrl;
   late final TextEditingController _maxPriceCtrl;
-  late final TextEditingController _facilityCtrl;
-  late final TextEditingController _languagesCtrl;
-  late final TextEditingController _insuranceCtrl;
 
   @override
   void initState() {
     super.initState();
-    _radiusCtrl = TextEditingController();
     _cityCtrl = TextEditingController();
     _stateCtrl = TextEditingController();
     _countryCtrl = TextEditingController();
     _minPriceCtrl = TextEditingController();
     _maxPriceCtrl = TextEditingController();
-    _facilityCtrl = TextEditingController();
-    _languagesCtrl = TextEditingController();
-    _insuranceCtrl = TextEditingController();
     _syncControllers(widget.initialFilters);
   }
 
   @override
   void dispose() {
-    _radiusCtrl.dispose();
     _cityCtrl.dispose();
     _stateCtrl.dispose();
     _countryCtrl.dispose();
     _minPriceCtrl.dispose();
     _maxPriceCtrl.dispose();
-    _facilityCtrl.dispose();
-    _languagesCtrl.dispose();
-    _insuranceCtrl.dispose();
     super.dispose();
   }
 
@@ -125,11 +113,7 @@ class _SearchFilterSheetState extends State<SearchFilterSheet> {
                                 const SizedBox(height: 24),
                                 _buildPriceSection(theme, cubit),
                                 const SizedBox(height: 24),
-                                _buildFacilitySection(theme, cubit),
-                                const SizedBox(height: 24),
                                 _buildCollectionsSection(theme, state, cubit),
-                                const SizedBox(height: 24),
-                                _buildSortSection(theme, state, cubit),
                               ],
                             );
                           },
@@ -182,13 +166,6 @@ class _SearchFilterSheetState extends State<SearchFilterSheet> {
     SearchFilterCubit cubit,
   ) {
     final fields = <Widget>[
-      _buildNumberField(
-        controller: _radiusCtrl,
-        label: 'home.search.filters.radius'.tr(),
-        hint: '50',
-        suffixText: 'home.search.filters.radius_suffix'.tr(),
-        onChanged: (value) => cubit.updateRadius(_parseDouble(value)),
-      ),
       _buildTextField(
         controller: _cityCtrl,
         label: 'home.search.filters.address.city'.tr(),
@@ -290,35 +267,7 @@ class _SearchFilterSheetState extends State<SearchFilterSheet> {
   }
 
   Widget _buildFacilitySection(ThemeData theme, SearchFilterCubit cubit) {
-    return _SectionContainer(
-      title: 'home.search.filters.facilityType'.tr(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildTextField(
-            controller: _facilityCtrl,
-            label: 'home.search.filters.facilityType'.tr(),
-            onChanged: cubit.updateFacilityType,
-          ),
-          const SizedBox(height: 16),
-          _buildTextField(
-            controller: _languagesCtrl,
-            label: 'home.search.filters.languages'.tr(),
-            hint: 'home.search.filters.languages_placeholder'.tr(),
-            helperText: 'home.search.filters.languages_hint'.tr(),
-            onChanged: (value) => cubit.updateLanguages(_parseList(value)),
-          ),
-          const SizedBox(height: 16),
-          _buildTextField(
-            controller: _insuranceCtrl,
-            label: 'home.search.filters.insurance'.tr(),
-            hint: 'home.search.filters.insurance_placeholder'.tr(),
-            helperText: 'home.search.filters.insurance_hint'.tr(),
-            onChanged: (value) => cubit.updateInsurance(_parseList(value)),
-          ),
-        ],
-      ),
-    );
+    return const SizedBox.shrink();
   }
 
   Widget _buildCollectionsSection(
@@ -349,62 +298,7 @@ class _SearchFilterSheetState extends State<SearchFilterSheet> {
     SearchFilterState state,
     SearchFilterCubit cubit,
   ) {
-    return _SectionContainer(
-      title: 'home.search.filters.sort.title'.tr(),
-      child: Wrap(
-        spacing: 16,
-        runSpacing: 16,
-        children: [
-          SizedBox(
-            width: 260,
-            child: DropdownButtonFormField<SearchSortField?>(
-              initialValue: state.filters.sortBy,
-              decoration: InputDecoration(
-                labelText: 'home.search.filters.sort.title'.tr(),
-                border: const OutlineInputBorder(),
-              ),
-              items: [
-                DropdownMenuItem<SearchSortField?>(
-                  value: null,
-                  child: Text('- ${'home.search.filters.sort.default'.tr()} -'),
-                ),
-                ...SearchSortField.values.map(
-                  (field) => DropdownMenuItem<SearchSortField?>(
-                    value: field,
-                    child: Text(field.labelKey.tr()),
-                  ),
-                ),
-              ],
-              onChanged: cubit.updateSortBy,
-            ),
-          ),
-          SizedBox(
-            width: 220,
-            child: DropdownButtonFormField<SearchSortOrder?>(
-              initialValue: state.filters.sortOrder,
-              decoration: InputDecoration(
-                labelText: 'home.search.filters.sort.order'.tr(),
-                border: const OutlineInputBorder(),
-              ),
-              items: [
-                DropdownMenuItem<SearchSortOrder?>(
-                  value: null,
-                  child:
-                      Text('- ${'home.search.filters.sort.order_default'.tr()} -'),
-                ),
-                ...SearchSortOrder.values.map(
-                  (order) => DropdownMenuItem<SearchSortOrder?>(
-                    value: order,
-                    child: Text(order.labelKey.tr()),
-                  ),
-                ),
-              ],
-              onChanged: cubit.updateSortOrder,
-            ),
-          ),
-        ],
-      ),
-    );
+    return const SizedBox.shrink();
   }
 
   Widget _buildTextField({
@@ -450,18 +344,11 @@ class _SearchFilterSheetState extends State<SearchFilterSheet> {
   }
 
   void _syncControllers(SearchFilters filters) {
-    _setControllerValue(_radiusCtrl, _formatDouble(filters.radius));
     _setControllerValue(_cityCtrl, filters.city);
     _setControllerValue(_stateCtrl, filters.state);
     _setControllerValue(_countryCtrl, filters.country);
     _setControllerValue(_minPriceCtrl, _formatDouble(filters.minPrice));
     _setControllerValue(_maxPriceCtrl, _formatDouble(filters.maxPrice));
-    _setControllerValue(_facilityCtrl, filters.facilityType);
-    _setControllerValue(_languagesCtrl, filters.languages.join(', '));
-    _setControllerValue(
-      _insuranceCtrl,
-      filters.insuranceAccepted.join(', '),
-    );
   }
 
   void _setControllerValue(TextEditingController controller, String value) {

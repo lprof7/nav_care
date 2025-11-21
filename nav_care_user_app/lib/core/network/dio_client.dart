@@ -6,7 +6,11 @@ class DioClient {
   final Duration timeout;
   final TokenStore? tokenStore;
 
-  DioClient({required this.baseUrl, required this.timeout, this.tokenStore});
+  DioClient({
+    required this.baseUrl,
+    required this.timeout,
+    this.tokenStore,
+  });
 
   Dio build() {
     final dio = Dio(BaseOptions(
@@ -18,7 +22,7 @@ class DioClient {
     ));
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
-        final token = tokenStore == null ? null : await tokenStore!.getToken();
+        final token = await tokenStore?.getToken();
         if (token != null && token.isNotEmpty) {
           options.headers['Authorization'] = 'Bearer $token';
         }

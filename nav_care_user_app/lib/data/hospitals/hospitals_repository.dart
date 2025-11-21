@@ -126,6 +126,22 @@ class HospitalsRepository {
     return hospitalMaps.map(HospitalModel.fromJson).toList(growable: false);
   }
 
+  Future<HospitalModel> getHospitalById(String id) async {
+    final result = await _remoteService.getHospitalById(id);
+    if (!result.isSuccess || result.data == null) {
+      final message =
+          _extractMessage(result.error?.message) ?? 'Failed to load hospital.';
+      throw Exception(message);
+    }
+
+    final data = result.data!;
+    final maps = _extractHospitalMaps(data);
+    if (maps.isEmpty) {
+      throw Exception('Failed to parse hospital details.');
+    }
+    return HospitalModel.fromJson(maps.first);
+  }
+
   String? _extractMessage(dynamic message) {
     if (message is String && message.isNotEmpty) {
       return message;
@@ -152,12 +168,22 @@ class HospitalsRepository {
     }
 
     if (source is Map<String, dynamic>) {
-      const candidateKeys = ['data', 'hospitals', 'docs', 'items', 'results'];
+      const candidateKeys = [
+        'hospital',
+        'hospitals',
+        'data',
+        'docs',
+        'items',
+        'results',
+      ];
       for (final key in candidateKeys) {
         if (!source.containsKey(key)) continue;
         final extracted = _extractHospitalMaps(source[key]);
         if (extracted.isNotEmpty) {
           return extracted;
+        }
+        if (key == 'hospital' && source[key] is Map<String, dynamic>) {
+          return [source[key] as Map<String, dynamic>];
         }
       }
 

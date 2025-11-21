@@ -106,4 +106,14 @@ class ServiceModel {
             ? descriptionAr
             : descriptionSp;
   }
+
+  String? imageUrl(String baseUrl) {
+    if (image.isEmpty) return null;
+    if (image.startsWith('http')) return image;
+    try {
+      return Uri.parse(baseUrl).resolve(image).toString();
+    } catch (_) {
+      return image;
+    }
+  }
 }

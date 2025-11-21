@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nav_care_user_app/core/storage/user_store.dart';
 import 'package:nav_care_user_app/data/authentication/models.dart';
-import 'package:nav_care_user_app/data/users/models/user_profile_model.dart';
 import 'package:nav_care_user_app/data/users/user_repository.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
 
 import 'user_profile_state.dart';
 
@@ -10,91 +10,141 @@ class UserProfileCubit extends Cubit<UserProfileState> {
   UserProfileCubit({
     required UserRepository repository,
     required UserStore userStore,
+    required AuthSessionCubit authSessionCubit,
   })  : _repository = repository,
         _userStore = userStore,
+        _authSessionCubit = authSessionCubit,
         super(const UserProfileState());
 
   final UserRepository _repository;
   final UserStore _userStore;
+  final AuthSessionCubit _authSessionCubit;
 
-  Future<void> loadProfile() async {
-    emit(
-      state.copyWith(
-        status: UserProfileStatus.loading,
-        clearError: true,
-        clearAction: true,
-      ),
-    );
-    try {
-      final profile = await _repository.fetchProfile();
-      await _syncUserStore(profile);
-      emit(
-        state.copyWith(
-          status: UserProfileStatus.loaded,
-          profile: profile,
-          clearError: true,
-          clearAction: true,
-        ),
-      );
-    } catch (error) {
-      emit(
-        state.copyWith(
-          status: UserProfileStatus.failure,
-          errorMessage: error.toString(),
-          clearAction: true,
-        ),
-      );
-    }
+  void listenToAuth([AuthSessionCubit? authCubit]) {
+    final cubit = authCubit ?? _authSessionCubit;
+    cubit.stream.listen((authState) {
+      if (authState.isAuthenticated) {
+        loadProfile();
+      } else {
+        resetProfile();
+      }
+    });
   }
 
-  Future<void> refreshProfile() => loadProfile();
+  Future<void> loadProfile() async {
+    if (state.loadStatus == ProfileLoadStatus.loading) return;
+    emit(state.copyWith(loadStatus: ProfileLoadStatus.loading, clearError: true));
+    try {
+      final profile = await _repository.fetchProfile();
+      emit(state.copyWith(
+        profile: profile,
+        loadStatus: ProfileLoadStatus.success,
+        clearError: true,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        loadStatus: ProfileLoadStatus.failure,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
 
   Future<void> updateProfile({
     String? name,
-    String? password,
+    String? email,
+    String? phone,
+    String? address,
+    String? city,
+    String? province,
+    String? country,
+    String? imagePath,
   }) async {
-    emit(
-      state.copyWith(
-        isUpdating: true,
-        clearAction: true,
-      ),
-    );
+    emit(state.copyWith(updateStatus: ProfileUpdateStatus.updating, clearError: true));
     try {
-      final profile = await _repository.updateProfile(
+      final updated = await _repository.updateProfile(
         name: name,
-        password: password,
+        email: email,
+        phone: phone,
+        address: address,
+        city: city,
+        state: province,
+        country: country,
+        imagePath: imagePath,
       );
-      await _syncUserStore(profile);
-      emit(
-        state.copyWith(
-          profile: profile,
-          isUpdating: false,
-          status: UserProfileStatus.loaded,
-          clearError: true,
-          lastAction: UserProfileAction.updated,
-          actionId: state.actionId + 1,
+      await _userStore.saveUser(
+        User(
+          id: updated.id,
+          name: updated.name,
+          email: updated.email,
+          phone: updated.phone,
+          profilePicture: updated.profilePicture,
         ),
       );
-    } catch (error) {
-      emit(
-        state.copyWith(
-          isUpdating: false,
-          errorMessage: error.toString(),
-          lastAction: UserProfileAction.updateFailed,
-          actionId: state.actionId + 1,
+      _authSessionCubit.setAuthenticatedUser(
+        User(
+          id: updated.id,
+          name: updated.name,
+          email: updated.email,
+          phone: updated.phone,
+          profilePicture: updated.profilePicture,
         ),
       );
+      emit(state.copyWith(
+        profile: updated,
+        updateStatus: ProfileUpdateStatus.success,
+        clearError: true,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        updateStatus: ProfileUpdateStatus.failure,
+        errorMessage: e.toString(),
+      ));
     }
   }
 
-  Future<void> _syncUserStore(UserProfileModel profile) async {
-    final current = await _userStore.getUser();
-    final updated = User(
-      id: profile.id,
-      name: profile.name,
-      email: profile.email,
-      profilePicture: profile.profilePicture ?? current?.profilePicture,
-    );
-    await _userStore.saveUser(updated);
+  Future<void> updatePassword({required String currentPassword, required String newPassword}) async {
+    emit(state.copyWith(passwordStatus: PasswordUpdateStatus.updating, clearError: true));
+    try {
+      await _repository.updatePassword(currentPassword: currentPassword, newPassword: newPassword);
+      emit(state.copyWith(passwordStatus: PasswordUpdateStatus.success));
+    } catch (e) {
+      emit(state.copyWith(
+        passwordStatus: PasswordUpdateStatus.failure,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> requestPasswordReset(String email) async {
+    emit(state.copyWith(resetStatus: PasswordResetStatus.sending, clearError: true));
+    try {
+      await _repository.requestPasswordReset(email);
+      emit(state.copyWith(resetStatus: PasswordResetStatus.success));
+    } catch (e) {
+      emit(state.copyWith(
+        resetStatus: PasswordResetStatus.failure,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+
+  void resetStatuses() {
+    emit(state.copyWith(
+      updateStatus: ProfileUpdateStatus.idle,
+      passwordStatus: PasswordUpdateStatus.idle,
+      resetStatus: PasswordResetStatus.idle,
+      clearError: true,
+    ));
+  }
+
+  void resetProfile() {
+    emit(state.copyWith(
+      clearProfile: true,
+      loadStatus: ProfileLoadStatus.idle,
+      updateStatus: ProfileUpdateStatus.idle,
+      passwordStatus: PasswordUpdateStatus.idle,
+      resetStatus: PasswordResetStatus.idle,
+      clearError: true,
+    ));
   }
 }

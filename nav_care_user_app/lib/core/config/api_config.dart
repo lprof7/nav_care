@@ -11,6 +11,8 @@ class ApiConfig {
 
   // Services
   String get createService => '$baseUrl/api/services';
+  String get listServices => '$baseUrl/api/services';
+  String get listServiceOfferings => '$baseUrl/api/service-offerings';
 
   // Appointments
   String get createAppointment => '$baseUrl/api/appointments';
@@ -21,4 +23,8 @@ class ApiConfig {
   String get createHospital => '$baseUrl/api/hospitals';
   String createHospitalPackages(String hospitalId) =>
       '$baseUrl/api/hospitals/$hospitalId/packages';
+  String hospitalById(String id) => '$baseUrl/api/hospitals/$id';
+  String hospitalClinics(String id) => '$baseUrl/api/hospitals/$id/clinics';
+  String hospitalDoctors(String id) => '$baseUrl/api/hospitals/$id/doctors';
+  String get myHospitalDoctors => '$baseUrl/api/hospitals/me/doctors';
 }

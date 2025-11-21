@@ -20,7 +20,9 @@ class ApiClient {
       final res = await _dio.get(
         path,
         queryParameters: query,
-        options: Options(headers: headers),
+        options: Options(
+          headers: headers,
+        ),
       );
       return Result.success(parser(res.data));
     } on DioException catch (e) {
@@ -38,7 +40,9 @@ class ApiClient {
       final res = await _dio.post(
         path,
         data: body,
-        options: Options(headers: headers),
+        options: Options(
+          headers: headers,
+        ),
       );
       return Result.success(parser(res.data));
     } on DioException catch (e) {
@@ -57,7 +61,9 @@ class ApiClient {
       final res = await _dio.put(
         path,
         data: body,
-        options: Options(headers: headers),
+        options: Options(
+          headers: headers,
+        ),
       );
       return Result.success(parser(res.data));
     } on DioException catch (e) {
@@ -75,7 +81,9 @@ class ApiClient {
       final res = await _dio.patch(
         path,
         data: body,
-        options: Options(headers: headers),
+        options: Options(
+          headers: headers,
+        ),
       );
       return Result.success(parser(res.data));
     } on DioException catch (e) {
@@ -93,7 +101,9 @@ class ApiClient {
       final res = await _dio.delete(
         path,
         data: body,
-        options: Options(headers: headers),
+        options: Options(
+          headers: headers,
+        ),
       );
       return Result.success(parser(res.data));
     } on DioException catch (e) {

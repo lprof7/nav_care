@@ -23,8 +23,9 @@ import '../../data/authentication/signup/services/signup_service.dart';
 import '../../data/authentication/signup/services/remote_signup_service.dart';
 import '../../data/authentication/signup/signup_repository.dart';
 import '../../presentation/features/authentication/signup/viewmodel/signup_cubit.dart';
+import '../../presentation/features/authentication/session/auth_session_cubit.dart';
 
-import '../../presentation/features/services/service_creation/viewmodel/service_creation_cubit.dart';
+import '../../presentation/features/service_offerings/service_creation/viewmodel/service_creation_cubit.dart';
 import '../../data/appointments/remote_appointment_service.dart';
 import '../../data/appointments/appointment_repository.dart';
 import '../../presentation/features/appointments/appointment_creation/viewmodel/appointment_creation_cubit.dart';
@@ -48,6 +49,13 @@ import '../../data/advertising/advertising_repository.dart';
 import '../../data/service_offerings/service_offerings_remote_service.dart';
 import '../../data/service_offerings/service_offerings_repository.dart';
 import '../../presentation/features/home/sections/recent_service_offerings/viewmodel/recent_service_offerings_cubit.dart';
+import '../../data/services/services_remote_service.dart';
+import '../../data/services/services_repository.dart';
+import '../../presentation/features/home/sections/featured_services/viewmodel/featured_services_cubit.dart';
+import '../../presentation/features/service_offerings/viewmodel/service_offerings_by_service_cubit.dart';
+import '../../data/clinics/clinics_remote_service.dart';
+import '../../data/clinics/clinics_repository.dart';
+import '../../presentation/features/hospitals/viewmodel/hospital_detail_cubit.dart';
 
 import '../../presentation/features/home/sections/ads/viewmodel/ads_section_cubit.dart';
 import '../../data/users/user_remote_service.dart';
@@ -69,6 +77,10 @@ Future<void> configureDependencies(AppConfig config) async {
   // Storage
   sl.registerLazySingleton<TokenStore>(() => SecureTokenStore());
   sl.registerLazySingleton<UserStore>(() => SharedPrefsUserStore());
+  sl.registerLazySingleton<AuthSessionCubit>(() => AuthSessionCubit(
+        tokenStore: sl<TokenStore>(),
+        userStore: sl<UserStore>(),
+      ));
 
   // Local service (token/cache)
   // sl.registerSingleton<LocalExampleService>(LocalExampleService());
@@ -111,12 +123,32 @@ Future<void> configureDependencies(AppConfig config) async {
   sl.registerFactory<RecentServiceOfferingsCubit>(() =>
       RecentServiceOfferingsCubit(
           repository: sl<ServiceOfferingsRepository>()));
+  sl.registerLazySingleton<ServicesRemoteService>(
+      () => ServicesRemoteService(apiClient: sl<ApiClient>()));
+  sl.registerLazySingleton<ServicesRepository>(
+      () => ServicesRepository(remoteService: sl<ServicesRemoteService>()));
+  sl.registerFactory<FeaturedServicesCubit>(
+      () => FeaturedServicesCubit(repository: sl<ServicesRepository>()));
+  sl.registerFactory<ServiceOfferingsByServiceCubit>(
+      () => ServiceOfferingsByServiceCubit(sl<ServicesRepository>()));
+  sl.registerLazySingleton<ClinicsRemoteService>(
+      () => ClinicsRemoteService(apiClient: sl<ApiClient>()));
+  sl.registerLazySingleton<ClinicsRepository>(
+      () => ClinicsRepository(remoteService: sl<ClinicsRemoteService>()));
+  sl.registerFactory<HospitalDetailCubit>(() => HospitalDetailCubit(
+        hospitalsRepository: sl<HospitalsRepository>(),
+        clinicsRepository: sl<ClinicsRepository>(),
+        doctorsRepository: sl<DoctorsRepository>(),
+        offeringsRepository: sl<ServiceOfferingsRepository>(),
+      ));
   sl.registerLazySingleton<UserRemoteService>(() => UserRemoteService(
       apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
   sl.registerLazySingleton<UserRepository>(
       () => UserRepository(remoteService: sl<UserRemoteService>()));
   sl.registerFactory<UserProfileCubit>(() => UserProfileCubit(
-      repository: sl<UserRepository>(), userStore: sl<UserStore>()));
+      repository: sl<UserRepository>(),
+      userStore: sl<UserStore>(),
+      authSessionCubit: sl<AuthSessionCubit>()));
 
   // Signin
   sl.registerLazySingleton<SigninService>(

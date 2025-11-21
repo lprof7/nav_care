@@ -1,0 +1,879 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nav_care_user_app/core/config/app_config.dart';
+import 'package:nav_care_user_app/core/di/di.dart';
+import 'package:nav_care_user_app/data/clinics/models/clinic_model.dart';
+import 'package:nav_care_user_app/data/doctors/models/doctor_model.dart';
+import 'package:nav_care_user_app/data/hospitals/models/hospital_model.dart';
+import 'package:nav_care_user_app/data/service_offerings/models/service_offering_model.dart';
+import 'package:nav_care_user_app/presentation/features/hospitals/viewmodel/hospital_detail_cubit.dart';
+import 'package:nav_care_user_app/presentation/features/hospitals/viewmodel/hospital_detail_state.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/cards/hospital_detail_cards.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/molecules/hospital_detail_components.dart';
+
+class HospitalDetailPage extends StatelessWidget {
+  final String hospitalId;
+  final HospitalModel? initial;
+
+  const HospitalDetailPage({
+    super.key,
+    required this.hospitalId,
+    this.initial,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) {
+        final cubit = sl<HospitalDetailCubit>();
+        if (initial != null) {
+          cubit.emit(cubit.state.copyWith(hospital: initial));
+        }
+        cubit.load(hospitalId);
+        return cubit;
+      },
+      child: _HospitalDetailView(hospitalId: hospitalId),
+    );
+  }
+}
+
+class _HospitalDetailView extends StatefulWidget {
+  final String hospitalId;
+  const _HospitalDetailView({required this.hospitalId});
+
+  @override
+  State<_HospitalDetailView> createState() => _HospitalDetailViewState();
+}
+
+class _HospitalDetailViewState extends State<_HospitalDetailView>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
+  bool _isSaved = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 4, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _copyText(String text, String feedback) {
+    Clipboard.setData(ClipboardData(text: text));
+    if (feedback.isEmpty) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(feedback),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<HospitalDetailCubit, HospitalDetailState>(
+      builder: (context, state) {
+        final hospital = state.hospital;
+        final theme = Theme.of(context);
+        final baseUrl = sl<AppConfig>().api.baseUrl;
+
+        if (state.status == HospitalDetailStatus.loading && hospital == null) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (state.status == HospitalDetailStatus.failure && hospital == null) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('hospitals.detail.title'.tr()),
+            ),
+            body: _ErrorView(
+              message: state.message ?? 'hospitals.detail.error'.tr(),
+              onRetry: () =>
+                  context.read<HospitalDetailCubit>().load(widget.hospitalId),
+            ),
+          );
+        }
+
+        if (hospital == null) return const SizedBox.shrink();
+
+        final clinicsCount = state.clinics.length;
+        final doctorsCount = state.doctors.length;
+        final offeringsCount = state.offerings.length;
+        final facility =
+            hospital.field.isNotEmpty ? hospital.field : hospital.facilityType;
+        final cover = hospital.primaryImage(baseUrl: baseUrl);
+        final tabBar = TabBar(
+          controller: _tabController,
+          isScrollable: true,
+          indicatorSize: TabBarIndicatorSize.tab,
+          labelPadding: const EdgeInsets.symmetric(horizontal: 12),
+          indicator: BoxDecoration(
+            color: theme.colorScheme.primary,
+            borderRadius: BorderRadius.circular(14),
+          ),
+          labelColor: Colors.white,
+          unselectedLabelColor:
+              theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+          tabs: [
+            Tab(text: 'hospitals.detail.tabs.details'.tr()),
+            Tab(text: 'hospitals.detail.tabs.clinics'.tr()),
+            Tab(text: 'hospitals.detail.tabs.doctors'.tr()),
+            Tab(text: 'hospitals.detail.tabs.offerings'.tr()),
+          ],
+        );
+
+        return Scaffold(
+          body: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              SliverAppBar(
+                expandedHeight: 260,
+                pinned: true,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                  onPressed: () => Navigator.of(context).maybePop(),
+                ),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.more_horiz_rounded),
+                    onPressed: () {},
+                  ),
+                ],
+                titleSpacing: 0,
+                title: Text(
+                  innerBoxIsScrolled
+                      ? hospital.name
+                      : 'hospitals.detail.title'.tr(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                flexibleSpace: FlexibleSpaceBar(
+                  background: _HeaderCover(imageUrl: cover),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Transform.translate(
+                  offset: const Offset(0, -38),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: HospitalOverviewCard(
+                      title: hospital.name,
+                      subtitle: facility,
+                      rating: hospital.rating,
+                      imageUrl: cover,
+                      stats: [
+                        HospitalOverviewStat(
+                          icon: Icons.local_hospital_rounded,
+                          label: 'hospitals.detail.stats.clinics'.tr(),
+                          value: clinicsCount.toString(),
+                        ),
+                        HospitalOverviewStat(
+                          icon: Icons.people_rounded,
+                          label: 'hospitals.detail.stats.doctors'.tr(),
+                          value: doctorsCount.toString(),
+                        ),
+                        HospitalOverviewStat(
+                          icon: Icons.medical_services_rounded,
+                          label: 'hospitals.detail.stats.offerings'.tr(),
+                          value: offeringsCount.toString(),
+                        ),
+                        HospitalOverviewStat(
+                          icon: Icons.apartment_rounded,
+                          label: 'hospitals.detail.stats.type'.tr(),
+                          value: facility,
+                        ),
+                      ],
+                      primaryActionLabel:
+                          'hospitals.detail.actions.contact'.tr(),
+                      secondaryActionLabel:
+                          'hospitals.detail.actions.location'.tr(),
+                      onPrimaryTap: hospital.address.isNotEmpty
+                          ? () => _copyText(
+                                hospital.address,
+                                'hospitals.detail.actions.address_copied'.tr(),
+                              )
+                          : null,
+                      onSecondaryTap: hospital.latitude != null &&
+                              hospital.longitude != null
+                          ? () => _copyText(
+                                '${hospital.latitude}, ${hospital.longitude}',
+                                'hospitals.detail.actions.location_copied'
+                                    .tr(),
+                              )
+                          : null,
+                      isSaved: _isSaved,
+                      onToggleSave: () =>
+                          setState(() => _isSaved = !_isSaved),
+                    ),
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(child: const SizedBox(height: 6)),
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _SliverTabBarDelegate(
+                  _DecoratedTabBar(tabBar: tabBar),
+                ),
+              ),
+            ],
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                _DetailsTab(
+                  hospital: hospital,
+                  clinicsCount: clinicsCount,
+                  doctorsCount: doctorsCount,
+                  offeringsCount: offeringsCount,
+                ),
+                _ClinicsTab(
+                  clinics: state.clinics,
+                  baseUrl: baseUrl,
+                  isLoading: state.status == HospitalDetailStatus.loading &&
+                      state.clinics.isEmpty,
+                  onRetry: () => context
+                      .read<HospitalDetailCubit>()
+                      .load(widget.hospitalId),
+                ),
+                _DoctorsTab(
+                  doctors: state.doctors,
+                  baseUrl: baseUrl,
+                  isLoading: state.status == HospitalDetailStatus.loading &&
+                      state.doctors.isEmpty,
+                  onRetry: () => context
+                      .read<HospitalDetailCubit>()
+                      .load(widget.hospitalId),
+                ),
+                _OfferingsTab(
+                  offerings: state.offerings,
+                  baseUrl: baseUrl,
+                  isLoading: state.status == HospitalDetailStatus.loading &&
+                      state.offerings.isEmpty,
+                  onRetry: () => context
+                      .read<HospitalDetailCubit>()
+                      .load(widget.hospitalId),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _HeaderCover extends StatelessWidget {
+  final String? imageUrl;
+
+  const _HeaderCover({required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        if (imageUrl != null)
+          Image.network(
+            imageUrl!,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => Container(
+              color: theme.colorScheme.surfaceVariant,
+              alignment: Alignment.center,
+              child: const Icon(Icons.local_hospital_rounded, size: 48),
+            ),
+          )
+        else
+          Container(
+            color: theme.colorScheme.surfaceVariant,
+            alignment: Alignment.center,
+            child: const Icon(Icons.local_hospital_rounded, size: 48),
+          ),
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.black.withOpacity(0.15),
+                Colors.black.withOpacity(0.65),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DecoratedTabBar extends StatelessWidget implements PreferredSizeWidget {
+  final TabBar tabBar;
+
+  const _DecoratedTabBar({required this.tabBar});
+
+  @override
+  Size get preferredSize =>
+      Size.fromHeight(tabBar.preferredSize.height + 18);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      color: theme.colorScheme.surface,
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: tabBar,
+      ),
+    );
+  }
+}
+
+class _DetailsTab extends StatelessWidget {
+  final HospitalModel hospital;
+  final int clinicsCount;
+  final int doctorsCount;
+  final int offeringsCount;
+
+  const _DetailsTab({
+    required this.hospital,
+    required this.clinicsCount,
+    required this.doctorsCount,
+    required this.offeringsCount,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = context.locale.languageCode;
+    final description = hospital.descriptionForLocale(locale);
+    final theme = Theme.of(context);
+
+    return CustomScrollView(
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+          sliver: SliverList(
+            delegate: SliverChildListDelegate([
+              ShadowCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _SectionHeader(
+                      icon: Icons.info_rounded,
+                      title: 'hospitals.detail.about'.tr(),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      description.isNotEmpty
+                          ? description
+                          : 'hospitals.detail.no_description'.tr(),
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              ShadowCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _SectionHeader(
+                      icon: Icons.auto_awesome_mosaic_rounded,
+                      title: 'hospitals.detail.overview'.tr(),
+                    ),
+                    const SizedBox(height: 10),
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: [
+                        HospitalStatCard(
+                          icon: Icons.local_hospital_rounded,
+                          label: 'hospitals.detail.stats.clinics'.tr(),
+                          value: clinicsCount.toString(),
+                        ),
+                        HospitalStatCard(
+                          icon: Icons.people_alt_rounded,
+                          label: 'hospitals.detail.stats.doctors'.tr(),
+                          value: doctorsCount.toString(),
+                        ),
+                        HospitalStatCard(
+                          icon: Icons.medical_services_rounded,
+                          label: 'hospitals.detail.stats.offerings'.tr(),
+                          value: offeringsCount.toString(),
+                        ),
+                        HospitalStatCard(
+                          icon: Icons.star_rounded,
+                          label: 'hospitals.detail.stats.rating'.tr(),
+                          value: hospital.rating > 0
+                              ? hospital.rating.toStringAsFixed(1)
+                              : '--',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              ShadowCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _SectionHeader(
+                      icon: Icons.contact_phone_rounded,
+                      title: 'hospitals.detail.contact'.tr(),
+                    ),
+                    const SizedBox(height: 10),
+                    HospitalInfoRow(
+                      icon: Icons.place_rounded,
+                      title: 'address'.tr(),
+                      value: hospital.address.isNotEmpty
+                          ? hospital.address
+                          : 'hospitals.detail.no_description'.tr(),
+                    ),
+                    if (hospital.latitude != null &&
+                        hospital.longitude != null) ...[
+                      const SizedBox(height: 10),
+                      HospitalInfoRow(
+                        icon: Icons.map_rounded,
+                        title: 'hospitals.detail.location'.tr(),
+                        value:
+                            '${hospital.latitude?.toStringAsFixed(4)}, ${hospital.longitude?.toStringAsFixed(4)}',
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              ShadowCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _SectionHeader(
+                      icon: Icons.auto_awesome_rounded,
+                      title: 'hospitals.detail.specialties'.tr(),
+                    ),
+                    const SizedBox(height: 10),
+                    HospitalGradientCard(
+                      icon: Icons.health_and_safety_rounded,
+                      title: hospital.field.isNotEmpty
+                          ? hospital.field
+                          : hospital.facilityType,
+                      subtitle: 'hospitals.detail.primary_specialty'.tr(),
+                      color: theme.colorScheme.primary.withOpacity(0.12),
+                    ),
+                  ],
+                ),
+              ),
+            ]),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ClinicsTab extends StatelessWidget {
+  final List<ClinicModel> clinics;
+  final bool isLoading;
+  final String baseUrl;
+  final VoidCallback onRetry;
+
+  const _ClinicsTab({
+    required this.clinics,
+    required this.baseUrl,
+    required this.isLoading,
+    required this.onRetry,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading && clinics.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (clinics.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'hospitals.detail.clinics_empty'.tr(),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: onRetry,
+              child: Text('services.offerings.retry'.tr()),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return CustomScrollView(
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+          sliver: SliverToBoxAdapter(
+            child: _FiltersRow(),
+          ),
+        ),
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+          sliver: SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 14,
+              crossAxisSpacing: 14,
+              childAspectRatio: 0.66,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final clinic = clinics[index];
+                final image = clinic.images.isNotEmpty
+                    ? _resolveImage(clinic.images.first, baseUrl)
+                    : null;
+                final subtitle = clinic.description ??
+                    'hospitals.detail.no_description'.tr();
+                return InfoGridCard(
+                  title: clinic.name,
+                  subtitle: subtitle,
+                  badgeLabel: 'hospitals.detail.tabs.clinics'.tr(),
+                  priceLabel: null,
+                  imageUrl: image,
+                  buttonLabel: 'hospitals.detail.cta.view_clinic'.tr(),
+                  onPressed: () {},
+                );
+              },
+              childCount: clinics.length,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DoctorsTab extends StatefulWidget {
+  final List<DoctorModel> doctors;
+  final bool isLoading;
+  final String baseUrl;
+  final VoidCallback onRetry;
+
+  const _DoctorsTab({
+    required this.doctors,
+    required this.isLoading,
+    required this.baseUrl,
+    required this.onRetry,
+  });
+
+  @override
+  State<_DoctorsTab> createState() => _DoctorsTabState();
+}
+
+class _DoctorsTabState extends State<_DoctorsTab> {
+  String _query = '';
+
+  List<DoctorModel> get _filteredDoctors {
+    if (_query.trim().isEmpty) return widget.doctors;
+    final lower = _query.toLowerCase();
+    return widget.doctors
+        .where((doctor) =>
+            doctor.displayName.toLowerCase().contains(lower) ||
+            doctor.specialty.toLowerCase().contains(lower))
+        .toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.isLoading && widget.doctors.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (widget.doctors.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'hospitals.detail.doctors_empty'.tr(),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: widget.onRetry,
+              child: Text('services.offerings.retry'.tr()),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final filtered = _filteredDoctors;
+
+    return CustomScrollView(
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+          sliver: SliverList(
+            delegate: SliverChildListDelegate([
+              TextField(
+                onChanged: (value) => setState(() => _query = value),
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.search_rounded),
+                  hintText: 'hospitals.detail.search_doctors'.tr(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                ),
+              ),
+              const SizedBox(height: 10),
+              _FiltersRow(),
+            ]),
+          ),
+        ),
+        if (filtered.isEmpty)
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(
+              child: Text('hospitals.detail.doctors_empty'.tr()),
+            ),
+          )
+        else
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 14,
+                crossAxisSpacing: 14,
+                childAspectRatio: 0.64,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final doctor = filtered[index];
+                  final avatar =
+                      doctor.coverImage(baseUrl: widget.baseUrl) ??
+                          doctor.avatarImage(baseUrl: widget.baseUrl);
+                  return DoctorGridCard(
+                    title: doctor.displayName,
+                    subtitle: doctor.specialty,
+                    imageUrl: avatar,
+                    rating: doctor.rating > 0 ? doctor.rating : null,
+                    buttonLabel: 'hospitals.detail.cta.view_profile'.tr(),
+                    isSaved: false,
+                    onToggleSave: () {},
+                    onPressed: () {},
+                  );
+                },
+                childCount: filtered.length,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _OfferingsTab extends StatelessWidget {
+  final List<ServiceOfferingModel> offerings;
+  final bool isLoading;
+  final String baseUrl;
+  final VoidCallback onRetry;
+
+  const _OfferingsTab({
+    required this.offerings,
+    required this.baseUrl,
+    required this.isLoading,
+    required this.onRetry,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = context.locale.languageCode;
+    if (isLoading && offerings.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (offerings.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'hospitals.detail.offerings_empty'.tr(),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: onRetry,
+              child: Text('services.offerings.retry'.tr()),
+            ),
+          ],
+        ),
+      );
+    }
+    return CustomScrollView(
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+          sliver: SliverToBoxAdapter(child: _FiltersRow()),
+        ),
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+          sliver: SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 14,
+              crossAxisSpacing: 14,
+              childAspectRatio: 0.66,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final offering = offerings[index];
+                final serviceName = offering.service.nameForLocale(locale);
+                final price = offering.price != null
+                    ? 'services.offerings.price'.tr(
+                        namedArgs: {'price': offering.price!.toStringAsFixed(2)})
+                    : '';
+                final image = _resolveImage(offering.service.image, baseUrl);
+                return InfoGridCard(
+                  title: serviceName,
+                  subtitle: 'hospitals.detail.offerings_subtitle'.tr(),
+                  badgeLabel: 'hospitals.detail.tabs.offerings'.tr(),
+                  priceLabel: price,
+                  imageUrl: image,
+                  buttonLabel: 'hospitals.detail.cta.view_service'.tr(),
+                  onPressed: () {},
+                );
+              },
+              childCount: offerings.length,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _FiltersRow extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      children: [
+        ElevatedButton.icon(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+            backgroundColor: theme.colorScheme.primary.withOpacity(0.08),
+            foregroundColor: theme.colorScheme.primary,
+            elevation: 0,
+          ),
+          icon: const Icon(Icons.tune_rounded, size: 18),
+          label: Text('hospitals.detail.filters'.tr()),
+        ),
+        const Spacer(),
+        Text(
+          'hospitals.detail.sorting'.tr(),
+          style: theme.textTheme.bodyMedium,
+        ),
+        const SizedBox(width: 4),
+        const Icon(Icons.expand_more_rounded, size: 20),
+      ],
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final IconData icon;
+  final String title;
+
+  const _SectionHeader({required this.icon, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      children: [
+        Icon(icon, color: theme.colorScheme.primary),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style:
+              theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+        ),
+      ],
+    );
+  }
+}
+
+class _ErrorView extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+
+  const _ErrorView({required this.message, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(message, textAlign: TextAlign.center),
+          const SizedBox(height: 8),
+          ElevatedButton(
+            onPressed: onRetry,
+            child: Text('services.offerings.retry'.tr()),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String? _resolveImage(String? path, String baseUrl) {
+  if (path == null || path.isEmpty) return null;
+  if (path.startsWith('http')) return path;
+  try {
+    return Uri.parse(baseUrl).resolve(path).toString();
+  } catch (_) {
+    return path;
+  }
+}
+
+class _SliverTabBarDelegate extends SliverPersistentHeaderDelegate {
+  final PreferredSizeWidget tabBar;
+  _SliverTabBarDelegate(this.tabBar);
+
+  @override
+  double get minExtent => tabBar.preferredSize.height;
+
+  @override
+  double get maxExtent => tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return Material(
+      color: Theme.of(context).colorScheme.surface,
+      child: tabBar,
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _SliverTabBarDelegate oldDelegate) {
+    return false;
+  }
+}

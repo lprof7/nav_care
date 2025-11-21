@@ -13,11 +13,13 @@ class ServiceOfferingsRepository {
     int page = 1,
     int limit = 10,
     String? providerId,
+    String? serviceId,
   }) async {
     final response = await _remote.listServiceOfferings(
       page: page,
       limit: limit,
       providerId: providerId,
+      serviceId: serviceId,
     );
 
     if (!response.isSuccess || response.data == null) {

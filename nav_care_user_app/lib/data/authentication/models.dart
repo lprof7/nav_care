@@ -2,12 +2,14 @@ class User {
   final String id;
   final String name;
   final String email;
+  final String? phone;
   final String? profilePicture;
 
   User({
     required this.id,
     required this.name,
     required this.email,
+    this.phone,
     this.profilePicture,
   });
 
@@ -17,6 +19,7 @@ class User {
       name: json['name'],
       email: json['email'],
       profilePicture: json['profilePicture'],
+      phone: json['phone'],
     );
   }
 
@@ -25,6 +28,7 @@ class User {
       '_id': id,
       'name': name,
       'email': email,
+      'phone': phone,
       'profilePicture': profilePicture,
     };
   }

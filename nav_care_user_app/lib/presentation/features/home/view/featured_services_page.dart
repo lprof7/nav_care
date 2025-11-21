@@ -1,5 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nav_care_user_app/core/config/app_config.dart';
+import 'package:nav_care_user_app/core/di/di.dart';
+import 'package:nav_care_user_app/presentation/features/service_offerings/view/service_offerings_by_service_page.dart';
 
 import '../../../../data/services/models/service_model.dart';
 
@@ -10,6 +13,7 @@ class FeaturedServicesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final baseUrl = sl<AppConfig>().api.baseUrl;
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -36,6 +40,7 @@ class FeaturedServicesPage extends StatelessWidget {
                 final service = services[index];
                 final name =
                     service.nameForLanguage(context.locale.languageCode);
+                final imagePath = service.imageUrl(baseUrl);
 
                 return Card(
                   clipBehavior: Clip.antiAlias,
@@ -43,25 +48,34 @@ class FeaturedServicesPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () => _openService(context, service),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Expanded(
-                          child: Image.asset(
-                            service.image,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceVariant,
-                                alignment: Alignment.center,
-                                child:
-                                    const Icon(Icons.image_not_supported_rounded),
-                              );
-                            },
-                          ),
+                          child: imagePath == null
+                              ? Container(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceVariant,
+                                  alignment: Alignment.center,
+                                  child: const Icon(
+                                      Icons.image_not_supported_rounded),
+                                )
+                              : Image.network(
+                                  imagePath,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .surfaceVariant,
+                                      alignment: Alignment.center,
+                                      child: const Icon(
+                                          Icons.image_not_supported_rounded),
+                                    );
+                                  },
+                                ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(12),
@@ -80,6 +94,14 @@ class FeaturedServicesPage extends StatelessWidget {
                 );
               },
             ),
+    );
+  }
+
+  void _openService(BuildContext context, ServiceModel service) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ServiceOfferingsByServicePage(service: service),
+      ),
     );
   }
 }

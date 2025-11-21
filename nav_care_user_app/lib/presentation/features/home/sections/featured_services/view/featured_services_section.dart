@@ -1,12 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nav_care_user_app/core/config/app_config.dart';
+import 'package:nav_care_user_app/core/di/di.dart';
+import 'package:nav_care_user_app/data/services/models/service_model.dart';
+import 'package:nav_care_user_app/presentation/features/service_offerings/view/service_offerings_by_service_page.dart';
 
-import '../../../../../../data/services/services_remote_service.dart';
-import '../../../../../../data/services/services_repository.dart';
 import '../viewmodel/featured_services_cubit.dart';
 import '../viewmodel/featured_services_state.dart';
-import '../../../../../../data/services/models/service_model.dart';
 import '../../../view/featured_services_page.dart';
 
 class FeaturedServicesSection extends StatelessWidget {
@@ -15,11 +16,7 @@ class FeaturedServicesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => FeaturedServicesCubit(
-        repository: ServicesRepository(
-          remoteService: ServicesRemoteService(),
-        ),
-      )..loadFeaturedServices(),
+      create: (_) => sl<FeaturedServicesCubit>()..loadFeaturedServices(),
       child: const _FeaturedServicesBody(),
     );
   }
@@ -50,7 +47,13 @@ class _FeaturedServicesBody extends StatelessWidget {
         }
 
         if (state.services.isEmpty) {
-          return const SizedBox.shrink();
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: Text(
+              'home.featured_services.empty'.tr(),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          );
         }
 
         return Padding(
@@ -127,8 +130,10 @@ class _ServiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final baseUrl = sl<AppConfig>().api.baseUrl;
     final localeCode = context.locale.languageCode;
     final name = service.nameForLanguage(localeCode);
+    final imagePath = service.imageUrl(baseUrl);
 
     return SizedBox(
       width: 160,
@@ -139,18 +144,25 @@ class _ServiceCard extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: InkWell(
-                onTap: () {},
-                child: Image.asset(
-                  service.image,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Theme.of(context).colorScheme.surfaceVariant,
-                      alignment: Alignment.center,
-                      child: const Icon(Icons.image_not_supported_rounded),
-                    );
-                  },
-                ),
+                onTap: () => _openService(context),
+                child: imagePath == null
+                    ? Container(
+                        color: Theme.of(context).colorScheme.surfaceVariant,
+                        alignment: Alignment.center,
+                        child: const Icon(Icons.image_not_supported_rounded),
+                      )
+                    : Image.network(
+                        imagePath,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Theme.of(context).colorScheme.surfaceVariant,
+                            alignment: Alignment.center,
+                            child:
+                                const Icon(Icons.image_not_supported_rounded),
+                          );
+                        },
+                      ),
               ),
             ),
           ),
@@ -164,6 +176,14 @@ class _ServiceCard extends StatelessWidget {
                 ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _openService(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ServiceOfferingsByServicePage(service: service),
       ),
     );
   }

@@ -1,17 +1,29 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/appointments/models/user_appointment_model.dart';
 import 'package:nav_care_user_app/presentation/features/appointments/my_appointments/viewmodel/my_appointments_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/appointments/my_appointments/viewmodel/my_appointments_state.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/molecules/sign_in_required_card.dart';
 
 class MyAppointmentsPage extends StatelessWidget {
   const MyAppointmentsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final isAuthenticated =
+        context.watch<AuthSessionCubit>().state.isAuthenticated;
+    if (!isAuthenticated) {
+      return _AppointmentsAuthPrompt(
+        onSignIn: () => context.go('/signin'),
+        onSignUp: () => context.go('/signup'),
+      );
+    }
+
     return BlocProvider(
       create: (_) => sl<MyAppointmentsCubit>()..fetchAppointments(),
       child: const _MyAppointmentsView(),
@@ -110,6 +122,30 @@ class _MyAppointmentsView extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AppointmentsAuthPrompt extends StatelessWidget {
+  final VoidCallback onSignIn;
+  final VoidCallback onSignUp;
+
+  const _AppointmentsAuthPrompt({
+    required this.onSignIn,
+    required this.onSignUp,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: SignInRequiredCard(
+          onSignIn: onSignIn,
+          onCreateAccount: onSignUp,
+          onGoogleSignIn: () {},
         ),
       ),
     );

@@ -29,8 +29,7 @@ class UserRemoteService {
     );
   }
 
-  Future<Result<Map<String, dynamic>>> updateProfile(
-      Map<String, dynamic> payload) async {
+  Future<Result<Map<String, dynamic>>> updateProfile(Object payload) async {
     final token = await _tokenStore.getToken();
     if (token == null || token.isEmpty) {
       return Result.failure(const Failure.unauthorized());
@@ -39,8 +38,38 @@ class UserRemoteService {
     return _apiClient.patch<Map<String, dynamic>>(
       '/api/users/me',
       body: payload,
+      parser: (json) {
+        print(json);
+        return json as Map<String, dynamic>;
+      },
+      headers: _authHeaders(token),
+    );
+  }
+
+  Future<Result<Map<String, dynamic>>> updatePassword(
+      {required String currentPassword, required String newPassword}) async {
+    final token = await _tokenStore.getToken();
+    if (token == null || token.isEmpty) {
+      return Result.failure(const Failure.unauthorized());
+    }
+
+    return _apiClient.patch<Map<String, dynamic>>(
+      '/api/users/me/change-password',
+      body: {
+        'currentPassword': currentPassword,
+        'newPassword': newPassword,
+      },
       parser: (json) => json as Map<String, dynamic>,
       headers: _authHeaders(token),
+    );
+  }
+
+  Future<Result<Map<String, dynamic>>> requestPasswordReset(
+      {required String email}) async {
+    return _apiClient.post<Map<String, dynamic>>(
+      '/api/auth/forgot-password',
+      body: {'email': email},
+      parser: (json) => json as Map<String, dynamic>,
     );
   }
 

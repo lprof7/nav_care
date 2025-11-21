@@ -9,7 +9,7 @@ import 'package:nav_care_user_app/presentation/features/search/filter/view/searc
 import 'package:nav_care_user_app/presentation/features/search/filter/viewmodel/search_filter_models.dart';
 import 'package:nav_care_user_app/presentation/features/search/viewmodel/search_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/search/viewmodel/search_state.dart';
-import 'package:nav_care_user_app/presentation/features/services/view/service_offering_detail_page.dart';
+import 'package:nav_care_user_app/presentation/features/service_offerings/view/service_offering_detail_page.dart';
 
 import '../../../../core/di/di.dart';
 
@@ -117,14 +117,6 @@ class _SearchViewState extends State<_SearchView> {
       );
     }
 
-    if (filters.radius != null) {
-      addChip(
-        'home.search.filters.badge.radius',
-        'home.search.filters.badge.radius_value'
-            .tr(namedArgs: {'value': format(filters.radius!)}),
-      );
-    }
-
     final ratingTokens = <String>[];
     if (filters.minRating != null) {
       ratingTokens.add(
@@ -165,45 +157,12 @@ class _SearchViewState extends State<_SearchView> {
       );
     }
 
-    if (filters.facilityType.isNotEmpty) {
-      addChip(
-        'home.search.filters.badge.facility',
-        filters.facilityType,
-      );
-    }
-
     if (filters.collections.isNotEmpty) {
       addChip(
         'home.search.filters.badge.collections',
         filters.collections
             .map((collection) => collection.labelKey.tr())
             .join(separator),
-      );
-    }
-
-    if (filters.languages.isNotEmpty) {
-      addChip(
-        'home.search.filters.badge.languages',
-        filters.languages.join(separator),
-      );
-    }
-
-    if (filters.insuranceAccepted.isNotEmpty) {
-      addChip(
-        'home.search.filters.badge.insurance',
-        filters.insuranceAccepted.join(separator),
-      );
-    }
-
-    if (filters.sortBy != null) {
-      final sortLabel = filters.sortBy!.labelKey.tr();
-      final orderLabel = filters.sortOrder != null
-          ? filters.sortOrder!.labelKey.tr()
-          : 'home.search.filters.sort.order_default'.tr();
-      addChip(
-        'home.search.filters.badge.sort',
-        'home.search.filters.badge.sort_value'
-            .tr(namedArgs: {'sort': sortLabel, 'order': orderLabel}),
       );
     }
 
@@ -330,8 +289,7 @@ class _SearchViewState extends State<_SearchView> {
                           onPressed: () =>
                               context.read<SearchCubit>().clearFilters(),
                           icon: const Icon(Icons.clear_all_rounded),
-                          label:
-                              Text('home.search.filters.actions.clear'.tr()),
+                          label: Text('home.search.filters.actions.clear'.tr()),
                         ),
                       ],
                     ),
@@ -351,10 +309,9 @@ class _SearchViewState extends State<_SearchView> {
                 builder: (context, state) {
                   final textTheme = theme.textTheme;
                   final children = <Widget>[];
-                  final hasSuggestions =
-                      state.query.trim().isNotEmpty &&
-                          state.suggestionsStatus == SuggestionsStatus.loaded &&
-                          state.suggestions.isNotEmpty;
+                  final hasSuggestions = state.query.trim().isNotEmpty &&
+                      state.suggestionsStatus == SuggestionsStatus.loaded &&
+                      state.suggestions.isNotEmpty;
 
                   if (hasSuggestions) {
                     children.add(
@@ -449,8 +406,7 @@ class _SearchViewState extends State<_SearchView> {
                           if (items == null || items.isEmpty) continue;
                           children.add(
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8),
+                              padding: const EdgeInsets.symmetric(vertical: 8),
                               child: Text(
                                 _sectionLabel(type),
                                 style: textTheme.titleMedium?.copyWith(

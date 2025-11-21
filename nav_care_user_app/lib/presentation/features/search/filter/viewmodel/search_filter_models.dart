@@ -89,7 +89,6 @@ extension SearchCollectionX on SearchCollection {
 }
 
 class SearchFilters extends Equatable {
-  final double? radius;
   final String city;
   final String state;
   final String country;
@@ -97,15 +96,9 @@ class SearchFilters extends Equatable {
   final double? maxRating;
   final double? minPrice;
   final double? maxPrice;
-  final String facilityType;
-  final List<String> languages;
-  final List<String> insuranceAccepted;
-  final SearchSortField? sortBy;
-  final SearchSortOrder? sortOrder;
   final Set<SearchCollection> collections;
 
   const SearchFilters({
-    this.radius,
     this.city = '',
     this.state = '',
     this.country = '',
@@ -113,17 +106,10 @@ class SearchFilters extends Equatable {
     this.maxRating,
     this.minPrice,
     this.maxPrice,
-    this.facilityType = '',
-    this.languages = const [],
-    this.insuranceAccepted = const [],
-    this.sortBy,
-    this.sortOrder,
     this.collections = const {},
   });
 
   SearchFilters copyWith({
-    double? radius,
-    bool removeRadius = false,
     String? city,
     String? state,
     String? country,
@@ -135,20 +121,8 @@ class SearchFilters extends Equatable {
     bool removeMinPrice = false,
     double? maxPrice,
     bool removeMaxPrice = false,
-    String? facilityType,
-    List<String>? languages,
-    List<String>? insuranceAccepted,
-    SearchSortField? sortBy,
-    bool removeSortBy = false,
-    SearchSortOrder? sortOrder,
-    bool removeSortOrder = false,
     Set<SearchCollection>? collections,
   }) {
-    List<String> toImmutableList(List<String>? values, List<String> fallback) {
-      if (values == null) return fallback;
-      return List<String>.unmodifiable(values);
-    }
-
     Set<SearchCollection> toImmutableSet(
         Set<SearchCollection>? values, Set<SearchCollection> fallback) {
       if (values == null) return fallback;
@@ -156,7 +130,6 @@ class SearchFilters extends Equatable {
     }
 
     return SearchFilters(
-      radius: removeRadius ? null : radius ?? this.radius,
       city: city ?? this.city,
       state: state ?? this.state,
       country: country ?? this.country,
@@ -164,12 +137,6 @@ class SearchFilters extends Equatable {
       maxRating: removeMaxRating ? null : maxRating ?? this.maxRating,
       minPrice: removeMinPrice ? null : minPrice ?? this.minPrice,
       maxPrice: removeMaxPrice ? null : maxPrice ?? this.maxPrice,
-      facilityType: facilityType ?? this.facilityType,
-      languages: toImmutableList(languages, this.languages),
-      insuranceAccepted:
-          toImmutableList(insuranceAccepted, this.insuranceAccepted),
-      sortBy: removeSortBy ? null : sortBy ?? this.sortBy,
-      sortOrder: removeSortOrder ? null : sortOrder ?? this.sortOrder,
       collections: toImmutableSet(collections, this.collections),
     );
   }
@@ -177,7 +144,6 @@ class SearchFilters extends Equatable {
   Map<String, dynamic> toQueryParameters() {
     final params = <String, dynamic>{};
 
-    if (radius != null) params['radius'] = radius;
     if (city.isNotEmpty) params['city'] = city;
     if (state.isNotEmpty) params['state'] = state;
     if (country.isNotEmpty) params['country'] = country;
@@ -185,13 +151,6 @@ class SearchFilters extends Equatable {
     if (maxRating != null) params['maxRating'] = maxRating;
     if (minPrice != null) params['minPrice'] = minPrice;
     if (maxPrice != null) params['maxPrice'] = maxPrice;
-    if (facilityType.isNotEmpty) params['facilityType'] = facilityType;
-    if (languages.isNotEmpty) params['languages'] = languages;
-    if (insuranceAccepted.isNotEmpty) {
-      params['insuranceAccepted'] = insuranceAccepted;
-    }
-    if (sortBy != null) params['sortBy'] = sortBy!.apiValue;
-    if (sortOrder != null) params['sortOrder'] = sortOrder!.apiValue;
     if (collections.isNotEmpty) {
       params['collections'] =
           collections.map((collection) => collection.apiValue).toList();
@@ -201,7 +160,6 @@ class SearchFilters extends Equatable {
   }
 
   bool get isEmpty =>
-      radius == null &&
       city.isEmpty &&
       state.isEmpty &&
       country.isEmpty &&
@@ -209,16 +167,10 @@ class SearchFilters extends Equatable {
       maxRating == null &&
       minPrice == null &&
       maxPrice == null &&
-      facilityType.isEmpty &&
-      languages.isEmpty &&
-      insuranceAccepted.isEmpty &&
-      sortBy == null &&
-      sortOrder == null &&
       collections.isEmpty;
 
   @override
   List<Object?> get props => [
-        radius,
         city,
         state,
         country,
@@ -226,11 +178,6 @@ class SearchFilters extends Equatable {
         maxRating,
         minPrice,
         maxPrice,
-        facilityType,
-        languages,
-        insuranceAccepted,
-        sortBy,
-        sortOrder,
         List<SearchCollection>.from(collections)
           ..sort((a, b) => a.index.compareTo(b.index)),
       ];

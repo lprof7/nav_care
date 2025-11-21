@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/signin/viewmodel/signin_cubit.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/atoms/app_text_field.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/atoms/social_button.dart';
@@ -60,6 +61,9 @@ class SigninPage extends StatelessWidget {
                     child: BlocListener<SigninCubit, SigninState>(
                       listener: (context, state) {
                         if (state is SigninSuccess) {
+                          context
+                              .read<AuthSessionCubit>()
+                              .setAuthenticatedUser(state.user);
                           context.go('/home');
                         } else if (state is SigninFailure) {
                           debugPrint(state.message);
@@ -174,7 +178,7 @@ class _SigninFormState extends State<SigninForm> {
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () => context.go('/profile/forgot-password'),
                 child: Text('forgot_password'.tr()),
               ),
             ],

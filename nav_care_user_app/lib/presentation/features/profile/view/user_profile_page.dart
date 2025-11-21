@@ -1,394 +1,433 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/users/models/user_profile_model.dart';
 import 'package:nav_care_user_app/presentation/features/profile/viewmodel/user_profile_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/profile/viewmodel/user_profile_state.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/atoms/app_button.dart';
+import 'package:nav_care_user_app/presentation/shared/theme/colors.dart';
 
-class UserProfilePage extends StatefulWidget {
+class UserProfilePage extends StatelessWidget {
   const UserProfilePage({super.key});
 
   @override
-  State<UserProfilePage> createState() => _UserProfilePageState();
-}
-
-class _UserProfilePageState extends State<UserProfilePage> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-  UserProfileModel? _lastProfile;
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocConsumer<UserProfileCubit, UserProfileState>(
-      listenWhen: (previous, current) =>
-          previous.actionId != current.actionId && current.lastAction != null,
-      listener: (context, state) {
-        if (!context.mounted) return;
-        final action = state.lastAction;
-        if (action == UserProfileAction.updated) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('profile.update_success'.tr())),
-          );
-        } else if (action == UserProfileAction.updateFailed) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('profile.update_error'.tr())),
-          );
-        }
-      },
-      builder: (context, state) {
-        final profile = state.profile;
-        if (state.status == UserProfileStatus.loading && profile == null) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (state.status == UserProfileStatus.failure && profile == null) {
-          return _ProfileError(
-            message: state.errorMessage ?? 'profile.load_error'.tr(),
-            onRetry: () => context.read<UserProfileCubit>().loadProfile(),
-          );
-        }
-        if (profile == null) {
-          return Center(
-            child: Text(
-              'profile.empty'.tr(),
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          );
-        }
-
-        _syncControllers(profile);
-        final hasChanges = _hasFormChanges(profile);
-
-        return RefreshIndicator(
-          onRefresh: () => context.read<UserProfileCubit>().refreshProfile(),
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-            children: [
-              _ProfileHeaderCard(profile: profile),
-              const SizedBox(height: 16),
-              _EditProfileForm(
-                formKey: _formKey,
-                nameController: _nameController,
-                passwordController: _passwordController,
-                confirmPasswordController: _confirmPasswordController,
-                isUpdating: state.isUpdating,
-                hasChanges: hasChanges,
-                onSave: () => _submitChanges(context, profile),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _syncControllers(UserProfileModel profile) {
-    if (_lastProfile != null &&
-        _lastProfile!.id == profile.id &&
-        _lastProfile!.name == profile.name) {
-      return;
-    }
-    _nameController.text = profile.name;
-    _passwordController.clear();
-    _confirmPasswordController.clear();
-    _lastProfile = profile;
-  }
-
-  bool _hasFormChanges(UserProfileModel profile) {
-    final nameChanged = _nameController.text.trim() != profile.name;
-    final hasPassword = _passwordController.text.isNotEmpty ||
-        _confirmPasswordController.text.isNotEmpty;
-    return nameChanged || hasPassword;
-  }
-
-  void _submitChanges(BuildContext context, UserProfileModel profile) {
-    if (!_formKey.currentState!.validate()) return;
-    if (!_hasFormChanges(profile)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('profile.no_changes'.tr())),
-      );
-      return;
-    }
-
-    final cubit = context.read<UserProfileCubit>();
-    final name = _nameController.text.trim();
-    final password = _passwordController.text.trim();
-
-    cubit.updateProfile(
-      name: name != profile.name ? name : null,
-      password: password.isEmpty ? null : password,
-    );
-  }
-}
-
-class _ProfileHeaderCard extends StatelessWidget {
-  final UserProfileModel profile;
-
-  const _ProfileHeaderCard({required this.profile});
-
-  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final appConfig = sl<AppConfig>();
-    final avatar = profile.avatarUrl(appConfig.api.baseUrl);
+    final colorScheme = theme.colorScheme;
 
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundImage: avatar != null ? NetworkImage(avatar) : null,
-                  child: avatar == null
-                      ? const Icon(Icons.person_rounded, size: 40)
-                      : null,
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        profile.name,
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
+    return Scaffold(
+      body: SafeArea(
+        child: BlocBuilder<UserProfileCubit, UserProfileState>(
+          builder: (context, state) {
+            if (state.loadStatus == ProfileLoadStatus.loading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (state.loadStatus == ProfileLoadStatus.failure) {
+              return _ProfileError(
+                message: state.errorMessage ?? 'profile.load_error'.tr(),
+                onRetry: () => context.read<UserProfileCubit>().loadProfile(),
+              );
+            }
+            if (state.profile == null) {
+              return _ProfileEmpty(onReload: () => context.read<UserProfileCubit>().loadProfile());
+            }
+
+            final profile = state.profile!;
+            final appConfig = sl<AppConfig>();
+            final avatarUrl = profile.avatarUrl(appConfig.api.baseUrl);
+
+            return RefreshIndicator(
+              onRefresh: () => context.read<UserProfileCubit>().loadProfile(),
+              color: colorScheme.primary,
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
+                children: [
+                  _ProfileHeader(
+                    name: profile.name,
+                    email: profile.email,
+                    phone: profile.phone,
+                    avatarUrl: avatarUrl,
+                    backgroundColor: colorScheme.primary,
+                  ),
+                  Transform.translate(
+                    offset: const Offset(0, -36),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: _ProfileDetailsCard(
+                        emailLabel: 'profile.email'.tr(),
+                        email: profile.email,
+                        phoneLabel: 'profile.phone'.tr(),
+                        phone: profile.phone,
+                        addressLabel: 'profile.address_label'.tr(),
+                        address: _buildAddress(profile),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        AppButton(
+                          text: 'profile.edit_profile'.tr(),
+                          onPressed: () => context.push('/profile/edit'),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        profile.email,
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                      if (profile.phone != null && profile.phone!.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Text(
-                            profile.phone!,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.primary,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        const SizedBox(height: 12),
+                        OutlinedButton.icon(
+                          icon: const Icon(Icons.lock_reset_rounded),
+                          onPressed: () => context.push('/profile/password'),
+                          label: Text('profile.update_password_short'.tr()),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.primary,
+                            side: const BorderSide(color: AppColors.primary, width: 1.2),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                           ),
                         ),
-                    ],
+                        
+                        const SizedBox(height: 12),
+                        if (state.updateStatus == ProfileUpdateStatus.failure ||
+                            state.passwordStatus == PasswordUpdateStatus.failure ||
+                            state.resetStatus == PasswordResetStatus.failure)
+                          _StatusBanner(
+                            message: state.errorMessage ?? '',
+                            color: Colors.red.shade100,
+                            textColor: Colors.red.shade800,
+                          )
+                        else if (state.updateStatus == ProfileUpdateStatus.success)
+                          _StatusBanner(
+                            message: 'profile.update_success'.tr(),
+                            color: Colors.green.shade100,
+                            textColor: Colors.green.shade800,
+                          )
+                        else if (state.passwordStatus == PasswordUpdateStatus.success)
+                          _StatusBanner(
+                            message: 'profile.password_update_success'.tr(),
+                            color: Colors.green.shade100,
+                            textColor: Colors.green.shade800,
+                          )
+                        else if (state.resetStatus == PasswordResetStatus.success)
+                          _StatusBanner(
+                            message: 'profile.reset_link_sent'.tr(),
+                            color: Colors.green.shade100,
+                            textColor: Colors.green.shade800,
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: [
-                if (profile.address != null && profile.address!.isNotEmpty)
-                  _InfoChip(
-                    icon: Icons.place_rounded,
-                    label: profile.address!,
-                  ),
-                if (profile.isVerified)
-                  _InfoChip(
-                    icon: Icons.verified_rounded,
-                    label: 'profile.verified'.tr(),
-                  )
-                else
-                  _InfoChip(
-                    icon: Icons.privacy_tip_rounded,
-                    label: 'profile.not_verified'.tr(),
-                  ),
-                _InfoChip(
-                  icon: Icons.calendar_today_rounded,
-                  label: profile.createdAt != null
-                      ? DateFormat.yMMMd().format(profile.createdAt!)
-                      : 'profile.member_since_unknown'.tr(),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
   }
 }
 
-class _EditProfileForm extends StatelessWidget {
-  final GlobalKey<FormState> formKey;
-  final TextEditingController nameController;
-  final TextEditingController passwordController;
-  final TextEditingController confirmPasswordController;
-  final bool isUpdating;
-  final bool hasChanges;
-  final VoidCallback onSave;
-
-  const _EditProfileForm({
-    required this.formKey,
-    required this.nameController,
-    required this.passwordController,
-    required this.confirmPasswordController,
-    required this.isUpdating,
-    required this.hasChanges,
-    required this.onSave,
+class _ProfileHeader extends StatelessWidget {
+  const _ProfileHeader({
+    required this.name,
+    required this.email,
+    required this.avatarUrl,
+    required this.backgroundColor,
+    this.phone,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Form(
-          key: formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'profile.edit_section'.tr(),
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: 'profile.name_label'.tr(),
-                ),
-                textInputAction: TextInputAction.next,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'field_required'.tr();
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: passwordController,
-                decoration: InputDecoration(
-                  labelText: 'profile.password_label'.tr(),
-                  helperText: 'profile.password_helper'.tr(),
-                ),
-                obscureText: true,
-                textInputAction: TextInputAction.next,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return null;
-                  }
-                  if (value.length < 8) {
-                    return 'profile.password_invalid'.tr();
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: confirmPasswordController,
-                decoration: InputDecoration(
-                  labelText: 'profile.confirm_password_label'.tr(),
-                ),
-                obscureText: true,
-                validator: (value) {
-                  if (passwordController.text.isEmpty) {
-                    return null;
-                  }
-                  if (value == null || value.isEmpty) {
-                    return 'profile.confirm_password_required'.tr();
-                  }
-                  if (value != passwordController.text) {
-                    return 'profile.password_mismatch'.tr();
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 24),
-              FilledButton.icon(
-                onPressed: onSave,
-                icon: isUpdating
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.save_rounded),
-                label: Text(isUpdating
-                    ? 'profile.updating'.tr()
-                    : 'profile.save_changes'.tr()),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _InfoChip({required this.icon, required this.label});
+  final String name;
+  final String email;
+  final String? phone;
+  final String? avatarUrl;
+  final Color backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Chip(
-      avatar: Icon(icon, size: 18),
-      label: Text(label),
-      backgroundColor: theme.colorScheme.surfaceVariant.withValues(alpha: 0.6),
-    );
-  }
-}
-
-class _ProfileError extends StatelessWidget {
-  final String message;
-  final VoidCallback onRetry;
-
-  const _ProfileError({required this.message, required this.onRetry});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    return SizedBox(
+      height: 300,
+      child: Stack(
         children: [
-          Icon(
-            Icons.error_outline_rounded,
-            size: 48,
-            color: theme.colorScheme.error,
-          ),
-          const SizedBox(height: 12),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Text(
-              message,
-              textAlign: TextAlign.center,
+          Container(
+            height: 240,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  backgroundColor,
+                  backgroundColor.withOpacity(0.82),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(34),
+                bottomRight: Radius.circular(34),
+              ),
             ),
           ),
-          const SizedBox(height: 12),
-          FilledButton(
-            onPressed: onRetry,
-            child: Text('profile.retry'.tr()),
+          Positioned(
+            top: -24,
+            right: -36,
+            child: Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.08),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 32,
+            left: -32,
+            child: Container(
+              width: 90,
+              height: 90,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.06),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.12),
+                        blurRadius: 14,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  child: CircleAvatar(
+                    radius: 56,
+                    backgroundColor: Colors.white,
+                    backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl!) : null,
+                    child: avatarUrl == null
+                        ? Icon(Icons.person_rounded, size: 56, color: backgroundColor.withOpacity(0.18))
+                        : null,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  name,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  email,
+                  style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white.withOpacity(0.9)),
+                ),
+                if (phone != null && phone!.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    phone!,
+                    style: theme.textTheme.bodySmall?.copyWith(color: Colors.white.withOpacity(0.9)),
+                  ),
+                ],
+              ],
+            ),
           ),
         ],
       ),
     );
   }
+}
+
+class _ProfileDetailsCard extends StatelessWidget {
+  const _ProfileDetailsCard({
+    required this.emailLabel,
+    required this.email,
+    required this.phoneLabel,
+    required this.addressLabel,
+    required this.address,
+    this.phone,
+  });
+
+  final String emailLabel;
+  final String email;
+  final String phoneLabel;
+  final String? phone;
+  final String addressLabel;
+  final String address;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cardColor = theme.colorScheme.surface;
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadow.withOpacity(0.08),
+            blurRadius: 28,
+            offset: const Offset(0, 16),
+            spreadRadius: 2,
+          ),
+        ],
+        border: Border.all(color: theme.dividerColor.withOpacity(0.4)),
+      ),
+      child: Column(
+        children: [
+          _InfoRow(
+            icon: Icons.mail_outline_rounded,
+            label: emailLabel,
+            value: email,
+          ),
+          const Divider(height: 26),
+          _InfoRow(
+            icon: Icons.phone_rounded,
+            label: phoneLabel,
+            value: phone?.isNotEmpty == true ? phone! : '-',
+          ),
+          const Divider(height: 26),
+          _InfoRow(
+            icon: Icons.location_on_outlined,
+            label: addressLabel,
+            value: address,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 42,
+          height: 42,
+          decoration: BoxDecoration(
+            color: AppColors.primary.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: AppColors.primary),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                value,
+                style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProfileError extends StatelessWidget {
+  const _ProfileError({required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.error_outline, size: 48, color: Colors.redAccent),
+          const SizedBox(height: 8),
+          Text(message, textAlign: TextAlign.center),
+          const SizedBox(height: 12),
+          FilledButton(onPressed: onRetry, child: Text('profile.retry'.tr())),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileEmpty extends StatelessWidget {
+  const _ProfileEmpty({required this.onReload});
+
+  final VoidCallback onReload;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.person_outline, size: 48),
+          const SizedBox(height: 8),
+          Text('profile.empty'.tr()),
+          const SizedBox(height: 12),
+          FilledButton(onPressed: onReload, child: Text('profile.retry'.tr())),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatusBanner extends StatelessWidget {
+  const _StatusBanner({required this.message, required this.color, required this.textColor});
+
+  final String message;
+  final Color color;
+  final Color textColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(12)),
+      child: Text(message, style: TextStyle(color: textColor)),
+    );
+  }
+}
+
+String _buildAddress(UserProfileModel profile) {
+  final parts = [
+    profile.address,
+    profile.city,
+    profile.state,
+    profile.country,
+  ].whereType<String>().where((value) => value.trim().isNotEmpty).toList();
+  return parts.isEmpty ? '-' : parts.join(', ');
 }

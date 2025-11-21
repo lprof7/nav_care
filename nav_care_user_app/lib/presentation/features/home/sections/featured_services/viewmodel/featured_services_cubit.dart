@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../../../data/services/models/service_model.dart';
 import '../../../../../../data/services/services_repository.dart';
@@ -14,19 +15,19 @@ class FeaturedServicesCubit extends Cubit<FeaturedServicesState> {
   Future<void> loadFeaturedServices() async {
     emit(state.copyWith(status: FeaturedServicesStatus.loading));
     try {
-      final List<ServiceModel> services =
-          await _repository.getFakeFeaturedServices();
+      final services =
+          await _repository.getServices(page: 1, limit: 10);
       emit(
         state.copyWith(
           status: FeaturedServicesStatus.loaded,
-          services: services,
+          services: services.items,
         ),
       );
     } catch (error) {
       emit(
         state.copyWith(
           status: FeaturedServicesStatus.failure,
-          message: error.toString(),
+          message: 'home.featured_services.error'.tr(),
         ),
       );
     }

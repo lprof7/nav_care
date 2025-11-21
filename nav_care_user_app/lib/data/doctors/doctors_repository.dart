@@ -93,6 +93,33 @@ class DoctorsRepository {
     return sorted.sublist(0, cappedLimit);
   }
 
+  Future<List<DoctorModel>> getHospitalDoctors({
+    required String hospitalId,
+    int page = 1,
+    int limit = 10,
+  }) async {
+    try {
+      final result = await remoteService.listHospitalDoctors(
+        hospitalId: hospitalId,
+        page: page,
+        limit: limit,
+      );
+      if (!result.isSuccess || result.data == null) {
+        final message =
+            _extractMessage(result.error?.message) ?? 'Failed to load doctors.';
+        throw Exception(message);
+      }
+
+      final doctorMaps = _extractDoctorMaps(result.data);
+      if (doctorMaps.isEmpty) {
+        return const [];
+      }
+      return doctorMaps.map(DoctorModel.fromJson).toList(growable: false);
+    } catch (error) {
+      throw Exception(_extractMessage(error) ?? 'Failed to load doctors.');
+    }
+  }
+
   String? _extractMessage(dynamic message) {
     if (message is String && message.isNotEmpty) {
       return message;

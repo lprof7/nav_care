@@ -1,10 +1,19 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/signin/view/signin_page.dart';
+import 'package:nav_care_user_app/presentation/features/faq/view/faq_page.dart';
 import 'package:nav_care_user_app/presentation/features/shell/view/nav_shell_page.dart';
+import 'package:nav_care_user_app/presentation/features/profile/view/edit_user_profile_page.dart';
+import 'package:nav_care_user_app/presentation/features/profile/view/forgot_password_page.dart';
+import 'package:nav_care_user_app/presentation/features/profile/view/update_password_page.dart';
+import 'package:nav_care_user_app/presentation/features/profile/view/user_profile_page.dart';
+import 'package:nav_care_user_app/presentation/features/profile/viewmodel/user_profile_cubit.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
 
 import '../../presentation/features/authentication/signup/view/signup_page.dart';
-import '../../presentation/features/services/service_creation/view/add_service_page.dart';
 import '../../presentation/features/appointments/appointment_creation/view/add_appointment_page.dart';
+import '../../presentation/features/hospitals/view/hospital_detail_page.dart';
+import '../di/di.dart';
 
 final appRouter = GoRouter(
   routes: [
@@ -12,13 +21,55 @@ final appRouter = GoRouter(
     GoRoute(path: '/signin', builder: (ctx, st) => const SigninPage()),
     GoRoute(path: '/signup', builder: (ctx, st) => const SignupPage()),
     GoRoute(path: '/home', builder: (ctx, st) => const NavShellPage()),
-    GoRoute(
-        path: '/services/create', builder: (ctx, st) => const AddServicePage()),
+    GoRoute(path: '/faq', builder: (ctx, st) => const FaqPage()),
     GoRoute(
         path: '/appointments/create',
         builder: (ctx, st) {
           final serviceOfferingId = st.extra as String;
           return AddAppointmentPage(serviceOfferingId: serviceOfferingId);
         }),
+    GoRoute(
+      path: '/hospitals/:id',
+      builder: (ctx, st) {
+        final hospitalId = st.pathParameters['id'] ?? '';
+        return HospitalDetailPage(hospitalId: hospitalId);
+      },
+    ),
+    GoRoute(
+      path: '/profile/edit',
+      builder: (ctx, st) {
+        final cubit = sl<UserProfileCubit>();
+        if (sl<AuthSessionCubit>().state.isAuthenticated) {
+          cubit.loadProfile();
+        }
+        return BlocProvider.value(
+          value: cubit,
+          child: const EditUserProfilePage(),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/profile/password',
+      builder: (ctx, st) {
+        final cubit = sl<UserProfileCubit>();
+        if (sl<AuthSessionCubit>().state.isAuthenticated) {
+          cubit.loadProfile();
+        }
+        return BlocProvider.value(
+          value: cubit,
+          child: const UpdatePasswordPage(),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/profile/forgot-password',
+      builder: (ctx, st) {
+        final cubit = sl<UserProfileCubit>();
+        return BlocProvider.value(
+          value: cubit,
+          child: const ForgotPasswordPage(),
+        );
+      },
+    ),
   ],
 );

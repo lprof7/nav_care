@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
+import 'package:nav_care_user_app/data/users/models/user_profile_model.dart';
 import 'package:nav_care_user_app/presentation/features/appointments/my_appointments/view/my_appointments_page.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/logout/viewmodel/logout_cubit.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/home/view/home_page.dart';
 import 'package:nav_care_user_app/presentation/features/profile/view/user_profile_page.dart';
 import 'package:nav_care_user_app/presentation/features/profile/viewmodel/user_profile_cubit.dart';
@@ -27,29 +29,50 @@ class NavShellPage extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => NavShellCubit()),
         BlocProvider(create: (_) => sl<LogoutCubit>()),
-        BlocProvider(create: (_) => sl<UserProfileCubit>()..loadProfile()),
+        BlocProvider<UserProfileCubit>(
+          create: (context) => sl<UserProfileCubit>()
+            ..loadProfile()
+            ..listenToAuth(context.read<AuthSessionCubit>()),
+        ),
       ],
-      child: BlocListener<LogoutCubit, LogoutState>(
-        listener: (context, state) {
-          if (state is LogoutSuccess) {
-            context.go('/signin');
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('logout_success_message'.tr()),
-              ),
-            );
-          } else if (state is LogoutFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'logout_error_message'.tr(
-                    namedArgs: {'message': state.message},
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<LogoutCubit, LogoutState>(
+            listener: (context, state) {
+              if (state is LogoutSuccess) {
+                context.read<AuthSessionCubit>().clearSession();
+                context.go('/signin');
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('logout_success_message'.tr()),
                   ),
-                ),
-              ),
-            );
-          }
-        },
+                );
+              } else if (state is LogoutFailure) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'logout_error_message'.tr(
+                        namedArgs: {'message': state.message},
+                      ),
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+          BlocListener<AuthSessionCubit, AuthSessionState>(
+            listenWhen: (previous, current) =>
+                previous.status != current.status,
+            listener: (context, state) {
+              final profileCubit = context.watch<UserProfileCubit>();
+              if (state.status == AuthSessionStatus.authenticated) {
+                profileCubit.loadProfile();
+              } else if (state.status == AuthSessionStatus.unauthenticated) {
+                profileCubit.resetProfile();
+              }
+            },
+          ),
+        ],
         child: BlocBuilder<NavShellCubit, NavShellState>(
           builder: (context, state) {
             final cubit = context.read<NavShellCubit>();
@@ -57,9 +80,19 @@ class NavShellPage extends StatelessWidget {
             final logoutState = context.watch<LogoutCubit>().state;
             final isLogoutLoading = logoutState is LogoutInProgress;
             final profileState = context.watch<UserProfileCubit>().state;
-            final profile = profileState.profile;
+            final UserProfileModel? profile =
+                profileState.loadStatus == ProfileLoadStatus.success ||
+                        profileState.updateStatus == ProfileUpdateStatus.success
+                    ? profileState.profile
+                    : null;
+            final authState = context.watch<AuthSessionCubit>().state;
+            final isAuthenticated = authState.isAuthenticated;
+            final sessionUser = authState.user;
             final appConfig = sl<AppConfig>();
-            final avatarPath = profile?.avatarUrl(appConfig.api.baseUrl);
+            final avatarPath = profile?.avatarUrl(appConfig.api.baseUrl) ??
+                sessionUser?.profilePicture;
+            final userName = profile?.name ?? sessionUser?.name;
+            final userEmail = profile?.email ?? sessionUser?.email;
 
             return Scaffold(
               appBar: const NavShellAppBar(
@@ -78,22 +111,32 @@ class NavShellPage extends StatelessWidget {
                 },
                 onLogoutTap: () => context.read<LogoutCubit>().logout(),
                 isLogoutLoading: isLogoutLoading,
-                userName: profile?.name,
-                userEmail: profile?.email,
+                userName: userName,
+                userEmail: userEmail,
                 userPhone: profile?.phone,
                 userAvatar: avatarPath,
                 isProfileLoading:
-                    profileState.status == UserProfileStatus.loading ||
-                        profileState.status == UserProfileStatus.initial,
-                profileError: profileState.status == UserProfileStatus.failure
-                    ? profileState.errorMessage
-                    : null,
+                    profileState.loadStatus == ProfileLoadStatus.loading,
+                profileError:
+                    profileState.loadStatus == ProfileLoadStatus.failure
+                        ? profileState.errorMessage
+                        : null,
                 onProfileRetry: () =>
                     context.read<UserProfileCubit>().loadProfile(),
                 onProfileTap: () {
                   Navigator.of(context).pop();
                   cubit.setTab(destinations.length - 1);
                 },
+                isAuthenticated: isAuthenticated,
+                onSignInTap: () => context.go('/signin'),
+                onSignUpTap: () => context.go('/signup'),
+                onGoogleSignInTap: () {},
+                onFaqTap: () => context.push('/faq'),
+                onContactTap: () {},
+                onSettingsTap: () {},
+                onAboutTap: () {},
+                onFeedbackTap: () {},
+                onSupportTap: () {},
               ),
               body: IndexedStack(
                 index: state.currentIndex,
@@ -127,11 +170,6 @@ class NavShellPage extends StatelessWidget {
         content: const MyAppointmentsPage(),
       ),
       NavShellDestination(
-        label: 'shell.nav_services'.tr(),
-        icon: Icons.monitor_heart,
-        content: const _PlaceholderSection(titleKey: 'shell.nav_services'),
-      ),
-      NavShellDestination(
         label: 'shell.nav_search'.tr(),
         icon: Icons.search_rounded,
         content: const SearchPage(),
@@ -142,20 +180,5 @@ class NavShellPage extends StatelessWidget {
         content: const UserProfilePage(),
       ),
     ];
-  }
-}
-
-class _PlaceholderSection extends StatelessWidget {
-  final String titleKey;
-  const _PlaceholderSection({required this.titleKey});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        titleKey.tr(),
-        style: Theme.of(context).textTheme.headlineMedium,
-      ),
-    );
   }
 }

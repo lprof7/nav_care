@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:nav_care_user_app/core/responses/result.dart';
 
 import 'models/user_profile_model.dart';
@@ -27,18 +30,39 @@ class UserRepository {
 
   Future<UserProfileModel> updateProfile({
     String? name,
-    String? password,
+    String? email,
+    String? phone,
+    String? address,
+    String? city,
+    String? state,
+    String? country,
+    String? imagePath,
   }) async {
     final payload = <String, dynamic>{
       if (name != null && name.isNotEmpty) 'name': name,
-      if (password != null && password.isNotEmpty) 'password': password,
+      if (email != null && email.isNotEmpty) 'email': email,
+      if (phone != null && phone.isNotEmpty) 'phone': phone,
+      if (address != null && address.isNotEmpty) 'address': address,
+      if (city != null && city.isNotEmpty) 'city': city,
+      if (state != null && state.isNotEmpty) 'state': state,
+      if (country != null && country.isNotEmpty) 'country': country,
     };
 
-    if (payload.isEmpty) {
+    final hasImage = imagePath != null && imagePath.isNotEmpty;
+    if (payload.isEmpty && !hasImage) {
       throw Exception('No updates provided.');
     }
 
-    final result = await _remoteService.updateProfile(payload);
+    Object body = payload;
+    if (hasImage) {
+      final fileName = imagePath!.split(Platform.pathSeparator).last;
+      payload['image'] =
+          await MultipartFile.fromFile(imagePath, filename: fileName);
+      body = FormData.fromMap(payload);
+    }
+
+    final result = await _remoteService.updateProfile(body);
+    print(result.data);
     if (!result.isSuccess || result.data == null) {
       final message =
           _extractMessage(result.error?.message) ?? 'Failed to update profile.';
@@ -49,6 +73,30 @@ class UserRepository {
       throw Exception('Profile data is missing.');
     }
     return UserProfileModel.fromJson(userMap);
+  }
+
+  Future<void> updatePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    final result = await _remoteService.updatePassword(
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+    );
+    if (!result.isSuccess) {
+      final message = _extractMessage(result.error?.message) ??
+          'Failed to update password.';
+      throw Exception(message);
+    }
+  }
+
+  Future<void> requestPasswordReset(String email) async {
+    final result = await _remoteService.requestPasswordReset(email: email);
+    if (!result.isSuccess) {
+      final message =
+          _extractMessage(result.error?.message) ?? 'Failed to request reset.';
+      throw Exception(message);
+    }
   }
 
   String? _extractMessage(dynamic message) {

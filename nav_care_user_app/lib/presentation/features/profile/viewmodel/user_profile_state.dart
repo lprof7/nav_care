@@ -1,49 +1,55 @@
 import 'package:equatable/equatable.dart';
+import 'package:nav_care_user_app/data/users/models/user_profile_model.dart';
 
-import '../../../../data/users/models/user_profile_model.dart';
-
-enum UserProfileStatus { initial, loading, loaded, failure }
-
-enum UserProfileAction { updated, updateFailed }
+enum ProfileLoadStatus { idle, loading, success, failure }
+enum ProfileUpdateStatus { idle, updating, success, failure }
+enum PasswordUpdateStatus { idle, updating, success, failure }
+enum PasswordResetStatus { idle, sending, success, failure }
 
 class UserProfileState extends Equatable {
-  final UserProfileStatus status;
   final UserProfileModel? profile;
-  final bool isUpdating;
+  final ProfileLoadStatus loadStatus;
+  final ProfileUpdateStatus updateStatus;
+  final PasswordUpdateStatus passwordStatus;
+  final PasswordResetStatus resetStatus;
   final String? errorMessage;
-  final UserProfileAction? lastAction;
-  final int actionId;
 
   const UserProfileState({
-    this.status = UserProfileStatus.initial,
     this.profile,
-    this.isUpdating = false,
+    this.loadStatus = ProfileLoadStatus.idle,
+    this.updateStatus = ProfileUpdateStatus.idle,
+    this.passwordStatus = PasswordUpdateStatus.idle,
+    this.resetStatus = PasswordResetStatus.idle,
     this.errorMessage,
-    this.lastAction,
-    this.actionId = 0,
   });
 
   UserProfileState copyWith({
-    UserProfileStatus? status,
     UserProfileModel? profile,
-    bool? isUpdating,
+    bool clearProfile = false,
+    ProfileLoadStatus? loadStatus,
+    ProfileUpdateStatus? updateStatus,
+    PasswordUpdateStatus? passwordStatus,
+    PasswordResetStatus? resetStatus,
     String? errorMessage,
     bool clearError = false,
-    UserProfileAction? lastAction,
-    bool clearAction = false,
-    int? actionId,
   }) {
     return UserProfileState(
-      status: status ?? this.status,
-      profile: profile ?? this.profile,
-      isUpdating: isUpdating ?? this.isUpdating,
+      profile: clearProfile ? null : profile ?? this.profile,
+      loadStatus: loadStatus ?? this.loadStatus,
+      updateStatus: updateStatus ?? this.updateStatus,
+      passwordStatus: passwordStatus ?? this.passwordStatus,
+      resetStatus: resetStatus ?? this.resetStatus,
       errorMessage: clearError ? null : errorMessage ?? this.errorMessage,
-      lastAction: clearAction ? null : lastAction ?? this.lastAction,
-      actionId: actionId ?? this.actionId,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [status, profile, isUpdating, errorMessage, lastAction, actionId];
+  List<Object?> get props => [
+        profile,
+        loadStatus,
+        updateStatus,
+        passwordStatus,
+        resetStatus,
+        errorMessage,
+      ];
 }

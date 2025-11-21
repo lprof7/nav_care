@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
-import 'package:nav_care_user_app/presentation/features/services/service_creation/viewmodel/service_creation_cubit.dart';
+import 'package:nav_care_user_app/presentation/features/service_offerings/service_creation/viewmodel/service_creation_cubit.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/atoms/app_text_field.dart';
 

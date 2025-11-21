@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../shared/theme/colors.dart';
+import '../molecules/sign_in_required_card.dart';
 import 'nav_shell_destination.dart';
 
 class NavShellDrawer extends StatelessWidget {
@@ -22,6 +23,16 @@ class NavShellDrawer extends StatelessWidget {
   final String? profileError;
   final VoidCallback? onProfileRetry;
   final VoidCallback? onProfileTap;
+  final bool isAuthenticated;
+  final VoidCallback? onSignInTap;
+  final VoidCallback? onSignUpTap;
+  final VoidCallback? onGoogleSignInTap;
+  final VoidCallback? onFaqTap;
+  final VoidCallback? onContactTap;
+  final VoidCallback? onSettingsTap;
+  final VoidCallback? onAboutTap;
+  final VoidCallback? onFeedbackTap;
+  final VoidCallback? onSupportTap;
 
   const NavShellDrawer({
     super.key,
@@ -42,6 +53,16 @@ class NavShellDrawer extends StatelessWidget {
     this.profileError,
     this.onProfileRetry,
     this.onProfileTap,
+    required this.isAuthenticated,
+    this.onSignInTap,
+    this.onSignUpTap,
+    this.onGoogleSignInTap,
+    this.onFaqTap,
+    this.onContactTap,
+    this.onSettingsTap,
+    this.onAboutTap,
+    this.onFeedbackTap,
+    this.onSupportTap,
   });
 
   @override
@@ -70,6 +91,31 @@ class NavShellDrawer extends StatelessWidget {
                 profileError: profileError,
                 onProfileRetry: onProfileRetry,
                 onProfileTap: onProfileTap,
+                isAuthenticated: isAuthenticated,
+                onSignInTap: onSignInTap == null
+                    ? null
+                    : () {
+                        Navigator.of(context).pop();
+                        onSignInTap?.call();
+                      },
+                onSignUpTap: onSignUpTap == null
+                    ? null
+                    : () {
+                        Navigator.of(context).pop();
+                        onSignUpTap?.call();
+                      },
+                onGoogleSignInTap: onGoogleSignInTap == null
+                    ? null
+                    : () {
+                        Navigator.of(context).pop();
+                        onGoogleSignInTap?.call();
+                      },
+                onFaqTap: onFaqTap,
+                onContactTap: onContactTap,
+                onSettingsTap: onSettingsTap,
+                onAboutTap: onAboutTap,
+                onFeedbackTap: onFeedbackTap,
+                onSupportTap: onSupportTap,
               ),
             ),
             Expanded(
@@ -130,16 +176,53 @@ class NavShellDrawer extends StatelessWidget {
               ),
             ),
             const Divider(height: 1),
-            ListTile(
-              leading: Icon(
-                Icons.settings_rounded,
-                color: theme.iconTheme.color,
-              ),
-              title: Text(
-                'shell.drawer_settings'.tr(),
-                style: theme.textTheme.bodyMedium,
-              ),
-              onTap: () => Navigator.of(context).pop(),
+            _DrawerActionTile(
+              icon: Icons.help_center_rounded,
+              label: 'shell.drawer_faq'.tr(),
+              onTap: () {
+                Navigator.of(context).pop();
+                onFaqTap?.call();
+              },
+            ),
+            _DrawerActionTile(
+              icon: Icons.mail_outline_rounded,
+              label: 'shell.drawer_contact'.tr(),
+              onTap: () {
+                Navigator.of(context).pop();
+                onContactTap?.call();
+              },
+            ),
+            _DrawerActionTile(
+              icon: Icons.settings_rounded,
+              label: 'shell.drawer_settings'.tr(),
+              onTap: () {
+                Navigator.of(context).pop();
+                onSettingsTap?.call();
+              },
+            ),
+            _DrawerActionTile(
+              icon: Icons.info_outline_rounded,
+              label: 'shell.drawer_about'.tr(),
+              onTap: () {
+                Navigator.of(context).pop();
+                onAboutTap?.call();
+              },
+            ),
+            _DrawerActionTile(
+              icon: Icons.feedback_rounded,
+              label: 'shell.drawer_feedback'.tr(),
+              onTap: () {
+                Navigator.of(context).pop();
+                onFeedbackTap?.call();
+              },
+            ),
+            _DrawerActionTile(
+              icon: Icons.support_agent_rounded,
+              label: 'shell.drawer_support'.tr(),
+              onTap: () {
+                Navigator.of(context).pop();
+                onSupportTap?.call();
+              },
             ),
             ListTile(
               leading: Icon(
@@ -150,7 +233,7 @@ class NavShellDrawer extends StatelessWidget {
                 'shell.drawer_logout'.tr(),
                 style: theme.textTheme.bodyMedium,
               ),
-              enabled: !isLogoutLoading,
+              enabled: isAuthenticated && !isLogoutLoading,
               trailing: isLogoutLoading
                   ? const SizedBox(
                       width: 18,
@@ -159,7 +242,7 @@ class NavShellDrawer extends StatelessWidget {
                     )
                   : null,
               onTap: () {
-                if (isLogoutLoading) return;
+                if (isLogoutLoading || !isAuthenticated) return;
                 Navigator.of(context).pop();
                 onLogoutTap?.call();
               },
@@ -185,6 +268,16 @@ class _DrawerHeader extends StatelessWidget {
   final String? profileError;
   final VoidCallback? onProfileRetry;
   final VoidCallback? onProfileTap;
+  final bool isAuthenticated;
+  final VoidCallback? onSignInTap;
+  final VoidCallback? onSignUpTap;
+  final VoidCallback? onGoogleSignInTap;
+  final VoidCallback? onFaqTap;
+  final VoidCallback? onContactTap;
+  final VoidCallback? onSettingsTap;
+  final VoidCallback? onAboutTap;
+  final VoidCallback? onFeedbackTap;
+  final VoidCallback? onSupportTap;
 
   const _DrawerHeader({
     required this.onClose,
@@ -200,6 +293,16 @@ class _DrawerHeader extends StatelessWidget {
     this.profileError,
     this.onProfileRetry,
     this.onProfileTap,
+    required this.isAuthenticated,
+    this.onSignInTap,
+    this.onSignUpTap,
+    this.onGoogleSignInTap,
+    this.onFaqTap,
+    this.onContactTap,
+    this.onSettingsTap,
+    this.onAboutTap,
+    this.onFeedbackTap,
+    this.onSupportTap,
   });
 
   @override
@@ -247,156 +350,244 @@ class _DrawerHeader extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          Row(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.textOnPrimary.withValues(alpha: 0.4),
-                    width: 3,
+          if (isAuthenticated) ...[
+            Row(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.textOnPrimary.withValues(alpha: 0.4),
+                      width: 3,
+                    ),
+                  ),
+                  child: CircleAvatar(
+                    radius: 32,
+                    backgroundColor: colorScheme.surface,
+                    backgroundImage:
+                        userAvatar != null ? NetworkImage(userAvatar!) : null,
+                    child: userAvatar == null
+                        ? Icon(
+                            Icons.person_rounded,
+                            color: colorScheme.primary,
+                            size: 32,
+                          )
+                        : null,
                   ),
                 ),
-                child: CircleAvatar(
-                  radius: 32,
-                  backgroundColor: colorScheme.surface,
-                  backgroundImage:
-                      userAvatar != null ? NetworkImage(userAvatar!) : null,
-                  child: userAvatar == null
-                      ? Icon(
-                          Icons.person_rounded,
-                          color: colorScheme.primary,
-                          size: 32,
-                        )
-                      : null,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      displayName,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textOnPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      emailLabel,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.textOnPrimary.withValues(alpha: 0.72),
-                      ),
-                    ),
-                    if (phoneLabel != null) ...[
-                      const SizedBox(height: 2),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Text(
-                        phoneLabel,
+                        displayName,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textOnPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        emailLabel,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color:
                               AppColors.textOnPrimary.withValues(alpha: 0.72),
                         ),
                       ),
-                    ],
-                    if (isProfileLoading) ...[
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: AppColors.textOnPrimary,
-                            ),
+                      if (phoneLabel != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          phoneLabel,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: AppColors.textOnPrimary
+                                .withValues(alpha: 0.72),
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'profile.drawer_status_loading'.tr(),
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: AppColors.textOnPrimary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ] else if (profileError != null) ...[
-                      const SizedBox(height: 8),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(
-                            Icons.error_outline_rounded,
-                            color: AppColors.textOnPrimary,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: Text(
-                              'profile.drawer_status_error'.tr(),
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: AppColors.textOnPrimary
-                                    .withValues(alpha: 0.9),
+                        ),
+                      ],
+                      if (isProfileLoading) ...[
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.textOnPrimary,
                               ),
                             ),
-                          ),
-                          if (onProfileRetry != null)
-                            TextButton(
-                              onPressed: onProfileRetry,
-                              style: TextButton.styleFrom(
-                                foregroundColor: AppColors.textOnPrimary,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 0,
+                            const SizedBox(width: 8),
+                            Text(
+                              'profile.drawer_status_loading'.tr(),
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: AppColors.textOnPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ] else if (profileError != null) ...[
+                        const SizedBox(height: 8),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(
+                              Icons.error_outline_rounded,
+                              color: AppColors.textOnPrimary,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                'profile.drawer_status_error'.tr(),
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: AppColors.textOnPrimary
+                                      .withValues(alpha: 0.9),
                                 ),
                               ),
-                              child: Text('profile.retry'.tr()),
                             ),
-                        ],
-                      ),
-                    ],
-                    if (onProfileTap != null) ...[
-                      const SizedBox(height: 8),
-                      TextButton.icon(
-                        onPressed: onProfileTap,
-                        icon: const Icon(
-                          Icons.person_outline_rounded,
-                          size: 18,
-                          color: AppColors.textOnPrimary,
+                            if (onProfileRetry != null)
+                              TextButton(
+                                onPressed: onProfileRetry,
+                                style: TextButton.styleFrom(
+                                  foregroundColor: AppColors.textOnPrimary,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 0,
+                                  ),
+                                ),
+                                child: Text('profile.retry'.tr()),
+                              ),
+                          ],
                         ),
-                        label: Text(
-                          'profile.view_profile'.tr(),
-                          style: theme.textTheme.labelLarge?.copyWith(
+                      ],
+                      if (onProfileTap != null) ...[
+                        const SizedBox(height: 8),
+                        TextButton.icon(
+                          onPressed: onProfileTap,
+                          icon: const Icon(
+                            Icons.person_outline_rounded,
+                            size: 18,
                             color: AppColors.textOnPrimary,
                           ),
+                          label: Text(
+                            'profile.view_profile'.tr(),
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: AppColors.textOnPrimary,
+                            ),
+                          ),
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            alignment: Alignment.centerLeft,
+                          ),
                         ),
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          alignment: Alignment.centerLeft,
-                        ),
-                      ),
+                      ],
                     ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.textOnPrimary,
+                foregroundColor: AppColors.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+              onPressed: onVerifyTap,
+              child: Text('shell.drawer_verify_phone'.tr()),
+            ),
+          ] else ...[
+            InkWell(
+              borderRadius: BorderRadius.circular(18),
+              onTap: () => _openAuthDialog(context),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  color: AppColors.textOnPrimary.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: AppColors.textOnPrimary.withValues(alpha: 0.2),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.lock_outline_rounded,
+                      color: AppColors.textOnPrimary,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'auth_required.title'.tr(),
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              color: AppColors.textOnPrimary,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'auth_required.description'.tr(),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: AppColors.textOnPrimary
+                                  .withValues(alpha: 0.8),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 16,
+                      color: AppColors.textOnPrimary,
+                    ),
                   ],
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.textOnPrimary,
-              foregroundColor: AppColors.primary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
-              ),
             ),
-            onPressed: onVerifyTap,
-            child: Text('shell.drawer_verify_phone'.tr()),
-          ),
+          ],
         ],
       ),
+    );
+  }
+
+  void _openAuthDialog(BuildContext context) {
+    if (onSignInTap == null && onSignUpTap == null && onGoogleSignInTap == null) {
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (dialogCtx) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: SignInRequiredCard(
+            onSignIn: () {
+              Navigator.of(dialogCtx).pop();
+              onSignInTap?.call();
+            },
+            onCreateAccount: () {
+              Navigator.of(dialogCtx).pop();
+              onSignUpTap?.call();
+            },
+            onGoogleSignIn: onGoogleSignInTap == null
+                ? null
+                : () {
+                    Navigator.of(dialogCtx).pop();
+                    onGoogleSignInTap?.call();
+                  },
+            padding: const EdgeInsets.all(24),
+          ),
+        );
+      },
     );
   }
 }
@@ -424,6 +615,31 @@ class _BadgeChip extends StatelessWidget {
           fontWeight: FontWeight.w600,
         ),
       ),
+    );
+  }
+}
+
+class _DrawerActionTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+
+  const _DrawerActionTile({
+    required this.icon,
+    required this.label,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return ListTile(
+      leading: Icon(icon, color: theme.iconTheme.color),
+      title: Text(
+        label,
+        style: theme.textTheme.bodyMedium,
+      ),
+      onTap: onTap,
     );
   }
 }

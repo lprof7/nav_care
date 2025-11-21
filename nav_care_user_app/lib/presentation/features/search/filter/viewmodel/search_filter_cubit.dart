@@ -24,17 +24,6 @@ class SearchFilterCubit extends Cubit<SearchFilterState> {
     );
   }
 
-  void updateRadius(double? value) {
-    emit(
-      state.copyWith(
-        filters: state.filters.copyWith(
-          radius: value,
-          removeRadius: value == null,
-        ),
-      ),
-    );
-  }
-
   void updateCity(String value) {
     emit(
       state.copyWith(
@@ -91,52 +80,6 @@ class SearchFilterCubit extends Cubit<SearchFilterState> {
         filters: state.filters.copyWith(
           maxPrice: value,
           removeMaxPrice: value == null,
-        ),
-      ),
-    );
-  }
-
-  void updateFacilityType(String value) {
-    emit(
-      state.copyWith(
-        filters: state.filters.copyWith(facilityType: value),
-      ),
-    );
-  }
-
-  void updateLanguages(List<String> values) {
-    emit(
-      state.copyWith(
-        filters: state.filters.copyWith(languages: values),
-      ),
-    );
-  }
-
-  void updateInsurance(List<String> values) {
-    emit(
-      state.copyWith(
-        filters: state.filters.copyWith(insuranceAccepted: values),
-      ),
-    );
-  }
-
-  void updateSortBy(SearchSortField? value) {
-    emit(
-      state.copyWith(
-        filters: state.filters.copyWith(
-          sortBy: value,
-          removeSortBy: value == null,
-        ),
-      ),
-    );
-  }
-
-  void updateSortOrder(SearchSortOrder? value) {
-    emit(
-      state.copyWith(
-        filters: state.filters.copyWith(
-          sortOrder: value,
-          removeSortOrder: value == null,
         ),
       ),
     );

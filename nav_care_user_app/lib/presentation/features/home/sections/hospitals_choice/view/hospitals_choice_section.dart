@@ -5,6 +5,7 @@ import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/hospitals/models/hospital_model.dart';
 import 'package:nav_care_user_app/presentation/features/home/view/navcare_hospitals_page.dart';
+import 'package:nav_care_user_app/presentation/features/hospitals/view/hospital_detail_page.dart';
 
 import '../viewmodel/hospitals_choice_cubit.dart';
 import '../viewmodel/hospitals_choice_state.dart';
@@ -118,7 +119,7 @@ class _HospitalCard extends StatelessWidget {
     return SizedBox(
       width: 260,
       child: GestureDetector(
-        onTap: () {},
+        onTap: () => _openDetail(context),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(24),
           child: Stack(
@@ -196,6 +197,17 @@ class _HospitalCard extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  void _openDetail(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => HospitalDetailPage(
+          hospitalId: hospital.id,
+          initial: hospital,
         ),
       ),
     );
