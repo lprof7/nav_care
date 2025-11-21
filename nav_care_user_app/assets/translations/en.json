@@ -352,4 +352,76 @@
     "faq.questions.password_reset.answer": "Use the \"Forgot password\" option on the sign-in screen to request a reset. Follow the on-screen steps to set a new password with your email or phone number.",
     "faq.questions.data_sync.question": "The app is not loading data. What should I try?",
     "faq.questions.data_sync.answer": "Check your internet connection, then pull to refresh on Home, Search, or Appointments. If the issue persists, sign out and back in to refresh your session before trying again."
+    ,
+    "about": {
+        "title": "About Us",
+        "hero": {
+            "title": "Welcome to NavCare",
+            "subtitle": "Connecting patients and healthcare providers worldwide with secure booking, messaging, and payments."
+        },
+        "about_us": {
+            "title": "About NavCare",
+            "body": "NavCare is a web and mobile platform built to connect patients with healthcare providers across the globe. With appointment booking, integrated messaging, and secure payment options, it offers a simple and safe way to access medical services. More than a platform, it is a vision for streamlined international care that will evolve into a multi-service hub with digital health solutions, personalized support, and smooth experiences at every step."
+        },
+        "story": {
+            "title": "Our Story",
+            "body": "Founded in 2024, NavMarket was created to overcome the gaps we saw in existing marketplaces. We set out to build a space that is secure, efficient, and rich in features that elevate every user’s experience."
+        },
+        "priorities": {
+            "title": "Our Priorities",
+            "body": "Quality, reliability, and security guide how we design and deliver every solution.",
+            "quality": {
+                "title": "Quality",
+                "body": "Quality is a standard built into every service. We deliver top-tier products through rigorous controls at each stage, ensuring reliability, efficiency, and a perfect fit for our clients’ needs."
+            },
+            "reliability": {
+                "title": "Reliability",
+                "body": "Reliability is at the heart of our work. We craft robust, stable, and high-performing products that meet expectations over time through disciplined processes and continuous monitoring."
+            },
+            "security": {
+                "title": "Security",
+                "body": "Security is a top priority. We safeguard data and financial transactions with advanced protocols, constantly updating our defenses so clients operate with confidence and peace of mind."
+            }
+        },
+        "company": {
+            "title": "Our Company",
+            "body": "KIG (Koudri Innovations Group) is a dynamic, innovative extension of our organization, already specialized across three domains. As a new subsidiary, we stay close to trends and technological advances, blending established expertise with an agile, customer-centric mindset to deliver cutting-edge software, technology, and digital experiences. Our dedication to innovation and excellence positions us to tackle tomorrow’s challenges while creating lasting value for clients and partners."
+        },
+        "offerings": {
+            "title": "What We Offer",
+            "body": "A platform designed to host and highlight the services people look for every day.",
+            "diverse_listings": {
+                "title": "Diverse Listings",
+                "body": "From real estate to cars, services, and daily essentials, we gather a wide range of listings to meet every need."
+            },
+            "user_experience": {
+                "title": "User-Friendly Experience",
+                "body": "An intuitive design and easy-to-use interface make buying and selling straightforward and stress-free."
+            },
+            "subscriptions": {
+                "title": "Subscription Plans",
+                "body": "Flexible subscription plans unlock extra benefits and promotional opportunities."
+            }
+        },
+        "values": {
+            "title": "Our Values",
+            "body": "Community, customer focus, and innovation shape how we build NavCare.",
+            "community": {
+                "title": "Community",
+                "body": "Beyond transactions, our marketplace fosters a vibrant community where support and growth come together."
+            },
+            "customer_first": {
+                "title": "Customer First",
+                "body": "Users sit at the center of every decision, ensuring their needs and satisfaction always come first."
+            },
+            "innovation": {
+                "title": "Innovation",
+                "body": "We continuously improve to deliver modern features that keep the experience fresh and forward-looking."
+            }
+        },
+        "cta": {
+            "title": "Building the future of connected care",
+            "body": "As NavCare grows into a multi-service hub, we remain committed to secure consultations, personalized support, and seamless experiences for every user."
+        }
+    }
 }

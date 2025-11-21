@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Reusable bordered/raised container with drop shadow used across hospital detail screens.
 class ShadowCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
@@ -38,6 +39,50 @@ class ShadowCard extends StatelessWidget {
             child: child,
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Section wrapper with a header (icon + title) used in hospital details.
+class HospitalDetailSectionCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final Widget child;
+  final EdgeInsetsGeometry contentPadding;
+  final double spacing;
+
+  const HospitalDetailSectionCard({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.child,
+    this.contentPadding = const EdgeInsets.all(14),
+    this.spacing = 8,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return ShadowCard(
+      padding: contentPadding,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: theme.colorScheme.primary),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+          SizedBox(height: spacing),
+          child,
+        ],
       ),
     );
   }

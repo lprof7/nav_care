@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/signin/view/signin_page.dart';
 import 'package:nav_care_user_app/presentation/features/faq/view/faq_page.dart';
+import 'package:nav_care_user_app/presentation/features/about/view/about_page.dart';
 import 'package:nav_care_user_app/presentation/features/shell/view/nav_shell_page.dart';
 import 'package:nav_care_user_app/presentation/features/profile/view/edit_user_profile_page.dart';
 import 'package:nav_care_user_app/presentation/features/profile/view/forgot_password_page.dart';
@@ -22,6 +23,7 @@ final appRouter = GoRouter(
     GoRoute(path: '/signup', builder: (ctx, st) => const SignupPage()),
     GoRoute(path: '/home', builder: (ctx, st) => const NavShellPage()),
     GoRoute(path: '/faq', builder: (ctx, st) => const FaqPage()),
+    GoRoute(path: '/about', builder: (ctx, st) => const AboutPage()),
     GoRoute(
         path: '/appointments/create',
         builder: (ctx, st) {

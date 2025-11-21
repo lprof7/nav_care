@@ -100,17 +100,17 @@
     "hospitals.detail.overview": "Vue d'ensemble",
     "hospitals.detail.actions.contact": "Contact",
     "hospitals.detail.actions.location": "Copier la localisation",
-    "hospitals.detail.actions.address_copied": "Adresse copi��e dans le presse-papiers",
-    "hospitals.detail.actions.location_copied": "Coordonn��es copi��es",
+    "hospitals.detail.actions.address_copied": "Adresse copiée dans le presse-papiers",
+    "hospitals.detail.actions.location_copied": "Coordonnées copiées",
     "hospitals.detail.cta.view_clinic": "Voir la clinique",
     "hospitals.detail.cta.view_profile": "Voir le profil complet",
     "hospitals.detail.cta.view_service": "Prendre rendez-vous",
-    "hospitals.detail.offerings_subtitle": "Service propos�� par cet h��pital",
-    "hospitals.detail.clinics_subtitle": "Cliniques rattach��es �� cet h��pital",
-    "hospitals.detail.doctors_subtitle": "M��decins disponibles dans cet h��pital",
+    "hospitals.detail.offerings_subtitle": "Service proposé par cet hôpital",
+    "hospitals.detail.clinics_subtitle": "Cliniques rattachées à cet hôpital",
+    "hospitals.detail.doctors_subtitle": "Médecins disponibles dans cet hôpital",
     "hospitals.detail.filters": "Filtres",
     "hospitals.detail.sorting": "Trier par",
-    "hospitals.detail.search_doctors": "Rechercher des m��decins...",
+    "hospitals.detail.search_doctors": "Rechercher des médecins...",
     "home.hospitals_choice.title": "Sélection NavCare des hôpitaux",
     "home.hospitals_choice.see_more": "Voir plus",
     "home.hospitals_choice.empty": "Aucun hôpital sélectionné pour le moment.",
@@ -200,7 +200,7 @@
     "profile.password_requirements_title": "Exigences du mot de passe :",
     "profile.password_requirement_length": "au moins 8 caractères",
     "profile.password_requirement_upper": "au moins une lettre majuscule",
-    "profile.password_requirement_number": "Doit contenir au moins un chiffre",
+    "profile.password_requirement_number": "au moins un chiffre",
     "profile.password_requirement_special": "au moins un caractère spécial",
     "profile.save_changes": "Enregistrer",
     "profile.updating": "Enregistrement...",
@@ -338,9 +338,9 @@
     "faq.questions.account_needed.question": "Ai-je besoin d'un compte pour utiliser l'app ?",
     "faq.questions.account_needed.answer": "Vous pouvez parcourir librement, mais il faut se connecter pour réserver, reprogrammer ou annuler un rendez-vous et synchroniser votre profil entre vos appareils.",
     "faq.questions.book_appointment.question": "Comment prendre un rendez-vous ?",
-    "faq.questions.book_appointment.answer": "Ouvrez une offre de service depuis l'Accueil ou Recherche, appuyez sur « Prendre rendez-vous », choisissez l'heure de début et de fin puis validez. Si vous n'êtes pas connecté, l'app vous demandera de vous identifier.",
+    "faq.questions.book_appointment.answer": "Ouvrez une offre de service depuis l'Accueil ou la Recherche, appuyez sur « Prendre rendez-vous », choisissez l'heure de début et de fin puis validez. Si vous n'êtes pas connecté, l'app vous demandera de vous identifier.",
     "faq.questions.manage_appointment.question": "Comment modifier ou annuler un rendez-vous ?",
-    "faq.questions.manage_appointment.answer": "Allez dans l'onglet Rendez-vous, sélectionnez la carte du rendez-vous, puis ajustez les horaires ou passez le statut à annulé. La liste se met à jour automatiquement après la sauvegarde.",
+    "faq.questions.manage_appointment.answer": "Allez dans l'onglet Rendez-vous, sélectionnez la carte du rendez-vous, puis ajustez les horaires ou passez le statut à « annulé ». La liste se met à jour automatiquement après la sauvegarde.",
     "faq.questions.search_services.question": "Comment trouver le bon médecin ou le bon service ?",
     "faq.questions.search_services.answer": "Utilisez l'onglet Recherche pour saisir un nom de médecin, d'hôpital ou de service. Affinez avec les filtres disponibles (lieu, note, prix ou langue quand ils sont fournis), puis ouvrez un résultat pour voir les détails et réserver.",
     "faq.questions.profile_updates.question": "Où mettre à jour mon profil ou mon numéro de téléphone ?",
@@ -350,5 +350,76 @@
     "faq.questions.password_reset.question": "J'ai oublié mon mot de passe, que faire ?",
     "faq.questions.password_reset.answer": "Utilisez l'option « Mot de passe oublié » sur l'écran de connexion pour demander une réinitialisation et suivez les étapes pour définir un nouveau mot de passe avec votre email ou numéro de téléphone.",
     "faq.questions.data_sync.question": "L'app ne charge pas les données, que puis-je essayer ?",
-    "faq.questions.data_sync.answer": "Vérifiez votre connexion internet, puis tirez pour rafraîchir sur Accueil, Recherche ou Rendez-vous. Si le problème persiste, déconnectez-vous puis reconnectez-vous pour renouveler la session avant de réessayer."
+    "faq.questions.data_sync.answer": "Vérifiez votre connexion internet, puis tirez pour rafraîchir sur Accueil, Recherche ou Rendez-vous. Si le problème persiste, déconnectez-vous puis reconnectez-vous pour renouveler la session avant de réessayer.",
+    "about": {
+        "title": "À propos",
+        "hero": {
+            "title": "Bienvenue chez NavCare",
+            "subtitle": "Nous connectons patients et professionnels de santé dans le monde entier avec un parcours sécurisé de prise de rendez-vous, messagerie et paiement."
+        },
+        "about_us": {
+            "title": "À propos de NavCare",
+            "body": "NavCare est une plateforme web et mobile qui relie les patients aux professionnels de santé partout dans le monde. Grâce à la prise de rendez-vous, la messagerie intégrée et les paiements sécurisés, l'accès aux soins devient simple et sûr. Au-delà d'une plateforme, c'est une vision d'une prise en charge internationale fluide qui évoluera en hub multi-services, avec des solutions de santé numériques, un accompagnement personnalisé et une expérience sans friction à chaque étape."
+        },
+        "story": {
+            "title": "Notre histoire",
+            "body": "Fondé en 2024, NavMarket est né de notre volonté de combler les limites des marketplaces existantes. Nous voulions créer un espace sûr, efficace et riche en fonctionnalités qui améliore l'expérience de chaque utilisateur."
+        },
+        "priorities": {
+            "title": "Nos priorités",
+            "body": "La qualité, la fiabilité et la sécurité guident la conception et la livraison de chaque solution.",
+            "quality": {
+                "title": "Qualité",
+                "body": "La qualité est un standard intégré à chaque service. Nous livrons des produits de haut niveau grâce à des contrôles rigoureux à chaque étape, garantissant fiabilité, efficacité et adéquation aux besoins de nos clients."
+            },
+            "reliability": {
+                "title": "Fiabilité",
+                "body": "La fiabilité est au cœur de notre travail. Nous concevons des produits robustes, stables et performants sur le long terme grâce à des processus disciplinés et un suivi continu."
+            },
+            "security": {
+                "title": "Sécurité",
+                "body": "La sécurité est une priorité absolue. Nous protégeons données et transactions financières avec des protocoles avancés, en mettant constamment à jour nos défenses pour que nos clients opèrent en toute confiance."
+            }
+        },
+        "company": {
+            "title": "Notre entreprise",
+            "body": "KIG (Koudri Innovations Group) est le prolongement dynamique et innovant de notre organisation, déjà spécialisée dans trois domaines. En tant que nouvelle filiale, nous restons attentifs aux tendances et avancées technologiques, alliant expertise établie et agilité centrée client pour proposer des solutions logicielles, technologiques et digitales de pointe. Notre engagement pour l'innovation et l'excellence nous permet d'anticiper les défis de demain tout en créant de la valeur pour nos clients et partenaires."
+        },
+        "offerings": {
+            "title": "Ce que nous offrons",
+            "body": "Une plateforme pensée pour héberger et mettre en avant les services recherchés au quotidien.",
+            "diverse_listings": {
+                "title": "Offres variées",
+                "body": "Immobilier, automobiles, services ou besoins du quotidien : nous réunissons une large sélection pour répondre à chaque besoin."
+            },
+            "user_experience": {
+                "title": "Expérience fluide",
+                "body": "Un design intuitif et une interface simple rendent l'achat et la vente clairs et sans effort."
+            },
+            "subscriptions": {
+                "title": "Formules d'abonnement",
+                "body": "Des plans flexibles offrent des avantages supplémentaires et des opportunités promotionnelles."
+            }
+        },
+        "values": {
+            "title": "Nos valeurs",
+            "body": "La communauté, le client d'abord et l'innovation façonnent la manière dont nous construisons NavCare.",
+            "community": {
+                "title": "Communauté",
+                "body": "Notre marketplace dépasse la transaction pour devenir une communauté vivante où soutien et croissance se rejoignent."
+            },
+            "customer_first": {
+                "title": "Client d'abord",
+                "body": "Les utilisateurs sont au centre de chaque décision afin de répondre à leurs besoins et garantir leur satisfaction."
+            },
+            "innovation": {
+                "title": "Innovation",
+                "body": "Nous améliorons en continu la plateforme pour proposer des fonctionnalités modernes et avant-gardistes."
+            }
+        },
+        "cta": {
+            "title": "Construire l'avenir des soins connectés",
+            "body": "Alors que NavCare devient un hub multi-services, nous restons engagés à offrir des consultations sécurisées, un accompagnement personnalisé et une expérience fluide pour chaque utilisateur."
+        }
+    }
 }

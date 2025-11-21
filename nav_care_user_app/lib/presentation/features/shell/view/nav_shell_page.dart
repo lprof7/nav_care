@@ -134,7 +134,7 @@ class NavShellPage extends StatelessWidget {
                 onFaqTap: () => context.push('/faq'),
                 onContactTap: () {},
                 onSettingsTap: () {},
-                onAboutTap: () {},
+                onAboutTap: () => context.push('/about'),
                 onFeedbackTap: () {},
                 onSupportTap: () {},
               ),

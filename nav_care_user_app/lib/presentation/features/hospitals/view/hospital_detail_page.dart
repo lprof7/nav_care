@@ -523,75 +523,58 @@ class _DetailsTab extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
           sliver: SliverList(
             delegate: SliverChildListDelegate([
-              ShadowCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              HospitalDetailSectionCard(
+                icon: Icons.info_rounded,
+                title: 'hospitals.detail.about'.tr(),
+                child: Text(
+                  description.isNotEmpty
+                      ? description
+                      : 'hospitals.detail.no_description'.tr(),
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ),
+              const SizedBox(height: 12),
+              HospitalDetailSectionCard(
+                icon: Icons.auto_awesome_mosaic_rounded,
+                title: 'hospitals.detail.overview'.tr(),
+                spacing: 10,
+                child: Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
                   children: [
-                    _SectionHeader(
-                      icon: Icons.info_rounded,
-                      title: 'hospitals.detail.about'.tr(),
+                    HospitalStatCard(
+                      icon: Icons.local_hospital_rounded,
+                      label: 'hospitals.detail.stats.clinics'.tr(),
+                      value: clinicsCount.toString(),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      description.isNotEmpty
-                          ? description
-                          : 'hospitals.detail.no_description'.tr(),
-                      style: theme.textTheme.bodyMedium,
+                    HospitalStatCard(
+                      icon: Icons.people_alt_rounded,
+                      label: 'hospitals.detail.stats.doctors'.tr(),
+                      value: doctorsCount.toString(),
+                    ),
+                    HospitalStatCard(
+                      icon: Icons.medical_services_rounded,
+                      label: 'hospitals.detail.stats.offerings'.tr(),
+                      value: offeringsCount.toString(),
+                    ),
+                    HospitalStatCard(
+                      icon: Icons.star_rounded,
+                      label: 'hospitals.detail.stats.rating'.tr(),
+                      value: hospital.rating > 0
+                          ? hospital.rating.toStringAsFixed(1)
+                          : '--',
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 12),
-              ShadowCard(
+              HospitalDetailSectionCard(
+                icon: Icons.contact_phone_rounded,
+                title: 'hospitals.detail.contact'.tr(),
+                spacing: 10,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _SectionHeader(
-                      icon: Icons.auto_awesome_mosaic_rounded,
-                      title: 'hospitals.detail.overview'.tr(),
-                    ),
-                    const SizedBox(height: 10),
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: [
-                        HospitalStatCard(
-                          icon: Icons.local_hospital_rounded,
-                          label: 'hospitals.detail.stats.clinics'.tr(),
-                          value: clinicsCount.toString(),
-                        ),
-                        HospitalStatCard(
-                          icon: Icons.people_alt_rounded,
-                          label: 'hospitals.detail.stats.doctors'.tr(),
-                          value: doctorsCount.toString(),
-                        ),
-                        HospitalStatCard(
-                          icon: Icons.medical_services_rounded,
-                          label: 'hospitals.detail.stats.offerings'.tr(),
-                          value: offeringsCount.toString(),
-                        ),
-                        HospitalStatCard(
-                          icon: Icons.star_rounded,
-                          label: 'hospitals.detail.stats.rating'.tr(),
-                          value: hospital.rating > 0
-                              ? hospital.rating.toStringAsFixed(1)
-                              : '--',
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              ShadowCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _SectionHeader(
-                      icon: Icons.contact_phone_rounded,
-                      title: 'hospitals.detail.contact'.tr(),
-                    ),
-                    const SizedBox(height: 10),
                     HospitalInfoRow(
                       icon: Icons.place_rounded,
                       title: 'address'.tr(),
@@ -927,29 +910,6 @@ class _FiltersRow extends StatelessWidget {
         ),
         const SizedBox(width: 4),
         const Icon(Icons.expand_more_rounded, size: 20),
-      ],
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  final IconData icon;
-  final String title;
-
-  const _SectionHeader({required this.icon, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Row(
-      children: [
-        Icon(icon, color: theme.colorScheme.primary),
-        const SizedBox(width: 8),
-        Text(
-          title,
-          style:
-              theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-        ),
       ],
     );
   }
