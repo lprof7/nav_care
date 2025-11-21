@@ -112,15 +112,20 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
         final tabBar = TabBar(
           controller: _tabController,
           isScrollable: true,
+          tabAlignment: TabAlignment.center,
           indicatorSize: TabBarIndicatorSize.tab,
-          labelPadding: const EdgeInsets.symmetric(horizontal: 12),
+          dividerColor: Colors.transparent,
+          indicatorPadding: EdgeInsets.zero,
+          labelPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
           indicator: BoxDecoration(
-            color: theme.colorScheme.primary,
-            borderRadius: BorderRadius.circular(14),
+            color: const Color(0xFF2E7CF6),
+            borderRadius: BorderRadius.circular(12),
           ),
           labelColor: Colors.white,
-          unselectedLabelColor:
-              theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+          unselectedLabelColor: Colors.grey.shade600,
+          labelStyle: theme.textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
           tabs: [
             Tab(text: 'hospitals.detail.tabs.details'.tr()),
             Tab(text: 'hospitals.detail.tabs.clinics'.tr()),
@@ -133,7 +138,6 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
           body: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
               SliverAppBar(
-                expandedHeight: 260,
                 pinned: true,
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios_new_rounded),
@@ -153,68 +157,58 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                flexibleSpace: FlexibleSpaceBar(
-                  background: _HeaderCover(imageUrl: cover),
-                ),
               ),
               SliverToBoxAdapter(
-                child: Transform.translate(
-                  offset: const Offset(0, -38),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: HospitalOverviewCard(
-                      title: hospital.name,
-                      subtitle: facility,
-                      rating: hospital.rating,
-                      imageUrl: cover,
-                      stats: [
-                        HospitalOverviewStat(
-                          icon: Icons.local_hospital_rounded,
-                          label: 'hospitals.detail.stats.clinics'.tr(),
-                          value: clinicsCount.toString(),
-                        ),
-                        HospitalOverviewStat(
-                          icon: Icons.people_rounded,
-                          label: 'hospitals.detail.stats.doctors'.tr(),
-                          value: doctorsCount.toString(),
-                        ),
-                        HospitalOverviewStat(
-                          icon: Icons.medical_services_rounded,
-                          label: 'hospitals.detail.stats.offerings'.tr(),
-                          value: offeringsCount.toString(),
-                        ),
-                        HospitalOverviewStat(
-                          icon: Icons.apartment_rounded,
-                          label: 'hospitals.detail.stats.type'.tr(),
-                          value: facility,
-                        ),
-                      ],
-                      primaryActionLabel:
-                          'hospitals.detail.actions.contact'.tr(),
-                      secondaryActionLabel:
-                          'hospitals.detail.actions.location'.tr(),
-                      onPrimaryTap: hospital.address.isNotEmpty
-                          ? () => _copyText(
-                                hospital.address,
-                                'hospitals.detail.actions.address_copied'.tr(),
-                              )
-                          : null,
-                      onSecondaryTap: hospital.latitude != null &&
-                              hospital.longitude != null
-                          ? () => _copyText(
-                                '${hospital.latitude}, ${hospital.longitude}',
-                                'hospitals.detail.actions.location_copied'
-                                    .tr(),
-                              )
-                          : null,
-                      isSaved: _isSaved,
-                      onToggleSave: () =>
-                          setState(() => _isSaved = !_isSaved),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 240,
+                      width: double.infinity,
+                      child: _HeroBackdropLayer(imageUrl: cover),
                     ),
-                  ),
+                    Container(
+                      height: 300,
+                      child: Transform.translate(
+                        offset: const Offset(0, -72),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: _HeroForegroundLayer(
+                            hospital: hospital,
+                            facility: facility,
+                            imageUrl: cover,
+                            clinicsCount: clinicsCount,
+                            doctorsCount: doctorsCount,
+                            offeringsCount: offeringsCount,
+                            primaryActionLabel:
+                                'hospitals.detail.actions.contact'.tr(),
+                            secondaryActionLabel:
+                                'hospitals.detail.actions.location'.tr(),
+                            onPrimaryTap: hospital.address.isNotEmpty
+                                ? () => _copyText(
+                                      hospital.address,
+                                      'hospitals.detail.actions.address_copied'
+                                          .tr(),
+                                    )
+                                : null,
+                            onSecondaryTap: hospital.latitude != null &&
+                                    hospital.longitude != null
+                                ? () => _copyText(
+                                      '${hospital.latitude}, ${hospital.longitude}',
+                                      'hospitals.detail.actions.location_copied'
+                                          .tr(),
+                                    )
+                                : null,
+                            isSaved: _isSaved,
+                            onToggleSave: () =>
+                                setState(() => _isSaved = !_isSaved),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                  ],
                 ),
               ),
-              SliverToBoxAdapter(child: const SizedBox(height: 6)),
               SliverPersistentHeader(
                 pinned: true,
                 delegate: _SliverTabBarDelegate(
@@ -267,10 +261,10 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
   }
 }
 
-class _HeaderCover extends StatelessWidget {
+class _HeroBackdropLayer extends StatelessWidget {
   final String? imageUrl;
 
-  const _HeaderCover({required this.imageUrl});
+  const _HeroBackdropLayer({required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -278,35 +272,192 @@ class _HeaderCover extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        if (imageUrl != null)
-          Image.network(
-            imageUrl!,
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Container(
-              color: theme.colorScheme.surfaceVariant,
-              alignment: Alignment.center,
-              child: const Icon(Icons.local_hospital_rounded, size: 48),
-            ),
-          )
-        else
-          Container(
-            color: theme.colorScheme.surfaceVariant,
-            alignment: Alignment.center,
-            child: const Icon(Icons.local_hospital_rounded, size: 48),
-          ),
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.black.withOpacity(0.15),
-                Colors.black.withOpacity(0.65),
-              ],
-            ),
+        _HeroImageLayer(imageUrl: imageUrl),
+        const _HeroGradientLayer(),
+        _HeroEdgeHighlight(color: theme.colorScheme.surface),
+      ],
+    );
+  }
+}
+
+class _HeroImageLayer extends StatelessWidget {
+  final String? imageUrl;
+
+  const _HeroImageLayer({required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    if (imageUrl != null) {
+      return Image.network(
+        imageUrl!,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => Container(
+          color: theme.colorScheme.surfaceVariant,
+          alignment: Alignment.center,
+          child: const Icon(Icons.local_hospital_rounded, size: 48),
+        ),
+      );
+    }
+    return Container(
+      color: theme.colorScheme.surfaceVariant,
+      alignment: Alignment.center,
+      child: const Icon(Icons.local_hospital_rounded, size: 48),
+    );
+  }
+}
+
+class _HeroGradientLayer extends StatelessWidget {
+  const _HeroGradientLayer();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.black.withOpacity(0.4),
+            Colors.black.withOpacity(0.22),
+            Colors.black.withOpacity(0.65),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HeroEdgeHighlight extends StatelessWidget {
+  final Color color;
+  const _HeroEdgeHighlight({required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        height: 90,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.transparent,
+              color,
+            ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _HeroForegroundLayer extends StatelessWidget {
+  final HospitalModel hospital;
+  final String facility;
+  final String? imageUrl;
+  final int clinicsCount;
+  final int doctorsCount;
+  final int offeringsCount;
+  final String primaryActionLabel;
+  final String secondaryActionLabel;
+  final VoidCallback? onPrimaryTap;
+  final VoidCallback? onSecondaryTap;
+  final bool isSaved;
+  final VoidCallback? onToggleSave;
+
+  const _HeroForegroundLayer({
+    required this.hospital,
+    required this.facility,
+    required this.imageUrl,
+    required this.clinicsCount,
+    required this.doctorsCount,
+    required this.offeringsCount,
+    required this.primaryActionLabel,
+    required this.secondaryActionLabel,
+    required this.isSaved,
+    this.onPrimaryTap,
+    this.onSecondaryTap,
+    this.onToggleSave,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Positioned(
+          top: 18,
+          left: 12,
+          child: _HeroAccentCircle(
+            color: theme.colorScheme.primary.withOpacity(0.14),
+            size: 110,
+          ),
+        ),
+        Positioned(
+          right: -26,
+          bottom: -34,
+          child: _HeroAccentCircle(
+            color: theme.colorScheme.secondary.withOpacity(0.1),
+            size: 150,
+          ),
+        ),
+        HospitalOverviewCard(
+          title: hospital.name,
+          subtitle: facility,
+          rating: hospital.rating,
+          imageUrl: imageUrl,
+          stats: [
+            HospitalOverviewStat(
+              icon: Icons.local_hospital_rounded,
+              label: 'hospitals.detail.stats.clinics'.tr(),
+              value: clinicsCount.toString(),
+            ),
+            HospitalOverviewStat(
+              icon: Icons.people_rounded,
+              label: 'hospitals.detail.stats.doctors'.tr(),
+              value: doctorsCount.toString(),
+            ),
+            HospitalOverviewStat(
+              icon: Icons.medical_services_rounded,
+              label: 'hospitals.detail.stats.offerings'.tr(),
+              value: offeringsCount.toString(),
+            ),
+          ],
+          primaryActionLabel: primaryActionLabel,
+          secondaryActionLabel: secondaryActionLabel,
+          onPrimaryTap: onPrimaryTap,
+          onSecondaryTap: onSecondaryTap,
+          isSaved: isSaved,
+          onToggleSave: onToggleSave,
+        ),
       ],
+    );
+  }
+}
+
+class _HeroAccentCircle extends StatelessWidget {
+  final Color color;
+  final double size;
+
+  const _HeroAccentCircle({required this.color, required this.size});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(
+          colors: [
+            color,
+            Colors.transparent,
+          ],
+        ),
+      ),
     );
   }
 }
@@ -325,13 +476,23 @@ class _DecoratedTabBar extends StatelessWidget implements PreferredSizeWidget {
     final theme = Theme.of(context);
     return Container(
       color: theme.colorScheme.surface,
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
-      child: Container(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+      child: DecoratedBox(
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(14),
+          gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              Colors.grey.shade100,
+              Colors.white,
+            ],
+          ),
+          borderRadius: BorderRadius.circular(16),
         ),
-        child: tabBar,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+          child: tabBar,
+        ),
       ),
     );
   }
@@ -448,27 +609,6 @@ class _DetailsTab extends StatelessWidget {
                             '${hospital.latitude?.toStringAsFixed(4)}, ${hospital.longitude?.toStringAsFixed(4)}',
                       ),
                     ],
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              ShadowCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _SectionHeader(
-                      icon: Icons.auto_awesome_rounded,
-                      title: 'hospitals.detail.specialties'.tr(),
-                    ),
-                    const SizedBox(height: 10),
-                    HospitalGradientCard(
-                      icon: Icons.health_and_safety_rounded,
-                      title: hospital.field.isNotEmpty
-                          ? hospital.field
-                          : hospital.facilityType,
-                      subtitle: 'hospitals.detail.primary_specialty'.tr(),
-                      color: theme.colorScheme.primary.withOpacity(0.12),
-                    ),
                   ],
                 ),
               ),
@@ -735,7 +875,7 @@ class _OfferingsTab extends StatelessWidget {
               crossAxisCount: 2,
               mainAxisSpacing: 14,
               crossAxisSpacing: 14,
-              childAspectRatio: 0.66,
+              childAspectRatio: 0.62,
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
@@ -746,13 +886,12 @@ class _OfferingsTab extends StatelessWidget {
                         namedArgs: {'price': offering.price!.toStringAsFixed(2)})
                     : '';
                 final image = _resolveImage(offering.service.image, baseUrl);
-                return InfoGridCard(
+                return ServiceOfferingCard(
                   title: serviceName,
                   subtitle: 'hospitals.detail.offerings_subtitle'.tr(),
                   badgeLabel: 'hospitals.detail.tabs.offerings'.tr(),
                   priceLabel: price,
                   imageUrl: image,
-                  buttonLabel: 'hospitals.detail.cta.view_service'.tr(),
                   onPressed: () {},
                 );
               },
