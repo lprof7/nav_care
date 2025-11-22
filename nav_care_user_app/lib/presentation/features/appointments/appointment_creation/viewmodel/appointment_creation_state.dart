@@ -6,26 +6,26 @@ enum AppointmentCreationStatus { initial, loading, success, failure }
 class AppointmentCreationState with EquatableMixin {
   final AppointmentCreationStatus status;
   final String? errorMessage;
-  final AppointmentModel? createdAppointment;
+  final String? successMessage;
 
   const AppointmentCreationState({
     this.status = AppointmentCreationStatus.initial,
     this.errorMessage,
-    this.createdAppointment,
+    this.successMessage,
   });
 
   AppointmentCreationState copyWith({
     AppointmentCreationStatus? status,
     String? errorMessage,
-    AppointmentModel? createdAppointment,
+    String? successMessage,
   }) {
     return AppointmentCreationState(
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
-      createdAppointment: createdAppointment ?? this.createdAppointment,
+      successMessage: successMessage ?? this.successMessage,
     );
   }
 
   @override
-  List<Object?> get props => [status, errorMessage, createdAppointment];
+  List<Object?> get props => [status, errorMessage, successMessage];
 }

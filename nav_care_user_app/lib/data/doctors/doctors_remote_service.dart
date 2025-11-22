@@ -50,4 +50,11 @@ class DoctorsRemoteService {
       parser: (json) => json as Map<String, dynamic>,
     );
   }
+
+  Future<Result<Map<String, dynamic>>> getDoctorById(String doctorId) {
+    return _apiClient.get<Map<String, dynamic>>(
+      _apiClient.apiConfig.doctorById(doctorId),
+      parser: (json) => json as Map<String, dynamic>,
+    );
+  }
 }

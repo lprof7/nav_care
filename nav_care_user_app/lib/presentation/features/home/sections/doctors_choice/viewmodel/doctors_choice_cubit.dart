@@ -12,7 +12,6 @@ class DoctorsChoiceCubit extends Cubit<DoctorsChoiceState> {
 
   final DoctorsRepository _repository;
 
-  // (اختياري) توحيد الانبعاث الآمن
   void _safeEmit(DoctorsChoiceState newState) {
     if (!isClosed) emit(newState);
   }

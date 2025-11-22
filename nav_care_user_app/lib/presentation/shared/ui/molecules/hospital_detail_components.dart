@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class HospitalHeaderChip extends StatelessWidget {
@@ -118,18 +119,23 @@ class HospitalStatCard extends StatelessWidget {
 class HospitalInfoRow extends StatelessWidget {
   final IconData icon;
   final String title;
-  final String value;
+  final String? value;
+  final String placeholderKey;
 
   const HospitalInfoRow({
     super.key,
     required this.icon,
     required this.title,
     required this.value,
+    this.placeholderKey = 'common.not_available',
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final displayValue = (value != null && value!.trim().isNotEmpty)
+        ? value!.trim()
+        : placeholderKey.tr();
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -146,7 +152,7 @@ class HospitalInfoRow extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                value,
+                displayValue,
                 style: theme.textTheme.bodyMedium,
               ),
             ],

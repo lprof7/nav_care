@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:nav_care_user_app/data/service_creation/service_creation_repository.dart';
 import 'package:nav_care_user_app/data/service_creation/services/remote_service_creation_service.dart';
 import 'package:nav_care_user_app/data/service_creation/services/service_creation_service.dart';
+import 'package:nav_care_user_app/presentation/features/service_offerings/viewmodel/service_offering_detail_cubit.dart';
 import '../config/app_config.dart';
 import '../network/dio_client.dart';
 import '../network/api_client.dart';
@@ -131,6 +132,8 @@ Future<void> configureDependencies(AppConfig config) async {
       () => FeaturedServicesCubit(repository: sl<ServicesRepository>()));
   sl.registerFactory<ServiceOfferingsByServiceCubit>(
       () => ServiceOfferingsByServiceCubit(sl<ServicesRepository>()));
+  sl.registerFactory<ServiceOfferingDetailCubit>(() =>
+      ServiceOfferingDetailCubit(repository: sl<ServiceOfferingsRepository>()));
   sl.registerLazySingleton<ClinicsRemoteService>(
       () => ClinicsRemoteService(apiClient: sl<ApiClient>()));
   sl.registerLazySingleton<ClinicsRepository>(

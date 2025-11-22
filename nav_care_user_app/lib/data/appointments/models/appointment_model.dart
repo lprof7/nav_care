@@ -36,5 +36,6 @@ class AppointmentModel extends Equatable {
   }
 
   @override
-  List<Object?> get props => [serviceOffering, type, startTime, endTime, status];
+  List<Object?> get props =>
+      [serviceOffering, type, startTime, endTime, status];
 }

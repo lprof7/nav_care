@@ -5,6 +5,8 @@ import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/doctors/models/doctor_model.dart';
 import 'package:nav_care_user_app/presentation/features/home/view/navcare_doctors_page.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/cards/doctor_grid_card.dart';
+import 'package:nav_care_user_app/presentation/features/doctors/view/doctor_detail_page.dart';
 
 import '../viewmodel/featured_doctors_cubit.dart';
 import '../viewmodel/featured_doctors_state.dart';
@@ -102,12 +104,11 @@ class _FeaturedDoctorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final locale = context.locale.languageCode;
     final bio = doctor.bioForLocale(locale);
     final baseUrl = sl<AppConfig>().api.baseUrl;
-    final coverPath = doctor.coverImage(baseUrl: baseUrl);
-    final avatarPath = doctor.avatarImage(baseUrl: baseUrl);
+    final coverPath =
+        doctor.avatarImage(baseUrl: baseUrl) ?? doctor.coverImage(baseUrl: baseUrl);
     final displayName = doctor.displayName.trim().isNotEmpty
         ? doctor.displayName
         : doctor.specialty;
@@ -117,113 +118,22 @@ class _FeaturedDoctorCard extends StatelessWidget {
 
     return SizedBox(
       width: 200,
-      child: GestureDetector(
-        onTap: () {},
-        child: Card(
-          clipBehavior: Clip.antiAlias,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    _DoctorCoverImage(path: coverPath),
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black.withOpacity(0.1),
-                            Colors.black.withOpacity(0.45),
-                          ],
-                        ),
-                      ),
-                    ),
-                    if (doctor.rating > 0)
-                      Positioned(
-                        top: 12,
-                        right: 12,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.55),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.star_rounded,
-                                size: 16,
-                                color: Colors.amber,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                doctor.rating.toStringAsFixed(1),
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    if (avatarPath != null)
-                      Positioned(
-                        left: 16,
-                        bottom: 4,
-                        child: _DoctorAvatarImage(path: avatarPath),
-                      ),
-                  ],
-                ),
+      child: DoctorGridCard(
+        title: displayName,
+        subtitle: specialty,
+        imageUrl: coverPath,
+        rating: doctor.rating > 0 ? doctor.rating : null,
+        buttonLabel: null,
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => DoctorDetailPage(
+                doctorId: doctor.id,
+                initial: doctor,
               ),
-              const SizedBox(height: 28),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      displayName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      specialty,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      bio,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodySmall,
-                    ),
-                    const SizedBox(height: 12),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -259,99 +169,6 @@ class _FeaturedSectionHeader extends StatelessWidget {
           label: Text(actionLabel),
         ),
       ],
-    );
-  }
-}
-
-class _DoctorCoverImage extends StatelessWidget {
-  final String? path;
-
-  const _DoctorCoverImage({required this.path});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    Widget placeholder(
-        {IconData icon = Icons.person_rounded, double size = 48}) {
-      return Container(
-        color: theme.colorScheme.surfaceVariant,
-        alignment: Alignment.center,
-        child: Icon(icon, size: size),
-      );
-    }
-
-    final imagePath = path;
-    if (imagePath == null || imagePath.isEmpty) {
-      return placeholder();
-    }
-
-    if (imagePath.startsWith('http')) {
-      return Image.network(
-        imagePath,
-        fit: BoxFit.cover,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return placeholder(icon: Icons.person_outline_rounded, size: 40);
-        },
-        errorBuilder: (context, error, stackTrace) =>
-            placeholder(icon: Icons.image_not_supported_rounded, size: 36),
-      );
-    }
-
-    return Image.asset(
-      imagePath,
-      fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) =>
-          placeholder(icon: Icons.image_not_supported_rounded, size: 36),
-    );
-  }
-}
-
-class _DoctorAvatarImage extends StatelessWidget {
-  final String path;
-
-  const _DoctorAvatarImage({required this.path});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return CircleAvatar(
-      radius: 26,
-      backgroundColor: Colors.white,
-      child: ClipOval(
-        child: _buildContent(theme),
-      ),
-    );
-  }
-
-  Widget _buildContent(ThemeData theme) {
-    Widget fallback() {
-      return Container(
-        width: 52,
-        height: 52,
-        color: theme.colorScheme.surfaceVariant,
-        alignment: Alignment.center,
-        child: const Icon(Icons.person_rounded, size: 30),
-      );
-    }
-
-    if (path.startsWith('http')) {
-      return Image.network(
-        path,
-        width: 52,
-        height: 52,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => fallback(),
-      );
-    }
-
-    return Image.asset(
-      path,
-      width: 52,
-      height: 52,
-      fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) => fallback(),
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart'; // Import for DateFormat
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/appointments/models/appointment_model.dart';
+import 'package:nav_care_user_app/presentation/features/appointments/appointment_creation/view/appointment_success_page.dart';
 import 'package:nav_care_user_app/presentation/features/appointments/appointment_creation/viewmodel/appointment_creation_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/appointments/appointment_creation/viewmodel/appointment_creation_state.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/atoms/app_button.dart';
@@ -24,7 +25,6 @@ class _AddAppointmentPageState extends State<AddAppointmentPage> {
   final TextEditingController _endTimeController = TextEditingController();
 
   String _selectedType = 'in_person';
-  String _selectedStatus = 'pending';
   DateTime? _selectedStartTime;
   DateTime? _selectedEndTime;
 
@@ -96,85 +96,174 @@ class _AddAppointmentPageState extends State<AddAppointmentPage> {
             body: BlocConsumer<AppointmentCreationCubit, AppointmentCreationState>(
               listener: (context, state) {
                 if (state.status == AppointmentCreationStatus.success) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('appointment_created_success'.tr())),
+                  final message = state.successMessage?.isNotEmpty == true
+                      ? state.successMessage!
+                      : 'appointment_created_success'.tr();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => AppointmentSuccessPage(
+                        message: message,
+                        onGoToAppointments: () => context.go('/appointments'),
+                      ),
+                    ),
                   );
-                  context.pop(); // Go back after successful creation
                 } else if (state.status == AppointmentCreationStatus.failure) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(state.errorMessage ?? 'appointment_created_failure'.tr())),
+                  final localizedMessage = (state.errorMessage != null &&
+                          state.errorMessage!.isNotEmpty)
+                      ? state.errorMessage!
+                      : 'appointment_created_failure'.tr();
+                  showDialog<void>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: Text('appointment_created_failure'.tr()),
+                      content: Text(localizedMessage),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(ctx).pop(),
+                          child: Text('ok'.tr()),
+                        ),
+                      ],
+                    ),
                   );
                 }
               },
               builder: (context, state) {
+                final theme = Theme.of(context);
+                final colorScheme = theme.colorScheme;
                 return SingleChildScrollView(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-
-                      // Type Dropdown
-                      DropdownButtonFormField<String>(
-                        decoration: InputDecoration(
-                          labelText: 'appointment_type_label'.tr(),
-                          border: const OutlineInputBorder(),
+                      Container(
+                        padding: const EdgeInsets.all(18),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          gradient: LinearGradient(
+                            colors: [
+                              colorScheme.primary.withOpacity(0.14),
+                              colorScheme.primary.withOpacity(0.04),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 16,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
                         ),
-                        value: _selectedType,
-                        items: [
-                          DropdownMenuItem(value: 'in_person', child: Text('in_person_appointment'.tr())),
-                          DropdownMenuItem(value: 'virtual', child: Text('virtual_appointment'.tr())),
-                        ],
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedType = value!;
-                          });
-                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'appointments.form.heading'.tr(),
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                color: colorScheme.primary,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              'appointments.form.subtitle'.tr(),
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: Colors.blueGrey.shade800,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 16.0),
-
-                      // Start Time Picker
-                      AppTextField(
-                        controller: _startTimeController,
-                        hintText: 'start_time_label'.tr(),
-                        readOnly: true,
-                        onTap: () => _pickDateTime(context, true),
+                      const SizedBox(height: 16),
+                      Card(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          side: BorderSide(
+                            color: colorScheme.outline.withOpacity(0.2),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              DropdownButtonFormField<String>(
+                                decoration: InputDecoration(
+                                  labelText: 'appointment_type_label'.tr(),
+                                  border: const OutlineInputBorder(),
+                                ),
+                                value: _selectedType,
+                                items: [
+                                  DropdownMenuItem(value: 'in_person', child: Text('in_person_appointment'.tr())),
+                                  DropdownMenuItem(value: 'virtual', child: Text('virtual_appointment'.tr())),
+                                ],
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedType = value!;
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 14),
+                              AppTextField(
+                                controller: _startTimeController,
+                                hintText: 'start_time_label'.tr(),
+                                readOnly: true,
+                                onTap: () => _pickDateTime(context, true),
+                              ),
+                              const SizedBox(height: 14),
+                              AppTextField(
+                                controller: _endTimeController,
+                                hintText: 'end_time_label'.tr(),
+                                readOnly: true,
+                                onTap: () => _pickDateTime(context, false),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      const SizedBox(height: 16.0),
-
-                      // End Time Picker
-                      AppTextField(
-                        controller: _endTimeController,
-                        hintText: 'end_time_label'.tr(),
-                        readOnly: true,
-                        onTap: () => _pickDateTime(context, false),
-                      ),
-                      const SizedBox(height: 16.0),
-
-                      const SizedBox(height: 32.0),
-
+                      const SizedBox(height: 24),
                       AppButton(
-                        onPressed: state.status == AppointmentCreationStatus.loading ||
-                                _selectedStartTime == null ||
-                                _selectedEndTime == null
-                            ? null
-                            : () {
-                                final cubit = context.read<AppointmentCreationCubit>();
-                                final newAppointment = AppointmentModel(
-                                  serviceOffering: widget.serviceOfferingId,
-                                  type: _selectedType,
-                                  startTime: _selectedStartTime!,
-                                  endTime: _selectedEndTime!,
-                                  status: 'pending', // Hardcoded to pending
-                                );
-                                cubit.createAppointment(newAppointment);
-                              },
-                      text: state.status == AppointmentCreationStatus.loading
-                          ? 'loading'.tr() // Use a translated loading text
-                          : 'create_appointment_button'.tr(),
-                    ),
-                  ],
-                ),
-              );
+                        onPressed:
+                            state.status == AppointmentCreationStatus.loading ||
+                                    _selectedStartTime == null ||
+                                    _selectedEndTime == null
+                                ? null
+                                : () {
+                                    if (_selectedStartTime != null &&
+                                        _selectedEndTime != null &&
+                                        !_selectedEndTime!.isAfter(
+                                            _selectedStartTime!)) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'appointments.validation.invalid_range'
+                                                .tr(),
+                                          ),
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                    final cubit = context.read<AppointmentCreationCubit>();
+                                    final typeToSend =
+                                        _selectedType == 'virtual' ? 'teleconsultation' : 'in_person';
+                                    final newAppointment = AppointmentModel(
+                                      serviceOffering: widget.serviceOfferingId,
+                                      type: typeToSend,
+                                      startTime: _selectedStartTime!.toUtc(),
+                                      endTime: _selectedEndTime!.toUtc(),
+                                      status: 'pending',
+                                    );
+                                    cubit.createAppointment(newAppointment);
+                                  },
+                        text: state.status == AppointmentCreationStatus.loading
+                            ? 'loading'.tr()
+                            : 'create_appointment_button'.tr(),
+                      ),
+                    ],
+                  ),
+                );
               },
             ),
           );

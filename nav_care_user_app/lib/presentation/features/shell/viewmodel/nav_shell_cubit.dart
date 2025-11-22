@@ -16,7 +16,8 @@ class NavShellState extends Equatable {
 }
 
 class NavShellCubit extends Cubit<NavShellState> {
-  NavShellCubit() : super(const NavShellState());
+  NavShellCubit({int initialIndex = 0})
+      : super(NavShellState(currentIndex: initialIndex));
 
   void setTab(int index) {
     if (index == state.currentIndex) return;

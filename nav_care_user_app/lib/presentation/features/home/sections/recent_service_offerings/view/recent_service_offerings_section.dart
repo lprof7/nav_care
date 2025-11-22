@@ -4,6 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/service_offerings/models/service_offering_model.dart';
+import 'package:nav_care_user_app/data/search/models/search_models.dart';
+import 'package:nav_care_user_app/presentation/features/service_offerings/view/service_offering_detail_page.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/cards/service_offering_card.dart';
 
 import '../../../view/recent_service_offerings_page.dart';
 import '../viewmodel/recent_service_offerings_cubit.dart';
@@ -72,7 +75,7 @@ class _RecentServiceOfferingsContent extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           SizedBox(
-            height: 290,
+            height: 260,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: offerings.length,
@@ -104,7 +107,6 @@ class _RecentServiceOfferingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final baseUrl = sl<AppConfig>().api.baseUrl;
     final locale = context.locale.languageCode;
     final serviceName = offering.service.nameForLocale(locale);
@@ -113,165 +115,32 @@ class _RecentServiceOfferingCard extends StatelessWidget {
         : 'home.recent_service_offerings.unknown_provider'.tr();
     final specialty = offering.provider.specialty;
     final cover = _resolveImage(offering.service.image, baseUrl);
-    final avatar =
-        _resolveImage(offering.provider.user.profilePicture, baseUrl);
+    final priceLabel = offering.price != null
+        ? 'services.offerings.price'
+            .tr(namedArgs: {'price': offering.price!.toStringAsFixed(2)})
+        : null;
 
     return SizedBox(
-      width: 260,
-      height: 280,
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: InkWell(
-          onTap: () {},
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    _OfferingCoverImage(path: cover),
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black.withOpacity(0.05),
-                            Colors.black.withOpacity(0.75),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 18,
-                      right: 18,
-                      bottom: 16,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            serviceName,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            providerName,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.labelLarge?.copyWith(
-                              color: Colors.white70,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+      width: 230,
+      child: ServiceOfferingCard(
+        title: serviceName,
+        subtitle: providerName,
+        badgeLabel: specialty.trim().isNotEmpty ? specialty : null,
+        priceLabel: priceLabel,
+        imageUrl: cover,
+        buttonLabel: 'hospitals.detail.cta.view_service'.tr(),
+        onTap: () {
+          final item = _toSearchResult(offering, baseUrl, locale: locale);
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => ServiceOfferingDetailPage(
+                item: item,
+                baseUrl: baseUrl,
+                offeringId: offering.id,
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 24,
-                      backgroundColor:
-                          theme.colorScheme.surfaceContainerHighest,
-                      backgroundImage:
-                          avatar != null ? NetworkImage(avatar) : null,
-                      child: avatar == null
-                          ? const Icon(Icons.person_rounded, size: 24)
-                          : null,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            providerName,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          if (specialty.trim().isNotEmpty)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 2),
-                              child: Text(
-                                specialty,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.primary,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                    if ((offering.provider.rating ?? 0) > 0)
-                      _Badge(
-                        label: offering.provider.rating!.toStringAsFixed(1),
-                        icon: Icons.star_rounded,
-                        background: theme.colorScheme.secondaryContainer,
-                        foreground: theme.colorScheme.onSecondaryContainer,
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _OfferingCoverImage extends StatelessWidget {
-  final String? path;
-
-  const _OfferingCoverImage({required this.path});
-
-  @override
-  Widget build(BuildContext context) {
-    if (path == null || path!.isEmpty) {
-      return Container(
-        color: Theme.of(context).colorScheme.surfaceVariant,
-        alignment: Alignment.center,
-        child: const Icon(Icons.medical_services_rounded, size: 42),
-      );
-    }
-
-    if (path!.startsWith('http')) {
-      return Image.network(
-        path!,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => Container(
-          color: Theme.of(context).colorScheme.surfaceVariant,
-          alignment: Alignment.center,
-          child: const Icon(Icons.image_not_supported_rounded, size: 36),
-        ),
-      );
-    }
-
-    return Image.asset(
-      path!,
-      fit: BoxFit.cover,
-      errorBuilder: (_, __, ___) => Container(
-        color: Theme.of(context).colorScheme.surfaceVariant,
-        alignment: Alignment.center,
-        child: const Icon(Icons.image_not_supported_rounded, size: 36),
+            ),
+          );
+        },
       ),
     );
   }
@@ -321,13 +190,11 @@ class _RecentServiceOfferingsLoading extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
+          _ShimmerBox(
             width: 180,
             height: 20,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(12),
-            ),
+            baseColor: color,
+            radius: 12,
           ),
           const SizedBox(height: 16),
           SizedBox(
@@ -337,12 +204,11 @@ class _RecentServiceOfferingsLoading extends StatelessWidget {
               itemCount: 3,
               separatorBuilder: (_, __) => const SizedBox(width: 14),
               itemBuilder: (_, __) {
-                return Container(
+                return _ShimmerBox(
                   width: 260,
-                  decoration: BoxDecoration(
-                    color: color,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
+                  height: 260,
+                  baseColor: color,
+                  radius: 24,
                 );
               },
             ),
@@ -387,51 +253,6 @@ class _RecentServiceOfferingsEmpty extends StatelessWidget {
   }
 }
 
-class _Badge extends StatelessWidget {
-  final String label;
-  final IconData? icon;
-  final Color? background;
-  final Color? foreground;
-
-  const _Badge({
-    required this.label,
-    this.icon,
-    this.background,
-    this.foreground,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final bg = background ?? theme.colorScheme.surfaceContainerHighest;
-    final fg = foreground ?? theme.colorScheme.onSurface;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (icon != null) ...[
-            Icon(icon, size: 16, color: fg),
-            const SizedBox(width: 4),
-          ],
-          Text(
-            label,
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: fg,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 String? _resolveImage(String? path, String baseUrl) {
   if (path == null || path.isEmpty) {
     return null;
@@ -444,5 +265,119 @@ String? _resolveImage(String? path, String baseUrl) {
     return uri.resolve(path).toString();
   } catch (_) {
     return path;
+  }
+}
+
+SearchResultItem _toSearchResult(
+  ServiceOfferingModel offering,
+  String baseUrl, {
+  required String locale,
+}) {
+  final service = offering.service;
+  final provider = offering.provider;
+  final providerUser = provider.user;
+
+  final serviceName = service.nameForLocale(locale);
+  final image = _resolveImage(service.image, baseUrl);
+  final avatar = _resolveImage(providerUser.profilePicture, baseUrl);
+
+  return SearchResultItem(
+    id: offering.id,
+    type: SearchResultType.serviceOffering,
+    title: serviceName,
+    subtitle: providerUser.name,
+    description: provider.specialty,
+    rating: provider.rating,
+    price: offering.price,
+    imagePath: image,
+    secondaryImagePath: avatar,
+    location: const SearchLocation(),
+    extra: {
+      'service': {
+        '_id': service.id,
+        'name_en': service.nameEn,
+        'name_fr': service.nameFr,
+        'name_ar': service.nameAr,
+        'name_sp': service.nameSp,
+        'image': service.image,
+      },
+      'provider': {
+        '_id': provider.id,
+        'user': {
+          '_id': providerUser.id,
+          'name': providerUser.name,
+          'email': providerUser.email,
+          'profilePicture': providerUser.profilePicture,
+        },
+        'specialty': provider.specialty,
+        'rating': provider.rating,
+      },
+    },
+  );
+}
+
+class _ShimmerBox extends StatefulWidget {
+  final double? width;
+  final double? height;
+  final double radius;
+  final Color baseColor;
+
+  const _ShimmerBox({
+    this.width,
+    this.height,
+    required this.baseColor,
+    this.radius = 12,
+  });
+
+  @override
+  State<_ShimmerBox> createState() => _ShimmerBoxState();
+}
+
+class _ShimmerBoxState extends State<_ShimmerBox>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        final value = _controller.value;
+        return Container(
+          width: widget.width,
+          height: widget.height,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(widget.radius),
+            gradient: LinearGradient(
+              begin: Alignment(-1 + 2 * value, -0.3),
+              end: Alignment(1 + 2 * value, 0.3),
+              stops: const [0.1, 0.3, 0.4, 0.6, 0.9],
+              colors: [
+                widget.baseColor.withOpacity(0.35),
+                widget.baseColor.withOpacity(0.5),
+                widget.baseColor.withOpacity(0.85),
+                widget.baseColor.withOpacity(0.5),
+                widget.baseColor.withOpacity(0.35),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

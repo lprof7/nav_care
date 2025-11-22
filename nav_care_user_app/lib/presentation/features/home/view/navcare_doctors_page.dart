@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/doctors/models/doctor_model.dart';
+import 'package:nav_care_user_app/presentation/features/doctors/view/doctor_detail_page.dart';
 
 class NavcareDoctorsPage extends StatelessWidget {
   final List<DoctorModel> doctors;
@@ -60,7 +61,8 @@ class NavcareDoctorsPage extends StatelessWidget {
                     final bio =
                         doctor.bioForLocale(context.locale.languageCode);
                     final baseUrl = sl<AppConfig>().api.baseUrl;
-                    final coverPath = doctor.coverImage(baseUrl: baseUrl);
+                    final coverPath = doctor.avatarImage(baseUrl: baseUrl) ??
+                        doctor.coverImage(baseUrl: baseUrl);
                     final avatarPath = doctor.avatarImage(baseUrl: baseUrl);
                     final displayName = doctor.displayName.trim().isNotEmpty
                         ? doctor.displayName
@@ -76,7 +78,16 @@ class NavcareDoctorsPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => DoctorDetailPage(
+                                doctorId: doctor.id,
+                                initial: doctor,
+                              ),
+                            ),
+                          );
+                        },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [

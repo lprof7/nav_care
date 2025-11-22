@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../../core/responses/failure.dart';
 import '../../core/responses/pagination.dart';
 import '../../core/responses/result.dart';
@@ -11,9 +13,18 @@ class AppointmentRepository {
   AppointmentRepository({required RemoteAppointmentService remoteService})
       : _remoteService = remoteService;
 
-  Future<Result<AppointmentModel>> createAppointment(
+  Future<Result<String>> createAppointment(
       AppointmentModel appointment) async {
-    return await _remoteService.createAppointment(appointment);
+    final response = await _remoteService.createAppointment(appointment);
+    return response.fold(
+      onSuccess: (data) {
+        final map = _asMap(data);
+        final message = _localizedMessage(map?['message']) ??
+            'appointment_created_success';
+        return Result.success(message);
+      },
+      onFailure: (failure) => Result.failure(failure),
+    );
   }
 
   Future<Result<UserAppointmentList>> getMyAppointments({
@@ -143,6 +154,23 @@ class AppointmentRepository {
       return appointment;
     }
 
+    return null;
+  }
+
+  String? _localizedMessage(dynamic message) {
+    if (message is String) return message;
+    if (message is Map) {
+      final localeCode = Intl.getCurrentLocale().split('_').first;
+      if (message[localeCode] is String && (message[localeCode] as String).isNotEmpty) {
+        return message[localeCode];
+      }
+      if (message['en'] is String && (message['en'] as String).isNotEmpty) {
+        return message['en'];
+      }
+      for (final value in message.values) {
+        if (value is String && value.isNotEmpty) return value;
+      }
+    }
     return null;
   }
 }

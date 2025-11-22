@@ -21,13 +21,14 @@ import 'package:nav_care_user_app/presentation/shared/ui/shell/nav_shell_nav_bar
 import '../viewmodel/nav_shell_cubit.dart';
 
 class NavShellPage extends StatelessWidget {
-  const NavShellPage({super.key});
+  final int initialIndex;
+  const NavShellPage({super.key, this.initialIndex = 0});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => NavShellCubit()),
+        BlocProvider(create: (_) => NavShellCubit(initialIndex: initialIndex)),
         BlocProvider(create: (_) => sl<LogoutCubit>()),
         BlocProvider<UserProfileCubit>(
           create: (context) => sl<UserProfileCubit>()
@@ -95,8 +96,9 @@ class NavShellPage extends StatelessWidget {
             final userEmail = profile?.email ?? sessionUser?.email;
 
             return Scaffold(
-              appBar: const NavShellAppBar(
+              appBar: NavShellAppBar(
                 notificationCount: 0,
+                onNotificationsTap: () => context.push('/notifications'),
               ),
               drawer: NavShellDrawer(
                 selectedIndex: state.currentIndex,
@@ -132,7 +134,7 @@ class NavShellPage extends StatelessWidget {
                 onSignUpTap: () => context.go('/signup'),
                 onGoogleSignInTap: () {},
                 onFaqTap: () => context.push('/faq'),
-                onContactTap: () {},
+                onContactTap: () => context.push('/contact'),
                 onSettingsTap: () {},
                 onAboutTap: () => context.push('/about'),
                 onFeedbackTap: () {},

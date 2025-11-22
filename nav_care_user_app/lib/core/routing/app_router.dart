@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/signin/view/signin_page.dart';
 import 'package:nav_care_user_app/presentation/features/faq/view/faq_page.dart';
 import 'package:nav_care_user_app/presentation/features/about/view/about_page.dart';
+import 'package:nav_care_user_app/presentation/features/contact/view/contact_page.dart';
 import 'package:nav_care_user_app/presentation/features/shell/view/nav_shell_page.dart';
 import 'package:nav_care_user_app/presentation/features/profile/view/edit_user_profile_page.dart';
 import 'package:nav_care_user_app/presentation/features/profile/view/forgot_password_page.dart';
@@ -13,7 +14,9 @@ import 'package:nav_care_user_app/presentation/features/authentication/session/a
 
 import '../../presentation/features/authentication/signup/view/signup_page.dart';
 import '../../presentation/features/appointments/appointment_creation/view/add_appointment_page.dart';
+import '../../presentation/features/doctors/view/doctor_detail_page.dart';
 import '../../presentation/features/hospitals/view/hospital_detail_page.dart';
+import '../../presentation/features/notifications/view/notifications_page.dart';
 import '../di/di.dart';
 
 final appRouter = GoRouter(
@@ -22,8 +25,21 @@ final appRouter = GoRouter(
     GoRoute(path: '/signin', builder: (ctx, st) => const SigninPage()),
     GoRoute(path: '/signup', builder: (ctx, st) => const SignupPage()),
     GoRoute(path: '/home', builder: (ctx, st) => const NavShellPage()),
+    GoRoute(path: '/appointments', builder: (ctx, st) => const NavShellPage(initialIndex: 1)),
     GoRoute(path: '/faq', builder: (ctx, st) => const FaqPage()),
     GoRoute(path: '/about', builder: (ctx, st) => const AboutPage()),
+    GoRoute(path: '/contact', builder: (ctx, st) => const ContactPage()),
+    GoRoute(
+      path: '/notifications',
+      builder: (ctx, st) => const NotificationsPage(),
+    ),
+    GoRoute(
+      path: '/doctors/:id',
+      builder: (ctx, st) {
+        final doctorId = st.pathParameters['id'] ?? '';
+        return DoctorDetailPage(doctorId: doctorId);
+      },
+    ),
     GoRoute(
         path: '/appointments/create',
         builder: (ctx, st) {

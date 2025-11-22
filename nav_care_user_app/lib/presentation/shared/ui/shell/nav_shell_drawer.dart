@@ -27,8 +27,8 @@ class NavShellDrawer extends StatelessWidget {
   final VoidCallback? onSignInTap;
   final VoidCallback? onSignUpTap;
   final VoidCallback? onGoogleSignInTap;
-  final VoidCallback? onFaqTap;
-  final VoidCallback? onContactTap;
+    final VoidCallback? onFaqTap;
+    final VoidCallback? onContactTap;
   final VoidCallback? onSettingsTap;
   final VoidCallback? onAboutTap;
   final VoidCallback? onFeedbackTap;
@@ -187,10 +187,10 @@ class NavShellDrawer extends StatelessWidget {
             _DrawerActionTile(
               icon: Icons.mail_outline_rounded,
               label: 'shell.drawer_contact'.tr(),
-              onTap: () {
-                Navigator.of(context).pop();
-                onContactTap?.call();
-              },
+                onTap: () {
+                  Navigator.of(context).pop();
+                  onContactTap?.call();
+                },
             ),
             _DrawerActionTile(
               icon: Icons.settings_rounded,

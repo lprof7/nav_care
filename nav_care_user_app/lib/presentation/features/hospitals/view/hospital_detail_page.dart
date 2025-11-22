@@ -8,10 +8,14 @@ import 'package:nav_care_user_app/data/clinics/models/clinic_model.dart';
 import 'package:nav_care_user_app/data/doctors/models/doctor_model.dart';
 import 'package:nav_care_user_app/data/hospitals/models/hospital_model.dart';
 import 'package:nav_care_user_app/data/service_offerings/models/service_offering_model.dart';
+import 'package:nav_care_user_app/data/search/models/search_models.dart';
 import 'package:nav_care_user_app/presentation/features/hospitals/viewmodel/hospital_detail_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/hospitals/viewmodel/hospital_detail_state.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/cards/doctor_grid_card.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/cards/hospital_detail_cards.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/cards/service_offering_card.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/molecules/hospital_detail_components.dart';
+import 'package:nav_care_user_app/presentation/features/service_offerings/view/service_offering_detail_page.dart';
 
 class HospitalDetailPage extends StatelessWidget {
   final String hospitalId;
@@ -44,7 +48,9 @@ class _HospitalDetailView extends StatefulWidget {
   const _HospitalDetailView({required this.hospitalId});
 
   @override
-  State<_HospitalDetailView> createState() => _HospitalDetailViewState();
+  State<_HospitalDetailView> createState() {
+    return _HospitalDetailViewState();
+  }
 }
 
 class _HospitalDetailViewState extends State<_HospitalDetailView>
@@ -79,6 +85,7 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
     return BlocBuilder<HospitalDetailCubit, HospitalDetailState>(
       builder: (context, state) {
         final hospital = state.hospital;
+        print(hospital?.name);
         final theme = Theme.of(context);
         final baseUrl = sl<AppConfig>().api.baseUrl;
 
@@ -468,8 +475,7 @@ class _DecoratedTabBar extends StatelessWidget implements PreferredSizeWidget {
   const _DecoratedTabBar({required this.tabBar});
 
   @override
-  Size get preferredSize =>
-      Size.fromHeight(tabBar.preferredSize.height + 18);
+  Size get preferredSize => Size.fromHeight(tabBar.preferredSize.height + 18);
 
   @override
   Widget build(BuildContext context) {
@@ -578,9 +584,9 @@ class _DetailsTab extends StatelessWidget {
                     HospitalInfoRow(
                       icon: Icons.place_rounded,
                       title: 'address'.tr(),
-                      value: hospital.address.isNotEmpty
-                          ? hospital.address
-                          : 'hospitals.detail.no_description'.tr(),
+                      value:
+                          hospital.address.isNotEmpty ? hospital.address : null,
+                      placeholderKey: 'hospitals.detail.no_description',
                     ),
                     if (hospital.latitude != null &&
                         hospital.longitude != null) ...[
@@ -588,8 +594,11 @@ class _DetailsTab extends StatelessWidget {
                       HospitalInfoRow(
                         icon: Icons.map_rounded,
                         title: 'hospitals.detail.location'.tr(),
-                        value:
-                            '${hospital.latitude?.toStringAsFixed(4)}, ${hospital.longitude?.toStringAsFixed(4)}',
+                        value: (hospital.latitude != null &&
+                                hospital.longitude != null)
+                            ? '${hospital.latitude?.toStringAsFixed(4)}, ${hospital.longitude?.toStringAsFixed(4)}'
+                            : null,
+                        placeholderKey: 'hospitals.detail.no_description',
                       ),
                     ],
                   ],
@@ -785,9 +794,8 @@ class _DoctorsTabState extends State<_DoctorsTab> {
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
                   final doctor = filtered[index];
-                  final avatar =
-                      doctor.coverImage(baseUrl: widget.baseUrl) ??
-                          doctor.avatarImage(baseUrl: widget.baseUrl);
+                  final avatar = doctor.avatarImage(baseUrl: widget.baseUrl) ??
+                      doctor.coverImage(baseUrl: widget.baseUrl);
                   return DoctorGridCard(
                     title: doctor.displayName,
                     subtitle: doctor.specialty,
@@ -865,8 +873,9 @@ class _OfferingsTab extends StatelessWidget {
                 final offering = offerings[index];
                 final serviceName = offering.service.nameForLocale(locale);
                 final price = offering.price != null
-                    ? 'services.offerings.price'.tr(
-                        namedArgs: {'price': offering.price!.toStringAsFixed(2)})
+                    ? 'services.offerings.price'.tr(namedArgs: {
+                        'price': offering.price!.toStringAsFixed(2)
+                      })
                     : '';
                 final image = _resolveImage(offering.service.image, baseUrl);
                 return ServiceOfferingCard(
@@ -875,7 +884,20 @@ class _OfferingsTab extends StatelessWidget {
                   badgeLabel: 'hospitals.detail.tabs.offerings'.tr(),
                   priceLabel: price,
                   imageUrl: image,
-                  onPressed: () {},
+                  buttonLabel: 'hospitals.detail.cta.view_service'.tr(),
+                  onTap: () {
+                    final item =
+                        _toSearchResult(offering, baseUrl, locale: locale);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => ServiceOfferingDetailPage(
+                          item: item,
+                          baseUrl: baseUrl,
+                          offeringId: offering.id,
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
               childCount: offerings.length,
@@ -947,6 +969,49 @@ String? _resolveImage(String? path, String baseUrl) {
   } catch (_) {
     return path;
   }
+}
+
+SearchResultItem _toSearchResult(
+  ServiceOfferingModel offering,
+  String baseUrl, {
+  required String locale,
+}) {
+  final serviceName = offering.service.nameForLocale(locale);
+  final image = _resolveImage(offering.service.image, baseUrl);
+  final avatar = _resolveImage(offering.provider.user.profilePicture, baseUrl);
+  return SearchResultItem(
+    id: offering.id,
+    type: SearchResultType.serviceOffering,
+    title: serviceName,
+    subtitle: offering.provider.user.name,
+    description: offering.provider.specialty,
+    rating: offering.provider.rating,
+    price: offering.price,
+    imagePath: image,
+    secondaryImagePath: avatar,
+    location: const SearchLocation(),
+    extra: {
+      'service': {
+        '_id': offering.service.id,
+        'name_en': offering.service.nameEn,
+        'name_fr': offering.service.nameFr,
+        'name_ar': offering.service.nameAr,
+        'name_sp': offering.service.nameSp,
+        'image': offering.service.image,
+      },
+      'provider': {
+        '_id': offering.provider.id,
+        'user': {
+          '_id': offering.provider.user.id,
+          'name': offering.provider.user.name,
+          'email': offering.provider.user.email,
+          'profilePicture': offering.provider.user.profilePicture,
+        },
+        'specialty': offering.provider.specialty,
+        'rating': offering.provider.rating,
+      },
+    },
+  );
 }
 
 class _SliverTabBarDelegate extends SliverPersistentHeaderDelegate {

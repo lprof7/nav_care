@@ -10,6 +10,10 @@ import 'package:nav_care_user_app/presentation/features/search/filter/viewmodel/
 import 'package:nav_care_user_app/presentation/features/search/viewmodel/search_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/search/viewmodel/search_state.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/view/service_offering_detail_page.dart';
+import 'package:nav_care_user_app/presentation/features/doctors/view/doctor_detail_page.dart';
+import 'package:nav_care_user_app/presentation/features/hospitals/view/hospital_detail_page.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/cards/doctor_grid_card.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/cards/home_hospital_card.dart';
 
 import '../../../../core/di/di.dart';
 
@@ -72,14 +76,24 @@ class _SearchViewState extends State<_SearchView> {
     SearchResultItem item,
     String baseUrl,
   ) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => ServiceOfferingDetailPage(
+    Widget page;
+    switch (item.type) {
+      case SearchResultType.doctor:
+        page = DoctorDetailPage(doctorId: item.id);
+        break;
+      case SearchResultType.hospital:
+        page = HospitalDetailPage(hospitalId: item.id);
+        break;
+      case SearchResultType.serviceOffering:
+      case SearchResultType.unknown:
+        page = ServiceOfferingDetailPage(
           item: item,
           baseUrl: baseUrl,
-        ),
-      ),
-    );
+          offeringId: item.id,
+        );
+        break;
+    }
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
   }
 
   List<Widget> _buildActiveFilterChips(SearchFilters filters) {
@@ -489,16 +503,17 @@ class _SearchResultCarousel extends StatelessWidget {
     final targetWidth = availableWidth * 0.48;
     final cardWidth = targetWidth.clamp(150.0, 240.0).toDouble();
     final imageHeight = cardWidth * 0.58;
-    final baseCardHeight = imageHeight + 120;
-    final extraHeight = switch (type) {
-      SearchResultType.serviceOffering => 36.0,
-      _ => 0.0,
+    final baseCardHeight = switch (type) {
+      SearchResultType.doctor => imageHeight + 160,
+      SearchResultType.hospital => imageHeight + 190,
+      SearchResultType.serviceOffering => imageHeight + 200,
+      SearchResultType.unknown => imageHeight + 150,
     };
     final scaleOverflow = math.min(math.max(textScale - 1.0, 0.0), 0.8);
-    final cardHeight = baseCardHeight + extraHeight + scaleOverflow * 80;
+    final cardHeight = baseCardHeight + scaleOverflow * 60;
 
     return SizedBox(
-      height: cardHeight,
+      height: cardHeight + 30,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -564,6 +579,37 @@ class _SearchResultCard extends StatelessWidget {
       item.location.country,
     ].where((part) => part.trim().isNotEmpty).join(', ');
     final showLocation = locationText.isNotEmpty;
+
+    if (type == SearchResultType.doctor) {
+      final doctorImage =
+          _resolveImagePath(item.secondaryImagePath ?? item.imagePath, baseUrl);
+      return SizedBox(
+        width: cardWidth,
+        child: DoctorGridCard(
+          title: item.title.isNotEmpty ? item.title : typeLabel,
+          subtitle: item.subtitle.isNotEmpty
+              ? item.subtitle
+              : (showLocation ? locationText : typeLabel),
+          imageUrl: doctorImage,
+          rating: item.rating,
+          onTap: onServiceTap,
+        ),
+      );
+    }
+
+    if (type == SearchResultType.hospital) {
+      return SizedBox(
+        width: cardWidth,
+        child: HomeHospitalCard(
+          title: item.title.isNotEmpty ? item.title : typeLabel,
+          subtitle: item.description.isNotEmpty ? item.description : typeLabel,
+          badgeLabel: item.facilityType ?? typeLabel,
+          imageUrl: resolvedImage,
+          location: showLocation ? locationText : null,
+          onTap: onServiceTap,
+        ),
+      );
+    }
 
     return SizedBox(
       width: cardWidth,

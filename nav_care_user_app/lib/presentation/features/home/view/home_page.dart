@@ -15,21 +15,25 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.only(bottom: 24),
-      children: const [
-        _BecomeDoctorBanner(),
-        AdsSectionView(),
-        FeaturedServicesSection(),
-        HospitalsChoiceSection(),
-        DoctorsChoiceSection(),
-        AdsSectionView(),
-        FeaturedHospitalsSection(),
-        FeaturedDoctorsSection(),
-        RecentHospitalsSection(),
-        RecentServiceOfferingsSection(),
-        AdsSectionView(),
-      ],
+    const sections = [
+      _BecomeDoctorBanner(),
+      AdsSectionView(),
+      FeaturedServicesSection(),
+      HospitalsChoiceSection(),
+      DoctorsChoiceSection(),
+      AdsSectionView(),
+      FeaturedHospitalsSection(),
+      FeaturedDoctorsSection(),
+      RecentHospitalsSection(),
+      RecentServiceOfferingsSection(),
+      AdsSectionView(),
+    ];
+
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+      itemCount: sections.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 10),
+      itemBuilder: (context, index) => sections[index],
     );
   }
 }

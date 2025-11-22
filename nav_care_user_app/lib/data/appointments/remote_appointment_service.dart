@@ -16,15 +16,18 @@ class RemoteAppointmentService {
   })  : _apiClient = apiClient,
         _tokenStore = tokenStore;
 
-  Future<Result<AppointmentModel>> createAppointment(
+  Future<Result<Map<String, dynamic>>> createAppointment(
       AppointmentModel appointment) async {
+    final token = await _tokenStore.getToken();
+    if (token == null || token.isEmpty) {
+      return Result.failure(const Failure.unauthorized());
+    }
     try {
-      final response = await _apiClient.post<AppointmentModel>(
+      final response = await _apiClient.post<Map<String, dynamic>>(
         _apiClient.apiConfig.createAppointment,
         body: appointment.toJson(),
-        parser: (json) {
-          return AppointmentModel.fromJson(json['data']);
-        },
+        headers: {'Authorization': 'Bearer $token'},
+        parser: (json) => json as Map<String, dynamic>,
       );
       return response; // ApiClient.post already returns Result<T>
     } on DioException catch (e) {

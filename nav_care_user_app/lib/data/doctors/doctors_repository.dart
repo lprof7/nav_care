@@ -120,6 +120,24 @@ class DoctorsRepository {
     }
   }
 
+  Future<DoctorModel> getDoctorById(String doctorId) async {
+    final result = await remoteService.getDoctorById(doctorId);
+    if (!result.isSuccess || result.data == null) {
+      throw Exception(
+          _extractMessage(result.error?.message) ?? 'Failed to load doctor.');
+    }
+    final data = result.data!;
+    final doctorJson = _asMap(_asMap(data['data'])?['doctor']) ??
+        _asMap(data['doctor']) ??
+        (_extractDoctorMaps(data).isNotEmpty
+            ? _extractDoctorMaps(data).first
+            : null);
+    if (doctorJson != null) {
+      return DoctorModel.fromJson(doctorJson);
+    }
+    throw Exception('Failed to load doctor.');
+  }
+
   String? _extractMessage(dynamic message) {
     if (message is String && message.isNotEmpty) {
       return message;
@@ -136,6 +154,14 @@ class DoctorsRepository {
       if (localized.isNotEmpty) {
         return localized;
       }
+    }
+    return null;
+  }
+
+  Map<String, dynamic>? _asMap(dynamic value) {
+    if (value is Map<String, dynamic>) return value;
+    if (value is Map) {
+      return value.map((key, dynamic val) => MapEntry(key.toString(), val));
     }
     return null;
   }

@@ -81,6 +81,8 @@ flutter:
     - assets/images/fake/profile_pics/
     - assets/images/fake/hospitals/
     - assets/images/fake/services/
+    - assets/images/appointment/
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

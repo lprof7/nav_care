@@ -59,7 +59,6 @@
     "shell.nav_services": "Services",
     "shell.nav_profile": "Profile",
     "shell.badge_new": "New",
-    "shell.drawer_settings": "Settings",
     "shell.drawer_logout": "Sign out",
     "shell.drawer_default_name": "Nav Care User",
     "shell.drawer_default_email": "user@navcare.com",
@@ -67,6 +66,10 @@
     "shell.language.en": "English",
     "shell.language.ar": "Arabic",
     "shell.language.fr": "French",
+    "notifications.title": "Notifications",
+    "notifications.empty_title": "No notifications yet",
+    "notifications.empty_subtitle": "You're all caught up. Pull to refresh anytime.",
+    "notifications.refresh": "Refresh",
     "home.featured_services.title": "Featured services",
     "home.featured_services.see_more": "See more",
     "home.featured_services.empty": "No featured services available yet.",
@@ -76,6 +79,8 @@
     "services.offerings.empty": "No offerings are available for this service.",
     "services.offerings.retry": "Try again",
     "services.offerings.price": "From {price}",
+    "services.detail.description": "Description",
+    "services.detail.read_more": "Read more",
     "services.details.no_description": "No description provided for this service.",
     "hospitals.detail.title": "Hospital",
     "hospitals.detail.error": "Unable to load hospital details.",
@@ -170,6 +175,15 @@
         },
         "validation": {
             "invalid_range": "End time must be after start time"
+        },
+        "form": {
+            "heading": "Book Appointment",
+            "subtitle": "Choose a type and time that works best for you."
+        },
+        "success": {
+            "title": "Appointment booked!",
+            "subtitle": "Your appointment has been created successfully.",
+            "go_to": "Go to appointments"
         }
     },
     "profile.title": "My profile",
@@ -351,8 +365,24 @@
     "faq.questions.password_reset.question": "I forgot my password. How do I reset it?",
     "faq.questions.password_reset.answer": "Use the \"Forgot password\" option on the sign-in screen to request a reset. Follow the on-screen steps to set a new password with your email or phone number.",
     "faq.questions.data_sync.question": "The app is not loading data. What should I try?",
-    "faq.questions.data_sync.answer": "Check your internet connection, then pull to refresh on Home, Search, or Appointments. If the issue persists, sign out and back in to refresh your session before trying again."
-    ,
+    "faq.questions.data_sync.answer": "Check your internet connection, then pull to refresh on Home, Search, or Appointments. If the issue persists, sign out and back in to refresh your session before trying again.",
+    "common": {
+        "not_available": "Not available"
+    },
+    "contact": {
+        "title": "Contact Us",
+        "heading": "Let's talk",
+        "subtitle": "Questions, comments, or suggestions? Simply fill in the form and we'll be in touch shortly.",
+        "first_name": "First Name",
+        "last_name": "Last Name",
+        "email": "E-mail",
+        "phone": "Phone Number",
+        "message": "Your Message*",
+        "message_hint": "Type your message here",
+        "remaining": "{count} characters remaining",
+        "send": "Send Message",
+        "submit_placeholder": "Message sending will be configured later."
+    },
     "about": {
         "title": "About Us",
         "hero": {
@@ -423,5 +453,11 @@
             "title": "Building the future of connected care",
             "body": "As NavCare grows into a multi-service hub, we remain committed to secure consultations, personalized support, and seamless experiences for every user."
         }
+    },
+    "appointment_status": {
+        "pending": "Pending",
+        "confirmed": "Confirmed",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
     }
 }

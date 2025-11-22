@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/hospitals/models/hospital_model.dart';
+import 'package:nav_care_user_app/presentation/features/hospitals/view/hospital_detail_page.dart';
 
 class NavcareHospitalsPage extends StatelessWidget {
   final List<HospitalModel> hospitals;
@@ -49,7 +50,14 @@ class NavcareHospitalsPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => HospitalDetailPage(
+                          hospitalId: hospital.id,
+                          initial: hospital,
+                        ),
+                      ),
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [

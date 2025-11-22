@@ -52,6 +52,56 @@ class ServiceOfferingsRepository {
     );
   }
 
+  Future<ServiceOfferingModel> getServiceOfferingById(String id) async {
+    final response = await _remote.getServiceOfferingById(id: id);
+    if (!response.isSuccess || response.data == null) {
+      final message = _extractMessage(response.error?.message) ??
+          'Failed to load service offering.';
+      throw Exception(message);
+    }
+
+    final payload = response.data!;
+    final success = payload['success'];
+    if (success is bool && !success) {
+      throw Exception(
+        _extractMessage(payload['message']) ??
+            'Failed to load service offering.',
+      );
+    }
+
+    final data =
+        _asMap(payload['data']) ?? _asMap(payload['result']) ?? _asMap(payload);
+    final offeringJson = _asMap(data?['offering']) ?? data;
+
+    if (offeringJson == null || offeringJson.isEmpty) {
+      throw Exception('Failed to load service offering.');
+    }
+
+    return ServiceOfferingModel.fromJson(offeringJson);
+  }
+
+  Future<List<ServiceOfferingModel>> getProviderServiceOfferings({
+    required String providerId,
+    int page = 1,
+    int limit = 10,
+  }) async {
+    final response = await _remote.listByProvider(
+      providerId: providerId,
+      page: page,
+      limit: limit,
+    );
+
+    if (!response.isSuccess || response.data == null) {
+      throw Exception(_extractMessage(response.error?.message) ??
+          'Failed to load service offerings.');
+    }
+
+    final payload = response.data!;
+    final data = _asMap(payload['data']) ?? _asMap(payload);
+    final items = _extractOfferings(data);
+    return items.map(ServiceOfferingModel.fromJson).toList(growable: false);
+  }
+
   Map<String, dynamic>? _asMap(dynamic source) {
     if (source is Map<String, dynamic>) {
       return source;

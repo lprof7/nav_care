@@ -6,6 +6,7 @@ import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/hospitals/models/hospital_model.dart';
 import 'package:nav_care_user_app/presentation/features/home/view/navcare_hospitals_page.dart';
 import 'package:nav_care_user_app/presentation/features/hospitals/view/hospital_detail_page.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/cards/home_hospital_card.dart';
 
 import '../viewmodel/hospitals_choice_cubit.dart';
 import '../viewmodel/hospitals_choice_state.dart';
@@ -66,15 +67,16 @@ class _HospitalsChoiceBody extends StatelessWidget {
                   actionLabel: _tr(context, 'see_more'),
                   onTap: () => _openSeeMore(context, state.hospitals),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
                 SizedBox(
-                  height: 220,
+                  height: 355,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: state.hospitals.length,
                     separatorBuilder: (_, __) => const SizedBox(width: 14),
                     itemBuilder: (context, index) {
                       final hospital = state.hospitals[index];
+                      // print("hospital picture: ${hospital.primaryImage()}");
                       return _HospitalCard(hospital: hospital);
                     },
                   ),
@@ -107,7 +109,6 @@ class _HospitalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final locale = context.locale.languageCode;
     final description = hospital.descriptionForLocale(locale);
     final baseUrl = sl<AppConfig>().api.baseUrl;
@@ -115,89 +116,22 @@ class _HospitalCard extends StatelessWidget {
     final facilityLabel = hospital.field.trim().isNotEmpty
         ? hospital.field
         : hospital.facilityType;
+    final subtitle = description.isNotEmpty
+        ? description
+        : 'hospitals.detail.no_description'.tr();
+
+    final location =
+        hospital.address.trim().isNotEmpty ? hospital.address.trim() : null;
 
     return SizedBox(
-      width: 260,
-      child: GestureDetector(
+      width: 210,
+      child: HomeHospitalCard(
+        title: hospital.name,
+        subtitle: subtitle,
+        badgeLabel: facilityLabel,
+        imageUrl: imagePath,
+        location: location,
         onTap: () => _openDetail(context),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              _HospitalImage(path: imagePath),
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black54,
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 18,
-                right: 18,
-                bottom: 18,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primary.withOpacity(0.85),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.monitor_heart,
-                            size: 14,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            facilityLabel,
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      hospital.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      description,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: Colors.white.withOpacity(0.9),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -210,51 +144,6 @@ class _HospitalCard extends StatelessWidget {
           initial: hospital,
         ),
       ),
-    );
-  }
-}
-
-class _HospitalImage extends StatelessWidget {
-  final String? path;
-
-  const _HospitalImage({required this.path});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    Widget placeholder(
-        {IconData icon = Icons.medical_services_rounded, double size = 48}) {
-      return Container(
-        color: theme.colorScheme.surfaceVariant,
-        alignment: Alignment.center,
-        child: Icon(icon, size: size),
-      );
-    }
-
-    final imagePath = path;
-    if (imagePath == null || imagePath.isEmpty) {
-      return placeholder();
-    }
-
-    if (imagePath.startsWith('http')) {
-      return Image.network(
-        imagePath,
-        fit: BoxFit.cover,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return placeholder(icon: Icons.local_hospital_rounded, size: 40);
-        },
-        errorBuilder: (context, error, stackTrace) =>
-            placeholder(icon: Icons.image_not_supported_rounded, size: 36),
-      );
-    }
-
-    return Image.asset(
-      imagePath,
-      fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) =>
-          placeholder(icon: Icons.image_not_supported_rounded, size: 36),
     );
   }
 }

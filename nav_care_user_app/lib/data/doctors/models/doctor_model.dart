@@ -108,13 +108,7 @@ class DoctorModel {
     final trimmed = value.trim();
     if (trimmed.isEmpty) return null;
     if (trimmed.startsWith('http')) return trimmed;
-    if (trimmed.startsWith('assets/')) return trimmed;
     if (baseUrl == null || baseUrl.isEmpty) return trimmed;
-    try {
-      final resolved = Uri.parse(baseUrl).resolve(trimmed);
-      return resolved.toString();
-    } catch (_) {
-      return trimmed;
-    }
+    return Uri.parse(baseUrl).resolve(trimmed).toString();
   }
 }

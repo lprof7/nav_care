@@ -177,62 +177,119 @@ class _UserAppointmentsList extends StatelessWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           final appointment = appointments[index];
-          return Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            child: ListTile(
-              contentPadding: const EdgeInsets.all(16),
-              title: Text(
-                appointment.serviceName,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+          final statusLabel = _statusLabel(context, appointment.status);
+          final statusColor = _statusColor(
+            context,
+            appointment.status,
+          );
+          final typeLabel = appointment.type == 'virtual'
+              ? 'virtual_appointment'.tr()
+              : 'in_person_appointment'.tr();
+
+          return Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.outline.withOpacity(0.15),
               ),
-              subtitle: Column(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 12,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.all(14),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(18),
+              onTap: () => onAppointmentTap(appointment),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          appointment.serviceName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      _StatusPill(
+                        label: statusLabel,
+                        color: statusColor,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
                   Text(
                     appointment.providerName,
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.blueGrey.shade800,
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    _formatAppointmentRange(
-                        context, appointment.startTime, appointment.endTime),
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-              trailing: SizedBox(
-                height: 64,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Chip(
-                      label: Text(
-                        'appointments.status.'.tr(),
+                  Row(
+                    children: [
+                      Icon(Icons.schedule_rounded,
+                          size: 16, color: Colors.blueGrey.shade600),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          _formatAppointmentRange(
+                              context, appointment.startTime, appointment.endTime),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: Colors.blueGrey.shade700),
+                        ),
                       ),
-                    ),
-                    if (appointment.price != null)
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(Icons.merge_type_rounded,
+                          size: 16, color: Colors.blueGrey.shade600),
+                      const SizedBox(width: 6),
                       Text(
-                        NumberFormat.simpleCurrency(
-                          locale: context.locale.toLanguageTag(),
-                        ).format(appointment.price),
+                        typeLabel,
                         style: Theme.of(context)
                             .textTheme
                             .labelMedium
-                            ?.copyWith(fontWeight: FontWeight.w600),
+                            ?.copyWith(fontWeight: FontWeight.w700),
                       ),
-                  ],
-                ),
+                      const Spacer(),
+                      if (appointment.price != null)
+                        Text(
+                          NumberFormat.simpleCurrency(
+                            locale: context.locale.toLanguageTag(),
+                          ).format(appointment.price),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                        ),
+                    ],
+                  ),
+                ],
               ),
-              onTap: () => onAppointmentTap(appointment),
             ),
           );
         },
-        separatorBuilder: (_, __) => const SizedBox(height: 16),
+        separatorBuilder: (_, __) => const SizedBox(height: 12),
         itemCount: appointments.length,
       ),
     );
@@ -439,14 +496,14 @@ Future<void> _showUserAppointmentEditor(
                   },
                 ),
                 const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  value: status,
-                  items: statuses
-                      .map((value) => DropdownMenuItem(
-                            value: value,
-                            child: Text('appointments.status.'.tr()),
-                          ))
-                      .toList(),
+                      DropdownButtonFormField<String>(
+                        value: status,
+                        items: statuses
+                            .map((value) => DropdownMenuItem(
+                                  value: value,
+                                  child: Text(_statusLabel(context, value)),
+                                ))
+                            .toList(),
                   onChanged: (value) {
                     if (value != null) {
                       setSheetState(() {
@@ -537,14 +594,71 @@ String _formatAppointmentRange(
   final locale = context.locale.languageCode;
   final dateFormat = DateFormat.yMMMd(locale);
   final timeFormat = DateFormat.Hm(locale);
-  return ' ??? \n ??? ';
+  final datePart = dateFormat.format(start.toLocal());
+  final timePart =
+      '${timeFormat.format(start.toLocal())} - ${timeFormat.format(end.toLocal())}';
+  return '$datePart - $timePart';
 }
 
 String _formatFieldDate(BuildContext context, DateTime dateTime) {
   final locale = context.locale.languageCode;
   final dateFormat = DateFormat.yMMMd(locale);
   final timeFormat = DateFormat.Hm(locale);
-  return ' ??? ';
+  return '${dateFormat.format(dateTime.toLocal())} - ${timeFormat.format(dateTime.toLocal())}';
 }
 
 const _userStatusOptions = ['cancelled'];
+
+class _StatusPill extends StatelessWidget {
+  final String label;
+  final Color color;
+
+  const _StatusPill({required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        label,
+        style: theme.textTheme.labelMedium?.copyWith(
+          color: color,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+}
+
+Color _statusColor(BuildContext context, String status) {
+  final scheme = Theme.of(context).colorScheme;
+  switch (status) {
+    case 'confirmed':
+      return Colors.green.shade700;
+    case 'completed':
+      return Colors.teal.shade700;
+    case 'cancelled':
+      return scheme.error;
+    case 'pending':
+    default:
+      return scheme.primary;
+  }
+}
+
+String _statusLabel(BuildContext context, String status) {
+  final key = 'appointment_status.$status';
+  final translated = key.tr();
+  if (translated != key) return translated;
+  final fallback = {
+    'pending': 'Pending',
+    'confirmed': 'Confirmed',
+    'completed': 'Completed',
+    'cancelled': 'Cancelled',
+  };
+  return fallback[status] ?? status;
+}

@@ -6,6 +6,7 @@ import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/service_offerings/models/service_offering_model.dart';
 import 'package:nav_care_user_app/data/services/models/service_model.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/view/service_offering_detail_page.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/cards/service_offering_card.dart';
 import 'package:nav_care_user_app/data/search/models/search_models.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/viewmodel/service_offerings_by_service_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/viewmodel/service_offerings_by_service_state.dart';
@@ -152,90 +153,47 @@ class _OfferingsList extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        ...offerings.map(
-          (offering) {
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            childAspectRatio: 0.6,
+          ),
+          itemCount: offerings.length,
+          itemBuilder: (context, index) {
+            final offering = offerings[index];
             final serviceName = offering.service.nameForLocale(locale);
             final providerName = offering.provider.user.name;
+            final specialty = offering.provider.specialty;
             final cover = _resolveImage(offering.service.image, baseUrl);
-            return Card(
-              margin: const EdgeInsets.only(bottom: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: ListTile(
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: SizedBox(
-                    width: 64,
-                    height: 64,
-                    child: cover == null
-                        ? Container(
-                            color: theme.colorScheme.surfaceVariant,
-                            alignment: Alignment.center,
-                            child: const Icon(Icons.medical_services_rounded),
-                          )
-                        : Image.network(
-                            cover,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => Container(
-                              color: theme.colorScheme.surfaceVariant,
-                              alignment: Alignment.center,
-                              child:
-                                  const Icon(Icons.image_not_supported_rounded),
-                            ),
-                          ),
-                  ),
-                ),
-                title: Text(
-                  serviceName,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 4),
-                    Text(
-                      providerName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+            final priceLabel = offering.price != null
+                ? 'services.offerings.price'.tr(
+                    namedArgs: {'price': offering.price!.toStringAsFixed(2)})
+                : null;
+            final badge = specialty.trim().isNotEmpty ? specialty : null;
+
+            return ServiceOfferingCard(
+              title: serviceName,
+              subtitle: providerName,
+              badgeLabel: badge,
+              priceLabel: priceLabel,
+              imageUrl: cover,
+              buttonLabel: 'hospitals.detail.cta.view_service'.tr(),
+              onTap: () {
+                final item = _toSearchResult(offering, baseUrl, locale: locale);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => ServiceOfferingDetailPage(
+                      item: item,
+                      baseUrl: baseUrl,
+                      offeringId: offering.id,
                     ),
-                    if (offering.price != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: Text(
-                          'services.offerings.price'.tr(
-                            namedArgs: {
-                              'price': offering.price!.toStringAsFixed(2),
-                            },
-                          ),
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.primary,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-                trailing: const Icon(Icons.chevron_right_rounded),
-                onTap: () {
-                  final item =
-                      _toSearchResult(offering, baseUrl, locale: locale);
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => ServiceOfferingDetailPage(
-                        item: item,
-                        baseUrl: baseUrl,
-                      ),
-                    ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             );
           },
         ),
@@ -348,7 +306,7 @@ SearchResultItem _toSearchResult(
         'name_fr': service.nameFr,
         'name_ar': service.nameAr,
         'name_sp': service.nameSp,
-        'image': service.image,
+        'image': image,
       },
       'provider': {
         '_id': provider.id,
@@ -356,7 +314,7 @@ SearchResultItem _toSearchResult(
           '_id': providerUser.id,
           'name': providerUser.name,
           'email': providerUser.email,
-          'profilePicture': providerUser.profilePicture,
+          'profilePicture': avatar,
         },
         'specialty': provider.specialty,
         'rating': provider.rating,

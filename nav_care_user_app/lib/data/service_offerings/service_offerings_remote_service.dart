@@ -36,4 +36,46 @@ class ServiceOfferingsRemoteService {
       },
     );
   }
+
+  Future<Result<Map<String, dynamic>>> getServiceOfferingById({
+    required String id,
+  }) {
+    final safeId = id;
+    print(safeId);
+
+    return _apiClient.get<Map<String, dynamic>>(
+      _apiClient.apiConfig.serviceOfferingById(safeId),
+      parser: (json) {
+        if (json is Map<String, dynamic>) {
+          return json;
+        }
+        if (json is Map) {
+          return json.map(
+            (key, value) => MapEntry(key.toString(), value),
+          );
+        }
+        return <String, dynamic>{};
+      },
+    );
+  }
+
+  Future<Result<Map<String, dynamic>>> listByProvider({
+    required String providerId,
+    int page = 1,
+    int limit = 10,
+  }) {
+    return _apiClient.get<Map<String, dynamic>>(
+      _apiClient.apiConfig.listServiceOfferings,
+      query: {'providerId': providerId, 'page': page, 'limit': limit},
+      parser: (json) {
+        if (json is Map<String, dynamic>) return json;
+        if (json is Map) {
+          return json.map(
+            (key, value) => MapEntry(key.toString(), value),
+          );
+        }
+        return <String, dynamic>{};
+      },
+    );
+  }
 }

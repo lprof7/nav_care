@@ -15,12 +15,11 @@ class AppointmentCreationCubit extends Cubit<AppointmentCreationState> {
     emit(state.copyWith(status: AppointmentCreationStatus.loading));
     final result = await _repository.createAppointment(appointment);
 
-
     result.fold(
-      onSuccess: (createdAppointment) {
+      onSuccess: (message) {
         emit(state.copyWith(
           status: AppointmentCreationStatus.success,
-          createdAppointment: createdAppointment,
+          successMessage: message,
         ));
       },
       onFailure: (failure) {
