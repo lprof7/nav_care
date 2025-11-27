@@ -23,7 +23,6 @@ class RemoteDoctorServicesService implements DoctorServicesService {
       _apiClient.apiConfig.doctorServices,
       query: query.isEmpty ? null : query,
       parser: (json) {
-        print(json);
         return json as Map<String, dynamic>;}
     );
   }

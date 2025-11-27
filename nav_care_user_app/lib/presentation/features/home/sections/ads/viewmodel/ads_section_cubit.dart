@@ -47,35 +47,42 @@ class AdsSectionCubit extends Cubit<AdsSectionState> {
             page: _computeInitialPage(advertisings),
           ),
         );
-        _startAutoPlay();
+        if (advertisings.isNotEmpty) {
+          startAutoPlay();
+        } else {
+          stopAutoPlay();
+        }
       },
     );
   }
 
   void onPageChanged(int page) {
     emit(state.copyWith(page: page));
-    _restartAutoPlay();
+    startAutoPlay();
   }
 
-  void _startAutoPlay() {
+  void startAutoPlay() {
     if (state.advertisings.isEmpty) return;
-    _timer?.cancel();
+    _timer?.cancel(); // Cancel any existing timer
     _timer = Timer.periodic(_autoPlayInterval, (_) => _goToNextPage());
   }
 
-  void _restartAutoPlay() {
-    if (state.advertisings.isEmpty) return;
+  void stopAutoPlay() {
     _timer?.cancel();
-    _timer = Timer.periodic(_autoPlayInterval, (_) => _goToNextPage());
   }
 
   void _goToNextPage() {
+    if (!pageController.hasClients) return; // Check if PageController is attached
     final nextPage = state.page + 1;
-    pageController.animateToPage(
-      nextPage,
-      duration: _autoPlayDuration,
-      curve: Curves.easeOut,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (pageController.hasClients) { // Re-check after frame callback
+        pageController.animateToPage(
+          nextPage,
+          duration: _autoPlayDuration,
+          curve: Curves.easeOut,
+        );
+      }
+    });
     emit(state.copyWith(page: nextPage));
   }
 
@@ -85,4 +92,5 @@ class AdsSectionCubit extends Cubit<AdsSectionState> {
     pageController.dispose();
     return super.close();
   }
+
 }

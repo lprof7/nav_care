@@ -18,7 +18,7 @@ class RemoteSignupService implements SignupService {
       fallbackName: 'profile-picture',
     );
     if (file != null) {
-      payload['file'] = file;
+      payload['image'] = file;
     }
 
     final formData = FormData.fromMap(payload);
@@ -26,7 +26,8 @@ class RemoteSignupService implements SignupService {
     return _api.post(
       _api.apiConfig.register,
       body: formData,
-      parser: (json) => json as Map<String, dynamic>,
+      parser: (json) {print(json);
+      return json as Map<String, dynamic>;},
     );
   }
 }

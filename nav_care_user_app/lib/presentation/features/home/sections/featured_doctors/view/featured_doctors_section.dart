@@ -16,10 +16,7 @@ class FeaturedDoctorsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<FeaturedDoctorsCubit>()..loadDoctors(),
-      child: const _FeaturedDoctorsBody(),
-    );
+    return const _FeaturedDoctorsBody();
   }
 }
 
@@ -37,12 +34,22 @@ class _FeaturedDoctorsBody extends StatelessWidget {
             case FeaturedDoctorsStatus.loading:
               return const _FeaturedDoctorsLoading();
             case FeaturedDoctorsStatus.failure:
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-                child: Text(
-                  state.message ?? 'home.featured_doctors.error'.tr(),
-                  style: Theme.of(context).textTheme.bodyMedium,
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/error/failure.png', // الصورة عند الفشل
+                      width: 100, // تصغير حجم الصورة
+                      height: 100,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      state.message ?? 'common.error_occurred'.tr(), // رسالة خطأ عامة
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               );
             case FeaturedDoctorsStatus.loaded:
@@ -57,7 +64,8 @@ class _FeaturedDoctorsBody extends StatelessWidget {
                   children: [
                     _FeaturedSectionHeader(
                       title: 'home.featured_doctors.title'.tr(),
-                      actionLabel: 'home.featured_doctors.see_more_with_icon'.tr(),
+                      actionLabel:
+                          'home.featured_doctors.see_more_with_icon'.tr(),
                       onTap: () => _openSeeMore(context, state.doctors),
                     ),
                     const SizedBox(height: 16),
@@ -107,8 +115,8 @@ class _FeaturedDoctorCard extends StatelessWidget {
     final locale = context.locale.languageCode;
     final bio = doctor.bioForLocale(locale);
     final baseUrl = sl<AppConfig>().api.baseUrl;
-    final coverPath =
-        doctor.avatarImage(baseUrl: baseUrl) ?? doctor.coverImage(baseUrl: baseUrl);
+    final coverPath = doctor.avatarImage(baseUrl: baseUrl) ??
+        doctor.coverImage(baseUrl: baseUrl);
     final displayName = doctor.displayName.trim().isNotEmpty
         ? doctor.displayName
         : doctor.specialty;

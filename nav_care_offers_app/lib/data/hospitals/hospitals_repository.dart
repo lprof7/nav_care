@@ -64,7 +64,6 @@ class HospitalsRepository {
       _cache = _upsert(_cache, hospital);
       return Result.success(hospital);
     } catch (e) {
-      print("eroooooooooooooooooooo $e");
       return Result.failure(
         const Failure.server(message: 'Failed to submit hospital'),
       );

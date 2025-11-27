@@ -127,15 +127,18 @@ class HomeHospitalCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    subtitle.isNotEmpty
-                        ? subtitle
-                        : 'hospitals.detail.no_description'.tr(),
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.grey.shade700,
+                  SizedBox(
+                    height: 20,
+                    child: Text(
+                      subtitle.isNotEmpty
+                          ? subtitle
+                          : 'hospitals.detail.no_description'.tr(),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: Colors.grey.shade700,
+                      ),
                     ),
                   ),
                   if (location != null && location!.trim().isNotEmpty) ...[

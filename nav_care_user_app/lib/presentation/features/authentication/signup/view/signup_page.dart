@@ -7,8 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
+import 'package:nav_care_user_app/data/authentication/models.dart';
 import 'package:nav_care_user_app/data/authentication/signup/models/signup_request.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/signup/viewmodel/signup_cubit.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
 import 'package:nav_care_user_app/presentation/shared/theme/colors.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/atoms/app_text_field.dart';
@@ -81,6 +83,16 @@ class _SignupView extends StatelessWidget {
                             content: Text('signup_success_message'.tr()),
                           ),
                         );
+                        final user = state.result.user;
+                        if (user != null) {
+                          context.read<AuthSessionCubit>().setAuthenticatedUser(user);
+                          context.go('/home');
+                        } else {
+                          // Handle case where user is null after signup, e.g., show an error or log out.
+                          // For now, I'll just navigate to home, assuming the session cubit handles null user gracefully.
+                          // Or, if this is an unexpected scenario, you might want to show an error message.
+                          context.go('/home');
+                        }
                       } else if (state is SignupFailure) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -127,6 +139,11 @@ class _SignupFormState extends State<_SignupForm> {
   final _countryController = TextEditingController();
   final _imagePicker = ImagePicker();
 
+  bool _minLength = false;
+  bool _hasUpper = false;
+  bool _hasNumber = false;
+  bool _hasSpecial = false;
+
   DateTime? _selectedBirthDate;
   String? _completePhoneNumber;
   XFile? _profileImage;
@@ -145,7 +162,24 @@ class _SignupFormState extends State<_SignupForm> {
     _cityController.dispose();
     _stateController.dispose();
     _countryController.dispose();
+    _passwordController.removeListener(_onPasswordChanged);
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _passwordController.addListener(_onPasswordChanged);
+  }
+
+  void _onPasswordChanged() {
+    final password = _passwordController.text;
+    setState(() {
+      _minLength = password.length >= 8;
+      _hasUpper = RegExp(r'[A-Z]').hasMatch(password);
+      _hasNumber = RegExp(r'[0-9]').hasMatch(password);
+      _hasSpecial = RegExp(r'[!@#\$%^&*(),.?":{}|<>]').hasMatch(password);
+    });
   }
 
   Future<void> _selectBirthDate() async {
@@ -304,7 +338,15 @@ class _SignupFormState extends State<_SignupForm> {
                   hintText: 'email'.tr(),
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  validator: _requiredValidator,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'field_required'.tr();
+                    }
+                    if (!RegExp(r'^[^@]+@[^@]+\.[a-zA-Z]{2,}$').hasMatch(value)) {
+                      return 'invalid_email_format'.tr();
+                    }
+                    return null;
+                  },
                 ),
               ),
               const SizedBox(width: 16),
@@ -376,13 +418,31 @@ class _SignupFormState extends State<_SignupForm> {
           PasswordField(
             hintText: 'password'.tr(),
             controller: _passwordController,
-            validator: _requiredValidator,
+            validator: (value) {
+              if (value == null || value.isEmpty) return 'profile.password_new'.tr();
+              if (value.length < 8) return 'profile.password_invalid'.tr();
+              if (!_hasUpper || !_hasNumber || !_hasSpecial) {
+                return 'profile.password_invalid'.tr();
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+          _PasswordRequirements(
+            minLength: _minLength,
+            hasUpper: _hasUpper,
+            hasNumber: _hasNumber,
+            hasSpecial: _hasSpecial,
           ),
           const SizedBox(height: 16),
           PasswordField(
             hintText: 'confirm_password'.tr(),
             controller: _confirmPasswordController,
-            validator: _requiredValidator,
+            validator: (value) {
+              if (value == null || value.isEmpty) return 'profile.confirm_password_required'.tr();
+              if (value != _passwordController.text) return 'profile.password_mismatch'.tr();
+              return null;
+            },
           ),
           const SizedBox(height: 16),
           Row(
@@ -624,5 +684,78 @@ class _SignupFormState extends State<_SignupForm> {
       return 'field_required'.tr();
     }
     return null;
+  }
+}
+
+class _PasswordRequirements extends StatelessWidget {
+  const _PasswordRequirements({
+    required this.minLength,
+    required this.hasUpper,
+    required this.hasNumber,
+    required this.hasSpecial,
+  });
+
+  final bool minLength;
+  final bool hasUpper;
+  final bool hasNumber;
+  final bool hasSpecial;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'profile.password_requirements_title'.tr(),
+          style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: 10),
+        _RequirementRow(
+          text: 'profile.password_requirement_length'.tr(),
+          met: minLength,
+        ),
+        _RequirementRow(
+          text: 'profile.password_requirement_upper'.tr(),
+          met: hasUpper,
+        ),
+        _RequirementRow(
+          text: 'profile.password_requirement_number'.tr(),
+          met: hasNumber,
+        ),
+        _RequirementRow(
+          text: 'profile.password_requirement_special'.tr(),
+          met: hasSpecial,
+        ),
+      ],
+    );
+  }
+}
+
+class _RequirementRow extends StatelessWidget {
+  const _RequirementRow({required this.text, required this.met});
+
+  final String text;
+  final bool met;
+
+  @override
+  Widget build(BuildContext context) {
+    final icon = met ? Icons.check_circle : Icons.radio_button_unchecked;
+    final color = met ? AppColors.primary : AppColors.textSecondary;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(color: color, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

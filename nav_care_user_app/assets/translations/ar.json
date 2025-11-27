@@ -312,6 +312,7 @@
     "home.search.filters.rating.range_label": "التقييم: {min} - {max}",
     "home.search.filters.rating.max_default": "5",
     "home.search.suggestions": "اقتراحات",
+    "home.search.view_details": "عرض التفاصيل",
     "home.search.type.doctor": "طبيب",
     "home.search.type.hospital": "مستشفى",
     "home.search.type.service": "خدمة",
@@ -361,7 +362,8 @@
     "faq.questions.data_sync.question": "التطبيق لا يحمل البيانات، ماذا أجرب؟",
     "faq.questions.data_sync.answer": "تحقق من الاتصال بالإنترنت، ثم اسحب للتحديث في الرئيسية أو البحث أو المواعيد. إن استمر الأمر، سجل الخروج ثم الدخول لتجديد الجلسة قبل المحاولة مجدداً.",
     "common": {
-        "not_available": "غير متوفر"
+        "not_available": "غير متوفر",
+        "error_occurred": "حدث خطأ ما."
     },
     "contact": {
         "title": "تواصل معنا",
@@ -453,5 +455,14 @@
     "notifications.empty_subtitle": "أنت على اطلاع بكل شيء. اسحب للتحديث في أي وقت.",
     "notifications.refresh": "تحديث",
     "services.detail.description": "الوصف",
-    "services.detail.read_more": "اقرأ المزيد"
+    "services.detail.read_more": "اقرأ المزيد",
+    "reviews": "التقييمات",
+    "network_error": {
+        "message": "لا يوجد اتصال بالإنترنت.\nيرجى التحقق من اتصالك والمحاولة مرة أخرى.",
+        "retry": "إعادة المحاولة"
+    },
+    "server_error": {
+        "message": "حدث خطأ في الخادم.\nيرجى المحاولة مرة أخرى لاحقًا.",
+        "retry": "إعادة المحميل"
+    }
 }

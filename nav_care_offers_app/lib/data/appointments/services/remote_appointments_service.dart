@@ -42,8 +42,6 @@ class RemoteAppointmentsService implements AppointmentsService {
       _apiClient.apiConfig.appointmentById(appointmentId),
       body: payload,
       parser: (data) {
-        print(data);
-
         return data as Map<String, dynamic>;
       },
     );

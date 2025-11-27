@@ -5,9 +5,11 @@ import 'package:go_router/go_router.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/users/models/user_profile_model.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/profile/viewmodel/user_profile_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/profile/viewmodel/user_profile_state.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/atoms/app_button.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/molecules/sign_in_required_card.dart';
 import 'package:nav_care_user_app/presentation/shared/theme/colors.dart';
 
 class UserProfilePage extends StatelessWidget {
@@ -15,6 +17,26 @@ class UserProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authState = context.watch<AuthSessionCubit>().state;
+    if (!authState.isAuthenticated) {
+      return Scaffold(
+        body: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 520),
+                child: SignInRequiredCard(
+                  onSignIn: () => context.go('/signin'),
+                  onCreateAccount: () => context.go('/signup'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 

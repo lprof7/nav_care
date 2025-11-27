@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 /// Reusable card for displaying a service offering (title, subtitle, badge/price, image, actions).
@@ -181,7 +182,7 @@ class ServiceOfferingCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: Text(buttonLabel ?? ''),
+                      child: Text(buttonLabel?.tr() ?? 'home.search.view_details'.tr(), textAlign:TextAlign.center,),
                     ),
                   ),
                 ),

@@ -81,6 +81,7 @@
     "services.offerings.price": "From {price}",
     "services.detail.description": "Description",
     "services.detail.read_more": "Read more",
+    "reviews": "reviews",
     "services.details.no_description": "No description provided for this service.",
     "hospitals.detail.title": "Hospital",
     "hospitals.detail.error": "Unable to load hospital details.",
@@ -303,6 +304,7 @@
     "home.search.filters.badge.sort": "Sort",
     "home.search.filters.badge.pagination": "Pagination",
     "home.search.suggestions": "Suggestions",
+    "home.search.view_details": "View Details",
     "home.search.type.doctor": "Doctor",
     "home.search.type.hospital": "Hospital",
     "home.search.type.service": "Service",
@@ -367,7 +369,8 @@
     "faq.questions.data_sync.question": "The app is not loading data. What should I try?",
     "faq.questions.data_sync.answer": "Check your internet connection, then pull to refresh on Home, Search, or Appointments. If the issue persists, sign out and back in to refresh your session before trying again.",
     "common": {
-        "not_available": "Not available"
+        "not_available": "Not available",
+        "error_occurred": "An error occurred."
     },
     "contact": {
         "title": "Contact Us",
@@ -459,5 +462,13 @@
         "confirmed": "Confirmed",
         "completed": "Completed",
         "cancelled": "Cancelled"
+    },
+    "network_error": {
+        "message": "No internet connection.\nPlease check your connection and try again.",
+        "retry": "Retry"
+    },
+    "server_error": {
+        "message": "Server error occurred.\nPlease try again later.",
+        "retry": "Reload"
     }
 }

@@ -16,6 +16,7 @@ import 'package:nav_care_user_app/presentation/shared/ui/cards/hospital_detail_c
 import 'package:nav_care_user_app/presentation/shared/ui/cards/service_offering_card.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/molecules/hospital_detail_components.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/view/service_offering_detail_page.dart';
+import 'package:nav_care_user_app/presentation/features/doctors/view/doctor_detail_page.dart';
 
 class HospitalDetailPage extends StatelessWidget {
   final String hospitalId;
@@ -789,7 +790,7 @@ class _DoctorsTabState extends State<_DoctorsTab> {
                 crossAxisCount: 2,
                 mainAxisSpacing: 14,
                 crossAxisSpacing: 14,
-                childAspectRatio: 0.64,
+                childAspectRatio: 0.55,
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
@@ -804,7 +805,13 @@ class _DoctorsTabState extends State<_DoctorsTab> {
                     buttonLabel: 'hospitals.detail.cta.view_profile'.tr(),
                     isSaved: false,
                     onToggleSave: () {},
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => DoctorDetailPage(doctorId: doctor.id),
+                        ),
+                      );
+                    },
                   );
                 },
                 childCount: filtered.length,
@@ -866,7 +873,7 @@ class _OfferingsTab extends StatelessWidget {
               crossAxisCount: 2,
               mainAxisSpacing: 14,
               crossAxisSpacing: 14,
-              childAspectRatio: 0.62,
+              childAspectRatio: 0.55,
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {

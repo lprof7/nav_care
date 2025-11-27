@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nav_care_user_app/core/storage/user_store.dart';
 import 'package:nav_care_user_app/data/authentication/models.dart';
@@ -19,10 +21,12 @@ class UserProfileCubit extends Cubit<UserProfileState> {
   final UserRepository _repository;
   final UserStore _userStore;
   final AuthSessionCubit _authSessionCubit;
+  StreamSubscription<AuthSessionState>? _authSubscription;
 
   void listenToAuth([AuthSessionCubit? authCubit]) {
+    _authSubscription?.cancel();
     final cubit = authCubit ?? _authSessionCubit;
-    cubit.stream.listen((authState) {
+    _authSubscription = cubit.stream.listen((authState) {
       if (authState.isAuthenticated) {
         loadProfile();
       } else {
@@ -146,5 +150,11 @@ class UserProfileCubit extends Cubit<UserProfileState> {
       resetStatus: PasswordResetStatus.idle,
       clearError: true,
     ));
+  }
+
+  @override
+  Future<void> close() async {
+    await _authSubscription?.cancel();
+    return super.close();
   }
 }

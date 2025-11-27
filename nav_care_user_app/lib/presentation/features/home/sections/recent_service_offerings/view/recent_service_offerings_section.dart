@@ -17,10 +17,7 @@ class RecentServiceOfferingsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<RecentServiceOfferingsCubit>()..loadOfferings(),
-      child: const _RecentServiceOfferingsBody(),
-    );
+    return const _RecentServiceOfferingsBody();
   }
 }
 
@@ -36,9 +33,23 @@ class _RecentServiceOfferingsBody extends StatelessWidget {
           case RecentServiceOfferingsStatus.loading:
             return const _RecentServiceOfferingsLoading();
           case RecentServiceOfferingsStatus.failure:
-            return _RecentServiceOfferingsError(
-              message:
-                  state.message ?? 'home.recent_service_offerings.error'.tr(),
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/error/failure.png', // الصورة عند الفشل
+                    width: 100, // تصغير حجم الصورة
+                    height: 100,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    state.message ?? 'common.error_occurred'.tr(), // رسالة خطأ عامة
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             );
           case RecentServiceOfferingsStatus.loaded:
             if (state.offerings.isEmpty) {

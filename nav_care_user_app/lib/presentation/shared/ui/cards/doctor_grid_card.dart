@@ -94,13 +94,16 @@ class DoctorGridCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Column(
                 children: [
-                  Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w800),
+                  SizedBox(
+                    height: 20,
+                    child: Text(
+                      title,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w800),
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Text(

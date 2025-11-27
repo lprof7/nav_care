@@ -1,18 +1,35 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/molecules/advertising_card.dart';
+import 'package:visibility_detector/visibility_detector.dart'; // Import VisibilityDetector
 
 import '../viewmodel/ads_section_cubit.dart';
 
-class AdsSectionView extends StatelessWidget {
+class AdsSectionView extends StatefulWidget {
   const AdsSectionView({super.key});
 
   @override
+  State<AdsSectionView> createState() => _AdsSectionViewState();
+}
+
+class _AdsSectionViewState extends State<AdsSectionView> {
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<AdsSectionCubit>(),
+    return VisibilityDetector(
+      key: const ValueKey('ads_section_visibility_key'),
+      onVisibilityChanged: (info) {
+        // Only interact with the Cubit if the widget is still mounted
+        if (mounted) { // Using StatefulWidget's mounted property
+          if (info.visibleFraction > 0.5) {
+            // If more than 50% visible, start autoplay
+            context.read<AdsSectionCubit>().startAutoPlay();
+          } else {
+            // If less than 50% visible, stop autoplay
+            context.read<AdsSectionCubit>().stopAutoPlay();
+          }
+        }
+      },
       child: const _AdsSectionBody(),
     );
   }
@@ -30,11 +47,22 @@ class _AdsSectionBody extends StatelessWidget {
         }
 
         if (state.status == AdsSectionStatus.failure) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-            child: Text(
-              state.message ?? 'home.ads_section.error'.tr(),
-              style: Theme.of(context).textTheme.bodyMedium,
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/error/failure.png', // الصورة عند الفشل
+                  width: 100, // تصغير حجم الصورة
+                  height: 100,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  state.message ?? 'common.error_occurred'.tr(), // رسالة خطأ عامة
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           );
         }

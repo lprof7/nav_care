@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:nav_care_user_app/data/service_creation/service_creation_repository.dart';
 import 'package:nav_care_user_app/data/service_creation/services/remote_service_creation_service.dart';
 import 'package:nav_care_user_app/data/service_creation/services/service_creation_service.dart';
@@ -9,6 +10,7 @@ import '../network/api_client.dart';
 import '../storage/secure_token_store.dart';
 import '../storage/token_store.dart';
 import '../storage/user_store.dart';
+import '../network/network_cubit.dart';
 
 // example entity wires:
 import '../../data/example/services/remote_service.dart';
@@ -67,14 +69,6 @@ final sl = GetIt.instance;
 Future<void> configureDependencies(AppConfig config) async {
   sl.registerSingleton<AppConfig>(config);
 
-  // Advertisings
-  sl.registerLazySingleton<AdvertisingService>(
-      () => AdvertisingRemoteService(apiClient: sl<ApiClient>()));
-  sl.registerLazySingleton<AdvertisingRepository>(() =>
-      AdvertisingRepositoryImpl(advertisingService: sl<AdvertisingService>()));
-  sl.registerFactory<AdsSectionCubit>(() =>
-      AdsSectionCubit(advertisingRepository: sl<AdvertisingRepository>()));
-
   // Storage
   sl.registerLazySingleton<TokenStore>(() => SecureTokenStore());
   sl.registerLazySingleton<UserStore>(() => SharedPrefsUserStore());
@@ -92,6 +86,20 @@ Future<void> configureDependencies(AppConfig config) async {
     tokenStore: sl<TokenStore>(),
   ).build();
   sl.registerSingleton<ApiClient>(ApiClient(dio, sl<AppConfig>().api));
+  // No need for apiClientInstance anymore as NetworkCubit now takes AppConfig directly
+
+  // Connectivity
+  sl.registerLazySingleton<Connectivity>(() => Connectivity());
+  sl.registerSingleton<NetworkCubit>(
+      NetworkCubit(connectivity: sl<Connectivity>(), appConfig: sl<AppConfig>()));
+
+  // Advertisings
+  sl.registerLazySingleton<AdvertisingService>(
+      () => AdvertisingRemoteService(apiClient: sl<ApiClient>()));
+  sl.registerLazySingleton<AdvertisingRepository>(() =>
+      AdvertisingRepositoryImpl(advertisingService: sl<AdvertisingService>()));
+  sl.registerFactory<AdsSectionCubit>(() =>
+      AdsSectionCubit(advertisingRepository: sl<AdvertisingRepository>()));
 
   // Hospitals list
   sl.registerLazySingleton<HospitalsRemoteService>(

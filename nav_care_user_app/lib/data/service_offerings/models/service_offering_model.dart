@@ -4,6 +4,10 @@ class ServiceOfferingModel {
   final ProviderSummary provider;
   final String providerType;
   final double? price;
+  final String descriptionEn;
+  final String descriptionFr;
+  final String descriptionAr;
+  final String descriptionSp;
 
   const ServiceOfferingModel({
     required this.id,
@@ -11,6 +15,10 @@ class ServiceOfferingModel {
     required this.provider,
     required this.providerType,
     required this.price,
+    required this.descriptionEn,
+    required this.descriptionFr,
+    required this.descriptionAr,
+    required this.descriptionSp,
   });
 
   factory ServiceOfferingModel.fromJson(Map<String, dynamic> json) {
@@ -24,6 +32,10 @@ class ServiceOfferingModel {
       ),
       providerType: json['providerType']?.toString() ?? '',
       price: _parseDouble(json['price']),
+      descriptionEn: json['description_en']?.toString() ?? '',
+      descriptionFr: json['description_fr']?.toString() ?? '',
+      descriptionAr: json['description_ar']?.toString() ?? '',
+      descriptionSp: json['description_sp']?.toString() ?? '',
     );
   }
 
@@ -91,6 +103,7 @@ class ProviderSummary {
   final ProviderUser user;
   final String specialty;
   final double? rating;
+  final int reviewsCount;
   final String? cover;
   final String? bioEn;
   final String? bioFr;
@@ -105,6 +118,7 @@ class ProviderSummary {
     required this.user,
     required this.specialty,
     required this.rating,
+    required this.reviewsCount,
     required this.cover,
     required this.bioEn,
     required this.bioFr,
@@ -124,6 +138,7 @@ class ProviderSummary {
       ),
       specialty: map['specialty']?.toString() ?? '',
       rating: ServiceOfferingModel._parseDouble(map['rating']),
+      reviewsCount: map['reviewsCount'] is int ? map['reviewsCount'] : 0,
       cover: map['cover']?.toString(),
       bioEn: map['bio_en']?.toString(),
       bioFr: map['bio_fr']?.toString(),

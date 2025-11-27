@@ -15,10 +15,7 @@ class FeaturedServicesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<FeaturedServicesCubit>()..loadFeaturedServices(),
-      child: const _FeaturedServicesBody(),
-    );
+    return const _FeaturedServicesBody();
   }
 }
 
@@ -37,11 +34,22 @@ class _FeaturedServicesBody extends StatelessWidget {
         }
 
         if (state.status == FeaturedServicesStatus.failure) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-            child: Text(
-              state.message ?? 'home.featured_services.error'.tr(),
-              style: Theme.of(context).textTheme.bodyMedium,
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/error/failure.png', // الصورة عند الفشل
+                  width: 100, // تصغير حجم الصورة
+                  height: 100,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  state.message ?? 'common.error_occurred'.tr(), // رسالة خطأ عامة
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           );
         }

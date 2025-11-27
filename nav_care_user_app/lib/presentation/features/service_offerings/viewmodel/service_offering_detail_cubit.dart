@@ -24,13 +24,8 @@ class ServiceOfferingDetailCubit extends Cubit<ServiceOfferingDetailState> {
       final offering = await _repository.getServiceOfferingById(offeringId);
       print("offering id is $offeringId");
       print("offering name is ${offering?.service.fallbackName}");
-      print("offering price is ${offering?.price}");
-      print("offering rating is ${offering?.provider.rating}");
-      print("offering email is ${offering?.provider.user.email}");
-      print("offering phone is ${offering?.provider.user.phone}");
-      print("offering specialty is ${offering?.provider.specialty}");
-      print("offering bio is ${offering?.provider.bioEn}");
-      print("offering image is ${offering?.service.image}");
+      print("offering price is ${offering?.descriptionEn}");
+
 
       emit(state.copyWith(
         status: ServiceOfferingDetailStatus.success,

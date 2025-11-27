@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/search/models/search_models.dart';
+import 'package:nav_care_user_app/data/service_offerings/models/service_offering_model.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/viewmodel/service_offering_detail_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/viewmodel/service_offering_detail_state.dart';
@@ -102,8 +103,24 @@ class _DetailViewState extends State<_DetailView> {
     }
   }
 
-  String _fallbackDescription() {
-    return widget.item.description.isNotEmpty ? widget.item.description : '';
+  String _fallbackDescription(String locale, ServiceOfferingModel? offering) {
+    String? description;
+    switch (locale) {
+      case 'ar':
+        description = offering?.descriptionAr;
+        break;
+      case 'fr':
+        description = offering?.descriptionFr;
+        break;
+      case 'sp':
+      case 'es':
+        description = offering?.descriptionSp;
+        break;
+      default:
+        description = offering?.descriptionEn;
+        break;
+    }
+    return description?.isNotEmpty == true ? description! : widget.item.description.isNotEmpty ? widget.item.description : '';
   }
 
   @override
@@ -158,13 +175,9 @@ class _DetailViewState extends State<_DetailView> {
           );
           final price = offering?.price ?? widget.item.price;
           final rating = offering?.provider.rating ?? widget.item.rating ?? 0;
-          final description = _fallbackDescription().isNotEmpty
-              ? _fallbackDescription()
-              : (offering?.provider.bioEn ??
-                  offering?.provider.bioFr ??
-                  offering?.provider.bioAr ??
-                  offering?.provider.bioSp ??
-                  '');
+          final reviewsCount = offering?.provider.reviewsCount ?? 0;
+          final description = _fallbackDescription(context.locale.languageCode, offering);
+
           final hasDescription = description.trim().isNotEmpty;
 
           return SafeArea(
@@ -190,15 +203,6 @@ class _DetailViewState extends State<_DetailView> {
                             fontWeight: FontWeight.w800,
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        if (providerSpecialty.isNotEmpty)
-                          Text(
-                            providerSpecialty,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              color: const Color(0xFF5E738E),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
                         const SizedBox(height: 10),
                         Row(
                           children: [
@@ -223,7 +227,7 @@ class _DetailViewState extends State<_DetailView> {
                             ),
                             const SizedBox(width: 6),
                             Text(
-                              '(0 reviews)',
+                              '(${reviewsCount} ${'reviews'.tr()})',
                               style: theme.textTheme.bodySmall?.copyWith(
                                 color: const Color(0xFF8BA0B7),
                               ),

@@ -159,6 +159,9 @@ class _HospitalDetailView extends StatelessWidget {
                       title: clinic.name,
                       subtitle: clinic.description,
                       leading: Icons.local_hospital,
+                      onTap: () {
+                        context.push('/clinics/${clinic.id}', extra: clinic);
+                      },
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -171,6 +174,9 @@ class _HospitalDetailView extends StatelessWidget {
                       title: doctor.user.name,
                       subtitle: doctor.specialty,
                       leading: Icons.person_outline,
+                      onTap: () {
+                        context.push('/doctors/${doctor.id}', extra: doctor);
+                      },
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -406,50 +412,55 @@ class _MiniCard extends StatelessWidget {
   final String title;
   final String? subtitle;
   final IconData leading;
+  final VoidCallback? onTap;
 
   const _MiniCard({
     required this.title,
     this.subtitle,
     required this.leading,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: theme.colorScheme.surfaceContainerHighest,
-      ),
-      child: Row(
-        children: [
-          Icon(leading, color: theme.colorScheme.primary),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                if (subtitle != null && subtitle!.isNotEmpty) ...[
-                  const SizedBox(height: 4),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: theme.colorScheme.surfaceContainerHighest,
+        ),
+        child: Row(
+          children: [
+            Icon(leading, color: theme.colorScheme.primary),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    subtitle!,
-                    style: theme.textTheme.bodySmall,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                    title,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
+                  if (subtitle != null && subtitle!.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle!,
+                      style: theme.textTheme.bodySmall,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -14,6 +14,7 @@ import 'package:nav_care_user_app/presentation/features/doctors/view/doctor_deta
 import 'package:nav_care_user_app/presentation/features/hospitals/view/hospital_detail_page.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/cards/doctor_grid_card.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/cards/home_hospital_card.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/cards/service_offering_card.dart';
 
 import '../../../../core/di/di.dart';
 
@@ -611,11 +612,25 @@ class _SearchResultCard extends StatelessWidget {
       );
     }
 
+    if (type == SearchResultType.serviceOffering) {
+      return SizedBox(
+        width: cardWidth,
+        child: ServiceOfferingCard(
+          title: item.title.isNotEmpty ? item.title : typeLabel,
+          subtitle: item.subtitle.isNotEmpty ? item.subtitle : typeLabel,
+          imageUrl: resolvedImage,
+          priceLabel: item.price != null ? item.price!.toStringAsFixed(0) : null,
+          onTap: onServiceTap,
+          buttonLabel: 'home.search.view_details'.tr(),
+        ),
+      );
+    }
+
     return SizedBox(
       width: cardWidth,
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
-        onTap: type == SearchResultType.serviceOffering ? onServiceTap : null,
+        onTap: onServiceTap,
         child: Card(
           clipBehavior: Clip.antiAlias,
           margin: EdgeInsets.zero,

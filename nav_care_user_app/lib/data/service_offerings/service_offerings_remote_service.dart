@@ -41,7 +41,6 @@ class ServiceOfferingsRemoteService {
     required String id,
   }) {
     final safeId = id;
-    print(safeId);
 
     return _apiClient.get<Map<String, dynamic>>(
       _apiClient.apiConfig.serviceOfferingById(safeId),

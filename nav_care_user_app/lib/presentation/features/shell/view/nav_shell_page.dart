@@ -65,7 +65,8 @@ class NavShellPage extends StatelessWidget {
             listenWhen: (previous, current) =>
                 previous.status != current.status,
             listener: (context, state) {
-              final profileCubit = context.watch<UserProfileCubit>();
+              // Use read here to avoid establishing a listener inside a callback.
+              final profileCubit = context.read<UserProfileCubit>();
               if (state.status == AuthSessionStatus.authenticated) {
                 profileCubit.loadProfile();
               } else if (state.status == AuthSessionStatus.unauthenticated) {

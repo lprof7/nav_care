@@ -192,7 +192,7 @@ class HospitalOverviewCard extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           Wrap(
-            spacing: 12,
+            spacing: 5,
             runSpacing: 10,
             children: stats
                 .map((stat) => _StatItem(
@@ -482,7 +482,6 @@ class _StatItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 18, color: theme.colorScheme.primary),
-          const SizedBox(width: 8),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -492,10 +491,13 @@ class _StatItem extends StatelessWidget {
                 style: theme.textTheme.titleMedium
                     ?.copyWith(fontWeight: FontWeight.w800),
               ),
-              Text(
-                label,
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+              SizedBox(
+                width: 54,
+                child: Text(
+                  label,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                  ),
                 ),
               ),
             ],

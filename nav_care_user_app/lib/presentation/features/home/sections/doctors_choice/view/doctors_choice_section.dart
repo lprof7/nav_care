@@ -18,10 +18,7 @@ class DoctorsChoiceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<DoctorsChoiceCubit>()..loadDoctors(),
-      child: const _DoctorsChoiceBody(),
-    );
+    return const _DoctorsChoiceBody();
   }
 }
 
@@ -40,11 +37,22 @@ class _DoctorsChoiceBody extends StatelessWidget {
           }
 
           if (state.status == DoctorsChoiceStatus.failure) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-              child: Text(
-                state.message ?? 'home.doctors_choice.error'.tr(),
-                style: Theme.of(context).textTheme.bodyMedium,
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/error/failure.png', // الصورة عند الفشل
+                    width: 100, // تصغير حجم الصورة
+                    height: 100,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    state.message ?? 'common.error_occurred'.tr(), // رسالة خطأ عامة
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             );
           }
@@ -104,8 +112,8 @@ class _DoctorCard extends StatelessWidget {
     final locale = context.locale.languageCode;
     final bio = doctor.bioForLocale(locale);
     final baseUrl = sl<AppConfig>().api.baseUrl;
-    final coverPath =
-        doctor.avatarImage(baseUrl: baseUrl) ?? doctor.coverImage(baseUrl: baseUrl);
+    final coverPath = doctor.avatarImage(baseUrl: baseUrl) ??
+        doctor.coverImage(baseUrl: baseUrl);
     final displayName = doctor.displayName.trim().isNotEmpty
         ? doctor.displayName
         : doctor.specialty;
