@@ -30,13 +30,16 @@ class HospitalDetailCubit extends Cubit<HospitalDetailState> {
     try {
       final clinics = await _clinicsRepository.getHospitalClinics(hospitalId);
       final hospital = await _hospitalsRepository.getHospitalById(hospitalId);
+      print("first hospital ${hospital.name}}");
 
       final doctors =
           await _doctorsRepository.getHospitalDoctors(hospitalId: hospitalId);
+
       final offerings = await _offeringsRepository.getRecentServiceOfferings(
         providerId: hospitalId,
         limit: 20,
       );
+
       emit(state.copyWith(
         status: HospitalDetailStatus.success,
         hospital: hospital,

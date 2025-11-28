@@ -136,6 +136,7 @@ class HospitalsRepository {
 
     final data = result.data!;
     final maps = _extractHospitalMaps(data);
+
     if (maps.isEmpty) {
       throw Exception('Failed to parse hospital details.');
     }
@@ -168,8 +169,13 @@ class HospitalsRepository {
     }
 
     if (source is Map<String, dynamic>) {
+      // Handle single hospital response
+      if (source.containsKey('hospital') &&
+          source['hospital'] is Map<String, dynamic>) {
+        return [source['hospital'] as Map<String, dynamic>];
+      }
+
       const candidateKeys = [
-        'hospital',
         'hospitals',
         'data',
         'docs',
@@ -181,9 +187,6 @@ class HospitalsRepository {
         final extracted = _extractHospitalMaps(source[key]);
         if (extracted.isNotEmpty) {
           return extracted;
-        }
-        if (key == 'hospital' && source[key] is Map<String, dynamic>) {
-          return [source[key] as Map<String, dynamic>];
         }
       }
 

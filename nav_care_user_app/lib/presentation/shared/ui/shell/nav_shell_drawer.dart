@@ -27,8 +27,8 @@ class NavShellDrawer extends StatelessWidget {
   final VoidCallback? onSignInTap;
   final VoidCallback? onSignUpTap;
   final VoidCallback? onGoogleSignInTap;
-    final VoidCallback? onFaqTap;
-    final VoidCallback? onContactTap;
+  final VoidCallback? onFaqTap;
+  final VoidCallback? onContactTap;
   final VoidCallback? onSettingsTap;
   final VoidCallback? onAboutTap;
   final VoidCallback? onFeedbackTap;
@@ -69,6 +69,40 @@ class NavShellDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+
+    final List<dynamic> allDrawerItems = [
+      ...destinations,
+      _DrawerAction(
+        icon: Icons.help_center_rounded,
+        label: 'shell.drawer_faq'.tr(),
+        onTap: onFaqTap,
+      ),
+      _DrawerAction(
+        icon: Icons.mail_outline_rounded,
+        label: 'shell.drawer_contact'.tr(),
+        onTap: onContactTap,
+      ),
+      _DrawerAction(
+        icon: Icons.settings_rounded,
+        label: 'shell.drawer_settings'.tr(),
+        onTap: onSettingsTap,
+      ),
+      _DrawerAction(
+        icon: Icons.info_outline_rounded,
+        label: 'shell.drawer_about'.tr(),
+        onTap: onAboutTap,
+      ),
+      _DrawerAction(
+        icon: Icons.feedback_rounded,
+        label: 'shell.drawer_feedback'.tr(),
+        onTap: onFeedbackTap,
+      ),
+      _DrawerAction(
+        icon: Icons.support_agent_rounded,
+        label: 'shell.drawer_support'.tr(),
+        onTap: onSupportTap,
+      ),
+    ];
 
     return Drawer(
       child: SafeArea(
@@ -122,108 +156,72 @@ class NavShellDrawer extends StatelessWidget {
               child: ListView.separated(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
                 itemBuilder: (context, index) {
-                  final destination = destinations[index];
-                  final isSelected = index == selectedIndex;
+                  final item = allDrawerItems[index];
 
-                  return Material(
-                    color: isSelected
-                        ? colorScheme.primary.withValues(alpha: 0.08)
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(16),
-                    child: InkWell(
+                  if (item is NavShellDestination) {
+                    final isSelected = index == selectedIndex;
+                    return Material(
+                      color: isSelected
+                          ? colorScheme.primary.withValues(alpha: 0.08)
+                          : Colors.transparent,
                       borderRadius: BorderRadius.circular(16),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        onDestinationSelected(index);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 12,
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              destination.icon,
-                              color: isSelected
-                                  ? colorScheme.primary
-                                  : theme.iconTheme.color,
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                destination.label,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  fontWeight: isSelected
-                                      ? FontWeight.w600
-                                      : FontWeight.w500,
-                                  color: isSelected
-                                      ? colorScheme.primary
-                                      : theme.textTheme.bodyMedium?.color,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          onDestinationSelected(index);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 12,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                item.icon,
+                                color: isSelected
+                                    ? colorScheme.primary
+                                    : theme.iconTheme.color,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  item.label,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: isSelected
+                                        ? FontWeight.w600
+                                        : FontWeight.w500,
+                                    color: isSelected
+                                        ? colorScheme.primary
+                                        : theme.textTheme.bodyMedium?.color,
+                                  ),
                                 ),
                               ),
-                            ),
-                            if (destination.badgeLabel != null)
-                              _BadgeChip(label: destination.badgeLabel!),
-                          ],
+                              if (item.badgeLabel != null)
+                                _BadgeChip(label: item.badgeLabel!),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
+                    );
+                  } else if (item is _DrawerAction) {
+                    return _DrawerActionTile(
+                      icon: item.icon,
+                      label: item.label,
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        item.onTap?.call();
+                      },
+                    );
+                  }
+                  return const SizedBox.shrink();
                 },
                 separatorBuilder: (_, __) => const SizedBox(height: 8),
-                itemCount: destinations.length,
+                itemCount: allDrawerItems.length,
               ),
             ),
             const Divider(height: 1),
-            _DrawerActionTile(
-              icon: Icons.help_center_rounded,
-              label: 'shell.drawer_faq'.tr(),
-              onTap: () {
-                Navigator.of(context).pop();
-                onFaqTap?.call();
-              },
-            ),
-            _DrawerActionTile(
-              icon: Icons.mail_outline_rounded,
-              label: 'shell.drawer_contact'.tr(),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  onContactTap?.call();
-                },
-            ),
-            _DrawerActionTile(
-              icon: Icons.settings_rounded,
-              label: 'shell.drawer_settings'.tr(),
-              onTap: () {
-                Navigator.of(context).pop();
-                onSettingsTap?.call();
-              },
-            ),
-            _DrawerActionTile(
-              icon: Icons.info_outline_rounded,
-              label: 'shell.drawer_about'.tr(),
-              onTap: () {
-                Navigator.of(context).pop();
-                onAboutTap?.call();
-              },
-            ),
-            _DrawerActionTile(
-              icon: Icons.feedback_rounded,
-              label: 'shell.drawer_feedback'.tr(),
-              onTap: () {
-                Navigator.of(context).pop();
-                onFeedbackTap?.call();
-              },
-            ),
-            _DrawerActionTile(
-              icon: Icons.support_agent_rounded,
-              label: 'shell.drawer_support'.tr(),
-              onTap: () {
-                Navigator.of(context).pop();
-                onSupportTap?.call();
-              },
-            ),
             ListTile(
               leading: Icon(
                 Icons.logout_rounded,
@@ -400,8 +398,8 @@ class _DrawerHeader extends StatelessWidget {
                         Text(
                           phoneLabel,
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: AppColors.textOnPrimary
-                                .withValues(alpha: 0.72),
+                            color:
+                                AppColors.textOnPrimary.withValues(alpha: 0.72),
                           ),
                         ),
                       ],
@@ -559,7 +557,9 @@ class _DrawerHeader extends StatelessWidget {
   }
 
   void _openAuthDialog(BuildContext context) {
-    if (onSignInTap == null && onSignUpTap == null && onGoogleSignInTap == null) {
+    if (onSignInTap == null &&
+        onSignUpTap == null &&
+        onGoogleSignInTap == null) {
       return;
     }
     showDialog(
@@ -642,6 +642,18 @@ class _DrawerActionTile extends StatelessWidget {
       onTap: onTap,
     );
   }
+}
+
+class _DrawerAction {
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+
+  const _DrawerAction({
+    required this.icon,
+    required this.label,
+    this.onTap,
+  });
 }
 
 class _LanguageSelector extends StatelessWidget {

@@ -5,7 +5,8 @@ class HospitalHeaderChip extends StatelessWidget {
   final String label;
   final IconData icon;
 
-  const HospitalHeaderChip({super.key, required this.label, required this.icon});
+  const HospitalHeaderChip(
+      {super.key, required this.label, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -147,8 +148,8 @@ class HospitalInfoRow extends StatelessWidget {
             children: [
               Text(
                 title,
-                style:
-                    theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                style: theme.textTheme.titleSmall
+                    ?.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 2),
               Text(
@@ -166,7 +167,8 @@ class HospitalInfoRow extends StatelessWidget {
 class HospitalSmallBadge extends StatelessWidget {
   final String label;
   final String value;
-  const HospitalSmallBadge({super.key, required this.label, required this.value});
+  const HospitalSmallBadge(
+      {super.key, required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -312,6 +314,51 @@ class HospitalGradientCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class SocialMediaIcon extends StatelessWidget {
+  final String type;
+  final VoidCallback? onTap;
+
+  const SocialMediaIcon({
+    super.key,
+    required this.type,
+    this.onTap,
+  });
+
+  IconData _iconForType(String type) {
+    switch (type.toLowerCase()) {
+      case 'facebook':
+        return Icons.facebook;
+      case 'twitter':
+        return Icons
+            .alternate_email; // Or a specific Twitter icon if you have one
+      case 'instagram':
+        return Icons.camera_alt;
+      case 'linkedin':
+        return Icons.work;
+      case 'youtube':
+        return Icons.play_circle_fill;
+      default:
+        return Icons.link;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(24),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Icon(
+          _iconForType(type),
+          size: 28,
+          color: Theme.of(context).colorScheme.primary,
+        ),
       ),
     );
   }

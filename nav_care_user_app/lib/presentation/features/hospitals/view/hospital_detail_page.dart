@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
@@ -81,12 +82,20 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
     );
   }
 
+  void _launchUrl(String url) async {
+    final uri = Uri.tryParse(url);
+    if (uri != null && await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      _copyText(url, 'Could not launch URL. Copied to clipboard.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HospitalDetailCubit, HospitalDetailState>(
       builder: (context, state) {
         final hospital = state.hospital;
-        print(hospital?.name);
         final theme = Theme.of(context);
         final baseUrl = sl<AppConfig>().api.baseUrl;
 
@@ -190,21 +199,14 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
                             primaryActionLabel:
                                 'hospitals.detail.actions.contact'.tr(),
                             secondaryActionLabel:
-                                'hospitals.detail.actions.location'.tr(),
-                            onPrimaryTap: hospital.address.isNotEmpty
-                                ? () => _copyText(
-                                      hospital.address,
-                                      'hospitals.detail.actions.address_copied'
-                                          .tr(),
-                                    )
+                                'hospitals.detail.actions.call'.tr(),
+                            onPrimaryTap: hospital.phone.isNotEmpty
+                                ? () =>
+                                    _launchUrl('sms:${hospital.phone.first}')
                                 : null,
-                            onSecondaryTap: hospital.latitude != null &&
-                                    hospital.longitude != null
-                                ? () => _copyText(
-                                      '${hospital.latitude}, ${hospital.longitude}',
-                                      'hospitals.detail.actions.location_copied'
-                                          .tr(),
-                                    )
+                            onSecondaryTap: hospital.phone.isNotEmpty
+                                ? () =>
+                                    _launchUrl('tel:${hospital.phone.first}')
                                 : null,
                             isSaved: _isSaved,
                             onToggleSave: () =>
@@ -232,6 +234,7 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
                   clinicsCount: clinicsCount,
                   doctorsCount: doctorsCount,
                   offeringsCount: offeringsCount,
+                  onLaunchUrl: _launchUrl,
                 ),
                 _ClinicsTab(
                   clinics: state.clinics,
@@ -516,7 +519,10 @@ class _DetailsTab extends StatelessWidget {
     required this.clinicsCount,
     required this.doctorsCount,
     required this.offeringsCount,
+    required this.onLaunchUrl,
   });
+
+  final void Function(String) onLaunchUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -589,17 +595,24 @@ class _DetailsTab extends StatelessWidget {
                           hospital.address.isNotEmpty ? hospital.address : null,
                       placeholderKey: 'hospitals.detail.no_description',
                     ),
-                    if (hospital.latitude != null &&
-                        hospital.longitude != null) ...[
+                    if (hospital.socialMedia.isNotEmpty) ...[
                       const SizedBox(height: 10),
                       HospitalInfoRow(
-                        icon: Icons.map_rounded,
-                        title: 'hospitals.detail.location'.tr(),
-                        value: (hospital.latitude != null &&
-                                hospital.longitude != null)
-                            ? '${hospital.latitude?.toStringAsFixed(4)}, ${hospital.longitude?.toStringAsFixed(4)}'
-                            : null,
+                        icon: Icons.group_rounded,
+                        title: 'hospitals.detail.social_media'.tr(),
+                        value: null,
                         placeholderKey: 'hospitals.detail.no_description',
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: hospital.socialMedia
+                            .map((link) => SocialMediaIcon(
+                                  type: link.type,
+                                  onTap: () => onLaunchUrl(link.link),
+                                ))
+                            .toList(),
                       ),
                     ],
                   ],

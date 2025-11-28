@@ -1,3 +1,24 @@
+class SocialMediaLink {
+  final String type;
+  final String link;
+
+  SocialMediaLink({required this.type, required this.link});
+
+  factory SocialMediaLink.fromJson(Map<String, dynamic> json) {
+    return SocialMediaLink(
+      type: json['type'] as String? ?? '',
+      link: json['link'] as String? ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type,
+      'link': link,
+    };
+  }
+}
+
 class HospitalModel {
   final String id;
   final String name;
@@ -13,6 +34,8 @@ class HospitalModel {
   final double? latitude;
   final double? longitude;
   final double rating;
+  final List<SocialMediaLink> socialMedia;
+  final List<String> phone;
 
   HospitalModel({
     required this.id,
@@ -29,6 +52,8 @@ class HospitalModel {
     this.latitude,
     this.longitude,
     this.rating = 0,
+    this.socialMedia = const [],
+    this.phone = const [],
   });
 
   factory HospitalModel.fromJson(Map<String, dynamic> json) {
@@ -68,6 +93,14 @@ class HospitalModel {
           ? (coordinates?['longitude'] as num).toDouble()
           : null,
       rating: (json['rating'] as num?)?.toDouble() ?? 0,
+      socialMedia: (json['social_media'] as List<dynamic>?)
+              ?.map((e) => SocialMediaLink.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      phone: (json['phone'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
     );
   }
 
@@ -91,6 +124,8 @@ class HospitalModel {
             }
           : null,
       'rating': rating,
+      'social_media': socialMedia.map((e) => e.toJson()).toList(),
+      'phone': phone,
     };
   }
 
