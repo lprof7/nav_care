@@ -1,230 +1,257 @@
-{
-    "sign_in": "Sign In",
-    "email": "Email",
-    "email_or_phone": "E-mail or Phone Number",
-    "password": "Password",
-    "or": "Or",
-    "book_an_appointment": "Book an appointment",
-    "sign_in_subtitle": "Sign in to continue",
-    "remember_me": "Remember me",
-    "forgot_password": "Forgot password?",
-    "sign_in_with_google": "Sign in with Google",
-    "sign_in_with_apple": "Sign in with Apple",
-    "signin_success_message": "Welcome {name}",
-    "signin_error_message": "Error: {message}",
-    "signin_account_not_found": "We couldn't find an account with those credentials.",
-    "signin_doctor_profile_required": "We found your user account, but you still need to complete your doctor profile.",
-    "field_required": "This field is required",
-    "become_doctor_title": "Become a Doctor",
-    "become_doctor_heading": "Complete your doctor profile",
-    "become_doctor_description": "Hi {name}, to continue you need to confirm your professional information.",
-    "become_doctor_default_name": "Doctor",
-    "become_doctor_next_steps": "We'll guide you through the remaining steps shortly.",
-    "become_doctor_back_to_signin": "Back to sign in",
-    "shell": {
-        "nav_home": "Home",
-        "nav_appointments": "Appointments",
-        "nav_hospitals": "Hospitals",
-        "nav_profile": "Profile",
-        "badge_new": "New",
-        "drawer_settings": "Settings",
-        "drawer_default_name": "Dr. NavCare",
-        "drawer_default_email": "doctor@navcare.com",
-        "drawer_verify_phone": "Verify phone number",
-        "language": {
-            "en": "English",
-            "ar": "Arabic",
-            "fr": "French"
-        },
-        "app_bar": {
-            "menu": "Open menu",
-            "support": "Support",
-            "favorites": "Favorites",
-            "notifications": "Notifications"
-        }
-    },
-    "home": {
-        "welcome_message": "Here's what's happening today",
-        "appointments": {
-            "title": "Upcoming appointments",
-            "subtitle": "Manage today's patient schedule",
-            "empty": "No appointments available yet."
-        },
-        "quick_actions": {
-            "title": "Quick actions",
-            "add_offer": "Add new offer",
-            "manage_calendar": "Manage calendar",
-            "view_reports": "View reports"
-        },
-        "services_manage": {
-            "title": "Manage services",
-            "subtitle": "Review, update, and publish your offerings",
-            "prompt": "Tap the card above to load your services.",
-            "loading": "Loading your services...",
-            "error": "We couldn't load your services",
-            "retry": "Try again",
-            "empty": "You haven't added any services yet.",
-            "list_title": "Your active services",
-            "more": "+{count} more services"
-        }
-    },
-    "appointments": {
-        "status": {
-            "pending": "Pending",
-            "confirmed": "Confirmed",
-            "completed": "Completed",
-            "cancelled": "Cancelled"
-        },
-        "edit": {
-            "title": "Update appointment",
-            "start_label": "Start time",
-            "end_label": "End time",
-            "status_label": "Status",
-            "cancel": "Cancel",
-            "submit": "Save changes"
-        },
-        "messages": {
-            "update_success": "Appointment updated successfully",
-            "update_failure": "Unable to update appointment"
-        },
-        "validation": {
-            "invalid_range": "End time must be after start time",
-            "invalid_dates": "Appointment dates are invalid"
-        }
-    },
-    "hospitals": {
-        "list": {
-            "title": "Hospital network",
-            "subtitle": "Organise your hospitals and clinics in one place",
-            "empty": "You haven't added any facilities yet.",
-            "error_network": "We couldn't reach the server. Check your connection and try again.",
-            "error_timeout": "The server is taking longer than expected. Please try again.",
-            "error_unauthorized": "Your session has expired. Please sign in again.",
-            "error_generic": "We couldn't load your hospitals right now."
-        },
-        "actions": {
-            "add": "Add hospital",
-            "reload": "Reload",
-            "retry": "Try again"
-        },
-        "stats": {
-            "clinics": "{0} clinics",
-            "doctors": "{0} doctors"
-        },
-        "facility_type": {
-            "hospital": "Hospital",
-            "clinic": "Clinic",
-            "unknown": "Facility"
-        },
-        "detail": {
-            "app_bar": "Hospital · {0}",
-            "facility_type": "Facility type",
-            "phone": "Contact phone",
-            "coordinates": "Location coordinates",
-            "manage_clinics": "Manage clinics",
-            "manage_doctors": "Manage doctors",
-            "clinics_title": "Clinics inside this hospital",
-            "doctors_title": "Associated doctors",
-            "edit": "Edit hospital",
-            "delete": "Delete hospital",
-            "deleting": "Deleting…",
-            "delete_confirm_title": "Delete hospital",
-            "delete_confirm_message": "Are you sure you want to remove this hospital? This action cannot be undone.",
-            "delete_cancel": "Cancel",
-            "delete_confirm": "Delete",
-            "delete_success": "Hospital removed successfully.",
-            "not_found": "We couldn't find the requested hospital.",
-            "manage_offerings": "Manage service offerings"
-        },
-        "form": {
-            "create_title": "Add hospital",
-            "edit_title": "Edit hospital",
-            "name": "Facility name",
-            "description_en": "Description (English)",
-            "facility_type": {
-                "label": "Facility type",
-                "hospital": "Hospital",
-                "clinic": "Clinic",
-                "unknown": "Facility"
-            },
-            "phone_label": "Phone numbers",
-            "phone_hint": "+1234567890",
-            "coordinates": {
-                "label": "Coordinates",
-                "latitude": "Latitude",
-                "longitude": "Longitude"
-            },
-            "images": {
-                "label": "Images",
-                "hint": "https://example.com/hospital.jpg"
-            },
-            "add_image": "Add image",
-            "address": "Address",
-            "add_entry": "Add another",
-            "saving": "Saving…",
-            "save": "Save hospital",
-            "success_create": "Hospital created successfully.",
-            "success_update": "Hospital updated successfully.",
-            "images_required": "At least one image is required."
-        },
-        "manage": {
-            "title": "{0}",
-            "clinics_title": "Manage clinics",
-            "doctors_title": "Manage doctors",
-            "clinics_description": "Soon you will be able to create, update, and organise your clinics from here.",
-            "doctors_description": "Soon you will be able to manage doctors associated with this hospital.",
-            "placeholder": "We are still building this experience. Stay tuned!"
-        }
-    },
-    "service_offerings": {
-        "list": {
-            "title": "Manage service offerings",
-            "heading": "Your service offerings",
-            "subtitle": "Review and update the offers attached to this hospital.",
-            "price": "Price: {0}",
-            "add": "Add service offering",
-            "empty": "No service offerings yet. Start by adding your first one.",
-            "reload": "Reload",
-            "retry": "Try again"
-        },
-        "detail": {
-            "title": "Service offering",
-            "not_found": "We couldn't find this service offering.",
-            "price": "Price: {0}",
-            "provider": "Provider",
-            "specialty": "Specialty",
-            "offers": "Included offers",
-            "no_offers": "No offers have been added to this service yet.",
-            "description": "Description",
-            "no_description": "No description available.",
-            "edit": "Edit"
-        },
-        "form": {
-            "create_title": "Add service offering",
-            "edit_title": "Edit service offering",
-            "description": "Fill in the details below to publish your hospital services.",
-            "service": "Service",
-            "price": "Price",
-            "price_invalid": "Enter a valid price",
-            "reload_services": "Reload services",
-            "offers": "Offers",
-            "offers_hint": "Separate items with commas",
-            "description_en": "Description (English)",
-            "description_ar": "Description (Arabic)",
-            "description_fr": "Description (French)",
-            "description_sp": "Description (Spanish)",
-            "create_button": "Create offering",
-            "update_button": "Update offering",
-            "select_service": "Please choose a service first.",
-            "error": "Unable to save the service offering",
-            "create_success": "Service offering created successfully.",
-            "update_success": "Service offering updated successfully."
-        },
-        "errors": {
-            "parse_list": "Unable to parse service offerings response",
-            "parse_detail": "Unable to load the selected service offering",
-            "parse_submit": "Unable to save the service offering",
-            "parse_catalog": "Unable to load the services catalog"
-        }
-    }
+﻿{
+    "sign_in":  "Sign In",
+    "email":  "Email",
+    "email_or_phone":  "E-mail or Phone Number",
+    "password":  "Password",
+    "or":  "Or",
+    "book_an_appointment":  "Book an appointment",
+    "sign_in_subtitle":  "Sign in to continue",
+    "remember_me":  "Remember me",
+    "forgot_password":  "Forgot password?",
+    "sign_in_with_google":  "Sign in with Google",
+    "sign_in_with_apple":  "Sign in with Apple",
+    "signin_success_message":  "Welcome {name}",
+    "signin_error_message":  "Error: {message}",
+    "signin_account_not_found":  "We couldn\u0027t find an account with those credentials.",
+    "signin_doctor_profile_required":  "We found your user account, but you still need to complete your doctor profile.",
+    "field_required":  "This field is required",
+    "become_doctor_title":  "Become a Doctor",
+    "become_doctor_heading":  "Complete your doctor profile",
+    "become_doctor_description":  "Hi {name}, to continue you need to confirm your professional information.",
+    "become_doctor_default_name":  "Doctor",
+    "become_doctor_next_steps":  "We\u0027ll guide you through the remaining steps shortly.",
+    "become_doctor_back_to_signin":  "Back to sign in",
+    "shell":  {
+                  "nav_home":  "Home",
+                  "nav_appointments":  "Appointments",
+                  "nav_hospitals":  "Hospitals",
+                  "nav_profile":  "Profile",
+                  "badge_new":  "New",
+                  "drawer_settings":  "Settings",
+                  "drawer_default_name":  "Dr. NavCare",
+                  "drawer_default_email":  "doctor@navcare.com",
+                  "drawer_verify_phone":  "Verify phone number",
+                  "language":  {
+                                   "en":  "English",
+                                   "ar":  "Arabic",
+                                   "fr":  "French"
+                               },
+                  "app_bar":  {
+                                  "menu":  "Open menu",
+                                  "support":  "Support",
+                                  "favorites":  "Favorites",
+                                  "notifications":  "Notifications"
+                              }
+              },
+    "home":  {
+                 "welcome_message":  "Here\u0027s what\u0027s happening today",
+                 "appointments":  {
+                                      "title":  "Upcoming appointments",
+                                      "subtitle":  "Manage today\u0027s patient schedule",
+                                      "empty":  "No appointments available yet."
+                                  },
+                 "quick_actions":  {
+                                       "title":  "Quick actions",
+                                       "add_offer":  "Add new offer",
+                                       "manage_calendar":  "Manage calendar",
+                                       "view_reports":  "View reports"
+                                   },
+                 "services_manage":  {
+                                         "title":  "Manage services",
+                                         "subtitle":  "Review, update, and publish your offerings",
+                                         "prompt":  "Tap the card above to load your services.",
+                                         "loading":  "Loading your services...",
+                                         "error":  "We couldn\u0027t load your services",
+                                         "retry":  "Try again",
+                                         "empty":  "You haven\u0027t added any services yet.",
+                                         "list_title":  "Your active services",
+                                         "more":  "+{count} more services"
+                                     }
+             },
+    "appointments":  {
+                         "status":  {
+                                        "pending":  "Pending",
+                                        "confirmed":  "Confirmed",
+                                        "completed":  "Completed",
+                                        "cancelled":  "Cancelled"
+                                    },
+                         "edit":  {
+                                      "title":  "Update appointment",
+                                      "start_label":  "Start time",
+                                      "end_label":  "End time",
+                                      "status_label":  "Status",
+                                      "cancel":  "Cancel",
+                                      "submit":  "Save changes"
+                                  },
+                         "messages":  {
+                                          "update_success":  "Appointment updated successfully",
+                                          "update_failure":  "Unable to update appointment"
+                                      },
+                         "validation":  {
+                                            "invalid_range":  "End time must be after start time",
+                                            "invalid_dates":  "Appointment dates are invalid"
+                                        }
+                     },
+    "hospitals":  {
+                      "list":  {
+                                   "title":  "Hospital network",
+                                   "subtitle":  "Organise your hospitals and clinics in one place",
+                                   "empty":  "You haven\u0027t added any facilities yet.",
+                                   "error_network":  "We couldn\u0027t reach the server. Check your connection and try again.",
+                                   "error_timeout":  "The server is taking longer than expected. Please try again.",
+                                   "error_unauthorized":  "Your session has expired. Please sign in again.",
+                                   "error_generic":  "We couldn\u0027t load your hospitals right now."
+                               },
+                      "actions":  {
+                                      "add":  "Add hospital",
+                                      "reload":  "Reload",
+                                      "retry":  "Try again"
+                                  },
+                      "stats":  {
+                                    "clinics":  "{0} clinics",
+                                    "doctors":  "{0} doctors"
+                                },
+                      "facility_type":  {
+                                            "hospital":  "Hospital",
+                                            "clinic":  "Clinic",
+                                            "unknown":  "Facility"
+                                        },
+                      "detail":  {
+                                     "app_bar":  "Hospital # {0}",
+                                     "tabs":  {
+                                                  "details":  "Details",
+                                                  "clinics":  "Clinics",
+                                                  "doctors":  "Doctors",
+                                                  "offerings":  "Service offerings"
+                                              },
+                                     "stats":  {
+                                                   "clinics":  "Clinics",
+                                                   "doctors":  "Doctors",
+                                                   "offerings":  "Offerings",
+                                                   "rating":  "Rating"
+                                               },
+                                     "cta":  {
+                                                 "view_service":  "Book appointment"
+                                             },
+                                     "facility_type":  "Facility type",
+                                     "phone":  "Contact phone",
+                                     "coordinates":  "Location coordinates",
+                                     "manage_clinics":  "Manage clinics",
+                                     "manage_doctors":  "Manage doctors",
+                                     "clinics_title":  "Clinics inside this hospital",
+                                     "doctors_title":  "Associated doctors",
+                                     "edit":  "Edit hospital",
+                                     "delete":  "Delete hospital",
+                                     "deleting":  "Deleting...",
+                                     "delete_confirm_title":  "Delete hospital",
+                                     "delete_confirm_message":  "Are you sure you want to remove this hospital? This action cannot be undone.",
+                                     "delete_cancel":  "Cancel",
+                                     "delete_confirm":  "Delete",
+                                     "delete_success":  "Hospital removed successfully.",
+                                     "not_found":  "We couldn\u0027t find the requested hospital.",
+                                     "manage_offerings":  "Manage service offerings",
+                                     "about":  "About",
+                                     "no_description":  "No description available.",
+                                     "overview":  "Overview",
+                                     "contact":  "Contact Information",
+                                     "filters":  "Filters",
+                                     "sorting":  "Sorting by",
+                                     "search_doctors":  "Search doctors...",
+                                     "offerings_subtitle":  "Service provided by this hospital",
+                                     "clinics_empty":  "No clinics available for this hospital.",
+                                     "doctors_empty":  "No doctors available for this hospital.",
+                                     "offerings_empty":  "No service offerings available for this hospital."
+                                 },
+                      "form":  {
+                                   "create_title":  "Add hospital",
+                                   "edit_title":  "Edit hospital",
+                                   "name":  "Facility name",
+                                   "description_en":  "Description (English)",
+                                   "facility_type":  {
+                                                         "label":  "Facility type",
+                                                         "hospital":  "Hospital",
+                                                         "clinic":  "Clinic",
+                                                         "unknown":  "Facility"
+                                                     },
+                                   "phone_label":  "Phone numbers",
+                                   "phone_hint":  "+1234567890",
+                                   "coordinates":  {
+                                                       "label":  "Coordinates",
+                                                       "latitude":  "Latitude",
+                                                       "longitude":  "Longitude"
+                                                   },
+                                   "images":  {
+                                                  "label":  "Images",
+                                                  "hint":  "https://example.com/hospital.jpg"
+                                              },
+                                   "add_image":  "Add image",
+                                   "address":  "Address",
+                                   "add_entry":  "Add another",
+                                   "saving":  "Savingâ€¦",
+                                   "save":  "Save hospital",
+                                   "success_create":  "Hospital created successfully.",
+                                   "success_update":  "Hospital updated successfully.",
+                                   "images_required":  "At least one image is required."
+                               },
+                      "manage":  {
+                                     "title":  "{0}",
+                                     "clinics_title":  "Manage clinics",
+                                     "doctors_title":  "Manage doctors",
+                                     "clinics_description":  "Soon you will be able to create, update, and organise your clinics from here.",
+                                     "doctors_description":  "Soon you will be able to manage doctors associated with this hospital.",
+                                     "placeholder":  "We are still building this experience. Stay tuned!"
+                                 }
+                  },
+    "service_offerings":  {
+                              "list":  {
+                                           "title":  "Manage service offerings",
+                                           "heading":  "Your service offerings",
+                                           "subtitle":  "Review and update the offers attached to this hospital.",
+                                           "price":  "Price: {0}",
+                                           "add":  "Add service offering",
+                                           "empty":  "No service offerings yet. Start by adding your first one.",
+                                           "reload":  "Reload",
+                                           "retry":  "Try again"
+                                       },
+                              "detail":  {
+                                             "title":  "Service offering",
+                                             "not_found":  "We couldn\u0027t find this service offering.",
+                                             "price":  "Price: {0}",
+                                             "provider":  "Provider",
+                                             "specialty":  "Specialty",
+                                             "offers":  "Included offers",
+                                             "no_offers":  "No offers have been added to this service yet.",
+                                             "description":  "Description",
+                                             "no_description":  "No description available.",
+                                             "edit":  "Edit"
+                                         },
+                              "form":  {
+                                           "create_title":  "Add service offering",
+                                           "edit_title":  "Edit service offering",
+                                           "description":  "Fill in the details below to publish your hospital services.",
+                                           "service":  "Service",
+                                           "price":  "Price",
+                                           "price_invalid":  "Enter a valid price",
+                                           "reload_services":  "Reload services",
+                                           "offers":  "Offers",
+                                           "offers_hint":  "Separate items with commas",
+                                           "description_en":  "Description (English)",
+                                           "description_ar":  "Description (Arabic)",
+                                           "description_fr":  "Description (French)",
+                                           "description_sp":  "Description (Spanish)",
+                                           "create_button":  "Create offering",
+                                           "update_button":  "Update offering",
+                                           "select_service":  "Please choose a service first.",
+                                           "error":  "Unable to save the service offering",
+                                           "create_success":  "Service offering created successfully.",
+                                           "update_success":  "Service offering updated successfully."
+                                       },
+                              "errors":  {
+                                             "parse_list":  "Unable to parse service offerings response",
+                                             "parse_detail":  "Unable to load the selected service offering",
+                                             "parse_submit":  "Unable to save the service offering",
+                                             "parse_catalog":  "Unable to load the services catalog"
+                                         }
+                          },
+    "doctor":  "Doctor"
 }

@@ -1,6 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:nav_care_offers_app/core/responses/failure.dart';
 import 'package:nav_care_offers_app/data/clinics/clinics_repository.dart';
 import 'package:nav_care_offers_app/data/hospitals/models/hospital_payload.dart';
 import 'package:nav_care_offers_app/data/clinics/models/clinic_model.dart';

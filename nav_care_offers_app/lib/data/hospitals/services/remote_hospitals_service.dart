@@ -70,6 +70,7 @@ class RemoteHospitalsService implements HospitalsService {
       _config.hospitals,
       body: formData,
       parser: _parseMap,
+      useHospitalToken: true,
     );
   }
 
@@ -90,14 +91,18 @@ class RemoteHospitalsService implements HospitalsService {
   }
 
   Map<String, dynamic> _parseMap(dynamic value) {
+    print("piiii $value");
     if (value is Map<String, dynamic>) {
+      print(value);
       return value;
     }
     if (value is Map) {
+      print(value);
       return value.map(
         (key, dynamic val) => MapEntry(key.toString(), val),
       );
     }
+    print("value $value is not a Map");
     return <String, dynamic>{};
   }
 }

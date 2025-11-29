@@ -122,6 +122,9 @@ Future<void> configureDependencies(AppConfig config) async {
       sl<HospitalsRepository>(),
       sl<TokenStore>(),
       initialHospital: hospital,
+      clinicsRepository: sl<ClinicsRepository>(),
+      doctorsRepository: sl<DoctorsRepository>(),
+      offeringsRepository: sl<ServiceOfferingsRepository>(),
     ),
   );
   sl.registerFactoryParam<HospitalFormCubit, Hospital?, void>(

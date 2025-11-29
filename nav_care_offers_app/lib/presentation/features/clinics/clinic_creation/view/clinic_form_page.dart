@@ -85,26 +85,25 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
 
     return BlocConsumer<ClinicCreationCubit, ClinicCreationState>(
       listener: (context, state) {
-        state.mapOrNull(
-          success: (state) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  isEditing
-                      ? 'hospitals.form.success_update'.tr()
-                      : 'hospitals.form.success_create'.tr(),
-                ),
+        if (state is ClinicCreationSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                isEditing
+                    ? 'hospitals.form.success_update'.tr()
+                    : 'hospitals.form.success_create'.tr(),
               ),
-            );
-            context.pop(state.clinic);
-          },
-          failure: (state) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text(state.failure.message ?? 'unknown_error'.tr())),
-            );
-          },
-        );
+            ),
+          );
+          context.pop(state.clinic);
+        } else if (state is ClinicCreationFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content:
+                  Text(state.failure.message ?? 'unknown_error'.tr()),
+            ),
+          );
+        }
       },
       builder: (context, state) {
         final onPrimary = Theme.of(context).colorScheme.onPrimary;
@@ -206,25 +205,21 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
                   SafeArea(
                     top: false,
                     child: AppButton(
-                      text: state.maybeMap(
-                        loading: (_) => 'hospitals.form.saving'.tr(),
-                        orElse: () => 'hospitals.form.save'.tr(),
-                      ),
-                      icon: state.maybeMap(
-                        loading: (_) => SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: onPrimary,
-                          ),
-                        ),
-                        orElse: () => const Icon(Icons.check_outlined),
-                      ),
-                      onPressed: state.maybeMap(
-                        loading: (_) => null,
-                        orElse: () => () => _submit(context),
-                      ),
+                      text: state is ClinicCreationLoading
+                          ? 'hospitals.form.saving'.tr()
+                          : 'hospitals.form.save'.tr(),
+                      icon: state is ClinicCreationLoading
+                          ? SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: onPrimary,
+                              ),
+                            )
+                          : const Icon(Icons.check_outlined),
+                      onPressed:
+                          state is ClinicCreationLoading ? null : () => _submit(context),
                     ),
                   ),
                 ],

@@ -73,7 +73,6 @@ class HospitalsRepository {
   Future<Result<Hospital>> updateHospital(HospitalPayload payload) async {
     try {
       final response = await _service.updateHospital(payload);
-
       if (!response.isSuccess || response.data == null) {
         return Result.failure(response.error ?? const Failure.unknown());
       }

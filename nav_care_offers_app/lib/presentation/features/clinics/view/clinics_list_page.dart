@@ -67,58 +67,58 @@ class _ClinicsListView extends StatelessWidget {
             Expanded(
               child: BlocBuilder<ClinicsCubit, ClinicsState>(
                 builder: (context, state) {
-                  return state.when(
-                    initial: () =>
-                        const Center(child: CircularProgressIndicator()),
-                    loading: () =>
-                        const Center(child: CircularProgressIndicator()),
-                    success: (clinicList) {
-                      if (clinicList.data.isEmpty) {
-                        return _EmptyView(
-                          messageKey: 'hospitals.manage.no_clinics_message',
-                          onReload: () => context
-                              .read<ClinicsCubit>()
-                              .getHospitalClinics(hospitalId),
-                        );
-                      }
-                      return RefreshIndicator(
-                        onRefresh: () => context
-                            .read<ClinicsCubit>()
-                            .getHospitalClinics(hospitalId),
-                        child: ListView.separated(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          itemBuilder: (ctx, index) {
-                            final clinic = clinicList.data[index];
-                            return HospitalCard(
-                              title: clinic.name,
-                              subtitle: _resolveDescription(
-                                  context.locale.languageCode, clinic),
-                              facilityLabel:
-                                  'hospitals.facility_type.clinic'.tr(),
-                              phoneLabel: clinic.phones.join(' · '),
-                              imageUrl: clinic.images.isNotEmpty
-                                  ? clinic.images.first
-                                  : null,
-                              onTap: () {
-                                // TODO: Navigate to clinic detail page
-                              },
-                            );
-                          },
-                          separatorBuilder: (ctx, _) =>
-                              const SizedBox(height: 20),
-                          itemCount: clinicList.data.length,
-                        ),
-                      );
-                    },
-                    failure: (failure) {
-                      return _ErrorView(
-                        message: failure.message ?? 'unknown_error'.tr(),
-                        onRetry: () => context
+                  if (state is ClinicsInitial || state is ClinicsLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (state is ClinicsFailure) {
+                    final failure = state.failure;
+                    return _ErrorView(
+                      message: failure.message ?? 'unknown_error'.tr(),
+                      onRetry: () => context
+                          .read<ClinicsCubit>()
+                          .getHospitalClinics(hospitalId),
+                    );
+                  }
+                  if (state is ClinicsSuccess) {
+                    final clinicList = state.clinicList;
+                    if (clinicList.data.isEmpty) {
+                      return _EmptyView(
+                        messageKey: 'hospitals.manage.no_clinics_message',
+                        onReload: () => context
                             .read<ClinicsCubit>()
                             .getHospitalClinics(hospitalId),
                       );
-                    },
-                  );
+                    }
+                    return RefreshIndicator(
+                      onRefresh: () => context
+                          .read<ClinicsCubit>()
+                          .getHospitalClinics(hospitalId),
+                      child: ListView.separated(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemBuilder: (ctx, index) {
+                          final clinic = clinicList.data[index];
+                          return HospitalCard(
+                            title: clinic.name,
+                            subtitle: _resolveDescription(
+                                context.locale.languageCode, clinic),
+                            facilityLabel:
+                                'hospitals.facility_type.clinic'.tr(),
+                            phoneLabel: clinic.phones.join(' · '),
+                            imageUrl: clinic.images.isNotEmpty
+                                ? clinic.images.first
+                                : null,
+                            onTap: () {
+                              // TODO: Navigate to clinic detail page
+                            },
+                          );
+                        },
+                        separatorBuilder: (ctx, _) =>
+                            const SizedBox(height: 20),
+                        itemCount: clinicList.data.length,
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
                 },
               ),
             ),

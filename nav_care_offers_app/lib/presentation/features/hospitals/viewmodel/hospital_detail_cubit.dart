@@ -1,8 +1,14 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nav_care_offers_app/core/storage/token_store.dart';
+import 'package:nav_care_offers_app/data/clinics/clinics_repository.dart';
+import 'package:nav_care_offers_app/data/clinics/models/clinic_model.dart';
+import 'package:nav_care_offers_app/data/doctors/doctors_repository.dart';
+import 'package:nav_care_offers_app/data/doctors/models/doctor_model.dart';
 import 'package:nav_care_offers_app/data/hospitals/hospitals_repository.dart';
 import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
+import 'package:nav_care_offers_app/data/service_offerings/models/service_offering.dart';
+import 'package:nav_care_offers_app/data/service_offerings/service_offerings_repository.dart';
 
 part 'hospital_detail_state.dart';
 
@@ -11,10 +17,19 @@ class HospitalDetailCubit extends Cubit<HospitalDetailState> {
     this._repository,
     this._tokenStore, {
     required Hospital initialHospital,
-  }) : super(HospitalDetailState(hospital: initialHospital));
+    required ClinicsRepository clinicsRepository,
+    required DoctorsRepository doctorsRepository,
+    required ServiceOfferingsRepository offeringsRepository,
+  })  : _clinicsRepository = clinicsRepository,
+        _doctorsRepository = doctorsRepository,
+        _offeringsRepository = offeringsRepository,
+        super(HospitalDetailState(hospital: initialHospital));
 
   final HospitalsRepository _repository;
   final TokenStore _tokenStore;
+  final ClinicsRepository _clinicsRepository;
+  final DoctorsRepository _doctorsRepository;
+  final ServiceOfferingsRepository _offeringsRepository;
 
   void refreshFromRepository() {
     final updated = _repository.findById(state.hospital.id);
@@ -27,21 +42,64 @@ class HospitalDetailCubit extends Cubit<HospitalDetailState> {
     emit(state.copyWith(hospital: hospital));
   }
 
-  Future<void> getHospitalToken() async {
-    emit(state.copyWith(isFetchingToken: true));
-    final result = await _repository.accessHospitalToken(state.hospital.id);
-    result.fold(
-      onFailure: (failure) => emit(state.copyWith(
-        isFetchingToken: false,
-        errorMessage: failure.message,
-      )),
-      onSuccess: (token) {
-        _tokenStore.setHospitalToken(token); // Save the token persistently
-        emit(state.copyWith(
-          isFetchingToken: false,
-          hospitalToken: token,
-        ));
+  Future<void> loadDetails({bool refresh = false}) async {
+    emit(
+      state.copyWith(
+        status: HospitalDetailStatus.loading,
+        isRefreshing: refresh,
+        isFetchingToken: true,
+        clearMessages: true,
+      ),
+    );
+
+    refreshFromRepository();
+
+    final token = await _fetchHospitalToken();
+    if (token == null) return;
+
+    String? failureMessage;
+    final clinicsResult =
+        await _clinicsRepository.getHospitalClinics(state.hospital.id);
+    final doctorsResult =
+        await _doctorsRepository.getHospitalDoctors(state.hospital.id);
+    final offeringsResult = await _offeringsRepository.fetchMyOfferings();
+
+    final clinics = clinicsResult.fold(
+      onFailure: (failure) {
+        failureMessage ??= failure.message;
+        return state.clinics;
       },
+      onSuccess: (data) => data.data,
+    );
+
+    final doctors = doctorsResult.fold(
+      onFailure: (failure) {
+        failureMessage ??= failure.message;
+        return state.doctors;
+      },
+      onSuccess: (data) => data.data,
+    );
+
+    final offerings = offeringsResult.fold(
+      onFailure: (failure) {
+        failureMessage ??= failure.message;
+        return state.offerings;
+      },
+      onSuccess: (data) => data.offerings,
+    );
+
+    emit(
+      state.copyWith(
+        status: failureMessage == null
+            ? HospitalDetailStatus.success
+            : HospitalDetailStatus.failure,
+        clinics: clinics,
+        doctors: doctors,
+        offerings: offerings,
+        isRefreshing: false,
+        clearMessages: true,
+        errorMessage: failureMessage,
+      ),
     );
   }
 
@@ -62,5 +120,29 @@ class HospitalDetailCubit extends Cubit<HospitalDetailState> {
         ),
       ),
     );
+  }
+
+  Future<String?> _fetchHospitalToken() async {
+    final result = await _repository.accessHospitalToken(state.hospital.id);
+    String? token;
+    result.fold(
+      onFailure: (failure) => emit(
+        state.copyWith(
+          status: HospitalDetailStatus.failure,
+          isFetchingToken: false,
+          isRefreshing: false,
+          errorMessage: failure.message,
+        ),
+      ),
+      onSuccess: (value) {
+        token = value;
+        _tokenStore.setHospitalToken(value);
+      },
+    );
+    emit(state.copyWith(
+      hospitalToken: token ?? state.hospitalToken,
+      isFetchingToken: false,
+    ));
+    return token;
   }
 }

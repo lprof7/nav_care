@@ -33,47 +33,54 @@ class _DoctorsListPageState extends State<DoctorsListPage> {
       ),
       body: BlocBuilder<DoctorsCubit, DoctorsState>(
         builder: (context, state) {
-          return state.when(
-            initial: () => const Center(child: CircularProgressIndicator()),
-            loading: () => const Center(child: CircularProgressIndicator()),
-            success: (doctorList) {
-              if (doctorList.data.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('no_doctors_available'.tr()),
-                      const SizedBox(height: 16),
-                      AppButton(
-                        onPressed: () {
-                          // TODO: Navigate to add doctor page
-                        },
-                        text: 'add_doctor'.tr(),
-                      ),
-                    ],
-                  ),
-                );
-              }
-              return ListView.builder(
-                itemCount: doctorList.data.length,
-                itemBuilder: (context, index) {
-                  final doctor = doctorList.data[index];
-                  return HospitalCard( // Reusing HospitalCard for doctor display
-                    title: doctor.name,
-                    facilityLabel: 'doctor'.tr(), // Placeholder
-                    onTap: () {
-                      // TODO: Navigate to doctor detail page
-                    },
-                  );
-                },
-              );
-            },
-            failure: (failure) {
+          if (state is DoctorsInitial || state is DoctorsLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is DoctorsFailure) {
+            final Failure failure = state.failure;
+            return Center(
+              child:
+                  Text('error_fetching_doctors'.tr(args: [failure.message])),
+            );
+          }
+
+          if (state is DoctorsSuccess) {
+            final doctorList = state.doctorList;
+            if (doctorList.data.isEmpty) {
               return Center(
-                child: Text('error_fetching_doctors'.tr(args: [failure.message])),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('no_doctors_available'.tr()),
+                    const SizedBox(height: 16),
+                    AppButton(
+                      onPressed: () {
+                        // TODO: Navigate to add doctor page
+                      },
+                      text: 'add_doctor'.tr(),
+                    ),
+                  ],
+                ),
               );
-            },
-          );
+            }
+            return ListView.builder(
+              itemCount: doctorList.data.length,
+              itemBuilder: (context, index) {
+                final doctor = doctorList.data[index];
+                return HospitalCard(
+                  // Reusing HospitalCard for doctor display
+                  title: doctor.displayName,
+                  facilityLabel: 'doctor'.tr(), // Placeholder
+                  onTap: () {
+                    // TODO: Navigate to doctor detail page
+                  },
+                );
+              },
+            );
+          }
+
+          return const SizedBox.shrink();
         },
       ),
     );
