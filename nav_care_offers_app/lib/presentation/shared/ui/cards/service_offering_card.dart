@@ -180,7 +180,7 @@ class ServiceOfferingCard extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        buttonLabel ?? 'View',
+                        buttonLabel ?? 'View details',
                         textAlign: TextAlign.center,
                       ),
                     ),

@@ -29,6 +29,7 @@ class RemoteClinicsService implements ClinicsService {
   Future<Result<Map<String, dynamic>>> submitClinic(
       HospitalPayload payload) async {
     final formData = FormData.fromMap(payload.toJson());
+    print(formData.fields);
 
     for (final image in payload.images) {
       final bytes = await image.readAsBytes();

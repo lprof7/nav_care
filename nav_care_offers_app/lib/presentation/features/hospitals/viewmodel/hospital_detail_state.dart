@@ -8,6 +8,7 @@ class HospitalDetailState extends Equatable {
   final List<ClinicModel> clinics;
   final List<DoctorModel> doctors;
   final List<ServiceOffering> offerings;
+  final List<HospitalInvitation> invitations;
   final bool isRefreshing;
   final bool isDeleting;
   final bool isDeleted;
@@ -22,6 +23,7 @@ class HospitalDetailState extends Equatable {
     this.clinics = const [],
     this.doctors = const [],
     this.offerings = const [],
+    this.invitations = const [],
     this.isRefreshing = false,
     this.isDeleting = false,
     this.isDeleted = false,
@@ -37,6 +39,7 @@ class HospitalDetailState extends Equatable {
     List<ClinicModel>? clinics,
     List<DoctorModel>? doctors,
     List<ServiceOffering>? offerings,
+    List<HospitalInvitation>? invitations,
     bool? isRefreshing,
     bool? isDeleting,
     bool? isDeleted,
@@ -52,6 +55,7 @@ class HospitalDetailState extends Equatable {
       clinics: clinics ?? this.clinics,
       doctors: doctors ?? this.doctors,
       offerings: offerings ?? this.offerings,
+      invitations: invitations ?? this.invitations,
       isRefreshing: isRefreshing ?? this.isRefreshing,
       isDeleting: isDeleting ?? this.isDeleting,
       isDeleted: isDeleted ?? this.isDeleted,
@@ -70,6 +74,7 @@ class HospitalDetailState extends Equatable {
         clinics,
         doctors,
         offerings,
+        invitations,
         isRefreshing,
         isDeleting,
         isDeleted,

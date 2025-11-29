@@ -9,6 +9,8 @@ import 'package:nav_care_offers_app/data/hospitals/hospitals_repository.dart';
 import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
 import 'package:nav_care_offers_app/data/service_offerings/models/service_offering.dart';
 import 'package:nav_care_offers_app/data/service_offerings/service_offerings_repository.dart';
+import 'package:nav_care_offers_app/data/invitations/hospital_invitations_repository.dart';
+import 'package:nav_care_offers_app/data/invitations/models/hospital_invitation.dart';
 
 part 'hospital_detail_state.dart';
 
@@ -20,9 +22,11 @@ class HospitalDetailCubit extends Cubit<HospitalDetailState> {
     required ClinicsRepository clinicsRepository,
     required DoctorsRepository doctorsRepository,
     required ServiceOfferingsRepository offeringsRepository,
+    required HospitalInvitationsRepository invitationsRepository,
   })  : _clinicsRepository = clinicsRepository,
         _doctorsRepository = doctorsRepository,
         _offeringsRepository = offeringsRepository,
+        _invitationsRepository = invitationsRepository,
         super(HospitalDetailState(hospital: initialHospital));
 
   final HospitalsRepository _repository;
@@ -30,6 +34,7 @@ class HospitalDetailCubit extends Cubit<HospitalDetailState> {
   final ClinicsRepository _clinicsRepository;
   final DoctorsRepository _doctorsRepository;
   final ServiceOfferingsRepository _offeringsRepository;
+  final HospitalInvitationsRepository _invitationsRepository;
 
   void refreshFromRepository() {
     final updated = _repository.findById(state.hospital.id);
@@ -63,6 +68,7 @@ class HospitalDetailCubit extends Cubit<HospitalDetailState> {
     final doctorsResult =
         await _doctorsRepository.getHospitalDoctors(state.hospital.id);
     final offeringsResult = await _offeringsRepository.fetchMyOfferings();
+    final invitationsResult = await _invitationsRepository.fetchInvitations();
 
     final clinics = clinicsResult.fold(
       onFailure: (failure) {
@@ -88,6 +94,14 @@ class HospitalDetailCubit extends Cubit<HospitalDetailState> {
       onSuccess: (data) => data.offerings,
     );
 
+    final invitations = invitationsResult.fold(
+      onFailure: (failure) {
+        failureMessage ??= failure.message;
+        return state.invitations;
+      },
+      onSuccess: (data) => data,
+    );
+
     emit(
       state.copyWith(
         status: failureMessage == null
@@ -96,6 +110,7 @@ class HospitalDetailCubit extends Cubit<HospitalDetailState> {
         clinics: clinics,
         doctors: doctors,
         offerings: offerings,
+        invitations: invitations,
         isRefreshing: false,
         clearMessages: true,
         errorMessage: failureMessage,

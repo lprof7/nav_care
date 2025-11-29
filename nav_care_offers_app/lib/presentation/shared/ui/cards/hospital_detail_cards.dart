@@ -207,8 +207,8 @@ class HospitalOverviewCard extends StatelessWidget {
               Expanded(
                 child: _SolidActionButton(
                   label: primaryActionLabel,
-                  icon: Icons.send_rounded,
-                  color: const Color(0xFF2E7CF6),
+                  icon: Icons.edit_rounded,
+                  color: theme.colorScheme.primary,
                   onPressed: onPrimaryTap,
                 ),
               ),
@@ -216,8 +216,8 @@ class HospitalOverviewCard extends StatelessWidget {
               Expanded(
                 child: _SolidActionButton(
                   label: secondaryActionLabel,
-                  icon: Icons.call_rounded,
-                  color: const Color(0xFF0F3D67),
+                  icon: Icons.delete_outline_rounded,
+                  color: theme.colorScheme.error,
                   onPressed: onSecondaryTap,
                 ),
               ),

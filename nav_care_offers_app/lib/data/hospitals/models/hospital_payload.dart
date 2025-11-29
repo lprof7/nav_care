@@ -10,6 +10,7 @@ class HospitalPayload {
   final List<String> phones;
   final List<XFile> images;
   final FacilityType facilityType; // Add facilityType
+  final String? hospitalId;
 
   HospitalPayload({
     this.id,
@@ -19,6 +20,7 @@ class HospitalPayload {
     this.phones = const [],
     this.images = const [],
     this.facilityType = FacilityType.hospital, // Default to hospital
+    this.hospitalId,
   });
 
   Map<String, dynamic> toJson() {
@@ -43,6 +45,10 @@ class HospitalPayload {
 
     if (id != null && id!.isNotEmpty) {
       payload['id'] = id;
+    }
+
+    if (hospitalId != null && hospitalId!.isNotEmpty) {
+      payload['hospitalId'] = hospitalId;
     }
 
     return payload;

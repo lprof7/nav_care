@@ -90,8 +90,8 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
             SnackBar(
               content: Text(
                 isEditing
-                    ? 'hospitals.form.success_update'.tr()
-                    : 'hospitals.form.success_create'.tr(),
+                    ? 'clinics.form.success_update'.tr()
+                    : 'clinics.form.success_create'.tr(),
               ),
             ),
           );
@@ -111,8 +111,8 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
           appBar: AppBar(
             title: Text(
               isEditing
-                  ? 'hospitals.form.edit_title'.tr()
-                  : 'hospitals.form.create_title'.tr(),
+                  ? 'clinics.form.edit_title'.tr()
+                  : 'clinics.form.create_title'.tr(),
             ),
           ),
           body: SingleChildScrollView(
@@ -125,7 +125,7 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
                   TextFormField(
                     controller: _nameController,
                     decoration: InputDecoration(
-                      labelText: 'hospitals.form.name'.tr(),
+                      labelText: 'clinics.form.name'.tr(),
                     ),
                     validator: (value) => value == null || value.trim().isEmpty
                         ? 'field_required'.tr()
@@ -135,7 +135,7 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
                   TextFormField(
                     controller: _descriptionController,
                     decoration: InputDecoration(
-                      labelText: 'hospitals.form.description_en'.tr(),
+                      labelText: 'clinics.form.description_en'.tr(),
                     ),
                     maxLines: 4,
                   ),
@@ -143,18 +143,18 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
                   TextFormField(
                     controller: _addressController,
                     decoration: InputDecoration(
-                      labelText: 'hospitals.form.address'.tr(),
+                      labelText: 'clinics.form.address'.tr(),
                     ),
                     validator: (value) => value == null || value.trim().isEmpty
                         ? 'field_required'.tr()
                         : null,
                   ),
                   const SizedBox(height: AppSpacing.md),
-                  _SectionLabel(label: 'hospitals.form.phone_label'.tr()),
+                  _SectionLabel(label: 'clinics.form.phone_label'.tr()),
                   const SizedBox(height: AppSpacing.sm),
                   ..._buildDynamicTextFields(
                     controllers: _phoneControllers,
-                    hint: 'hospitals.form.phone_hint'.tr(),
+                    hint: 'clinics.form.phone_hint'.tr(),
                     onAdd: _addPhoneField,
                     onRemove: (index) => _removeField(
                       index,
@@ -162,7 +162,7 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
-                  _SectionLabel(label: 'hospitals.form.images.label'.tr()),
+                  _SectionLabel(label: 'clinics.form.images.label'.tr()),
                   const SizedBox(height: AppSpacing.sm),
                   ..._selectedImages
                       .map((image) => Padding(
@@ -199,15 +199,15 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
                   TextButton.icon(
                     onPressed: _pickImage,
                     icon: const Icon(Icons.add_photo_alternate),
-                    label: Text('hospitals.form.add_image'.tr()),
+                    label: Text('clinics.form.add_image'.tr()),
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   SafeArea(
                     top: false,
                     child: AppButton(
                       text: state is ClinicCreationLoading
-                          ? 'hospitals.form.saving'.tr()
-                          : 'hospitals.form.save'.tr(),
+                          ? 'clinics.form.saving'.tr()
+                          : 'clinics.form.save'.tr(),
                       icon: state is ClinicCreationLoading
                           ? SizedBox(
                               width: 16,
@@ -260,8 +260,8 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
               Expanded(
                 child: TextFormField(
                   controller: controllers[i],
-                  decoration: InputDecoration(hintText: hint),
-                ),
+                    decoration: InputDecoration(hintText: hint),
+                  ),
               ),
               const SizedBox(width: AppSpacing.sm),
               IconButton(
@@ -279,7 +279,7 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
         child: TextButton.icon(
           onPressed: onAdd,
           icon: const Icon(Icons.add),
-          label: Text('hospitals.form.add_entry'.tr()),
+          label: Text('clinics.form.add_entry'.tr()),
         ),
       ),
     );
@@ -324,7 +324,7 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
 
     if (_selectedImages.isEmpty && (widget.initial?.images ?? []).isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('hospitals.form.images_required'.tr())),
+        SnackBar(content: Text('clinics.form.images_required'.tr())),
       );
       return;
     }
@@ -337,6 +337,7 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
       phones: phones,
       images: _selectedImages,
       facilityType: FacilityType.clinic, // This is a clinic form
+      hospitalId: widget.hospitalId,
     );
 
     cubit.submitClinic(payload);

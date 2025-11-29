@@ -8,6 +8,8 @@ class ApiConfig {
   String get register => '$baseUrl/api/users/auth/register';
 
   // Doctor services
+  String get doctors => '$baseUrl/api/doctors';
+  String doctorById(String id) => '$baseUrl/api/doctors/$id';
   String get doctorServices => '$baseUrl/api/doctors/me/services';
   String get doctorAppointments => '$baseUrl/api/doctors/me/appointments';
   String appointmentById(String id) => '$baseUrl/api/appointments/$id';
@@ -19,7 +21,10 @@ class ApiConfig {
   // Hospitals
   String get hospitals => '$baseUrl/api/hospitals';
   String get userHospitals => '$baseUrl/api/hospitals/user';
-  String hospitalById(String id) => '$baseUrl/api/hospitals/access/$id';
+  String hospitalById(String id) => '$baseUrl/api/hospitals/$id';
+  String get hospitalInvitations => '$baseUrl/api/hospitals/invitations';
+
+  String accessHospitalById(String id) => '$baseUrl/api/hospitals/access/$id';
 
   // Clinics
   String get clinics => '$baseUrl/api/hospitals';

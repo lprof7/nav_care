@@ -7,7 +7,18 @@ class DoctorsRepository {
 
   DoctorsRepository(this._doctorsService);
 
+  Future<Result<DoctorListModel>> listDoctors({
+    int page = 1,
+    int limit = 10,
+  }) {
+    return _doctorsService.listDoctors(page: page, limit: limit);
+  }
+
   Future<Result<DoctorListModel>> getHospitalDoctors(String hospitalId) async {
     return _doctorsService.getHospitalDoctors(hospitalId);
+  }
+
+  Future<Result<DoctorModel>> getDoctorById(String doctorId) {
+    return _doctorsService.getDoctorById(doctorId);
   }
 }

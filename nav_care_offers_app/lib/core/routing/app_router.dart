@@ -3,6 +3,8 @@ import 'package:nav_care_offers_app/data/authentication/models.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/data/hospitals/hospitals_repository.dart';
 import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
+import 'package:nav_care_offers_app/data/doctors/models/doctor_model.dart';
+import 'package:nav_care_offers_app/data/invitations/models/hospital_invitation.dart';
 import 'package:nav_care_offers_app/data/service_offerings/models/service_offering.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/become_doctor/view/become_doctor_page.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/signin/view/signin_page.dart';
@@ -13,6 +15,7 @@ import 'package:nav_care_offers_app/presentation/features/clinics/clinic_creatio
 import 'package:nav_care_offers_app/presentation/features/clinics/clinic_creation/viewmodel/clinic_creation_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/clinics/view/clinics_list_page.dart';
 import 'package:nav_care_offers_app/presentation/features/clinics/viewmodel/clinics_cubit.dart';
+import 'package:nav_care_offers_app/presentation/features/doctors/view/doctor_detail_page.dart';
 import 'package:nav_care_offers_app/presentation/features/doctors/view/doctors_list_page.dart';
 import 'package:nav_care_offers_app/presentation/features/doctors/viewmodel/doctors_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/view/service_offerings_page.dart';
@@ -88,6 +91,38 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
           return BlocProvider(
             create: (context) => sl<DoctorsCubit>(),
             child: DoctorsListPage(hospitalId: hospitalId),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/doctors/:doctorId/detail',
+        builder: (ctx, st) {
+          final doctorId = st.pathParameters['doctorId'] ?? '';
+          final extra = st.extra;
+          DoctorModel? doctor;
+          String? hospitalId;
+          List<DoctorModel>? hospitalDoctors;
+          List<HospitalInvitation>? invitations;
+          if (extra is DoctorModel) {
+            doctor = extra;
+          } else if (extra is Map) {
+            final map = extra.cast<dynamic, dynamic>();
+            final doc = map['doctor'];
+            if (doc is DoctorModel) doctor = doc;
+            hospitalId = map['hospitalId']?.toString();
+            hospitalDoctors = (map['hospitalDoctors'] as List?)
+                ?.whereType<DoctorModel>()
+                .toList();
+            invitations = (map['invitations'] as List?)
+                ?.whereType<HospitalInvitation>()
+                .toList();
+          }
+          return DoctorDetailPage(
+            doctorId: doctorId,
+            initial: doctor,
+            hospitalId: hospitalId,
+            hospitalDoctors: hospitalDoctors,
+            invitations: invitations,
           );
         },
       ),

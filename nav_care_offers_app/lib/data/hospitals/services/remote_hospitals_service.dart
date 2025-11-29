@@ -36,6 +36,7 @@ class RemoteHospitalsService implements HospitalsService {
   @override
   Future<Result<Map<String, dynamic>>> submitHospital(
       HospitalPayload payload) async {
+    print(payload.facilityType);
     final formData = FormData.fromMap(payload.toJson());
 
     for (final image in payload.images) {
@@ -79,30 +80,27 @@ class RemoteHospitalsService implements HospitalsService {
     return _apiClient.delete(
       _config.hospitalById(hospitalId),
       parser: _parseMap,
+      useHospitalToken: true,
     );
   }
 
   @override
   Future<Result<Map<String, dynamic>>> accessHospitalToken(String hospitalId) {
     return _apiClient.get(
-      _config.hospitalById(hospitalId),
+      _config.accessHospitalById(hospitalId),
       parser: _parseMap,
     );
   }
 
   Map<String, dynamic> _parseMap(dynamic value) {
-    print("piiii $value");
     if (value is Map<String, dynamic>) {
-      print(value);
       return value;
     }
     if (value is Map) {
-      print(value);
       return value.map(
         (key, dynamic val) => MapEntry(key.toString(), val),
       );
     }
-    print("value $value is not a Map");
     return <String, dynamic>{};
   }
 }
