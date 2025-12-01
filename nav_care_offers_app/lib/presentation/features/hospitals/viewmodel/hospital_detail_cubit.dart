@@ -63,12 +63,9 @@ class HospitalDetailCubit extends Cubit<HospitalDetailState> {
     if (token == null) return;
 
     String? failureMessage;
+    emit(state.copyWith(isFetchingClinics: true));
     final clinicsResult =
         await _clinicsRepository.getHospitalClinics(state.hospital.id);
-    final doctorsResult =
-        await _doctorsRepository.getHospitalDoctors(state.hospital.id);
-    final offeringsResult = await _offeringsRepository.fetchMyOfferings();
-    final invitationsResult = await _invitationsRepository.fetchInvitations();
 
     final clinics = clinicsResult.fold(
       onFailure: (failure) {
@@ -77,6 +74,14 @@ class HospitalDetailCubit extends Cubit<HospitalDetailState> {
       },
       onSuccess: (data) => data.data,
     );
+    emit(state.copyWith(
+      clinics: clinics,
+      isFetchingClinics: false,
+    ));
+    final doctorsResult =
+        await _doctorsRepository.getHospitalDoctors(state.hospital.id);
+    final offeringsResult = await _offeringsRepository.fetchMyOfferings();
+    final invitationsResult = await _invitationsRepository.fetchInvitations();
 
     final doctors = doctorsResult.fold(
       onFailure: (failure) {
@@ -107,7 +112,6 @@ class HospitalDetailCubit extends Cubit<HospitalDetailState> {
         status: failureMessage == null
             ? HospitalDetailStatus.success
             : HospitalDetailStatus.failure,
-        clinics: clinics,
         doctors: doctors,
         offerings: offerings,
         invitations: invitations,

@@ -1,5 +1,9 @@
 import 'service_offering.dart';
 
+import 'package:image_picker/image_picker.dart';
+
+import 'service_offering.dart';
+
 class ServiceOfferingPayload {
   final String serviceId;
   final double? price;
@@ -8,6 +12,8 @@ class ServiceOfferingPayload {
   final String? descriptionFr;
   final String? descriptionAr;
   final String? descriptionSp;
+  final String? nameEn;
+  final List<XFile>? images;
 
   const ServiceOfferingPayload({
     required this.serviceId,
@@ -17,11 +23,15 @@ class ServiceOfferingPayload {
     this.descriptionFr,
     this.descriptionAr,
     this.descriptionSp,
+    this.nameEn,
+    this.images,
   });
 
   factory ServiceOfferingPayload.fromExisting({
     required ServiceOffering offering,
     String? overrideServiceId,
+    String? nameEn,
+    List<XFile>? images,
   }) {
     return ServiceOfferingPayload(
       serviceId: overrideServiceId ?? offering.service.id,
@@ -31,6 +41,8 @@ class ServiceOfferingPayload {
       descriptionFr: offering.descriptionFr,
       descriptionAr: offering.descriptionAr,
       descriptionSp: offering.descriptionSp,
+      nameEn: nameEn,
+      images: images,
     );
   }
 
@@ -52,6 +64,10 @@ class ServiceOfferingPayload {
     if (descriptionSp != null && descriptionSp!.isNotEmpty) {
       map['description_sp'] = descriptionSp;
     }
+    if (nameEn != null && nameEn!.isNotEmpty) {
+      map['name_en'] = nameEn;
+    }
+
     return map;
   }
 }

@@ -22,25 +22,117 @@ import 'package:nav_care_offers_app/presentation/features/service_offerings/view
 import 'package:nav_care_offers_app/presentation/features/service_offerings/view/service_offering_form_page.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/view/service_offering_detail_page.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/viewmodel/service_offerings_cubit.dart';
+import 'package:nav_care_offers_app/presentation/features/profile/view/edit_user_profile_page.dart';
+import 'package:nav_care_offers_app/presentation/features/profile/view/forgot_password_page.dart';
+import 'package:nav_care_offers_app/presentation/features/profile/view/update_password_page.dart';
+import 'package:nav_care_offers_app/presentation/features/profile/viewmodel/user_profile_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+enum AppRoute {
+  root('/'),
+  signIn('/signin'),
+  becomeDoctor('/become-doctor'),
+  home('/home'),
+  profileEdit('/profile/edit'),
+  profilePassword('/profile/password'),
+  profileForgotPassword('/profile/forgot-password'),
+  hospitalNew('/hospitals/new'),
+  hospitalDetail('/hospitals/:id'),
+  hospitalEdit('/hospitals/:id/edit'),
+  hospitalClinics('/hospitals/:hospitalId/clinics'),
+  hospitalClinicsNew('/hospitals/:hospitalId/clinics/new'),
+  hospitalDoctors('/hospitals/:hospitalId/doctors'),
+  doctorDetail('/doctors/:doctorId/detail'),
+  hospitalServiceOfferings('/hospitals/:hospitalId/service-offerings'),
+  hospitalServiceOfferingsNew('/hospitals/:hospitalId/service-offerings/new'),
+  hospitalServiceOfferingsEdit('/hospitals/:hospitalId/service-offerings/:offeringId/edit'),
+  hospitalServiceOfferingsDetail('/hospitals/:hospitalId/service-offerings/:offeringId/detail');
+
+  const AppRoute(this.path);
+
+  final String path;
+}
 
 GoRouter createAppRouter({String initialLocation = '/'}) {
   return GoRouter(
     initialLocation: initialLocation,
     routes: [
-      GoRoute(path: '/', builder: (ctx, st) => const SigninPage()),
-      GoRoute(path: '/signin', builder: (ctx, st) => const SigninPage()),
       GoRoute(
-        path: '/become-doctor',
+        path: AppRoute.root.path,
+        builder: (ctx, st) => const SigninPage(),
+      ),
+      GoRoute(
+        path: AppRoute.signIn.path,
+        builder: (ctx, st) => const SigninPage(),
+      ),
+      GoRoute(
+        path: AppRoute.becomeDoctor.path,
         builder: (ctx, st) => BecomeDoctorPage(user: st.extra as User?),
       ),
-      GoRoute(path: '/home', builder: (ctx, st) => const NavShellPage()),
       GoRoute(
-        path: '/hospitals/new',
+        path: AppRoute.home.path,
+        builder: (ctx, st) => const NavShellPage(),
+      ),
+      GoRoute(
+        path: AppRoute.profileEdit.path,
+        builder: (ctx, st) {
+          final extraCubit = st.extra;
+          if (extraCubit is UserProfileCubit) {
+            return BlocProvider<UserProfileCubit>.value(
+              value: extraCubit,
+              child: const EditUserProfilePage(),
+            );
+          }
+          return BlocProvider(
+            create: (_) => sl<UserProfileCubit>()
+              ..loadProfile()
+              ..listenToAuth(),
+            child: const EditUserProfilePage(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoute.profilePassword.path,
+        builder: (ctx, st) {
+          final extraCubit = st.extra;
+          if (extraCubit is UserProfileCubit) {
+            return BlocProvider<UserProfileCubit>.value(
+              value: extraCubit,
+              child: const UpdatePasswordPage(),
+            );
+          }
+          return BlocProvider(
+            create: (_) => sl<UserProfileCubit>()
+              ..loadProfile()
+              ..listenToAuth(),
+            child: const UpdatePasswordPage(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoute.profileForgotPassword.path,
+        builder: (ctx, st) {
+          final extraCubit = st.extra;
+          if (extraCubit is UserProfileCubit) {
+            return BlocProvider<UserProfileCubit>.value(
+              value: extraCubit,
+              child: const ForgotPasswordPage(),
+            );
+          }
+          return BlocProvider(
+            create: (_) => sl<UserProfileCubit>()
+              ..loadProfile()
+              ..listenToAuth(),
+            child: const ForgotPasswordPage(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoute.hospitalNew.path,
         builder: (ctx, st) => const HospitalFormPage(),
       ),
       GoRoute(
-        path: '/hospitals/:id',
+        path: AppRoute.hospitalDetail.path,
         builder: (ctx, st) {
           final id = st.pathParameters['id'] ?? '';
           final passed = st.extra;
@@ -54,7 +146,7 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
         },
       ),
       GoRoute(
-        path: '/hospitals/:id/edit',
+        path: AppRoute.hospitalEdit.path,
         builder: (ctx, st) {
           final id = st.pathParameters['id'] ?? '';
           final passed = st.extra;
@@ -65,7 +157,7 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
         },
       ),
       GoRoute(
-        path: '/hospitals/:hospitalId/clinics',
+        path: AppRoute.hospitalClinics.path,
         builder: (ctx, st) {
           final hospitalId = st.pathParameters['hospitalId'] ?? '';
           return BlocProvider(
@@ -75,7 +167,7 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
         },
       ),
       GoRoute(
-        path: '/hospitals/:hospitalId/clinics/new',
+        path: AppRoute.hospitalClinicsNew.path,
         builder: (ctx, st) {
           final hospitalId = st.pathParameters['hospitalId'] ?? '';
           return BlocProvider(
@@ -85,7 +177,7 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
         },
       ),
       GoRoute(
-        path: '/hospitals/:hospitalId/doctors',
+        path: AppRoute.hospitalDoctors.path,
         builder: (ctx, st) {
           final hospitalId = st.pathParameters['hospitalId'] ?? '';
           return BlocProvider(
@@ -95,7 +187,8 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
         },
       ),
       GoRoute(
-        path: '/doctors/:doctorId/detail',
+        path: AppRoute.doctorDetail.path,
+        name: AppRoute.doctorDetail.name, // Add name for named routing
         builder: (ctx, st) {
           final doctorId = st.pathParameters['doctorId'] ?? '';
           final extra = st.extra;
@@ -127,7 +220,7 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
         },
       ),
       GoRoute(
-        path: '/hospitals/:hospitalId/service-offerings',
+        path: AppRoute.hospitalServiceOfferings.path,
         builder: (ctx, st) {
           final hospitalId = st.pathParameters['hospitalId'] ?? '';
           return BlocProvider(
@@ -137,14 +230,14 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
         },
       ),
       GoRoute(
-        path: '/hospitals/:hospitalId/service-offerings/new',
+        path: AppRoute.hospitalServiceOfferingsNew.path,
         builder: (ctx, st) {
           final hospitalId = st.pathParameters['hospitalId'] ?? '';
           return ServiceOfferingFormPage(hospitalId: hospitalId);
         },
       ),
       GoRoute(
-        path: '/hospitals/:hospitalId/service-offerings/:offeringId/edit',
+        path: AppRoute.hospitalServiceOfferingsEdit.path,
         builder: (ctx, st) {
           final hospitalId = st.pathParameters['hospitalId'] ?? '';
           final offering = st.extra;
@@ -155,7 +248,7 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
         },
       ),
       GoRoute(
-        path: '/hospitals/:hospitalId/service-offerings/:offeringId/detail',
+        path: AppRoute.hospitalServiceOfferingsDetail.path,
         builder: (ctx, st) {
           final hospitalId = st.pathParameters['hospitalId'] ?? '';
           final offeringId = st.pathParameters['offeringId'] ?? '';

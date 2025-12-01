@@ -279,7 +279,7 @@
     "home.search.filters.sort.desc": "تنازلي",
     "home.search.filters.collections.title": "المجموعات",
     "home.search.filters.collections.doctors": "الأطباء",
-    "home.search.filters.collections.hospitals": "المستشفيات",
+    "home.search.filters.collections.hospitals_and_clinics": "المستشفيات والعيادات",
     "home.search.filters.collections.services": "الخدمات المقدمة",
     "home.search.filters.actions.reset": "إعادة الضبط",
     "home.search.filters.actions.clear": "مسح الكل",

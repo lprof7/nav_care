@@ -105,7 +105,10 @@
         "actions": {
             "add": "Add hospital",
             "reload": "Reload",
-            "retry": "Try again"
+            "retry": "Try again",
+            "view_details": "View Details",
+            "add_clinic": "Add clinic",
+            "add_offering": "Add offering"
         },
         "stats": {
             "clinics": "{0} clinics",
@@ -228,7 +231,7 @@
         "detail": {
             "title": "Service offering",
             "not_found": "We couldn\u0027t find this service offering.",
-            "price": "Price: {0}",
+            "price": "Price: ",
             "provider": "Provider",
             "specialty": "Specialty",
             "offers": "Included offers",
@@ -263,6 +266,13 @@
             "parse_detail": "Unable to load the selected service offering",
             "parse_submit": "Unable to save the service offering",
             "parse_catalog": "Unable to load the services catalog"
+        },
+        "form": {
+            "name_en": "Name (English)",
+            "images": {
+                "label": "Images"
+            },
+            "add_image": "Add image"
         }
     },
     "clinics": {
@@ -286,5 +296,69 @@
             "success_update": "Clinic updated successfully."
         }
     },
-    "doctor": "Doctor"
+    "doctor": "Doctor",
+    "logout_success_message": "You have signed out.",
+    "logout_error_message": "Unable to sign out: {message}",
+    "auth_required": {
+        "title": "Sign in required",
+        "description": "Please sign in or create an account to continue.",
+        "create_account": "Create Account"
+    },
+    "shell.drawer_faq": "FAQ",
+    "shell.drawer_contact": "Contact",
+    "shell.drawer_settings": "Settings",
+    "shell.drawer_about": "About",
+    "shell.drawer_feedback": "Feedback",
+    "shell.drawer_support": "Support",
+    "shell.drawer_placeholder": "{0} coming soon",
+    "city": "City",
+    "state": "State / Province",
+    "country": "Country",
+    "profile.title": "My profile",
+    "profile.edit_profile": "Edit Profile",
+    "profile.address_label": "Address",
+    "profile.first_name": "First Name",
+    "profile.last_name": "Last Name",
+    "profile.update_profile_button": "Update Profile",
+    "profile.update_password_short": "Update Password",
+    "profile.password_current": "Current Password",
+    "profile.password_new": "New Password",
+    "profile.password_confirm_new": "Confirm New Password",
+    "profile.forgot_password": "Forgot password",
+    "profile.reset_password_hint": "Enter your email to receive a reset link.",
+    "profile.send_reset": "Send reset link",
+    "profile.reset_link_sent": "Reset link sent, please check your inbox.",
+    "profile.reset_link_failed": "Unable to send reset link.",
+    "profile.password_update_success": "Password updated successfully.",
+    "profile.password_update_error": "Unable to update password.",
+    "profile.invalid_email": "Please enter a valid e-mail address.",
+    "profile.edit_section": "Edit profile",
+    "profile.name_label": "Full name",
+    "profile.password_label": "New password",
+    "profile.password_helper": "Leave blank to keep your current password",
+    "profile.password_invalid": "Password must have at least 8 characters",
+    "profile.confirm_password_label": "Confirm new password",
+    "profile.confirm_password_required": "Please confirm your new password",
+    "profile.password_mismatch": "Passwords do not match",
+    "profile.password_requirements_title": "Password requirements:",
+    "profile.password_requirement_length": "at least 8 characters",
+    "profile.password_requirement_upper": "at least one uppercase letter",
+    "profile.password_requirement_number": "Password must contain at least one number",
+    "profile.password_requirement_special": "at least one special character",
+    "profile.save_changes": "Save changes",
+    "profile.updating": "Saving...",
+    "profile.no_changes": "No changes to save.",
+    "profile.update_success": "Profile updated successfully.",
+    "profile.update_error": "Unable to update profile.",
+    "profile.load_error": "Unable to load your profile.",
+    "profile.retry": "Try again",
+    "profile.empty": "Profile data is not available.",
+    "profile.phone": "Phone",
+    "profile.email": "Email",
+    "profile.verified": "Verified account",
+    "profile.not_verified": "Not verified",
+    "profile.member_since_unknown": "Member since -",
+    "profile.drawer_status_loading": "Loading profile...",
+    "profile.drawer_status_error": "Profile data failed to load.",
+    "profile.view_profile": "View profile"
 }

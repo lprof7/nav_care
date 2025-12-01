@@ -1,13 +1,18 @@
-class User {
+import 'package:equatable/equatable.dart';
+import 'package:nav_care_offers_app/data/doctors/models/doctor_model.dart'; // Import DoctorModel
+
+class User extends Equatable {
   final String id;
   final String name;
   final String email;
+  final String? phone;
   final String? profilePicture;
 
-  User({
+  const User({
     required this.id,
     required this.name,
     required this.email,
+    this.phone,
     this.profilePicture,
   });
 
@@ -22,6 +27,7 @@ class User {
       id: id.toString(),
       name: name.toString(),
       email: email.toString(),
+      phone: json['phone']?.toString(),
       profilePicture: json['profilePicture']?.toString(),
     );
   }
@@ -31,12 +37,16 @@ class User {
       '_id': id,
       'name': name,
       'email': email,
+      if (phone != null) 'phone': phone,
       if (profilePicture != null) 'profilePicture': profilePicture,
     };
   }
+
+  @override
+  List<Object?> get props => [id, name, email, phone, profilePicture];
 }
 
-class Doctor {
+class Doctor extends Equatable {
   final String id;
   final User user;
   final String? cover;
@@ -48,7 +58,7 @@ class Doctor {
   final String? bioSp;
   final List<String> affiliations;
 
-  Doctor({
+  const Doctor({
     required this.id,
     required this.user,
     this.cover,
@@ -80,16 +90,24 @@ class Doctor {
     );
   }
 
-  static double? _parseNullableDouble(dynamic value) {
-    if (value == null) return null;
-    return double.tryParse(value.toString());
-  }
-
-  static List<String> _parseAffiliations(dynamic value) {
-    if (value is Iterable) {
-      return value.map((item) => item.toString()).toList();
-    }
-    return const [];
+  // New method to convert to DoctorModel
+  DoctorModel toDoctorModel() {
+    return DoctorModel(
+      id: id,
+      displayName: user.name,
+      specialty: specialty ?? '',
+      rating: rating ?? 0.0,
+      cover: cover ?? '',
+      bioEn: bioEn ?? '',
+      bioFr: bioFr ?? '',
+      bioAr: bioAr ?? '',
+      bioSp: bioSp ?? '',
+      avatar: user.profilePicture,
+      userId: user.id,
+      email: user.email,
+      phone: user.phone,
+      affiliations: affiliations,
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -106,6 +124,21 @@ class Doctor {
       if (affiliations.isNotEmpty) 'affiliations': affiliations,
     };
   }
+
+  static double? _parseNullableDouble(dynamic value) {
+    if (value == null) return null;
+    return double.tryParse(value.toString());
+  }
+
+  static List<String> _parseAffiliations(dynamic value) {
+    if (value is Iterable) {
+      return value.map((item) => item.toString()).toList();
+    }
+    return const [];
+  }
+
+  @override
+  List<Object?> get props => [id, user, cover, specialty, rating, bioEn, bioFr, bioAr, bioSp, affiliations];
 }
 
 class AuthResponse {

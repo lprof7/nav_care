@@ -39,9 +39,7 @@ class AppointmentSuccessPage extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                message.isNotEmpty
-                    ? message
-                    : 'appointments.success.subtitle'.tr(),
+                'appointments.success.subtitle'.tr(),
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: const Color(0xFF5E738E),
                   height: 1.4,

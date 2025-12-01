@@ -35,6 +35,7 @@ class HomePage extends StatelessWidget {
       AdsSectionView(),
       FeaturedHospitalsSection(),
       FeaturedDoctorsSection(),
+      AdsSectionView(),
       RecentHospitalsSection(),
       RecentServiceOfferingsSection(),
       AdsSectionView(),

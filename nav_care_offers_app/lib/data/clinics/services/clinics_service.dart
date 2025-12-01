@@ -4,7 +4,7 @@ import 'package:nav_care_offers_app/data/hospitals/models/hospital_payload.dart'
 abstract class ClinicsService {
   String get baseUrl;
 
-  Future<Result<Map<String, dynamic>>> submitClinic(HospitalPayload payload);
+  Future<Result<Map<String, dynamic>>> createClinic(HospitalPayload payload);
 
   Future<Result<Map<String, dynamic>>> updateClinic(HospitalPayload payload);
 

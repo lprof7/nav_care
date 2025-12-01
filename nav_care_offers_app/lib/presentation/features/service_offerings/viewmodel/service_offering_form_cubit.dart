@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nav_care_offers_app/core/responses/failure.dart';
 import 'package:nav_care_offers_app/data/service_offerings/models/service_offering.dart';
 import 'package:nav_care_offers_app/data/service_offerings/models/service_offering_payload.dart';
@@ -58,6 +59,8 @@ class ServiceOfferingFormCubit extends Cubit<ServiceOfferingFormState> {
     String? descriptionFr,
     String? descriptionAr,
     String? descriptionSp,
+    String? nameEn,
+    List<XFile>? images,
   }) async {
     emit(state.copyWith(
       isSubmitting: true,
@@ -73,6 +76,8 @@ class ServiceOfferingFormCubit extends Cubit<ServiceOfferingFormState> {
       descriptionFr: descriptionFr,
       descriptionAr: descriptionAr,
       descriptionSp: descriptionSp,
+      nameEn: nameEn,
+      images: images,
     );
 
     final result = state.mode == ServiceOfferingFormMode.create

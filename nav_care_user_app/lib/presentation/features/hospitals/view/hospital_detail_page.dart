@@ -422,17 +422,14 @@ class _HeroForegroundLayer extends StatelessWidget {
           imageUrl: imageUrl,
           stats: [
             HospitalOverviewStat(
-              icon: Icons.local_hospital_rounded,
               label: 'hospitals.detail.stats.clinics'.tr(),
               value: clinicsCount.toString(),
             ),
             HospitalOverviewStat(
-              icon: Icons.people_rounded,
               label: 'hospitals.detail.stats.doctors'.tr(),
               value: doctorsCount.toString(),
             ),
             HospitalOverviewStat(
-              icon: Icons.medical_services_rounded,
               label: 'hospitals.detail.stats.offerings'.tr(),
               value: offeringsCount.toString(),
             ),

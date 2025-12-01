@@ -1,21 +1,30 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:nav_care_offers_app/core/storage/secure_doctor_store.dart';
+import 'package:nav_care_offers_app/core/storage/doctor_store.dart';
+import 'package:nav_care_offers_app/core/storage/token_store.dart';
 import 'package:nav_care_offers_app/data/authentication/models.dart';
 
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  final SecureDoctorStore _doctorStore;
+  final DoctorStore _doctorStore;
+  final TokenStore _tokenStore;
 
-  AuthCubit(this._doctorStore) : super(const AuthState());
+  AuthCubit(this._doctorStore, this._tokenStore) : super(const AuthState());
 
   Future<void> checkAuthStatus() async {
     final doctor = await _doctorStore.getDoctor();
-    if (doctor != null) {
-      emit(state.copyWith(status: AuthStatus.authenticated, user: User.fromJson(doctor)));
-    } else {
-      emit(state.copyWith(status: AuthStatus.unauthenticated));
+    final token = await _tokenStore.getUserToken();
+    if (doctor == null || token == null || token.isEmpty) {
+      emit(state.copyWith(status: AuthStatus.unauthenticated, user: null));
+      return;
+    }
+
+    try {
+      final user = User.fromJson(doctor);
+      emit(state.copyWith(status: AuthStatus.authenticated, user: user));
+    } catch (_) {
+      emit(state.copyWith(status: AuthStatus.unauthenticated, user: null));
     }
   }
 
@@ -24,8 +33,17 @@ class AuthCubit extends Cubit<AuthState> {
     emit(state.copyWith(status: AuthStatus.authenticated, user: user));
   }
 
+  Future<void> setAuthenticatedUser(User user) async {
+    await _doctorStore.setDoctor(user.toJson());
+    emit(state.copyWith(status: AuthStatus.authenticated, user: user));
+  }
+
   Future<void> logout() async {
-    await _doctorStore.clearDoctor();
+    await Future.wait([
+      _doctorStore.clearDoctor(),
+      _tokenStore.clearUserToken(),
+      _tokenStore.clearHospitalToken(),
+    ]);
     emit(state.copyWith(status: AuthStatus.unauthenticated, user: null));
   }
 }

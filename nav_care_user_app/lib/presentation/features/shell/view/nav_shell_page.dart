@@ -6,6 +6,7 @@ import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/users/models/user_profile_model.dart';
 import 'package:nav_care_user_app/presentation/features/appointments/my_appointments/view/my_appointments_page.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/signin/view/signin_page.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/logout/viewmodel/logout_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/home/view/home_page.dart';
@@ -131,7 +132,13 @@ class NavShellPage extends StatelessWidget {
                   cubit.setTab(destinations.length - 1);
                 },
                 isAuthenticated: isAuthenticated,
-                onSignInTap: () => context.go('/signin'),
+                onSignInTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (context) => const SigninPage(),
+                  );
+                },
                 onSignUpTap: () => context.go('/signup'),
                 onGoogleSignInTap: () {},
                 onFaqTap: () => context.push('/faq'),

@@ -31,11 +31,15 @@ class ApiClient {
   Future<Result<T>> post<T>(String path,
       {Object? body,
       required FromJson<T> parser,
+      Map<String, String>? headers,
       bool useHospitalToken = false}) async {
     try {
       final res = await _dio.post(path,
           data: body,
-          options: Options(extra: {'useHospitalToken': useHospitalToken}));
+          options: Options(
+            headers: headers,
+            extra: {'useHospitalToken': useHospitalToken},
+          ));
       return Result.success(parser(res.data));
     } on DioException catch (e) {
       print("error: ${e.message} ${e.response}}");
@@ -46,11 +50,15 @@ class ApiClient {
   Future<Result<T>> put<T>(String path,
       {Object? body,
       required FromJson<T> parser,
+      Map<String, String>? headers,
       bool useHospitalToken = false}) async {
     try {
       final res = await _dio.put(path,
           data: body,
-          options: Options(extra: {'useHospitalToken': useHospitalToken}));
+          options: Options(
+            headers: headers,
+            extra: {'useHospitalToken': useHospitalToken},
+          ));
       return Result.success(parser(res.data));
     } on DioException catch (e) {
       return Result.failure(_mapDio(e));
@@ -60,11 +68,15 @@ class ApiClient {
   Future<Result<T>> patch<T>(String path,
       {Object? body,
       required FromJson<T> parser,
+      Map<String, String>? headers,
       bool useHospitalToken = false}) async {
     try {
       final res = await _dio.patch(path,
           data: body,
-          options: Options(extra: {'useHospitalToken': useHospitalToken}));
+          options: Options(
+            headers: headers,
+            extra: {'useHospitalToken': useHospitalToken},
+          ));
       return Result.success(parser(res.data));
     } on DioException catch (e) {
       return Result.failure(_mapDio(e));
@@ -74,11 +86,15 @@ class ApiClient {
   Future<Result<T>> delete<T>(String path,
       {Object? body,
       required FromJson<T> parser,
+      Map<String, String>? headers,
       bool useHospitalToken = false}) async {
     try {
       final res = await _dio.delete(path,
           data: body,
-          options: Options(extra: {'useHospitalToken': useHospitalToken}));
+          options: Options(
+            headers: headers,
+            extra: {'useHospitalToken': useHospitalToken},
+          ));
 
       return Result.success(parser(res.data));
     } on DioException catch (e) {

@@ -118,7 +118,7 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                   sliver: SliverList(
                     delegate: SliverChildListDelegate(
                       [
-                        if (!isMember)
+                        if (widget.hospitalId != null && !isMember)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 12),
                             child: FilledButton(

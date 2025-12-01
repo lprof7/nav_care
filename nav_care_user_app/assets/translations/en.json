@@ -286,7 +286,7 @@
     "home.search.filters.sort.desc": "Descending",
     "home.search.filters.collections.title": "Collections",
     "home.search.filters.collections.doctors": "Doctors",
-    "home.search.filters.collections.hospitals": "Hospitals",
+    "home.search.filters.collections.hospitals_and_clinics": "Hospitals and Clinics",
     "home.search.filters.collections.services": "Service offerings",
     "home.search.filters.actions.reset": "Reset",
     "home.search.filters.actions.clear": "Clear all",

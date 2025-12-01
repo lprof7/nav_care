@@ -16,6 +16,7 @@ class HospitalDetailState extends Equatable {
   final String? successMessageKey;
   final bool isFetchingToken;
   final String? hospitalToken;
+  final bool isFetchingClinics;
 
   const HospitalDetailState({
     required this.hospital,
@@ -31,6 +32,7 @@ class HospitalDetailState extends Equatable {
     this.successMessageKey,
     this.isFetchingToken = false,
     this.hospitalToken,
+    this.isFetchingClinics = false,
   });
 
   HospitalDetailState copyWith({
@@ -47,6 +49,7 @@ class HospitalDetailState extends Equatable {
     String? successMessageKey,
     bool? isFetchingToken,
     String? hospitalToken,
+    bool? isFetchingClinics,
     bool clearMessages = false,
   }) {
     return HospitalDetailState(
@@ -64,6 +67,7 @@ class HospitalDetailState extends Equatable {
           clearMessages ? null : successMessageKey ?? this.successMessageKey,
       isFetchingToken: isFetchingToken ?? this.isFetchingToken,
       hospitalToken: hospitalToken ?? this.hospitalToken,
+      isFetchingClinics: isFetchingClinics ?? this.isFetchingClinics,
     );
   }
 
@@ -82,5 +86,6 @@ class HospitalDetailState extends Equatable {
         successMessageKey,
         isFetchingToken,
         hospitalToken,
+        isFetchingClinics,
       ];
 }

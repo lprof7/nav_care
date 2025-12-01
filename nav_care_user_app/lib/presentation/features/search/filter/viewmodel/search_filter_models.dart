@@ -81,7 +81,7 @@ extension SearchCollectionX on SearchCollection {
       case SearchCollection.doctors:
         return 'home.search.filters.collections.doctors';
       case SearchCollection.hospitals:
-        return 'home.search.filters.collections.hospitals';
+        return 'home.search.filters.collections.hospitals_and_clinics';
       case SearchCollection.serviceOfferings:
         return 'home.search.filters.collections.services';
     }

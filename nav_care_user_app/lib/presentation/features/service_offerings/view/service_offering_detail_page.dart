@@ -313,7 +313,22 @@ class _DetailViewState extends State<_DetailView> {
           child: SignInRequiredCard(
             onSignIn: () {
               Navigator.of(dialogContext).pop();
-              rootContext.go('/signin');
+              Navigator.of(dialogContext).pop();
+              showModalBottomSheet(
+                context: rootContext,
+                isScrollControlled: true,
+                builder: (context) => SignInRequiredCard(
+                  onSignIn: () {
+                    Navigator.of(context).pop();
+                    context.go('/signin');
+                  },
+                  onCreateAccount: () {
+                    Navigator.of(context).pop();
+                    context.go('/signup');
+                  },
+                  onGoogleSignIn: () {},
+                ),
+              );
             },
             onCreateAccount: () {
               Navigator.of(dialogContext).pop();

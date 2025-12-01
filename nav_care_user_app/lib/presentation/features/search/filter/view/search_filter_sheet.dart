@@ -111,8 +111,6 @@ class _SearchFilterSheetState extends State<SearchFilterSheet> {
                                 const SizedBox(height: 24),
                                 _buildRatingSection(theme, state, cubit),
                                 const SizedBox(height: 24),
-                                _buildPriceSection(theme, cubit),
-                                const SizedBox(height: 24),
                                 _buildCollectionsSection(theme, state, cubit),
                               ],
                             );

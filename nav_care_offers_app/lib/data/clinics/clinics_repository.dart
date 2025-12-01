@@ -47,16 +47,17 @@ class ClinicsRepository {
     );
   }
 
-  Future<Result<ClinicModel>> submitClinic(HospitalPayload payload) async {
+  Future<Result<ClinicModel>> createClinic(HospitalPayload payload) async {
     try {
-      final response = await _service.submitClinic(payload);
+      final response = await _service.createClinic(payload);
 
       if (!response.isSuccess || response.data == null) {
         return Result.failure(response.error ?? const Failure.unknown());
       }
 
       final data = response.data;
-      final rawClinic = data?['clinic'] ?? data?['data'] ?? data;
+      final rawClinic =
+          data?['hospital'] ?? data?['clinic'] ?? data?['data'] ?? data;
       final clinic = ClinicModel.fromJson(
           rawClinic is Map<String, dynamic> ? rawClinic : {});
 

@@ -26,7 +26,7 @@ class RemoteClinicsService implements ClinicsService {
   ApiConfig get _config => _apiClient.apiConfig;
 
   @override
-  Future<Result<Map<String, dynamic>>> submitClinic(
+  Future<Result<Map<String, dynamic>>> createClinic(
       HospitalPayload payload) async {
     final formData = FormData.fromMap(payload.toJson());
     print(formData.fields);
@@ -38,11 +38,8 @@ class RemoteClinicsService implements ClinicsService {
         MultipartFile.fromBytes(bytes, filename: image.name),
       ));
     }
-    return _apiClient.post(
-      _config.clinics,
-      body: formData,
-      parser: _parseMap,
-    );
+    return _apiClient.post(_config.hospitals,
+        body: formData, parser: _parseMap, useHospitalToken: false);
   }
 
   @override

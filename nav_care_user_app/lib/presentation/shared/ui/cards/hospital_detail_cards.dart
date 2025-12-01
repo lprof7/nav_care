@@ -89,12 +89,10 @@ class HospitalDetailSectionCard extends StatelessWidget {
 }
 
 class HospitalOverviewStat {
-  final IconData icon;
   final String label;
   final String value;
 
   const HospitalOverviewStat({
-    required this.icon,
     required this.label,
     required this.value,
   });
@@ -191,16 +189,35 @@ class HospitalOverviewCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 14),
-          Wrap(
-            spacing: 5,
-            runSpacing: 10,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: stats
-                .map((stat) => _StatItem(
-                      icon: stat.icon,
-                      label: stat.label,
-                      value: stat.value,
-                    ))
-                .toList(),
+                .map(
+                  (stat) => _StatItem(
+                    label: stat.label,
+                    value: stat.value,
+                  ),
+                )
+                .toList()
+                .asMap()
+                .entries
+                .map((entry) {
+              final index = entry.key;
+              final widget = entry.value;
+              if (index < stats.length - 1) {
+                return [
+                  widget,
+                  const SizedBox(
+                    height: 40,
+                    child: VerticalDivider(
+                      width: 20,
+                      thickness: 1,
+                    ),
+                  )
+                ];
+              }
+              return [widget];
+            }).expand((element) => element).toList(),
           ),
           const SizedBox(height: 14),
           Row(
@@ -459,12 +476,10 @@ class InfoGridCard extends StatelessWidget {
 }
 
 class _StatItem extends StatelessWidget {
-  final IconData icon;
   final String label;
   final String value;
 
   const _StatItem({
-    required this.icon,
     required this.label,
     required this.value,
   });
@@ -472,38 +487,22 @@ class _StatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceVariant.withOpacity(0.6),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 18, color: theme.colorScheme.primary),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                value,
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w800),
-              ),
-              SizedBox(
-                width: 54,
-                child: Text(
-                  label,
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
-                  ),
-                ),
-              ),
-            ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          value,
+          style: theme.textTheme.titleLarge
+              ?.copyWith(fontWeight: FontWeight.w800),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

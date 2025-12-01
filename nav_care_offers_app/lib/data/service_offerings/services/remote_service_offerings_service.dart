@@ -38,8 +38,17 @@ class RemoteServiceOfferingsService implements ServiceOfferingsService {
 
   @override
   Future<Result<Map<String, dynamic>>> createOffering(
-      ServiceOfferingPayload payload) {
+      ServiceOfferingPayload payload) async {
     final formData = FormData.fromMap(payload.toJson());
+    if (payload.images != null) {
+      for (final image in payload.images!) {
+        final bytes = await image.readAsBytes();
+        formData.files.add(MapEntry(
+          'images',
+          MultipartFile.fromBytes(bytes, filename: image.name),
+        ));
+      }
+    }
     return _apiClient.post(
       _apiClient.apiConfig.serviceOfferingsBase,
       body: formData,

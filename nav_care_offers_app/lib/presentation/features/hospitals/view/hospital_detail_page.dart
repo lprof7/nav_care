@@ -8,6 +8,7 @@ import 'package:nav_care_offers_app/data/authentication/models.dart';
 import 'package:nav_care_offers_app/data/clinics/models/clinic_model.dart';
 import 'package:nav_care_offers_app/data/doctors/models/doctor_model.dart';
 import 'package:nav_care_offers_app/data/hospitals/hospitals_repository.dart';
+import 'package:nav_care_offers_app/core/routing/app_router.dart';
 import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
 import 'package:nav_care_offers_app/data/service_offerings/models/service_offering.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/hospital_detail_cubit.dart';
@@ -143,20 +144,11 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
           floatingActionButton: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                onPressed: () => _openInviteDoctor(context, baseUrl),
-                icon: const Icon(Icons.person_add_alt_1_rounded),
-                label: Text('hospitals.detail.invite_doctor'.tr()),
-              ),
+            child: AnimatedBuilder(
+              animation: _tabController,
+              builder: (context, _) {
+                return _buildFloatingActionButton(context, state, baseUrl);
+              },
             ),
           ),
           body: NestedScrollView(
@@ -167,19 +159,7 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
                   icon: const Icon(Icons.arrow_back_ios_new_rounded),
                   onPressed: () => Navigator.of(context).maybePop(),
                 ),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.edit_outlined),
-                    tooltip: 'hospitals.detail.edit'.tr(),
-                    onPressed: state.isDeleting
-                        ? null
-                        : () => _openEdit(context, hospital),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.more_horiz_rounded),
-                    onPressed: () => _openManagementMenu(context, hospital),
-                  ),
-                ],
+                actions: [],
                 titleSpacing: 0,
                 title: Text(
                   innerBoxIsScrolled
@@ -297,68 +277,6 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
     );
   }
 
-  void _openManagementMenu(BuildContext context, Hospital hospital) {
-    showModalBottomSheet(
-      context: context,
-      showDragHandle: true,
-      builder: (ctx) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.maps_home_work_outlined),
-                  title: Text('hospitals.detail.manage_clinics'.tr()),
-                  onTap: () {
-                    Navigator.of(ctx).pop();
-                    _openManage(context, hospital, 'clinics');
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.groups_2_outlined),
-                  title: Text('hospitals.detail.manage_doctors'.tr()),
-                  onTap: () {
-                    Navigator.of(ctx).pop();
-                    _openManage(context, hospital, 'doctors');
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.design_services_outlined),
-                  title: Text('hospitals.detail.manage_offerings'.tr()),
-                  onTap: () {
-                    Navigator.of(ctx).pop();
-                    _openServiceOfferings(context, hospital);
-                  },
-                ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.edit_outlined),
-                  title: Text('hospitals.detail.edit'.tr()),
-                  onTap: () {
-                    Navigator.of(ctx).pop();
-                    _openEdit(context, hospital);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.delete_outline, color: Colors.red),
-                  title: Text(
-                    'hospitals.detail.delete'.tr(),
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                  onTap: () {
-                    Navigator.of(ctx).pop();
-                    _confirmDelete(context);
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   void _openEdit(BuildContext context, Hospital hospital) {
     final router = GoRouter.of(context);
@@ -478,6 +396,38 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
     context
         .push('/hospitals/${hospital.id}/clinics/new')
         .then((_) => _reload());
+  }
+  Widget _buildFloatingActionButton(
+      BuildContext context, HospitalDetailState state, String baseUrl) {
+    final hospital = state.hospital;
+    final fab = <int, Widget>{
+      1: ElevatedButton.icon(
+        onPressed: () => _openCreateClinic(context, hospital),
+        icon: const Icon(Icons.add_rounded),
+        label: Text('hospitals.actions.add_clinic'.tr()),
+      ),
+      2: ElevatedButton.icon(
+        onPressed: () => _openInviteDoctor(context, baseUrl),
+        icon: const Icon(Icons.person_add_alt_1_rounded),
+        label: Text('hospitals.detail.invite_doctor'.tr()),
+      ),
+      4: ElevatedButton.icon(
+        onPressed: () => _openCreation(context, hospital.id),
+        icon: const Icon(Icons.add_rounded),
+        label: Text('hospitals.actions.add_offering'.tr()),
+      ),
+    };
+
+    final selectedFab = fab[_tabController.index];
+
+    if (selectedFab == null) {
+      return const SizedBox.shrink();
+    }
+
+    return SizedBox(
+      width: double.infinity,
+      child: selectedFab,
+    );
   }
 }
 
@@ -694,12 +644,6 @@ class _ClinicsTab extends StatelessWidget {
           sliver: SliverToBoxAdapter(
             child: Row(
               children: [
-                ElevatedButton.icon(
-                  onPressed: onManage,
-                  icon: const Icon(Icons.dashboard_customize_rounded),
-                  label: Text('hospitals.detail.manage_clinics'.tr()),
-                ),
-                const Spacer(),
                 IconButton(
                   onPressed: onReload,
                   icon: const Icon(Icons.refresh_rounded),
@@ -766,27 +710,9 @@ class _DoctorsTabState extends State<_DoctorsTab> {
 
   List<_DoctorCardData> get _allDoctors {
     if (widget.doctors.isNotEmpty) {
-      return widget.doctors
-          .map(
-            (doctor) => _DoctorCardData(
-              name: doctor.displayName,
-              subtitle: 'doctor'.tr(),
-              imageUrl: null,
-              rating: doctor.rating,
-            ),
-          )
-          .toList();
+      return widget.doctors.map((doctor) => _DoctorCardData(doctor: doctor)).toList();
     }
-    return widget.fallbackDoctors
-        .map(
-          (doctor) => _DoctorCardData(
-            name: doctor.user.name,
-            subtitle: doctor.specialty ?? 'doctor'.tr(),
-            imageUrl: doctor.cover,
-            rating: doctor.rating,
-          ),
-        )
-        .toList();
+    return widget.fallbackDoctors.map((doctor) => _DoctorCardData(doctor: doctor.toDoctorModel())).toList();
   }
 
   List<_DoctorCardData> get _filteredDoctors {
@@ -794,9 +720,9 @@ class _DoctorsTabState extends State<_DoctorsTab> {
     if (_query.trim().isEmpty) return doctors;
     final lower = _query.toLowerCase();
     return doctors
-        .where((doctor) =>
-            doctor.name.toLowerCase().contains(lower) ||
-            doctor.subtitle.toLowerCase().contains(lower))
+        .where((doctorData) =>
+            doctorData.doctor.displayName.toLowerCase().contains(lower) ||
+            (doctorData.doctor.specialty ?? '').toLowerCase().contains(lower))
         .toList();
   }
 
@@ -810,89 +736,102 @@ class _DoctorsTabState extends State<_DoctorsTab> {
 
     final filtered = _filteredDoctors;
 
-    if (filtered.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'hospitals.detail.doctors_empty'.tr(),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            TextButton(
-              onPressed: widget.onReload,
-              child: Text('hospitals.actions.retry'.tr()),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return CustomScrollView(
-      slivers: [
-        SliverPadding(
+    return Column(
+      children: [
+        Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
-          sliver: SliverList(
-            delegate: SliverChildListDelegate([
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      onChanged: (value) => setState(() => _query = value),
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.search_rounded),
-                        hintText: 'hospitals.detail.search_doctors'.tr(),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 0),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  onChanged: (value) => setState(() => _query = value),
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.search_rounded),
+                    hintText: 'hospitals.detail.search_doctors'.tr(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: _FiltersRow(),
+        ),
+        Expanded(
+          child: Builder(
+            builder: (context) {
+              if (filtered.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'hospitals.detail.doctors_empty'.tr(),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      TextButton(
+                        onPressed: widget.onReload,
+                        child: Text('hospitals.actions.retry'.tr()),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                    sliver: SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 14,
+                        crossAxisSpacing: 14,
+                        childAspectRatio: 0.55,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final doctorData = filtered[index];
+                          final doctor = doctorData.doctor;
+                          return DoctorGridCard(
+                            title: doctor.displayName,
+                            subtitle: doctor.specialty ?? 'doctor'.tr(),
+                            imageUrl: doctor.cover != null
+                                ? _resolveImage(doctor.cover!, widget.baseUrl)
+                                : null,
+                            rating: doctor.rating,
+                            buttonLabel: 'hospitals.actions.view_details'.tr(),
+                            isSaved: false,
+                            onToggleSave: () {},
+                            onPressed: () => _openDoctorDetail(context, doctor),
+                          );
+                        },
+                        childCount: filtered.length,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  IconButton(
-                    onPressed: widget.onManage,
-                    icon: const Icon(Icons.manage_accounts_rounded),
-                  ),
                 ],
-              ),
-              const SizedBox(height: 10),
-              _FiltersRow(),
-            ]),
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-          sliver: SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 14,
-              crossAxisSpacing: 14,
-              childAspectRatio: 0.55,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final doctor = filtered[index];
-                return DoctorGridCard(
-                  title: doctor.name,
-                  subtitle: doctor.subtitle,
-                  imageUrl: doctor.imageUrl != null
-                      ? _resolveImage(doctor.imageUrl!, widget.baseUrl)
-                      : null,
-                  rating: doctor.rating,
-                  buttonLabel: 'hospitals.actions.reload'.tr(),
-                  isSaved: false,
-                  onToggleSave: () {},
-                  onPressed: widget.onManage,
-                );
-              },
-              childCount: filtered.length,
-            ),
+              );
+            },
           ),
         ),
       ],
+    );
+  }
+
+  void _openDoctorDetail(BuildContext context, DoctorModel doctor) {
+    context.pushNamed(
+      AppRoute.doctorDetail.name,
+      pathParameters: {'doctorId': doctor.id},
+      extra: doctor,
     );
   }
 }
@@ -956,11 +895,6 @@ class _OfferingsTab extends StatelessWidget {
           sliver: SliverToBoxAdapter(
             child: Row(
               children: [
-                ElevatedButton.icon(
-                  onPressed: onManage,
-                  icon: const Icon(Icons.view_list_rounded),
-                  label: Text('service_offerings.list.title'.tr()),
-                ),
                 const Spacer(),
                 IconButton(
                   onPressed: onReload,
@@ -1161,17 +1095,14 @@ class _HeroForegroundLayer extends StatelessWidget {
           imageUrl: imageUrl,
           stats: [
             HospitalOverviewStat(
-              icon: Icons.local_hospital_rounded,
               label: 'hospitals.detail.stats.clinics'.tr(),
               value: clinicsCount.toString(),
             ),
             HospitalOverviewStat(
-              icon: Icons.people_rounded,
               label: 'hospitals.detail.stats.doctors'.tr(),
               value: doctorsCount.toString(),
             ),
             HospitalOverviewStat(
-              icon: Icons.medical_services_rounded,
               label: 'hospitals.detail.stats.offerings'.tr(),
               value: offeringsCount.toString(),
             ),
@@ -1377,16 +1308,10 @@ String? _resolveImage(String? path, String baseUrl) {
 }
 
 class _DoctorCardData {
-  final String name;
-  final String subtitle;
-  final String? imageUrl;
-  final double? rating;
+  final DoctorModel doctor;
 
   _DoctorCardData({
-    required this.name,
-    required this.subtitle,
-    required this.imageUrl,
-    required this.rating,
+    required this.doctor,
   });
 }
 

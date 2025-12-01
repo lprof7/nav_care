@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/data/service_offerings/models/service_offering.dart';
 import 'package:nav_care_offers_app/data/service_offerings/service_offerings_repository.dart';
@@ -54,6 +55,9 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
   late final TextEditingController _descriptionArController;
   late final TextEditingController _descriptionSpController;
   String? _selectedServiceId;
+  late final TextEditingController _nameEnController;
+  final List<XFile> _selectedImages = [];
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -73,6 +77,7 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
         TextEditingController(text: initial?.descriptionAr ?? '');
     _descriptionSpController =
         TextEditingController(text: initial?.descriptionSp ?? '');
+    _nameEnController = TextEditingController(text: initial?.service.nameEn ?? '');
     _selectedServiceId = initial?.service.id;
   }
 
@@ -84,6 +89,7 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
     _descriptionFrController.dispose();
     _descriptionArController.dispose();
     _descriptionSpController.dispose();
+    _nameEnController.dispose();
     super.dispose();
   }
 
@@ -221,6 +227,13 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                         maxLines: 2,
                       ),
                       const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _nameEnController,
+                        decoration: InputDecoration(
+                          labelText: 'service_offerings.form.name_en'.tr(),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
                       _MultilineField(
                         controller: _descriptionEnController,
                         label: 'service_offerings.form.description_en'.tr(),
@@ -239,6 +252,26 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                       _MultilineField(
                         controller: _descriptionSpController,
                         label: 'service_offerings.form.description_sp'.tr(),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'service_offerings.form.images.label'.tr(),
+                        style: theme.textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 8),
+                      ..._selectedImages.map((image) => ListTile(
+                            title: Text(image.name ?? ''),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () => setState(() {
+                                _selectedImages.remove(image);
+                              }),
+                            ),
+                          )),
+                      TextButton.icon(
+                        onPressed: _pickImage,
+                        icon: const Icon(Icons.add_photo_alternate),
+                        label: Text('service_offerings.form.add_image'.tr()),
                       ),
                       const SizedBox(height: 32),
                       SizedBox(
@@ -308,7 +341,18 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
           descriptionSp: _descriptionSpController.text.trim().isEmpty
               ? null
               : _descriptionSpController.text.trim(),
+          nameEn: _nameEnController.text.trim(),
+          images: _selectedImages,
         );
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImages.add(pickedFile);
+      });
+    }
   }
 }
 

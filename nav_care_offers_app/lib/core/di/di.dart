@@ -33,6 +33,7 @@ import '../../data/doctors/services/doctors_service.dart';
 import '../../data/doctors/services/remote_doctors_service.dart';
 import '../../data/doctors/doctors_repository.dart';
 import '../../presentation/features/authentication/auth_cubit.dart'; // Import AuthCubit
+import '../../presentation/features/authentication/logout/viewmodel/logout_cubit.dart';
 import '../../data/appointments/services/appointments_service.dart';
 import '../../data/appointments/services/remote_appointments_service.dart';
 import '../../data/appointments/appointments_repository.dart';
@@ -44,6 +45,9 @@ import '../../presentation/features/service_offerings/viewmodel/service_offering
 import '../../data/invitations/hospital_invitations_repository.dart';
 import '../../data/invitations/hospital_invitations_service.dart';
 import '../../data/invitations/remote_hospital_invitations_service.dart';
+import '../../data/users/user_remote_service.dart';
+import '../../data/users/user_repository.dart';
+import '../../presentation/features/profile/viewmodel/user_profile_cubit.dart';
 
 final sl = GetIt.instance;
 Future<void> configureDependencies(AppConfig config) async {
@@ -69,8 +73,17 @@ Future<void> configureDependencies(AppConfig config) async {
         sl<DoctorStore>(),
       ));
   sl.registerFactory<SigninCubit>(() => SigninCubit(sl<SigninRepository>()));
-  sl.registerSingleton<AuthCubit>(
-      AuthCubit(SecureDoctorStore())); // Register AuthCubit
+  sl.registerSingleton<AuthCubit>(AuthCubit(sl<DoctorStore>(), sl<TokenStore>()));
+  sl.registerFactory<LogoutCubit>(() => LogoutCubit(sl<AuthCubit>()));
+  sl.registerLazySingleton<UserRemoteService>(
+      () => UserRemoteService(apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
+  sl.registerLazySingleton<UserRepository>(
+      () => UserRepository(remoteService: sl<UserRemoteService>()));
+  sl.registerFactory<UserProfileCubit>(() => UserProfileCubit(
+        repository: sl<UserRepository>(),
+        doctorStore: sl<DoctorStore>(),
+        authCubit: sl<AuthCubit>(),
+      ));
 
   // Doctor services
   sl.registerLazySingleton<DoctorServicesService>(

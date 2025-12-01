@@ -12,7 +12,7 @@ class ClinicCreationCubit extends Cubit<ClinicCreationState> {
 
   Future<void> submitClinic(HospitalPayload payload) async {
     emit(const ClinicCreationState.loading());
-    final result = await _clinicsRepository.submitClinic(payload);
+    final result = await _clinicsRepository.createClinic(payload);
     result.fold(
       onSuccess: (clinic) => emit(ClinicCreationState.success(clinic: clinic)),
       onFailure: (failure) =>
