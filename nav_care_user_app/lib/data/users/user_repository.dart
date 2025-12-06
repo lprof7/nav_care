@@ -14,8 +14,6 @@ class UserRepository {
 
   Future<UserProfileModel> fetchProfile() async {
     final result = await _remoteService.getProfile();
-    print(result.data);
-    print(result.error?.message);
     if (!result.isSuccess || result.data == null) {
       final message =
           _extractMessage(result.error?.message) ?? 'Failed to load profile.';
@@ -62,7 +60,6 @@ class UserRepository {
     }
 
     final result = await _remoteService.updateProfile(body);
-    print(result.data);
     if (!result.isSuccess || result.data == null) {
       final message =
           _extractMessage(result.error?.message) ?? 'Failed to update profile.';

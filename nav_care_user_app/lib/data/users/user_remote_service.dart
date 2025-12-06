@@ -14,7 +14,6 @@ class UserRemoteService {
 
   Future<Result<Map<String, dynamic>>> getProfile() async {
     final token = await _tokenStore.getToken();
-    print("token : $token");
     if (token == null || token.isEmpty) {
       return Result.failure(const Failure.unauthorized());
     }
@@ -22,7 +21,6 @@ class UserRemoteService {
     return _apiClient.get<Map<String, dynamic>>(
       '/api/users/me',
       parser: (json) {
-        print(json);
         return json as Map<String, dynamic>;
       },
       headers: _authHeaders(token),
@@ -39,7 +37,6 @@ class UserRemoteService {
       '/api/users/me',
       body: payload,
       parser: (json) {
-        print(json);
         return json as Map<String, dynamic>;
       },
       headers: _authHeaders(token),

@@ -102,13 +102,16 @@ class HomeHospitalCard extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(12, 28, 12, 0),
               child: Column(
                 children: [
-                  Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w800),
+                  SizedBox(
+                    height: 40, // تحديد ارتفاع ثابت للعنوان
+                    child: Text(
+                      title,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w800),
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Container(
@@ -128,7 +131,7 @@ class HomeHospitalCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   SizedBox(
-                    height: 20,
+                    height: 36, // تحديد ارتفاع ثابت للوصف
                     child: Text(
                       subtitle.isNotEmpty
                           ? subtitle

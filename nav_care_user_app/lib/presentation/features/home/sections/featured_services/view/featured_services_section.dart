@@ -142,6 +142,7 @@ class _ServiceCard extends StatelessWidget {
     final localeCode = context.locale.languageCode;
     final name = service.nameForLanguage(localeCode);
     final imagePath = service.imageUrl(baseUrl);
+    const double nameHeight = 40;
 
     return SizedBox(
       width: 160,
@@ -175,13 +176,16 @@ class _ServiceCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            name,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+          SizedBox(
+            height: nameHeight,
+            child: Text(
+              name,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
           ),
         ],
       ),

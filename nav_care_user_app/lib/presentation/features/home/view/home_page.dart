@@ -19,6 +19,7 @@ import '../sections/hospitals_choice/view/hospitals_choice_section.dart';
 import '../sections/featured_hospitals/view/featured_hospitals_section.dart';
 import '../sections/featured_doctors/view/featured_doctors_section.dart';
 import '../sections/recent_hospitals/view/recent_hospitals_section.dart';
+import '../sections/recent_doctors/view/recent_doctors_section.dart';
 import '../sections/recent_service_offerings/view/recent_service_offerings_section.dart';
 
 class HomePage extends StatelessWidget {
@@ -38,6 +39,7 @@ class HomePage extends StatelessWidget {
       AdsSectionView(),
       RecentHospitalsSection(),
       RecentServiceOfferingsSection(),
+      RecentDoctorsSection(),
       AdsSectionView(),
     ];
 
@@ -47,7 +49,8 @@ class HomePage extends StatelessWidget {
           create: (context) => sl<AdsSectionCubit>()..loadAdvertisings(),
         ),
         BlocProvider<FeaturedServicesCubit>(
-          create: (context) => sl<FeaturedServicesCubit>()..loadFeaturedServices(),
+          create: (context) =>
+              sl<FeaturedServicesCubit>()..loadFeaturedServices(),
         ),
         BlocProvider<HospitalsChoiceCubit>(
           create: (context) => sl<HospitalsChoiceCubit>()..loadHospitals(),
@@ -62,7 +65,8 @@ class HomePage extends StatelessWidget {
           create: (context) => sl<FeaturedDoctorsCubit>()..loadDoctors(),
         ),
         BlocProvider<RecentServiceOfferingsCubit>(
-          create: (context) => sl<RecentServiceOfferingsCubit>()..loadOfferings(),
+          create: (context) =>
+              sl<RecentServiceOfferingsCubit>()..loadOfferings(),
         ),
       ],
       child: BlocConsumer<NetworkCubit, NetworkState>(
@@ -103,7 +107,8 @@ class HomePage extends StatelessWidget {
             }
 
             return Padding(
-              padding: const EdgeInsets.all(24.0), // تصغير الهوامش لتبتعد عن الحواف
+              padding:
+                  const EdgeInsets.all(24.0), // تصغير الهوامش لتبتعد عن الحواف
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -116,7 +121,10 @@ class HomePage extends StatelessWidget {
                     const SizedBox(height: 15), // تصغير المسافة
                     Text(
                       messageKey.tr(),
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 18), // تصغير حجم الخط
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontSize: 18), // تصغير حجم الخط
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 15), // تصغير المسافة
@@ -127,7 +135,8 @@ class HomePage extends StatelessWidget {
                       },
                       child: Text(
                         'network_error.retry'.tr(),
-                        style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary),
                       ),
                     ),
                   ],

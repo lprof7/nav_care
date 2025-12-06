@@ -48,13 +48,12 @@ class _RecentServiceOfferingTile extends StatelessWidget {
     final baseUrl = sl<AppConfig>().api.baseUrl;
     final locale = context.locale.languageCode;
     final serviceName = offering.service.nameForLocale(locale);
-    final providerName = offering.provider.user.name.isNotEmpty
-        ? offering.provider.user.name
+    final providerName = offering.provider.name.isNotEmpty
+        ? offering.provider.name
         : 'home.recent_service_offerings.unknown_provider'.tr();
     final specialty = offering.provider.specialty;
     final cover = _resolveImage(offering.service.image, baseUrl);
-    final avatar =
-        _resolveImage(offering.provider.user.profilePicture, baseUrl);
+    final avatar = _resolveImage(offering.provider.profilePicture, baseUrl);
 
     return Card(
       shape: RoundedRectangleBorder(

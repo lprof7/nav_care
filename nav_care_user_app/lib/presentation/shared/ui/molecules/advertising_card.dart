@@ -22,7 +22,6 @@ class AdvertisingCard extends StatelessWidget {
     final imageUrl = advertising.image.startsWith('http')
         ? advertising.image
         : '$baseUrl/${advertising.image}';
-    print(imageUrl);
 
     return AspectRatio(
       aspectRatio: aspectRatio,

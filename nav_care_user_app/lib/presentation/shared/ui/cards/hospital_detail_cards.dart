@@ -156,8 +156,8 @@ class HospitalOverviewCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodySmall?.color
-                            ?.withOpacity(0.7),
+                        color:
+                            theme.textTheme.bodySmall?.color?.withOpacity(0.7),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -179,13 +179,6 @@ class HospitalOverviewCard extends StatelessWidget {
                   ],
                 ),
               ),
-              IconButton(
-                onPressed: onToggleSave,
-                icon: Icon(
-                  isSaved ? Icons.favorite_rounded : Icons.favorite_border,
-                  color: isSaved ? theme.colorScheme.primary : null,
-                ),
-              ),
             ],
           ),
           const SizedBox(height: 14),
@@ -202,22 +195,24 @@ class HospitalOverviewCard extends StatelessWidget {
                 .asMap()
                 .entries
                 .map((entry) {
-              final index = entry.key;
-              final widget = entry.value;
-              if (index < stats.length - 1) {
-                return [
-                  widget,
-                  const SizedBox(
-                    height: 40,
-                    child: VerticalDivider(
-                      width: 20,
-                      thickness: 1,
-                    ),
-                  )
-                ];
-              }
-              return [widget];
-            }).expand((element) => element).toList(),
+                  final index = entry.key;
+                  final widget = entry.value;
+                  if (index < stats.length - 1) {
+                    return [
+                      widget,
+                      const SizedBox(
+                        height: 40,
+                        child: VerticalDivider(
+                          width: 20,
+                          thickness: 1,
+                        ),
+                      )
+                    ];
+                  }
+                  return [widget];
+                })
+                .expand((element) => element)
+                .toList(),
           ),
           const SizedBox(height: 14),
           Row(
@@ -492,8 +487,8 @@ class _StatItem extends StatelessWidget {
       children: [
         Text(
           value,
-          style: theme.textTheme.titleLarge
-              ?.copyWith(fontWeight: FontWeight.w800),
+          style:
+              theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: 4),
         Text(

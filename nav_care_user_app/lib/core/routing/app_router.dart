@@ -11,6 +11,8 @@ import 'package:nav_care_user_app/presentation/features/profile/view/update_pass
 import 'package:nav_care_user_app/presentation/features/profile/view/user_profile_page.dart';
 import 'package:nav_care_user_app/presentation/features/profile/viewmodel/user_profile_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/social/view/social_complete_profile_page.dart';
+import 'package:nav_care_user_app/data/authentication/google/google_user.dart';
 
 import '../../presentation/features/authentication/signup/view/signup_page.dart';
 import '../../presentation/features/appointments/appointment_creation/view/add_appointment_page.dart';
@@ -24,6 +26,16 @@ final appRouter = GoRouter(
     GoRoute(path: '/', builder: (ctx, st) => const NavShellPage()),
     GoRoute(path: '/signin', builder: (ctx, st) => const SigninPage()),
     GoRoute(path: '/signup', builder: (ctx, st) => const SignupPage()),
+    GoRoute(
+      path: '/signup/social',
+      builder: (ctx, st) {
+        final extra = st.extra;
+        if (extra is GoogleAccount) {
+          return SocialCompleteProfilePage(account: extra);
+        }
+        return const SigninPage();
+      },
+    ),
     GoRoute(path: '/home', builder: (ctx, st) => const NavShellPage()),
     GoRoute(path: '/appointments', builder: (ctx, st) => const NavShellPage(initialIndex: 1)),
     GoRoute(path: '/faq', builder: (ctx, st) => const FaqPage()),

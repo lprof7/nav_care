@@ -64,6 +64,14 @@ class NavShellPage extends StatelessWidget {
           ),
           BlocListener<AuthSessionCubit, AuthSessionState>(
             listenWhen: (previous, current) =>
+                previous.status != current.status &&
+                current.status == AuthSessionStatus.unauthenticated,
+            listener: (context, state) {
+              context.go('/signin');
+            },
+          ),
+          BlocListener<AuthSessionCubit, AuthSessionState>(
+            listenWhen: (previous, current) =>
                 previous.status != current.status,
             listener: (context, state) {
               // Use read here to avoid establishing a listener inside a callback.
@@ -105,7 +113,8 @@ class NavShellPage extends StatelessWidget {
               drawer: NavShellDrawer(
                 selectedIndex: state.currentIndex,
                 destinations: destinations,
-                onDestinationSelected: cubit.setTab,
+                onDestinationSelected: (index) =>
+                    _onDestinationSelected(context, index),
                 onVerifyTap: () {},
                 currentLocale: context.locale,
                 supportedLocales: context.supportedLocales,
@@ -129,7 +138,7 @@ class NavShellPage extends StatelessWidget {
                     context.read<UserProfileCubit>().loadProfile(),
                 onProfileTap: () {
                   Navigator.of(context).pop();
-                  cubit.setTab(destinations.length - 1);
+                  _onDestinationSelected(context, destinations.length - 1);
                 },
                 isAuthenticated: isAuthenticated,
                 onSignInTap: () {
@@ -157,7 +166,7 @@ class NavShellPage extends StatelessWidget {
               bottomNavigationBar: NavShellNavBar(
                 currentIndex: state.currentIndex,
                 destinations: destinations,
-                onTap: cubit.setTab,
+                onTap: (index) => _onDestinationSelected(context, index),
               ),
             );
           },
@@ -190,5 +199,17 @@ class NavShellPage extends StatelessWidget {
         content: const UserProfilePage(),
       ),
     ];
+  }
+
+  Future<void> _onDestinationSelected(
+    BuildContext context,
+    int index,
+  ) async {
+    final authCubit = context.read<AuthSessionCubit>();
+    if (authCubit.state.isAuthenticated) {
+      await authCubit.verifyTokenValidity();
+      if (!authCubit.state.isAuthenticated) return;
+    }
+    context.read<NavShellCubit>().setTab(index);
   }
 }

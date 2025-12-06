@@ -594,6 +594,7 @@ class _SearchResultCard extends StatelessWidget {
           imageUrl: doctorImage,
           rating: item.rating,
           onTap: onServiceTap,
+          buttonLabel: 'hospitals.detail.cta.view_profile'.tr(),
         ),
       );
     }
@@ -619,7 +620,8 @@ class _SearchResultCard extends StatelessWidget {
           title: item.title.isNotEmpty ? item.title : typeLabel,
           subtitle: item.subtitle.isNotEmpty ? item.subtitle : typeLabel,
           imageUrl: resolvedImage,
-          priceLabel: item.price != null ? item.price!.toStringAsFixed(0) : null,
+          priceLabel:
+              item.price != null ? item.price!.toStringAsFixed(0) : null,
           onTap: onServiceTap,
           buttonLabel: 'home.search.view_details'.tr(),
         ),

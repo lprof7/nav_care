@@ -56,7 +56,8 @@ class _HospitalsChoiceBody extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    state.message ?? 'common.error_occurred'.tr(), // رسالة خطأ عامة
+                    state.message ??
+                        'common.error_occurred'.tr(), // رسالة خطأ عامة
                     style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
@@ -84,7 +85,6 @@ class _HospitalsChoiceBody extends StatelessWidget {
                     separatorBuilder: (_, __) => const SizedBox(width: 14),
                     itemBuilder: (context, index) {
                       final hospital = state.hospitals[index];
-                      // print("hospital picture: ${hospital.primaryImage()}");
                       return _HospitalCard(hospital: hospital);
                     },
                   ),

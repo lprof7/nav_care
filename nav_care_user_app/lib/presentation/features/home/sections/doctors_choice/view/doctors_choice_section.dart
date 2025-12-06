@@ -14,16 +14,26 @@ import '../viewmodel/doctors_choice_cubit.dart';
 import '../viewmodel/doctors_choice_state.dart';
 
 class DoctorsChoiceSection extends StatelessWidget {
-  const DoctorsChoiceSection({super.key});
+  const DoctorsChoiceSection({
+    super.key,
+    this.translationPrefix = 'home.doctors_choice',
+  });
+
+  final String translationPrefix;
 
   @override
   Widget build(BuildContext context) {
-    return const _DoctorsChoiceBody();
+    return _DoctorsChoiceBody(translationPrefix: translationPrefix);
   }
 }
 
 class _DoctorsChoiceBody extends StatelessWidget {
-  const _DoctorsChoiceBody();
+  final String translationPrefix;
+
+  const _DoctorsChoiceBody({required this.translationPrefix});
+
+  String _tr(BuildContext context, String key) =>
+      '$translationPrefix.$key'.tr();
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +58,8 @@ class _DoctorsChoiceBody extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    state.message ?? 'common.error_occurred'.tr(), // رسالة خطأ عامة
+                    state.message ??
+                        'common.error_occurred'.tr(), // رسالة خطأ عامة
                     style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
@@ -67,20 +78,19 @@ class _DoctorsChoiceBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _SectionHeader(
-                  title: 'home.doctors_choice.title'.tr(),
-                  actionLabel: 'home.doctors_choice.see_more'.tr(),
+                  title: _tr(context, 'title'),
+                  actionLabel: _tr(context, 'see_more'),
                   onTap: () => _openSeeMore(context, state.doctors),
                 ),
                 const SizedBox(height: 16),
                 SizedBox(
-                  height: 250,
+                  height: 270,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: state.doctors.length,
                     separatorBuilder: (_, __) => const SizedBox(width: 14),
                     itemBuilder: (context, index) {
                       final doctor = state.doctors[index];
-                      print("doctooooooooooor img : ${doctor.coverImage()}");
                       return _DoctorCard(doctor: doctor);
                     },
                   ),
@@ -96,7 +106,10 @@ class _DoctorsChoiceBody extends StatelessWidget {
   void _openSeeMore(BuildContext context, List<DoctorModel> doctors) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => NavcareDoctorsPage(doctors: doctors),
+        builder: (_) => NavcareDoctorsPage(
+          doctors: doctors,
+          titleKey: '$translationPrefix.title',
+        ),
       ),
     );
   }
@@ -128,7 +141,7 @@ class _DoctorCard extends StatelessWidget {
         subtitle: specialty,
         imageUrl: coverPath,
         rating: doctor.rating > 0 ? doctor.rating : null,
-        buttonLabel: null,
+        buttonLabel: 'hospitals.detail.cta.view_profile'.tr(),
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(

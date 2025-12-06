@@ -11,6 +11,7 @@ import 'package:nav_care_user_app/data/authentication/models.dart';
 import 'package:nav_care_user_app/data/authentication/signup/models/signup_request.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/signup/viewmodel/signup_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/social/viewmodel/social_auth_cubit.dart';
 import 'package:nav_care_user_app/presentation/shared/theme/colors.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/atoms/app_text_field.dart';
@@ -24,8 +25,11 @@ class SignupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<SignupCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => sl<SignupCubit>()),
+        BlocProvider(create: (_) => sl<SocialAuthCubit>()),
+      ],
       child: const _SignupView(),
     );
   }
@@ -75,36 +79,61 @@ class _SignupView extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: BlocListener<SignupCubit, SignupState>(
-                    listener: (context, state) {
-                      if (state is SignupSuccess) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('signup_success_message'.tr()),
-                          ),
-                        );
-                        final user = state.result.user;
-                        if (user != null) {
-                          context.read<AuthSessionCubit>().setAuthenticatedUser(user);
-                          context.go('/home');
-                        } else {
-                          // Handle case where user is null after signup, e.g., show an error or log out.
-                          // For now, I'll just navigate to home, assuming the session cubit handles null user gracefully.
-                          // Or, if this is an unexpected scenario, you might want to show an error message.
-                          context.go('/home');
-                        }
-                      } else if (state is SignupFailure) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'signup_error_message'.tr(
-                                namedArgs: {'message': state.message},
+                  child: MultiBlocListener(
+                    listeners: [
+                      BlocListener<SignupCubit, SignupState>(
+                        listener: (context, state) {
+                          if (state is SignupSuccess) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('signup_success_message'.tr()),
                               ),
-                            ),
-                          ),
-                        );
-                      }
-                    },
+                            );
+                            final user = state.result.user;
+                            if (user != null) {
+                              context
+                                  .read<AuthSessionCubit>()
+                                  .setAuthenticatedUser(user);
+                              context.go('/home');
+                            } else {
+                              context.go('/home');
+                            }
+                          } else if (state is SignupFailure) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'signup_error_message'.tr(
+                                    namedArgs: {'message': state.message},
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                      BlocListener<SocialAuthCubit, SocialAuthState>(
+                        listener: (context, state) {
+                          if (state is SocialAuthSuccess) {
+                            context
+                                .read<AuthSessionCubit>()
+                                .setAuthenticatedUser(state.user);
+                            context.go('/home');
+                          } else if (state is SocialAuthNeedsProfile) {
+                            context.go('/signup/social', extra: state.account);
+                          } else if (state is SocialAuthFailure) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'signup_error_message'.tr(
+                                    namedArgs: {'message': state.message},
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ],
                     child: const _SignupForm(),
                   ),
                 ),
@@ -331,25 +360,23 @@ class _SignupFormState extends State<_SignupForm> {
             ],
           ),
           const SizedBox(height: 16),
+          AppTextField(
+            hintText: 'email'.tr(),
+            controller: _emailController,
+            keyboardType: TextInputType.emailAddress,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'field_required'.tr();
+              }
+              if (!RegExp(r'^[^@]+@[^@]+\.[a-zA-Z]{2,}$').hasMatch(value)) {
+                return 'invalid_email_format'.tr();
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
           Row(
             children: [
-              Expanded(
-                child: AppTextField(
-                  hintText: 'email'.tr(),
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'field_required'.tr();
-                    }
-                    if (!RegExp(r'^[^@]+@[^@]+\.[a-zA-Z]{2,}$').hasMatch(value)) {
-                      return 'invalid_email_format'.tr();
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(width: 16),
               Expanded(
                 child: AppTextField(
                   hintText: 'birth_date_hint'.tr(),
@@ -419,7 +446,8 @@ class _SignupFormState extends State<_SignupForm> {
             hintText: 'password'.tr(),
             controller: _passwordController,
             validator: (value) {
-              if (value == null || value.isEmpty) return 'profile.password_new'.tr();
+              if (value == null || value.isEmpty)
+                return 'profile.password_new'.tr();
               if (value.length < 8) return 'profile.password_invalid'.tr();
               if (!_hasUpper || !_hasNumber || !_hasSpecial) {
                 return 'profile.password_invalid'.tr();
@@ -439,8 +467,10 @@ class _SignupFormState extends State<_SignupForm> {
             hintText: 'confirm_password'.tr(),
             controller: _confirmPasswordController,
             validator: (value) {
-              if (value == null || value.isEmpty) return 'profile.confirm_password_required'.tr();
-              if (value != _passwordController.text) return 'profile.password_mismatch'.tr();
+              if (value == null || value.isEmpty)
+                return 'profile.confirm_password_required'.tr();
+              if (value != _passwordController.text)
+                return 'profile.password_mismatch'.tr();
               return null;
             },
           ),
@@ -538,27 +568,45 @@ class _SignupFormState extends State<_SignupForm> {
             ],
           ),
           const SizedBox(height: 16),
-          SocialButton(
-            text: 'sign_up_with_google'.tr(),
-            color: AppColors.brandGoogle,
-            textColor: AppColors.textOnPrimary,
-            onPressed: () {},
-            icon: Container(
-              width: 26,
-              height: 26,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.card,
-              ),
-              alignment: Alignment.center,
-              child: const Text(
-                'G',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.brandGoogleAccent,
-                ),
-              ),
-            ),
+          BlocBuilder<SocialAuthCubit, SocialAuthState>(
+            builder: (context, state) {
+              final isLoading = state is SocialAuthLoading;
+              return SocialButton(
+                text: 'sign_up_with_google'.tr(),
+                color: AppColors.brandGoogle,
+                textColor: AppColors.textOnPrimary,
+                onPressed: isLoading
+                    ? null
+                    : () => context.read<SocialAuthCubit>().signInWithGoogle(),
+                icon: isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppColors.textOnPrimary,
+                          ),
+                        ),
+                      )
+                    : Container(
+                        width: 26,
+                        height: 26,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.card,
+                        ),
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'G',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.brandGoogleAccent,
+                          ),
+                        ),
+                      ),
+              );
+            },
           ),
           const SizedBox(height: 12),
           SocialButton(
@@ -708,7 +756,8 @@ class _PasswordRequirements extends StatelessWidget {
       children: [
         Text(
           'profile.password_requirements_title'.tr(),
-          style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+          style:
+              theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 10),
         _RequirementRow(

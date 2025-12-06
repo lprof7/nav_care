@@ -45,7 +45,8 @@ class _FeaturedDoctorsBody extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      state.message ?? 'common.error_occurred'.tr(), // رسالة خطأ عامة
+                      state.message ??
+                          'common.error_occurred'.tr(), // رسالة خطأ عامة
                       style: Theme.of(context).textTheme.bodyMedium,
                       textAlign: TextAlign.center,
                     ),
@@ -70,7 +71,7 @@ class _FeaturedDoctorsBody extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     SizedBox(
-                      height: 250,
+                      height: 270,
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: state.doctors.length,
@@ -131,7 +132,7 @@ class _FeaturedDoctorCard extends StatelessWidget {
         subtitle: specialty,
         imageUrl: coverPath,
         rating: doctor.rating > 0 ? doctor.rating : null,
-        buttonLabel: null,
+        buttonLabel: 'hospitals.detail.cta.view_profile'.tr(),
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(

@@ -23,11 +23,7 @@ class RemoteSignupService implements SignupService {
 
     final formData = FormData.fromMap(payload);
 
-    return _api.post(
-      _api.apiConfig.register,
-      body: formData,
-      parser: (json) {print(json);
-      return json as Map<String, dynamic>;},
-    );
+    return _api.post(_api.apiConfig.register,
+        body: formData, parser: (json) => json as Map<String, dynamic>);
   }
 }

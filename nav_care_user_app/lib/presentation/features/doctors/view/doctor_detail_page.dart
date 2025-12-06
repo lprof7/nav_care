@@ -1,9 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/doctors/doctors_repository.dart';
 import 'package:nav_care_user_app/data/doctors/models/doctor_model.dart';
+import 'package:nav_care_user_app/presentation/features/doctors/view/doctor_add_review_page.dart';
+import 'package:nav_care_user_app/presentation/features/doctors/view/doctor_review_detail_page.dart';
+import 'package:nav_care_user_app/presentation/features/doctors/view/widgets/doctor_reviews_section.dart';
+import 'package:nav_care_user_app/presentation/features/doctors/viewmodel/doctor_reviews_cubit.dart';
+import 'package:nav_care_user_app/presentation/features/doctors/viewmodel/doctor_reviews_state.dart';
 import 'widgets/doctor_service_offerings_section.dart';
 
 class DoctorDetailPage extends StatefulWidget {
@@ -15,6 +21,7 @@ class DoctorDetailPage extends StatefulWidget {
   @override
   State<DoctorDetailPage> createState() => _DoctorDetailPageState();
 }
+
 
 class _DoctorDetailPageState extends State<DoctorDetailPage> {
   late Future<DoctorModel> _future;
@@ -32,121 +39,151 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () async {
-          setState(() {
-            _future = _load();
-          });
-          await _future;
-        },
-        child: FutureBuilder<DoctorModel>(
-          future: _future,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError || !snapshot.hasData) {
-              return _ErrorView(
-                message: 'home.featured_doctors.error'.tr(),
-                onRetry: () => setState(() {
-                  _future = _load();
-                }),
-              );
-            }
+    return BlocProvider(
+      create: (_) =>
+          sl<DoctorReviewsCubit>()..loadReviews(doctorId: widget.doctorId),
+      child: Scaffold(
+        body: RefreshIndicator(
+          onRefresh: () async {
+            setState(() {
+              _future = _load();
+            });
+            await _future;
+            context.read<DoctorReviewsCubit>().refresh();
+          },
+          child: FutureBuilder<DoctorModel>(
+            future: _future,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError || !snapshot.hasData) {
+                return _ErrorView(
+                  message: 'home.featured_doctors.error'.tr(),
+                  onRetry: () => setState(() {
+                    _future = _load();
+                  }),
+                );
+              }
 
-            final doctor = snapshot.data!;
-            final locale = context.locale.languageCode;
-            final bio = doctor.bioForLocale(locale);
-            final baseUrl = sl<AppConfig>().api.baseUrl;
-            final avatar = doctor.avatarImage(baseUrl: baseUrl) ??
-                doctor.coverImage(baseUrl: baseUrl);
-            final cover = avatar ?? doctor.coverImage(baseUrl: baseUrl);
+              final doctor = snapshot.data!;
+              final locale = context.locale.languageCode;
+              final bio = doctor.bioForLocale(locale);
+              final baseUrl = sl<AppConfig>().api.baseUrl;
+              final avatar = doctor.avatarImage(baseUrl: baseUrl) ??
+                  doctor.coverImage(baseUrl: baseUrl);
+              final cover = avatar ?? doctor.coverImage(baseUrl: baseUrl);
+              final reviewsState = context.watch<DoctorReviewsCubit>().state;
 
-            return CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  pinned: true,
-                  leading: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                    onPressed: () => Navigator.of(context).maybePop(),
+              return CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    pinned: true,
+                    leading: IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                      onPressed: () => Navigator.of(context).maybePop(),
+                    ),
+                    title: Text(doctor.displayName,
+                        maxLines: 1, overflow: TextOverflow.ellipsis),
                   ),
-                  title: Text(doctor.displayName,
-                      maxLines: 1, overflow: TextOverflow.ellipsis),
-                ),
-                SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      _HeroImage(imageUrl: cover),
-                      _SummaryCard(
-                        doctor: doctor,
-                        avatarUrl: avatar,
-                      ),
-                    ],
-                  ),
-                ),
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate(
-                      [
-                        _Section(
-                          icon: Icons.info_rounded,
-                          title: 'hospitals.detail.about'.tr(),
-                          child: Text(
-                            bio.isNotEmpty
-                                ? bio
-                                : 'hospitals.detail.no_description'.tr(),
-                          ),
+                  SliverToBoxAdapter(
+                    child: Column(
+                      children: [
+                        _HeroImage(imageUrl: cover),
+                        _SummaryCard(
+                          doctor: doctor,
+                          avatarUrl: avatar,
                         ),
-                        const SizedBox(height: 12),
-                        _Section(
-                          icon: Icons.contact_mail_rounded,
-                          title: 'contact.title'.tr(),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _InfoRow(
-                                icon: Icons.email_rounded,
-                                label: doctor.email ?? '--',
-                              ),
-                              const SizedBox(height: 8),
-                              _InfoRow(
-                                icon: Icons.phone_rounded,
-                                label: doctor.phone ?? '--',
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (doctor.affiliations.isNotEmpty) ...[
-                          const SizedBox(height: 12),
-                          _Section(
-                            icon: Icons.business_center_rounded,
-                            title: 'Affiliations',
-                            child: Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: doctor.affiliations
-                                  .map(
-                                    (aff) => Chip(
-                                      label: Text(aff),
-                                      materialTapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
-                          ),
-                        ],
-                        const SizedBox(height: 16),
-                        DoctorServiceOfferingsSection(providerId: doctor.id),
                       ],
                     ),
                   ),
-                ),
-              ],
-            );
-          },
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
+                          _Section(
+                            icon: Icons.info_rounded,
+                            title: 'hospitals.detail.about'.tr(),
+                            child: Text(
+                              bio.isNotEmpty
+                                  ? bio
+                                  : 'hospitals.detail.no_description'.tr(),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          _Section(
+                            icon: Icons.contact_mail_rounded,
+                            title: 'contact.title'.tr(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _InfoRow(
+                                  icon: Icons.email_rounded,
+                                  label: doctor.email ?? '--',
+                                ),
+                                const SizedBox(height: 8),
+                                _InfoRow(
+                                  icon: Icons.phone_rounded,
+                                  label: doctor.phone ?? '--',
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          _Section(
+                              icon: Icons.rate_review_rounded,
+                              title: 'doctors.reviews.title'.tr(),
+                              child: DoctorReviewsSection(
+                                reviews: reviewsState.reviews,
+                                status: reviewsState.status,
+                                message: reviewsState.message,
+                                hasMore: reviewsState.hasMore,
+                                isLoadingMore: reviewsState.isLoadingMore,
+                                baseUrl: baseUrl,
+                              onTap: (review) {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => DoctorReviewDetailPage(
+                                      review: review,
+                                    ),
+                                  ),
+                                );
+                              },
+                              onRetry: () => context
+                                  .read<DoctorReviewsCubit>()
+                                  .loadReviews(doctorId: widget.doctorId),
+                              onLoadMore: () =>
+                                  context.read<DoctorReviewsCubit>().loadMore(),
+                              onAddReview: () async {
+                                final result =
+                                    await Navigator.of(context).push<bool>(
+                                  MaterialPageRoute(
+                                    builder: (_) => BlocProvider.value(
+                                      value: context.read<DoctorReviewsCubit>(),
+                                      child: const DoctorAddReviewPage(),
+                                    ),
+                                  ),
+                                );
+                                if (result == true) {
+                                  setState(() {
+                                    _future = _load();
+                                  });
+                                  context.read<DoctorReviewsCubit>().refresh();
+                                }
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          DoctorServiceOfferingsSection(providerId: doctor.id),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

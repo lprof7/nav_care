@@ -44,7 +44,8 @@ class _RecentServiceOfferingsBody extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    state.message ?? 'common.error_occurred'.tr(), // رسالة خطأ عامة
+                    state.message ??
+                        'common.error_occurred'.tr(), // رسالة خطأ عامة
                     style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
@@ -86,7 +87,7 @@ class _RecentServiceOfferingsContent extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           SizedBox(
-            height: 260,
+            height: 280,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: offerings.length,
@@ -121,18 +122,20 @@ class _RecentServiceOfferingCard extends StatelessWidget {
     final baseUrl = sl<AppConfig>().api.baseUrl;
     final locale = context.locale.languageCode;
     final serviceName = offering.service.nameForLocale(locale);
-    final providerName = offering.provider.user.name.isNotEmpty
-        ? offering.provider.user.name
+    final providerName = offering.provider.name.isNotEmpty
+        ? offering.provider.name
         : 'home.recent_service_offerings.unknown_provider'.tr();
     final specialty = offering.provider.specialty;
-    final cover = _resolveImage(offering.service.image, baseUrl);
+    final cover = offering.images.isNotEmpty
+        ? _resolveImage(offering.images.first, baseUrl)
+        : _resolveImage(offering.service.image, baseUrl);
     final priceLabel = offering.price != null
         ? 'services.offerings.price'
             .tr(namedArgs: {'price': offering.price!.toStringAsFixed(2)})
         : null;
 
     return SizedBox(
-      width: 230,
+      width: 200,
       child: ServiceOfferingCard(
         title: serviceName,
         subtitle: providerName,
@@ -286,17 +289,15 @@ SearchResultItem _toSearchResult(
 }) {
   final service = offering.service;
   final provider = offering.provider;
-  final providerUser = provider.user;
-
   final serviceName = service.nameForLocale(locale);
   final image = _resolveImage(service.image, baseUrl);
-  final avatar = _resolveImage(providerUser.profilePicture, baseUrl);
+  final avatar = _resolveImage(provider.profilePicture, baseUrl);
 
   return SearchResultItem(
     id: offering.id,
     type: SearchResultType.serviceOffering,
     title: serviceName,
-    subtitle: providerUser.name,
+    subtitle: provider.name,
     description: provider.specialty,
     rating: provider.rating,
     price: offering.price,
@@ -315,10 +316,9 @@ SearchResultItem _toSearchResult(
       'provider': {
         '_id': provider.id,
         'user': {
-          '_id': providerUser.id,
-          'name': providerUser.name,
-          'email': providerUser.email,
-          'profilePicture': providerUser.profilePicture,
+          '_id': provider.id,
+          'name': provider.name,
+          'profilePicture': provider.profilePicture,
         },
         'specialty': provider.specialty,
         'rating': provider.rating,

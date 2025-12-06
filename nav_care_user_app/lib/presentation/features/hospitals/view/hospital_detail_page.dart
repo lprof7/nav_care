@@ -8,16 +8,23 @@ import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/clinics/models/clinic_model.dart';
 import 'package:nav_care_user_app/data/doctors/models/doctor_model.dart';
 import 'package:nav_care_user_app/data/hospitals/models/hospital_model.dart';
+import 'package:nav_care_user_app/data/reviews/hospital_reviews/models/hospital_review_model.dart';
 import 'package:nav_care_user_app/data/service_offerings/models/service_offering_model.dart';
 import 'package:nav_care_user_app/data/search/models/search_models.dart';
 import 'package:nav_care_user_app/presentation/features/hospitals/viewmodel/hospital_detail_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/hospitals/viewmodel/hospital_detail_state.dart';
+import 'package:nav_care_user_app/presentation/features/hospitals/viewmodel/hospital_reviews_cubit.dart';
+import 'package:nav_care_user_app/presentation/features/hospitals/viewmodel/hospital_reviews_state.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/cards/doctor_grid_card.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/cards/hospital_detail_cards.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/cards/hospital_review_card.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/cards/service_offering_card.dart';
+import 'package:nav_care_user_app/presentation/features/hospitals/view/hospital_add_review_page.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/molecules/hospital_detail_components.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/view/service_offering_detail_page.dart';
 import 'package:nav_care_user_app/presentation/features/doctors/view/doctor_detail_page.dart';
+import 'package:nav_care_user_app/presentation/features/hospitals/view/widgets/hospital_detail_shimmer.dart';
+import 'package:nav_care_user_app/presentation/features/hospitals/view/hospital_review_detail_page.dart';
 
 class HospitalDetailPage extends StatelessWidget {
   final String hospitalId;
@@ -31,15 +38,23 @@ class HospitalDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) {
-        final cubit = sl<HospitalDetailCubit>();
-        if (initial != null) {
-          cubit.emit(cubit.state.copyWith(hospital: initial));
-        }
-        cubit.load(hospitalId);
-        return cubit;
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) {
+            final cubit = sl<HospitalDetailCubit>();
+            if (initial != null) {
+              cubit.emit(cubit.state.copyWith(hospital: initial));
+            }
+            cubit.load(hospitalId);
+            return cubit;
+          },
+        ),
+        BlocProvider(
+          create: (_) =>
+              sl<HospitalReviewsCubit>()..loadReviews(hospitalId: hospitalId),
+        ),
+      ],
       child: _HospitalDetailView(hospitalId: hospitalId),
     );
   }
@@ -98,10 +113,11 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
         final hospital = state.hospital;
         final theme = Theme.of(context);
         final baseUrl = sl<AppConfig>().api.baseUrl;
+        final reviewsState = context.watch<HospitalReviewsCubit>().state;
 
-        if (state.status == HospitalDetailStatus.loading && hospital == null) {
+        if (state.status == HospitalDetailStatus.loading) {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+            body: HospitalDetailShimmer(),
           );
         }
 
@@ -135,11 +151,11 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
           indicatorPadding: EdgeInsets.zero,
           labelPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
           indicator: BoxDecoration(
-            color: const Color(0xFF2E7CF6),
+            color: theme.colorScheme.primary,
             borderRadius: BorderRadius.circular(12),
           ),
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.grey.shade600,
+          labelColor: theme.colorScheme.onPrimary,
+          unselectedLabelColor: theme.colorScheme.onSurface.withOpacity(0.6),
           labelStyle: theme.textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w700,
           ),
@@ -160,12 +176,6 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
                   icon: const Icon(Icons.arrow_back_ios_new_rounded),
                   onPressed: () => Navigator.of(context).maybePop(),
                 ),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.more_horiz_rounded),
-                    onPressed: () {},
-                  ),
-                ],
                 titleSpacing: 0,
                 title: Text(
                   innerBoxIsScrolled
@@ -235,6 +245,42 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
                   doctorsCount: doctorsCount,
                   offeringsCount: offeringsCount,
                   onLaunchUrl: _launchUrl,
+                  reviews: reviewsState.reviews,
+                  reviewsStatus: reviewsState.status,
+                  reviewsMessage: reviewsState.message,
+                  hasMoreReviews: reviewsState.hasMore,
+                  isLoadingMoreReviews: reviewsState.isLoadingMore,
+                  baseUrl: baseUrl,
+                  onReviewTap: (review) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            HospitalReviewDetailPage(review: review),
+                      ),
+                    );
+                  },
+                  onReviewsRetry: () => context
+                      .read<HospitalReviewsCubit>()
+                      .loadReviews(hospitalId: widget.hospitalId),
+                  onReviewsLoadMore: () =>
+                      context.read<HospitalReviewsCubit>().loadMore(),
+                  onAddReview: () async {
+                    final result = await Navigator.of(context).push<bool>(
+                      MaterialPageRoute(
+                        builder: (_) => BlocProvider.value(
+                          value: context.read<HospitalReviewsCubit>(),
+                          child: const HospitalAddReviewPage(),
+                        ),
+                      ),
+                    );
+                    if (result == true) {
+                      // Refresh details and reviews to reflect new rating/count.
+                      context
+                          .read<HospitalDetailCubit>()
+                          .load(widget.hospitalId);
+                      context.read<HospitalReviewsCubit>().refresh();
+                    }
+                  },
                 ),
                 _ClinicsTab(
                   clinics: state.clinics,
@@ -490,8 +536,8 @@ class _DecoratedTabBar extends StatelessWidget implements PreferredSizeWidget {
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
             colors: [
-              Colors.grey.shade100,
-              Colors.white,
+              theme.colorScheme.surfaceVariant,
+              theme.colorScheme.surface,
             ],
           ),
           borderRadius: BorderRadius.circular(16),
@@ -510,6 +556,16 @@ class _DetailsTab extends StatelessWidget {
   final int clinicsCount;
   final int doctorsCount;
   final int offeringsCount;
+  final List<HospitalReviewModel> reviews;
+  final HospitalReviewsStatus reviewsStatus;
+  final String? reviewsMessage;
+  final bool hasMoreReviews;
+  final bool isLoadingMoreReviews;
+  final String baseUrl;
+  final void Function(HospitalReviewModel) onReviewTap;
+  final VoidCallback onReviewsRetry;
+  final VoidCallback onReviewsLoadMore;
+  final VoidCallback onAddReview;
 
   const _DetailsTab({
     required this.hospital,
@@ -517,6 +573,16 @@ class _DetailsTab extends StatelessWidget {
     required this.doctorsCount,
     required this.offeringsCount,
     required this.onLaunchUrl,
+    required this.reviews,
+    required this.reviewsStatus,
+    required this.reviewsMessage,
+    required this.hasMoreReviews,
+    required this.isLoadingMoreReviews,
+    required this.baseUrl,
+    required this.onReviewTap,
+    required this.onReviewsRetry,
+    required this.onReviewsLoadMore,
+    required this.onAddReview,
   });
 
   final void Function(String) onLaunchUrl;
@@ -579,6 +645,23 @@ class _DetailsTab extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               HospitalDetailSectionCard(
+                icon: Icons.rate_review_rounded,
+                title: 'hospitals.detail.reviews.title'.tr(),
+                child: _HospitalReviewsSection(
+                  reviews: reviews,
+                  status: reviewsStatus,
+                  message: reviewsMessage,
+                  hasMore: hasMoreReviews,
+                  isLoadingMore: isLoadingMoreReviews,
+                  baseUrl: baseUrl,
+                  onTap: onReviewTap,
+                  onRetry: onReviewsRetry,
+                  onLoadMore: onReviewsLoadMore,
+                  onAddReview: onAddReview,
+                ),
+              ),
+              const SizedBox(height: 12),
+              HospitalDetailSectionCard(
                 icon: Icons.contact_phone_rounded,
                 title: 'hospitals.detail.contact'.tr(),
                 spacing: 10,
@@ -618,6 +701,179 @@ class _DetailsTab extends StatelessWidget {
             ]),
           ),
         ),
+      ],
+    );
+  }
+}
+
+class _HospitalReviewsSection extends StatefulWidget {
+  final List<HospitalReviewModel> reviews;
+  final HospitalReviewsStatus status;
+  final String? message;
+  final bool hasMore;
+  final bool isLoadingMore;
+  final String baseUrl;
+  final void Function(HospitalReviewModel) onTap;
+  final VoidCallback onRetry;
+  final VoidCallback onLoadMore;
+  final VoidCallback onAddReview;
+
+  const _HospitalReviewsSection({
+    required this.reviews,
+    required this.status,
+    required this.message,
+    required this.hasMore,
+    required this.isLoadingMore,
+    required this.baseUrl,
+    required this.onTap,
+    required this.onRetry,
+    required this.onLoadMore,
+    required this.onAddReview,
+  });
+
+  @override
+  State<_HospitalReviewsSection> createState() =>
+      _HospitalReviewsSectionState();
+}
+
+class _HospitalReviewsSectionState extends State<_HospitalReviewsSection> {
+  static const int _initialVisible = 3;
+  bool _showAll = false;
+
+  @override
+  void didUpdateWidget(covariant _HospitalReviewsSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Reset to collapsed if total reviews are at or below the initial threshold.
+    if (widget.reviews.length <= _initialVisible && _showAll) {
+      _showAll = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.status == HospitalReviewsStatus.loading &&
+        widget.reviews.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (widget.status == HospitalReviewsStatus.failure &&
+        widget.reviews.isEmpty) {
+      final errorText = (widget.message ?? 'hospitals.detail.reviews_error')
+          .replaceFirst('Exception: ', '')
+          .tr();
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              onPressed: widget.onAddReview,
+              icon: const Icon(Icons.rate_review_rounded),
+              label: Text('hospitals.reviews.add_button'.tr()),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            errorText,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 8),
+          TextButton(
+            onPressed: widget.onRetry,
+            child: Text('hospitals.detail.reviews_retry'.tr()),
+          ),
+        ],
+      );
+    }
+
+    if (widget.reviews.isEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              onPressed: widget.onAddReview,
+              icon: const Icon(Icons.rate_review_rounded),
+              label: Text('hospitals.reviews.add_button'.tr()),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'hospitals.detail.reviews_empty'.tr(),
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 8),
+          TextButton(
+            onPressed: widget.onRetry,
+            child: Text('hospitals.detail.reviews_retry'.tr()),
+          ),
+        ],
+      );
+    }
+
+    final visibleReviews = _showAll
+        ? widget.reviews
+        : widget.reviews.take(_initialVisible).toList();
+    final canShowLess = _showAll && widget.reviews.length > _initialVisible;
+    final canShowMore =
+        !_showAll && widget.reviews.length > _initialVisible || widget.hasMore;
+
+    return Column(
+      children: [
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton.icon(
+            onPressed: widget.onAddReview,
+            icon: const Icon(Icons.rate_review_rounded),
+            label: Text('hospitals.reviews.add_button'.tr()),
+          ),
+        ),
+        const SizedBox(height: 4),
+        ...visibleReviews
+            .map(
+              (review) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: HospitalReviewCard(
+                  review: review,
+                  baseUrl: widget.baseUrl,
+                  onTap: () => widget.onTap(review),
+                ),
+              ),
+            )
+            .toList(),
+        if (canShowMore || widget.isLoadingMore) ...[
+          const SizedBox(height: 4),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              onPressed: widget.isLoadingMore
+                  ? null
+                  : () {
+                      setState(() => _showAll = true);
+                      if (widget.hasMore) widget.onLoadMore();
+                    },
+              icon: widget.isLoadingMore
+                  ? const SizedBox(
+                      height: 16,
+                      width: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.expand_more_rounded),
+              label: Text('hospitals.detail.reviews_load_more'.tr()),
+            ),
+          ),
+        ],
+        if (canShowLess) ...[
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              onPressed: () => setState(() => _showAll = false),
+              icon: const Icon(Icons.expand_less_rounded),
+              label: Text('hospitals.detail.reviews_show_less'.tr()),
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -800,21 +1056,20 @@ class _DoctorsTabState extends State<_DoctorsTab> {
                 crossAxisCount: 2,
                 mainAxisSpacing: 14,
                 crossAxisSpacing: 14,
-                childAspectRatio: 0.55,
+                childAspectRatio: 0.65,
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
                   final doctor = filtered[index];
-                  final avatar = doctor.avatarImage(baseUrl: widget.baseUrl) ??
-                      doctor.coverImage(baseUrl: widget.baseUrl);
+                  final imageUrl =
+                      doctor.avatarImage(baseUrl: widget.baseUrl) ??
+                          doctor.coverImage(baseUrl: widget.baseUrl);
                   return DoctorGridCard(
                     title: doctor.displayName,
                     subtitle: doctor.specialty,
-                    imageUrl: avatar,
+                    imageUrl: imageUrl,
                     rating: doctor.rating > 0 ? doctor.rating : null,
                     buttonLabel: 'hospitals.detail.cta.view_profile'.tr(),
-                    isSaved: false,
-                    onToggleSave: () {},
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -883,7 +1138,7 @@ class _OfferingsTab extends StatelessWidget {
               crossAxisCount: 2,
               mainAxisSpacing: 14,
               crossAxisSpacing: 14,
-              childAspectRatio: 0.55,
+              childAspectRatio: 0.66,
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
@@ -995,12 +1250,12 @@ SearchResultItem _toSearchResult(
 }) {
   final serviceName = offering.service.nameForLocale(locale);
   final image = _resolveImage(offering.service.image, baseUrl);
-  final avatar = _resolveImage(offering.provider.user.profilePicture, baseUrl);
+  final avatar = _resolveImage(offering.provider.profilePicture, baseUrl);
   return SearchResultItem(
     id: offering.id,
     type: SearchResultType.serviceOffering,
     title: serviceName,
-    subtitle: offering.provider.user.name,
+    subtitle: offering.provider.name,
     description: offering.provider.specialty,
     rating: offering.provider.rating,
     price: offering.price,
@@ -1019,10 +1274,9 @@ SearchResultItem _toSearchResult(
       'provider': {
         '_id': offering.provider.id,
         'user': {
-          '_id': offering.provider.user.id,
-          'name': offering.provider.user.name,
-          'email': offering.provider.user.email,
-          'profilePicture': offering.provider.user.profilePicture,
+          '_id': offering.provider.id,
+          'name': offering.provider.name,
+          'profilePicture': offering.provider.profilePicture,
         },
         'specialty': offering.provider.specialty,
         'rating': offering.provider.rating,

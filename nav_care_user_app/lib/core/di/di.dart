@@ -27,6 +27,8 @@ import '../../data/authentication/signup/services/remote_signup_service.dart';
 import '../../data/authentication/signup/signup_repository.dart';
 import '../../presentation/features/authentication/signup/viewmodel/signup_cubit.dart';
 import '../../presentation/features/authentication/session/auth_session_cubit.dart';
+import '../../data/authentication/google/google_auth_service.dart';
+import '../../presentation/features/authentication/social/viewmodel/social_auth_cubit.dart';
 
 import '../../presentation/features/service_offerings/service_creation/viewmodel/service_creation_cubit.dart';
 import '../../data/appointments/remote_appointment_service.dart';
@@ -59,6 +61,12 @@ import '../../presentation/features/service_offerings/viewmodel/service_offering
 import '../../data/clinics/clinics_remote_service.dart';
 import '../../data/clinics/clinics_repository.dart';
 import '../../presentation/features/hospitals/viewmodel/hospital_detail_cubit.dart';
+import '../../data/reviews/hospital_reviews/hospital_reviews_remote_service.dart';
+import '../../data/reviews/hospital_reviews/hospital_reviews_repository.dart';
+import '../../presentation/features/hospitals/viewmodel/hospital_reviews_cubit.dart';
+import '../../data/reviews/doctor_reviews/doctor_reviews_remote_service.dart';
+import '../../data/reviews/doctor_reviews/doctor_reviews_repository.dart';
+import '../../presentation/features/doctors/viewmodel/doctor_reviews_cubit.dart';
 
 import '../../presentation/features/home/sections/ads/viewmodel/ads_section_cubit.dart';
 import '../../data/users/user_remote_service.dart';
@@ -72,10 +80,6 @@ Future<void> configureDependencies(AppConfig config) async {
   // Storage
   sl.registerLazySingleton<TokenStore>(() => SecureTokenStore());
   sl.registerLazySingleton<UserStore>(() => SharedPrefsUserStore());
-  sl.registerLazySingleton<AuthSessionCubit>(() => AuthSessionCubit(
-        tokenStore: sl<TokenStore>(),
-        userStore: sl<UserStore>(),
-      ));
 
   // Local service (token/cache)
   // sl.registerSingleton<LocalExampleService>(LocalExampleService());
@@ -86,6 +90,11 @@ Future<void> configureDependencies(AppConfig config) async {
     tokenStore: sl<TokenStore>(),
   ).build();
   sl.registerSingleton<ApiClient>(ApiClient(dio, sl<AppConfig>().api));
+  sl.registerLazySingleton<AuthSessionCubit>(() => AuthSessionCubit(
+        tokenStore: sl<TokenStore>(),
+        userStore: sl<UserStore>(),
+        apiClient: sl<ApiClient>(),
+      ));
   // No need for apiClientInstance anymore as NetworkCubit now takes AppConfig directly
 
   // Connectivity
@@ -106,6 +115,16 @@ Future<void> configureDependencies(AppConfig config) async {
       () => HospitalsRemoteService(apiClient: sl<ApiClient>()));
   sl.registerLazySingleton<HospitalsRepository>(
       () => HospitalsRepository(remoteService: sl<HospitalsRemoteService>()));
+  sl.registerLazySingleton<HospitalReviewsRemoteService>(() =>
+      HospitalReviewsRemoteService(
+          apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
+  sl.registerLazySingleton<HospitalReviewsRepository>(() =>
+      HospitalReviewsRepository(remote: sl<HospitalReviewsRemoteService>()));
+  sl.registerLazySingleton<DoctorReviewsRemoteService>(() =>
+      DoctorReviewsRemoteService(
+          apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
+  sl.registerLazySingleton<DoctorReviewsRepository>(() =>
+      DoctorReviewsRepository(remote: sl<DoctorReviewsRemoteService>()));
   sl.registerFactory<HospitalsChoiceCubit>(
       () => HospitalsChoiceCubit(repository: sl<HospitalsRepository>()));
   sl.registerFactory<FeaturedHospitalsCubit>(
@@ -152,6 +171,10 @@ Future<void> configureDependencies(AppConfig config) async {
         doctorsRepository: sl<DoctorsRepository>(),
         offeringsRepository: sl<ServiceOfferingsRepository>(),
       ));
+  sl.registerFactory<HospitalReviewsCubit>(
+      () => HospitalReviewsCubit(repository: sl<HospitalReviewsRepository>()));
+  sl.registerFactory<DoctorReviewsCubit>(
+      () => DoctorReviewsCubit(repository: sl<DoctorReviewsRepository>()));
   sl.registerLazySingleton<UserRemoteService>(() => UserRemoteService(
       apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
   sl.registerLazySingleton<UserRepository>(
@@ -177,6 +200,9 @@ Future<void> configureDependencies(AppConfig config) async {
   sl.registerLazySingleton<SignupRepository>(
       () => SignupRepository(sl<SignupService>(), sl<TokenStore>()));
   sl.registerFactory<SignupCubit>(() => SignupCubit(sl<SignupRepository>()));
+  sl.registerLazySingleton<GoogleAuthService>(() => GoogleAuthService());
+  sl.registerFactory<SocialAuthCubit>(
+      () => SocialAuthCubit(sl<GoogleAuthService>(), sl<SigninRepository>()));
 
   // Service creation
   sl.registerLazySingleton<ServiceCreationService>(

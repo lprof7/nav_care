@@ -8,6 +8,7 @@ class ServiceOfferingModel {
   final String descriptionFr;
   final String descriptionAr;
   final String descriptionSp;
+  final List<String> images;
 
   const ServiceOfferingModel({
     required this.id,
@@ -19,6 +20,7 @@ class ServiceOfferingModel {
     required this.descriptionFr,
     required this.descriptionAr,
     required this.descriptionSp,
+    required this.images,
   });
 
   factory ServiceOfferingModel.fromJson(Map<String, dynamic> json) {
@@ -36,6 +38,10 @@ class ServiceOfferingModel {
       descriptionFr: json['description_fr']?.toString() ?? '',
       descriptionAr: json['description_ar']?.toString() ?? '',
       descriptionSp: json['description_sp']?.toString() ?? '',
+      images: (json['images'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
     );
   }
 
@@ -100,7 +106,8 @@ class ServiceSummary {
 
 class ProviderSummary {
   final String id;
-  final ProviderUser user;
+  final String name;
+  final String? profilePicture;
   final String specialty;
   final double? rating;
   final int reviewsCount;
@@ -115,7 +122,8 @@ class ProviderSummary {
 
   const ProviderSummary({
     required this.id,
-    required this.user,
+    required this.name,
+    this.profilePicture,
     required this.specialty,
     required this.rating,
     required this.reviewsCount,
@@ -131,11 +139,13 @@ class ProviderSummary {
 
   factory ProviderSummary.fromJson(Map<String, dynamic>? json) {
     final map = json ?? const <String, dynamic>{};
+    final user = (map['user'] as Map?)?.cast<String, dynamic>() ?? {};
+
     return ProviderSummary(
       id: map['_id']?.toString() ?? '',
-      user: ProviderUser.fromJson(
-        (map['user'] as Map?)?.cast<String, dynamic>(),
-      ),
+      name: map['name']?.toString() ?? user['name']?.toString() ?? '',
+      profilePicture: map['profilePicture']?.toString() ??
+          user['profilePicture']?.toString(),
       specialty: map['specialty']?.toString() ?? '',
       rating: ServiceOfferingModel._parseDouble(map['rating']),
       reviewsCount: map['reviewsCount'] is int ? map['reviewsCount'] : 0,

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/signin/viewmodel/signin_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/social/viewmodel/social_auth_cubit.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/atoms/app_text_field.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/atoms/social_button.dart';
@@ -25,8 +26,11 @@ class SigninPage extends StatelessWidget {
     final boxShadowColor =
         AppColors.shadow.withOpacity(isDarkMode ? 0.35 : 0.08);
 
-    return BlocProvider(
-      create: (context) => sl<SigninCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => sl<SigninCubit>()),
+        BlocProvider(create: (context) => sl<SocialAuthCubit>()),
+      ],
       child: Scaffold(
         backgroundColor: gradientColors.first,
         body: SafeArea(
@@ -58,26 +62,52 @@ class SigninPage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: BlocListener<SigninCubit, SigninState>(
-                      listener: (context, state) {
-                        if (state is SigninSuccess) {
-                          context
-                              .read<AuthSessionCubit>()
-                              .setAuthenticatedUser(state.user);
-                          context.go('/home');
-                        } else if (state is SigninFailure) {
-                          debugPrint(state.message);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'signin_error_message'.tr(
-                                  namedArgs: {'message': state.message},
+                    child: MultiBlocListener(
+                      listeners: [
+                        BlocListener<SigninCubit, SigninState>(
+                          listener: (context, state) {
+                            if (state is SigninSuccess) {
+                              context
+                                  .read<AuthSessionCubit>()
+                                  .setAuthenticatedUser(state.user);
+                              context.go('/home');
+                            } else if (state is SigninFailure) {
+                              debugPrint(state.message);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'signin_error_message'.tr(
+                                      namedArgs: {'message': state.message},
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          );
-                        }
-                      },
+                              );
+                            }
+                          },
+                        ),
+                        BlocListener<SocialAuthCubit, SocialAuthState>(
+                          listener: (context, state) {
+                            if (state is SocialAuthSuccess) {
+                              context
+                                  .read<AuthSessionCubit>()
+                                  .setAuthenticatedUser(state.user);
+                              context.go('/home');
+                            } else if (state is SocialAuthNeedsProfile) {
+                              context.go('/signup/social', extra: state.account);
+                            } else if (state is SocialAuthFailure) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'signin_error_message'.tr(
+                                      namedArgs: {'message': state.message},
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ],
                       child: const SigninForm(),
                     ),
                   ),
@@ -260,27 +290,45 @@ class _SigninFormState extends State<SigninForm> {
             ],
           ),
           const SizedBox(height: 24),
-          SocialButton(
-            text: 'sign_in_with_google'.tr(),
-            color: AppColors.brandGoogle,
-            textColor: AppColors.textOnPrimary,
-            onPressed: () {},
-            icon: Container(
-              width: 26,
-              height: 26,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.card,
-              ),
-              alignment: Alignment.center,
-              child: const Text(
-                'G',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.brandGoogleAccent,
-                ),
-              ),
-            ),
+          BlocBuilder<SocialAuthCubit, SocialAuthState>(
+            builder: (context, state) {
+              final isLoading = state is SocialAuthLoading;
+              return SocialButton(
+                text: 'sign_in_with_google'.tr(),
+                color: AppColors.brandGoogle,
+                textColor: AppColors.textOnPrimary,
+                onPressed: isLoading
+                    ? null
+                    : () => context.read<SocialAuthCubit>().signInWithGoogle(),
+                icon: isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppColors.textOnPrimary,
+                          ),
+                        ),
+                      )
+                    : Container(
+                        width: 26,
+                        height: 26,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.card,
+                        ),
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'G',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.brandGoogleAccent,
+                          ),
+                        ),
+                      ),
+              );
+            },
           ),
           const SizedBox(height: 16),
           SocialButton(

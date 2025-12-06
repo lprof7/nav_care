@@ -145,12 +145,15 @@ class ServiceOfferingCard extends StatelessWidget {
                             ?.copyWith(fontWeight: FontWeight.w800),
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        subtitle,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.blueGrey.shade700,
+                      SizedBox(
+                        height: 36, // تحديد ارتفاع ثابت للوصف
+                        child: Text(
+                          subtitle,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: Colors.blueGrey.shade700,
+                          ),
                         ),
                       ),
                       if (priceLabel != null && priceLabel!.isNotEmpty) ...[
@@ -182,7 +185,10 @@ class ServiceOfferingCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: Text(buttonLabel?.tr() ?? 'home.search.view_details'.tr(), textAlign:TextAlign.center,),
+                      child: Text(
+                        buttonLabel?.tr() ?? 'home.search.view_details'.tr(),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 ),

@@ -166,9 +166,11 @@ class _OfferingsList extends StatelessWidget {
           itemBuilder: (context, index) {
             final offering = offerings[index];
             final serviceName = offering.service.nameForLocale(locale);
-            final providerName = offering.provider.user.name;
+            final providerName = offering.provider.name;
             final specialty = offering.provider.specialty;
-            final cover = _resolveImage(offering.service.image, baseUrl);
+            final cover = offering.images.isNotEmpty
+                ? _resolveImage(offering.images.first, baseUrl)
+                : _resolveImage(offering.service.image, baseUrl);
             final priceLabel = offering.price != null
                 ? 'services.offerings.price'.tr(
                     namedArgs: {'price': offering.price!.toStringAsFixed(2)})
@@ -282,17 +284,15 @@ SearchResultItem _toSearchResult(
 }) {
   final service = offering.service;
   final provider = offering.provider;
-  final providerUser = provider.user;
-
   final serviceName = service.nameForLocale(locale);
   final image = _resolveImage(service.image, baseUrl);
-  final avatar = _resolveImage(providerUser.profilePicture, baseUrl);
+  final avatar = _resolveImage(provider.profilePicture, baseUrl);
 
   return SearchResultItem(
     id: offering.id,
     type: SearchResultType.serviceOffering,
     title: serviceName,
-    subtitle: providerUser.name,
+    subtitle: provider.name,
     description: provider.specialty,
     rating: provider.rating,
     price: offering.price,
@@ -311,9 +311,8 @@ SearchResultItem _toSearchResult(
       'provider': {
         '_id': provider.id,
         'user': {
-          '_id': providerUser.id,
-          'name': providerUser.name,
-          'email': providerUser.email,
+          '_id': provider.id,
+          'name': provider.name,
           'profilePicture': avatar,
         },
         'specialty': provider.specialty,

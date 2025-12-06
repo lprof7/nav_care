@@ -55,44 +55,6 @@ class _DetailViewState extends State<_DetailView> {
   bool _isDescriptionExpanded = false;
   bool _isFavorite = false;
 
-  Map<String, dynamic> get _service =>
-      (widget.item.extra['service'] as Map?)?.cast<String, dynamic>() ?? {};
-
-  Map<String, dynamic> get _provider =>
-      (widget.item.extra['provider'] as Map?)?.cast<String, dynamic>() ?? {};
-
-  Map<String, dynamic> get _providerUser =>
-      (_provider['user'] as Map?)?.cast<String, dynamic>() ?? {};
-
-  String? _asString(dynamic value) {
-    if (value == null) return null;
-    if (value is String) return value;
-    return value.toString();
-  }
-
-  String _fallbackText(List<String?> candidates, String fallback) {
-    for (final value in candidates) {
-      if (value != null && value.trim().isNotEmpty) {
-        return value.trim();
-      }
-    }
-    return fallback;
-  }
-
-  String _serviceTitle(BuildContext context) {
-    final locale = context.locale.languageCode;
-    final localizedName = _asString(_service['name_$locale']);
-    if (localizedName != null && localizedName.isNotEmpty) return localizedName;
-    return _fallbackText(
-      [
-        _asString(_service['name_en']),
-        _asString(_service['name']),
-        widget.item.title,
-      ],
-      widget.item.title,
-    );
-  }
-
   String? _resolvePath(String? path) {
     if (path == null || path.isEmpty) return null;
     if (path.startsWith('http')) return path;
@@ -120,7 +82,11 @@ class _DetailViewState extends State<_DetailView> {
         description = offering?.descriptionEn;
         break;
     }
-    return description?.isNotEmpty == true ? description! : widget.item.description.isNotEmpty ? widget.item.description : '';
+    return description?.isNotEmpty == true
+        ? description!
+        : widget.item.description.isNotEmpty
+            ? widget.item.description
+            : '';
   }
 
   @override
@@ -128,7 +94,15 @@ class _DetailViewState extends State<_DetailView> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F7FB),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.pop(),
+        ),
+      ),
       body: BlocBuilder<ServiceOfferingDetailCubit, ServiceOfferingDetailState>(
         builder: (context, state) {
           final isLoading =
@@ -136,7 +110,6 @@ class _DetailViewState extends State<_DetailView> {
                   state.offering == null;
           final isFailure = state.status == ServiceOfferingDetailStatus.failure;
           final offering = state.offering;
-
           if (isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -151,141 +124,127 @@ class _DetailViewState extends State<_DetailView> {
             );
           }
 
-          final coverImage = _resolvePath(offering?.service.image ??
-              widget.item.imagePath ??
-              _asString(_service['image']));
-          final providerAvatar = _resolvePath(
-              offering?.provider.user.profilePicture ??
-                  _asString(_providerUser['profilePicture']));
-          final providerName = _fallbackText(
-            [
-              offering?.provider.user.name,
-              _asString(_providerUser['name']),
-              widget.item.subtitle
-            ],
-            widget.item.subtitle,
-          );
-          final providerSpecialty = _fallbackText(
-            [
-              offering?.provider.specialty,
-              _asString(_provider['specialty']),
-              widget.item.description
-            ],
-            '',
-          );
-          final price = offering?.price ?? widget.item.price;
-          final rating = offering?.provider.rating ?? widget.item.rating ?? 0;
-          final reviewsCount = offering?.provider.reviewsCount ?? 0;
-          final description = _fallbackDescription(context.locale.languageCode, offering);
+          if (offering == null) {
+            // This case should ideally not be reached if loading and failure are handled.
+            return const Center(child: Text("Service offering not available."));
+          }
+          final locale = context.locale.languageCode;
+          final coverImage = offering.images.isNotEmpty
+              ? _resolvePath(offering.images.first)
+              : _resolvePath(offering.service.image);
+          final providerAvatar = _resolvePath(offering.provider.profilePicture);
+          final providerName = offering.provider.name;
+          final providerSpecialty = offering.provider.specialty;
+          final serviceTitle = offering.service.nameForLocale(locale);
+
+          final price = offering.price;
+          final rating = offering.provider.rating ?? 0;
+          final reviewsCount = offering.provider.reviewsCount;
+          final description =
+              _fallbackDescription(context.locale.languageCode, offering);
 
           final hasDescription = description.trim().isNotEmpty;
 
-          return SafeArea(
-            child: Column(
-              children: [
-                _TopPreview(
-                  imageUrl: coverImage,
-                  onBack: () => Navigator.of(context).maybePop(),
-                  isFavorite: _isFavorite,
-                  onToggleFavorite: () =>
-                      setState(() => _isFavorite = !_isFavorite),
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+          return Column(
+            children: [
+              _TopPreview(
+                imageUrl: coverImage,
+                onBack: () => Navigator.of(context).maybePop(),
+                isFavorite: _isFavorite,
+                onToggleFavorite: () =>
+                    setState(() => _isFavorite = !_isFavorite),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        serviceTitle,
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          ...List.generate(
+                            5,
+                            (_) => const Padding(
+                              padding: EdgeInsets.only(right: 4),
+                              child: Icon(
+                                Icons.star_rounded,
+                                size: 18,
+                                color: Color(0xFFFFC107),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            rating.toStringAsFixed(1),
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            '(${reviewsCount} ${'reviews'.tr()})',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.textTheme.bodySmall?.color
+                                  ?.withOpacity(0.6),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 22),
+                      _ProviderHighlight(
+                        avatar: providerAvatar,
+                        name: providerName,
+                        specialty: providerSpecialty,
+                      ),
+                      const SizedBox(height: 26),
+                      if (hasDescription) ...[
                         Text(
-                          _serviceTitle(context),
-                          style: theme.textTheme.headlineSmall?.copyWith(
-                            color: const Color(0xFF1F3958),
+                          'services.detail.description'.tr(),
+                          style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w800,
                           ),
                         ),
                         const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            ...List.generate(
-                              5,
-                              (_) => const Padding(
-                                padding: EdgeInsets.only(right: 4),
-                                child: Icon(
-                                  Icons.star_rounded,
-                                  size: 18,
-                                  color: Color(0xFFFFC107),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              rating.toStringAsFixed(1),
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                color: const Color(0xFF1F3958),
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              '(${reviewsCount} ${'reviews'.tr()})',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: const Color(0xFF8BA0B7),
-                              ),
-                            ),
-                          ],
+                        Text(
+                          description,
+                          maxLines: _isDescriptionExpanded ? null : 5,
+                          overflow: _isDescriptionExpanded
+                              ? TextOverflow.visible
+                              : TextOverflow.fade,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            height: 1.35,
+                            color: theme.textTheme.bodyMedium?.color
+                                ?.withOpacity(0.8),
+                          ),
                         ),
-                        const SizedBox(height: 22),
-                        _ProviderHighlight(
-                          avatar: providerAvatar,
-                          name: providerName,
-                          specialty: providerSpecialty.isNotEmpty
-                              ? providerSpecialty
-                              : 'services.offerings.title'.tr(),
-                        ),
-                        const SizedBox(height: 26),
-                        if (hasDescription) ...[
-                          Text(
-                            'services.detail.description'.tr(),
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              color: const Color(0xFF1F3958),
-                              fontWeight: FontWeight.w800,
+                        if (!_isDescriptionExpanded && description.length > 160)
+                          TextButton.icon(
+                            onPressed: () =>
+                                setState(() => _isDescriptionExpanded = true),
+                            icon:
+                                const Icon(Icons.keyboard_arrow_right_rounded),
+                            label: Text('services.detail.read_more'.tr()),
+                            style: TextButton.styleFrom(
+                              foregroundColor: theme.colorScheme.primary,
                             ),
                           ),
-                          const SizedBox(height: 10),
-                          Text(
-                            description,
-                            maxLines: _isDescriptionExpanded ? null : 5,
-                            overflow: _isDescriptionExpanded
-                                ? TextOverflow.visible
-                                : TextOverflow.fade,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: const Color(0xFF4A6076),
-                              height: 1.35,
-                            ),
-                          ),
-                          if (!_isDescriptionExpanded &&
-                              description.length > 160)
-                            TextButton.icon(
-                              onPressed: () =>
-                                  setState(() => _isDescriptionExpanded = true),
-                              icon: const Icon(
-                                  Icons.keyboard_arrow_right_rounded),
-                              label: Text('services.detail.read_more'.tr()),
-                              style: TextButton.styleFrom(
-                                foregroundColor: theme.colorScheme.primary,
-                              ),
-                            ),
-                        ],
                       ],
-                    ),
+                    ],
                   ),
                 ),
-                _BottomBar(
-                  price: price,
-                  onBook: () => _handleAppointmentTap(context),
-                ),
-              ],
-            ),
+              ),
+              _BottomBar(
+                price: price,
+                onBook: () => _handleAppointmentTap(context),
+              ),
+            ],
           );
         },
       ),
@@ -363,7 +322,7 @@ class _TopPreview extends StatelessWidget {
       width: double.infinity,
       height: 260,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(28),
           bottomRight: Radius.circular(28),
@@ -376,68 +335,44 @@ class _TopPreview extends StatelessWidget {
           ),
         ],
       ),
-      child: Stack(
-        children: [
-          Center(
-            child: Container(
-              height: double.infinity,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF0F4F9),
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: const Color(0xFFE2E8F0)),
-              ),
-              alignment: Alignment.center,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: imageUrl != null && imageUrl!.isNotEmpty
-                    ? Image.network(
-                        imageUrl!,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                        errorBuilder: (_, __, ___) => Icon(
+      child: SafeArea(
+        bottom: false,
+        child: Stack(
+          children: [
+            Center(
+              child: Container(
+                height: double.infinity,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: theme.scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: theme.dividerColor),
+                ),
+                alignment: Alignment.center,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: imageUrl != null && imageUrl!.isNotEmpty
+                      ? Image.network(
+                          imageUrl!,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                          errorBuilder: (_, __, ___) => Icon(
+                            Icons.medical_services_rounded,
+                            size: 48,
+                            color: colorScheme.primary,
+                          ),
+                        )
+                      : Icon(
                           Icons.medical_services_rounded,
                           size: 48,
                           color: colorScheme.primary,
                         ),
-                      )
-                    : Icon(
-                        Icons.medical_services_rounded,
-                        size: 48,
-                        color: colorScheme.primary,
-                      ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 8,
-            left: 4,
-            child: IconButton(
-              onPressed: onBack,
-              icon: const Icon(
-                Icons.arrow_back_ios_new_rounded,
-                color: Color(0xFF1F3958),
-              ),
-            ),
-          ),
-          Positioned(
-            right: 20,
-            bottom: 12,
-            child: Material(
-              shape: const CircleBorder(),
-              elevation: 3,
-              color: Colors.white,
-              child: IconButton(
-                onPressed: onToggleFavorite,
-                icon: Icon(
-                  isFavorite ? Icons.star_rounded : Icons.star_border_rounded,
-                  color: const Color(0xFF00C26F),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -461,13 +396,13 @@ class _ProviderHighlight extends StatelessWidget {
       children: [
         CircleAvatar(
           radius: 32,
-          backgroundColor: const Color(0xFFE8EEF5),
+          backgroundColor: theme.colorScheme.surface,
           backgroundImage: (avatar != null && avatar!.isNotEmpty)
               ? NetworkImage(avatar!)
               : null,
           child: (avatar == null || avatar!.isEmpty)
-              ? const Icon(Icons.person_rounded,
-                  color: Color(0xFF1F3958), size: 32)
+              ? Icon(Icons.person_rounded,
+                  color: theme.colorScheme.onSurface, size: 32)
               : null,
         ),
         const SizedBox(width: 14),
@@ -477,7 +412,6 @@ class _ProviderHighlight extends StatelessWidget {
             Text(
               name,
               style: theme.textTheme.titleMedium?.copyWith(
-                color: const Color(0xFF1F3958),
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -485,7 +419,7 @@ class _ProviderHighlight extends StatelessWidget {
             Text(
               specialty,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: const Color(0xFF5E738E),
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -510,7 +444,7 @@ class _BottomBar extends StatelessWidget {
     final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.06),
@@ -525,9 +459,8 @@ class _BottomBar extends StatelessWidget {
         child: Row(
           children: [
             Text(
-              price != null ? '\$${price!.toStringAsFixed(0)}' : '—',
+              price != null ? '\$${price!}' : '—',
               style: theme.textTheme.headlineSmall?.copyWith(
-                color: const Color(0xFF1F3958),
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -540,7 +473,8 @@ class _BottomBar extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  backgroundColor: const Color(0xFF2878F0),
+                  backgroundColor: theme.colorScheme.primary,
+                  foregroundColor: theme.colorScheme.onPrimary,
                   textStyle: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),

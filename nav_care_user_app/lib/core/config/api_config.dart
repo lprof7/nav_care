@@ -19,6 +19,10 @@ class ApiConfig {
   String get createAppointment => '$baseUrl/api/appointments';
   String appointmentById(String id) => '$baseUrl/api/appointments/$id';
   String get userAppointments => '$baseUrl/api/appointments';
+  String hospitalReviews(String hospitalId) =>
+      '$baseUrl/api/reviews/hospitals/$hospitalId';
+  String doctorReviews(String doctorId) =>
+      '$baseUrl/api/reviews/doctors/$doctorId';
 
   // Hospitals
   String get createHospital => '$baseUrl/api/hospitals';

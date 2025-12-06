@@ -14,9 +14,6 @@ class SignupRepository {
 
   Future<Result<SignupResult>> signup(SignupRequest request) async {
     final result = await _signupService.signup(request);
-    print(result.data);
-    print(result.error?.message);
-    print(result.isSuccess);
 
     if (result.isSuccess && result.data != null) {
       final response = result.data!;

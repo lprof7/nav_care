@@ -101,15 +101,19 @@ class _DoctorServiceOfferingsSectionState
                 itemBuilder: (context, index) {
                   final offering = offerings[index];
                   final serviceName = offering.service.nameForLocale(locale);
-                  final providerName = offering.provider.user.name;
+                  final providerName = offering.provider.name;
                   final specialty = offering.provider.specialty;
-                  final cover = _resolveImage(offering.service.image, baseUrl);
+                  final cover = offering.images.isNotEmpty
+                      ? _resolveImage(offering.images.first, baseUrl)
+                      : _resolveImage(offering.service.image, baseUrl);
                   final priceLabel = offering.price != null
-                      ? 'services.offerings.price'
-                          .tr(namedArgs: {'price': offering.price!.toStringAsFixed(2)})
+                      ? 'services.offerings.price'.tr(namedArgs: {
+                          'price': offering.price!.toStringAsFixed(2)
+                        })
                       : null;
                   final badge = specialty.trim().isNotEmpty ? specialty : null;
-                  final item = _toSearchResult(offering, baseUrl, locale: locale);
+                  final item =
+                      _toSearchResult(offering, baseUrl, locale: locale);
 
                   return ServiceOfferingCard(
                     title: serviceName,
@@ -157,12 +161,12 @@ SearchResultItem _toSearchResult(
 }) {
   final serviceName = offering.service.nameForLocale(locale);
   final image = _resolveImage(offering.service.image, baseUrl);
-  final avatar = _resolveImage(offering.provider.user.profilePicture, baseUrl);
+  final avatar = _resolveImage(offering.provider.profilePicture, baseUrl);
   return SearchResultItem(
     id: offering.id,
     type: SearchResultType.serviceOffering,
     title: serviceName,
-    subtitle: offering.provider.user.name,
+    subtitle: offering.provider.name,
     description: offering.provider.specialty,
     rating: offering.provider.rating,
     price: offering.price,
@@ -181,10 +185,9 @@ SearchResultItem _toSearchResult(
       'provider': {
         '_id': offering.provider.id,
         'user': {
-          '_id': offering.provider.user.id,
-          'name': offering.provider.user.name,
-          'email': offering.provider.user.email,
-          'profilePicture': offering.provider.user.profilePicture,
+          '_id': offering.provider.id,
+          'name': offering.provider.name,
+          'profilePicture': offering.provider.profilePicture,
         },
         'specialty': offering.provider.specialty,
         'rating': offering.provider.rating,

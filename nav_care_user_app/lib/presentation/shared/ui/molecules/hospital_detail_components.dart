@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HospitalHeaderChip extends StatelessWidget {
   final String label;
@@ -332,16 +333,15 @@ class SocialMediaIcon extends StatelessWidget {
   IconData _iconForType(String type) {
     switch (type.toLowerCase()) {
       case 'facebook':
-        return Icons.facebook;
+        return FontAwesomeIcons.facebook;
       case 'twitter':
-        return Icons
-            .alternate_email; // Or a specific Twitter icon if you have one
+        return FontAwesomeIcons.twitter;
       case 'instagram':
-        return Icons.camera_alt;
+        return FontAwesomeIcons.instagram;
       case 'linkedin':
-        return Icons.work;
+        return FontAwesomeIcons.linkedin;
       case 'youtube':
-        return Icons.play_circle_fill;
+        return FontAwesomeIcons.youtube;
       default:
         return Icons.link;
     }
