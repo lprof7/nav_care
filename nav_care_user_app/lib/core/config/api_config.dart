@@ -5,6 +5,9 @@ class ApiConfig {
   // Auth
   String get login => '$baseUrl/api/users/auth/login';
   String get register => '$baseUrl/api/users/auth/register';
+  String get passwordResetCode => '$baseUrl/api/users/auth/password/reset-code';
+  String get passwordVerifyCode => '$baseUrl/api/users/auth/password/verify-code';
+  String get passwordReset => '$baseUrl/api/users/auth/password/reset';
 
   // Advertisings
   String get getAdvertisings => '$baseUrl/api/advertising';
@@ -14,6 +17,8 @@ class ApiConfig {
   String get listServices => '$baseUrl/api/services';
   String get listServiceOfferings => '$baseUrl/api/service-offerings';
   String serviceOfferingById(String id) => '$baseUrl/api/service-offerings/$id';
+  String relatedServiceOfferings(String id) =>
+      '$baseUrl/api/service-offerings/$id/related';
 
   // Appointments
   String get createAppointment => '$baseUrl/api/appointments';

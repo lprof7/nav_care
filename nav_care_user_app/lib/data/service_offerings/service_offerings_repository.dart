@@ -102,6 +102,30 @@ class ServiceOfferingsRepository {
     return items.map(ServiceOfferingModel.fromJson).toList(growable: false);
   }
 
+  Future<List<ServiceOfferingModel>> getRelatedServiceOfferings(
+      String offeringId, {int page = 1}) async {
+    final response =
+        await _remote.getRelatedServiceOfferings(id: offeringId, page: page);
+    if (!response.isSuccess || response.data == null) {
+      final message = _extractMessage(response.error?.message) ??
+          'Failed to load related service offerings.';
+      throw Exception(message);
+    }
+
+    final payload = response.data!;
+    final success = payload['success'];
+    if (success is bool && !success) {
+      throw Exception(
+        _extractMessage(payload['message']) ??
+            'Failed to load related service offerings.',
+      );
+    }
+
+    final data = _asMap(payload['data']);
+    final List<Map<String, dynamic>> rawOfferings = _extractOfferings(data);
+    return rawOfferings.map(ServiceOfferingModel.fromJson).toList(growable: false);
+  }
+
   Map<String, dynamic>? _asMap(dynamic source) {
     if (source is Map<String, dynamic>) {
       return source;

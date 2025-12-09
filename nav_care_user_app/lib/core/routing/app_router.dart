@@ -11,6 +11,10 @@ import 'package:nav_care_user_app/presentation/features/profile/view/update_pass
 import 'package:nav_care_user_app/presentation/features/profile/view/user_profile_page.dart';
 import 'package:nav_care_user_app/presentation/features/profile/viewmodel/user_profile_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/reset_password/view/reset_password_code_page.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/reset_password/view/reset_password_email_page.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/reset_password/view/reset_password_new_password_page.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/reset_password/viewmodel/reset_password_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/social/view/social_complete_profile_page.dart';
 import 'package:nav_care_user_app/data/authentication/google/google_user.dart';
 
@@ -26,6 +30,45 @@ final appRouter = GoRouter(
     GoRoute(path: '/', builder: (ctx, st) => const NavShellPage()),
     GoRoute(path: '/signin', builder: (ctx, st) => const SigninPage()),
     GoRoute(path: '/signup', builder: (ctx, st) => const SignupPage()),
+    GoRoute(
+      path: '/reset-password/email',
+      builder: (ctx, st) => BlocProvider(
+        create: (_) => sl<ResetPasswordCubit>(),
+        child: const ResetPasswordEmailPage(),
+      ),
+    ),
+    GoRoute(
+      path: '/reset-password/code',
+      builder: (ctx, st) {
+        final extra = st.extra;
+        if (extra is ResetPasswordCubit) {
+          return BlocProvider.value(
+            value: extra,
+            child: const ResetPasswordCodePage(),
+          );
+        }
+        return BlocProvider(
+          create: (_) => sl<ResetPasswordCubit>(),
+          child: const ResetPasswordEmailPage(),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/reset-password/new-password',
+      builder: (ctx, st) {
+        final extra = st.extra;
+        if (extra is ResetPasswordCubit) {
+          return BlocProvider.value(
+            value: extra,
+            child: const ResetPasswordNewPasswordPage(),
+          );
+        }
+        return BlocProvider(
+          create: (_) => sl<ResetPasswordCubit>(),
+          child: const ResetPasswordEmailPage(),
+        );
+      },
+    ),
     GoRoute(
       path: '/signup/social',
       builder: (ctx, st) {

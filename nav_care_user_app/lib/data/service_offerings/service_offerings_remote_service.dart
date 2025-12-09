@@ -77,4 +77,23 @@ class ServiceOfferingsRemoteService {
       },
     );
   }
+
+  Future<Result<Map<String, dynamic>>> getRelatedServiceOfferings({
+    required String id,
+    int page = 1,
+  }) {
+    return _apiClient.get<Map<String, dynamic>>(
+      _apiClient.apiConfig.relatedServiceOfferings(id),
+      query: {'page': page},
+      parser: (json) {
+        if (json is Map<String, dynamic>) return json;
+        if (json is Map) {
+          return json.map(
+            (key, value) => MapEntry(key.toString(), value),
+          );
+        }
+        return <String, dynamic>{};
+      },
+    );
+  }
 }

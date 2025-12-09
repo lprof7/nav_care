@@ -208,7 +208,7 @@ class _SigninFormState extends State<SigninForm> {
                 ),
               ),
               TextButton(
-                onPressed: () => context.go('/profile/forgot-password'),
+                onPressed: () => context.go('/reset-password/email'),
                 child: Text('forgot_password'.tr()),
               ),
             ],

@@ -8,6 +8,7 @@ class PageMeta {
       required this.pageSize,
       required this.total,
       required this.totalPages});
+  bool get hasNextPage => page < totalPages;
 }
 
 class Paged<T> {

@@ -26,11 +26,42 @@ class ServiceOfferingDetailCubit extends Cubit<ServiceOfferingDetailState> {
         status: ServiceOfferingDetailStatus.success,
         offering: offering,
       ));
+      _loadRelated(offeringId);
     } catch (e) {
       emit(state.copyWith(
         status: ServiceOfferingDetailStatus.failure,
         message: e.toString(),
       ));
     }
+  }
+
+  Future<void> _loadRelated(String offeringId, {bool loadMore = false}) async {
+    if (state.relatedStatus == RelatedOfferingsStatus.loading && !loadMore) return;
+    if (loadMore && !state.hasMoreRelated) return;
+
+    emit(state.copyWith(relatedStatus: RelatedOfferingsStatus.loading));
+
+    try {
+      final nextPage = loadMore ? state.relatedPage + 1 : 1;
+      final related = await _repository.getRelatedServiceOfferings(offeringId, page: nextPage);
+
+      emit(state.copyWith(
+        relatedStatus: RelatedOfferingsStatus.success,
+        relatedOfferings: loadMore
+            ? [...state.relatedOfferings, ...related]
+            : related,
+        relatedPage: nextPage,
+        hasMoreRelated: related.isNotEmpty,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        relatedStatus: RelatedOfferingsStatus.failure,
+        relatedMessage: e.toString(),
+      ));
+    }
+  }
+
+  void loadMoreRelated(String offeringId) {
+    _loadRelated(offeringId, loadMore: true);
   }
 }

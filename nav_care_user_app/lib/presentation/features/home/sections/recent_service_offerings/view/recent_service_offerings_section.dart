@@ -106,7 +106,10 @@ class _RecentServiceOfferingsContent extends StatelessWidget {
   void _openSeeMore(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => RecentServiceOfferingsPage(offerings: offerings),
+        builder: (_) => BlocProvider.value(
+          value: context.read<RecentServiceOfferingsCubit>(),
+          child: const RecentServiceOfferingsPage(),
+        ),
       ),
     );
   }

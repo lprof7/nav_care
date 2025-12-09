@@ -9,6 +9,7 @@ import 'package:nav_care_user_app/presentation/features/authentication/session/a
 import 'package:nav_care_user_app/presentation/features/service_offerings/viewmodel/service_offering_detail_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/viewmodel/service_offering_detail_state.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/molecules/sign_in_required_card.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/cards/service_offering_card.dart';
 
 class ServiceOfferingDetailPage extends StatelessWidget {
   const ServiceOfferingDetailPage({
@@ -236,6 +237,11 @@ class _DetailViewState extends State<_DetailView> {
                             ),
                           ),
                       ],
+                      const SizedBox(height: 24),
+                      _RelatedOfferings(
+                        baseUrl: widget.baseUrl,
+                        offeringId: widget.offeringId,
+                      ),
                     ],
                   ),
                 ),
@@ -485,6 +491,139 @@ class _BottomBar extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _RelatedOfferings extends StatelessWidget {
+  const _RelatedOfferings({
+    required this.baseUrl,
+    required this.offeringId,
+  });
+
+  final String baseUrl;
+  final String offeringId;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return BlocBuilder<ServiceOfferingDetailCubit, ServiceOfferingDetailState>(
+      builder: (context, state) {
+        final hasItems = state.relatedOfferings.isNotEmpty;
+        final isInitialLoading =
+            state.relatedStatus == RelatedOfferingsStatus.loading && !hasItems;
+        final isLoadingMore =
+            state.relatedStatus == RelatedOfferingsStatus.loading && hasItems;
+        if (isInitialLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if ((state.relatedStatus == RelatedOfferingsStatus.failure &&
+                !hasItems) ||
+            state.relatedOfferings.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'services.detail.related_items'.tr(),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 12),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 300,
+                childAspectRatio: 0.60,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+              ),
+              itemCount: state.relatedOfferings.length,
+              itemBuilder: (context, index) {
+                final offering = state.relatedOfferings[index];
+                return _RelatedOfferingCard(
+                  offering: offering,
+                  baseUrl: baseUrl,
+                );
+              },
+            ),
+            if (isLoadingMore)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else if (state.hasMoreRelated)
+              Center(
+                child: TextButton(
+                  onPressed: () => context
+                      .read<ServiceOfferingDetailCubit>()
+                      .loadMoreRelated(offeringId),
+                  child: Text('home.featured_services.see_more'.tr()),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _RelatedOfferingCard extends StatelessWidget {
+  const _RelatedOfferingCard({
+    required this.offering,
+    required this.baseUrl,
+  });
+
+  final ServiceOfferingModel offering;
+  final String baseUrl;
+
+  String? _resolvePath(String? path) {
+    if (path == null || path.isEmpty) return null;
+    if (path.startsWith('http')) return path;
+    try {
+      return Uri.parse(baseUrl).resolve(path).toString();
+    } catch (_) {
+      return path;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = context.locale.languageCode;
+    final coverImage = offering.images.isNotEmpty
+        ? _resolvePath(offering.images.first)
+        : _resolvePath(offering.service.image);
+    final serviceTitle = offering.service.nameForLocale(locale);
+    final providerName = offering.provider.name;
+    final price = offering.price;
+
+    return ServiceOfferingCard(
+      title: serviceTitle,
+      subtitle: providerName,
+      imageUrl: coverImage,
+      priceLabel: price != null ? '\$${price.toStringAsFixed(2)}' : null,
+      onTap: () {
+        // Navigate to the detail page of the related offering
+        context.push(
+          '/service-offering/${offering.id}',
+          extra: {
+            'item': SearchResultItem(
+              id: offering.id,
+              title: serviceTitle,
+              subtitle: providerName,
+              imagePath: coverImage ?? '',
+              rating: offering.provider.rating ?? 0,
+              description: '',
+              type: SearchResultType.serviceOffering,
+            ),
+            'baseUrl': baseUrl,
+          },
+        );
+      },
     );
   }
 }

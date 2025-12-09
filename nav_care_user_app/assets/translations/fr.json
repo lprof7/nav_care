@@ -470,6 +470,7 @@
     "notifications.refresh": "Actualiser",
     "services.detail.description": "Description",
     "services.detail.read_more": "Lire la suite",
+    "services.detail.related_items": "Articles similaires",
     "reviews": "avis",
     "network_error": {
         "message": "Pas de connexion Internet.\nVeuillez vÃ©rifier votre connexion et rÃ©essayer.",

@@ -1,39 +1,102 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nav_care_user_app/presentation/features/home/sections/recent_service_offerings/viewmodel/recent_service_offerings_cubit.dart';
+import 'package:nav_care_user_app/presentation/features/home/sections/recent_service_offerings/viewmodel/recent_service_offerings_state.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
+import 'package:nav_care_user_app/data/search/models/search_models.dart';
 import 'package:nav_care_user_app/data/service_offerings/models/service_offering_model.dart';
+import 'package:nav_care_user_app/presentation/features/service_offerings/view/service_offering_detail_page.dart';
 
-class RecentServiceOfferingsPage extends StatelessWidget {
-  final List<ServiceOfferingModel> offerings;
+class RecentServiceOfferingsPage extends StatefulWidget {
+  const RecentServiceOfferingsPage({super.key});
 
-  const RecentServiceOfferingsPage({super.key, required this.offerings});
+  @override
+  State<RecentServiceOfferingsPage> createState() =>
+      _RecentServiceOfferingsPageState();
+}
+
+class _RecentServiceOfferingsPageState extends State<RecentServiceOfferingsPage> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Text('home.recent_service_offerings.title'.tr()),
       ),
-      body: offerings.isEmpty
-          ? Center(
+      body:
+          BlocBuilder<RecentServiceOfferingsCubit, RecentServiceOfferingsState>(
+        builder: (context, state) {
+          switch (state.status) {
+            case RecentServiceOfferingsStatus.initial:
+            case RecentServiceOfferingsStatus.loading:
+              if (state.offerings.isEmpty) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              // Continue to show loaded data while loading more
+              break;
+            case RecentServiceOfferingsStatus.failure:
+              return Center(child: Text(state.message ?? 'An error occurred'));
+            case RecentServiceOfferingsStatus.loaded:
+              break;
+          }
+
+          if (state.offerings.isEmpty) {
+            return Center(
               child: Text(
                 'home.recent_service_offerings.empty'.tr(),
-                style: theme.textTheme.bodyLarge,
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
-            )
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: offerings.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 16),
-              itemBuilder: (_, index) {
-                final offering = offerings[index];
-                return _RecentServiceOfferingTile(offering: offering);
-              },
-            ),
+            );
+          }
+
+          return ListView.separated(
+            padding: const EdgeInsets.all(16),
+            controller: _scrollController,
+            itemCount: state.hasNextPage
+                ? state.offerings.length + 1
+                : state.offerings.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 16),
+            itemBuilder: (_, index) {
+              if (index >= state.offerings.length) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              final offering = state.offerings[index];
+              return _RecentServiceOfferingTile(offering: offering);
+            },
+          );
+        },
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_isBottom) {
+      context.read<RecentServiceOfferingsCubit>().loadMoreOfferings();
+    }
+  }
+
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
   }
 }
 
@@ -61,7 +124,18 @@ class _RecentServiceOfferingTile extends StatelessWidget {
       ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          final item = _toSearchResult(offering, baseUrl, locale: locale);
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => ServiceOfferingDetailPage(
+                item: item,
+                baseUrl: baseUrl,
+                offeringId: offering.id,
+              ),
+            ),
+          );
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -171,7 +245,50 @@ class _RecentServiceOfferingTile extends StatelessWidget {
     );
   }
 }
+SearchResultItem _toSearchResult(
+  ServiceOfferingModel offering,
+  String baseUrl, {
+  required String locale,
+}) {
+  final service = offering.service;
+  final provider = offering.provider;
+  final serviceName = service.nameForLocale(locale);
+  final image = _resolveImage(service.image, baseUrl);
+  final avatar = _resolveImage(provider.profilePicture, baseUrl);
 
+  return SearchResultItem(
+    id: offering.id,
+    type: SearchResultType.serviceOffering,
+    title: serviceName,
+    subtitle: provider.name,
+    description: provider.specialty,
+    rating: provider.rating,
+    price: offering.price,
+    imagePath: image,
+    secondaryImagePath: avatar,
+    location: const SearchLocation(),
+    extra: {
+      'service': {
+        '_id': service.id,
+        'name_en': service.nameEn,
+        'name_fr': service.nameFr,
+        'name_ar': service.nameAr,
+        'name_sp': service.nameSp,
+        'image': service.image,
+      },
+      'provider': {
+        '_id': provider.id,
+        'user': {
+          '_id': provider.id,
+          'name': provider.name,
+          'profilePicture': provider.profilePicture,
+        },
+        'specialty': provider.specialty,
+        'rating': provider.rating,
+      },
+    },
+  );
+}
 class _OfferingCoverImage extends StatelessWidget {
   final String? path;
 

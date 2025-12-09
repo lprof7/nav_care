@@ -174,7 +174,7 @@ class _ProfileHeader extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            height: 240,
+            height: 260,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
@@ -254,13 +254,7 @@ class _ProfileHeader extends StatelessWidget {
                   email,
                   style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white.withOpacity(0.9)),
                 ),
-                if (phone != null && phone!.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    phone!,
-                    style: theme.textTheme.bodySmall?.copyWith(color: Colors.white.withOpacity(0.9)),
-                  ),
-                ],
+
               ],
             ),
           ),

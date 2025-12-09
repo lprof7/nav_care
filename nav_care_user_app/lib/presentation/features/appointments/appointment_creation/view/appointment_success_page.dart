@@ -15,7 +15,7 @@ class AppointmentSuccessPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FB),
+      backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -33,7 +33,7 @@ class AppointmentSuccessPage extends StatelessWidget {
                 'appointments.success.title'.tr(),
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.w800,
-                  color: const Color(0xFF1F3958),
+                  color: theme.colorScheme.onSurface,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -41,7 +41,7 @@ class AppointmentSuccessPage extends StatelessWidget {
               Text(
                 'appointments.success.subtitle'.tr(),
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: const Color(0xFF5E738E),
+                  color: theme.colorScheme.onSurfaceVariant,
                   height: 1.4,
                 ),
                 textAlign: TextAlign.center,
@@ -54,7 +54,8 @@ class AppointmentSuccessPage extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  backgroundColor: const Color(0xFF2878F0),
+                  backgroundColor: theme.colorScheme.primary,
+                  foregroundColor: theme.colorScheme.onPrimary,
                 ),
                 child: Text('appointments.success.go_to'.tr()),
               ),

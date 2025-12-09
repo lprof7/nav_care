@@ -43,7 +43,7 @@ class ServiceOfferingCard extends StatelessWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(
             minWidth: 200,
-            maxWidth: 260,
+            maxWidth: 280,
             minHeight: 240,
           ),
           child: Container(

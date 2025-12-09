@@ -22,6 +22,10 @@ import '../../data/authentication/signin/signin_repository.dart';
 import '../../data/authentication/logout/logout_repository.dart';
 import '../../presentation/features/authentication/signin/viewmodel/signin_cubit.dart';
 import '../../presentation/features/authentication/logout/viewmodel/logout_cubit.dart';
+import '../../data/authentication/reset_password/services/reset_password_service.dart';
+import '../../data/authentication/reset_password/services/remote_reset_password_service.dart';
+import '../../data/authentication/reset_password/reset_password_repository.dart';
+import '../../presentation/features/authentication/reset_password/viewmodel/reset_password_cubit.dart';
 import '../../data/authentication/signup/services/signup_service.dart';
 import '../../data/authentication/signup/services/remote_signup_service.dart';
 import '../../data/authentication/signup/signup_repository.dart';
@@ -193,6 +197,12 @@ Future<void> configureDependencies(AppConfig config) async {
       tokenStore: sl<TokenStore>(), userStore: sl<UserStore>()));
   sl.registerFactory<SigninCubit>(() => SigninCubit(sl<SigninRepository>()));
   sl.registerFactory<LogoutCubit>(() => LogoutCubit(sl<LogoutRepository>()));
+  sl.registerLazySingleton<ResetPasswordService>(
+      () => RemoteResetPasswordService(sl<ApiClient>()));
+  sl.registerLazySingleton<ResetPasswordRepository>(() =>
+      ResetPasswordRepository(service: sl<ResetPasswordService>()));
+  sl.registerFactory<ResetPasswordCubit>(
+      () => ResetPasswordCubit(sl<ResetPasswordRepository>()));
 
   // Signup
   sl.registerLazySingleton<SignupService>(

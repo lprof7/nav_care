@@ -92,7 +92,7 @@ class NavcareDoctorsPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             AspectRatio(
-                              aspectRatio: 16 / 9,
+                              aspectRatio: 16 /7,
                               child: Stack(
                                 fit: StackFit.expand,
                                 children: [
