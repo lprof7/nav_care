@@ -3,6 +3,10 @@ class ServiceOfferingModel {
   final ServiceSummary service;
   final ProviderSummary provider;
   final String providerType;
+  final String nameEn;
+  final String nameFr;
+  final String nameAr;
+  final String nameSp;
   final double? price;
   final String descriptionEn;
   final String descriptionFr;
@@ -15,6 +19,10 @@ class ServiceOfferingModel {
     required this.service,
     required this.provider,
     required this.providerType,
+    required this.nameEn,
+    required this.nameFr,
+    required this.nameAr,
+    required this.nameSp,
     required this.price,
     required this.descriptionEn,
     required this.descriptionFr,
@@ -33,6 +41,10 @@ class ServiceOfferingModel {
         (json['provider'] as Map?)?.cast<String, dynamic>(),
       ),
       providerType: json['providerType']?.toString() ?? '',
+      nameEn: json['name_en']?.toString() ?? '',
+      nameFr: json['name_fr']?.toString() ?? '',
+      nameAr: json['name_ar']?.toString() ?? '',
+      nameSp: json['name_sp']?.toString() ?? '',
       price: _parseDouble(json['price']),
       descriptionEn: json['description_en']?.toString() ?? '',
       descriptionFr: json['description_fr']?.toString() ?? '',
@@ -45,10 +57,31 @@ class ServiceOfferingModel {
     );
   }
 
+  String nameForLocale(String locale) {
+    switch (locale) {
+      case 'ar':
+        return _firstNonEmpty([nameAr, nameEn, nameFr, nameSp, service.fallbackName]);
+      case 'fr':
+        return _firstNonEmpty([nameFr, nameEn, nameAr, nameSp, service.fallbackName]);
+      case 'sp':
+      case 'es':
+        return _firstNonEmpty([nameSp, nameEn, nameFr, nameAr, service.fallbackName]);
+      default:
+        return _firstNonEmpty([nameEn, nameFr, nameAr, nameSp, service.fallbackName]);
+    }
+  }
+
   static double? _parseDouble(dynamic value) {
     if (value is num) return value.toDouble();
     if (value is String) return double.tryParse(value);
     return null;
+  }
+
+  static String _firstNonEmpty(List<String> values) {
+    return values.firstWhere(
+      (value) => value.trim().isNotEmpty,
+      orElse: () => '',
+    );
   }
 }
 
@@ -112,6 +145,10 @@ class ProviderSummary {
   final double? rating;
   final int reviewsCount;
   final String? cover;
+  final String? descriptionEn;
+  final String? descriptionFr;
+  final String? descriptionAr;
+  final String? descriptionSp;
   final String? bioEn;
   final String? bioFr;
   final String? bioAr;
@@ -128,6 +165,10 @@ class ProviderSummary {
     required this.rating,
     required this.reviewsCount,
     required this.cover,
+    required this.descriptionEn,
+    required this.descriptionFr,
+    required this.descriptionAr,
+    required this.descriptionSp,
     required this.bioEn,
     required this.bioFr,
     required this.bioAr,
@@ -140,6 +181,7 @@ class ProviderSummary {
   factory ProviderSummary.fromJson(Map<String, dynamic>? json) {
     final map = json ?? const <String, dynamic>{};
     final user = (map['user'] as Map?)?.cast<String, dynamic>() ?? {};
+    final images = (map['images'] as List?)?.cast<dynamic>() ?? const [];
 
     return ProviderSummary(
       id: map['_id']?.toString() ?? '',
@@ -149,7 +191,12 @@ class ProviderSummary {
       specialty: map['specialty']?.toString() ?? '',
       rating: ServiceOfferingModel._parseDouble(map['rating']),
       reviewsCount: map['reviewsCount'] is int ? map['reviewsCount'] : 0,
-      cover: map['cover']?.toString(),
+      cover: map['cover']?.toString() ??
+          (images.isNotEmpty ? images.first.toString() : null),
+      descriptionEn: map['description_en']?.toString(),
+      descriptionFr: map['description_fr']?.toString(),
+      descriptionAr: map['description_ar']?.toString(),
+      descriptionSp: map['description_sp']?.toString(),
       bioEn: map['bio_en']?.toString(),
       bioFr: map['bio_fr']?.toString(),
       bioAr: map['bio_ar']?.toString(),
@@ -164,6 +211,53 @@ class ProviderSummary {
     if (value == null) return null;
     if (value is DateTime) return value;
     return DateTime.tryParse(value.toString());
+  }
+
+  String descriptionForLocale(String locale) {
+    String? candidate;
+    switch (locale) {
+      case 'ar':
+        candidate = descriptionAr ??
+            bioAr ??
+            descriptionEn ??
+            bioEn ??
+            descriptionFr ??
+            bioFr ??
+            descriptionSp ??
+            bioSp;
+        break;
+      case 'fr':
+        candidate = descriptionFr ??
+            bioFr ??
+            descriptionEn ??
+            bioEn ??
+            descriptionAr ??
+            bioAr ??
+            descriptionSp ??
+            bioSp;
+        break;
+      case 'sp':
+      case 'es':
+        candidate = descriptionSp ??
+            bioSp ??
+            descriptionEn ??
+            bioEn ??
+            descriptionFr ??
+            bioFr ??
+            descriptionAr ??
+            bioAr;
+        break;
+      default:
+        candidate = descriptionEn ??
+            bioEn ??
+            descriptionFr ??
+            bioFr ??
+            descriptionAr ??
+            bioAr ??
+            descriptionSp ??
+            bioSp;
+    }
+    return candidate?.trim() ?? '';
   }
 }
 

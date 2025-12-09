@@ -57,9 +57,8 @@ class _MyAppointmentsView extends StatelessWidget {
               'appointments.list.subtitle'.tr(),
               style: textTheme.titleMedium,
             ),
-            const SizedBox(height: 24),
-            Expanded(
-              child: BlocConsumer<MyAppointmentsCubit, MyAppointmentsState>(
+            const SizedBox(height: 16),
+            BlocConsumer<MyAppointmentsCubit, MyAppointmentsState>(
                 listenWhen: (previous, current) =>
                     previous.actionId != current.actionId,
                 listener: (context, state) {
@@ -86,41 +85,66 @@ class _MyAppointmentsView extends StatelessWidget {
                 },
                 builder: (context, state) {
                   final cubit = context.read<MyAppointmentsCubit>();
+                  Widget content;
                   switch (state.status) {
                     case MyAppointmentsStatus.loading:
-                      return const Center(
+                      content = const Center(
                         child: CircularProgressIndicator(),
                       );
+                      break;
                     case MyAppointmentsStatus.failure:
                       final message = state.error?.message ??
                           'appointments.list.error'.tr();
-                      return _AppointmentsError(
+                      content = _AppointmentsError(
                         message: message,
                         onRetry: cubit.fetchAppointments,
                       );
+                      break;
                     case MyAppointmentsStatus.success:
                       final list = state.appointments;
                       if (list == null) {
-                        return _AppointmentsEmpty(
+                        content = _AppointmentsEmpty(
                           onReload: cubit.fetchAppointments,
                         );
+                        break;
                       }
-                      return _UserAppointmentsList(
-                        appointments: list.appointments,
-                        isProcessing: state.isProcessing,
-                        onRefresh: cubit.refreshAppointments,
-                        onAppointmentTap: (appointment) =>
-                            _showUserAppointmentEditor(context, appointment),
+                      final filteredAppointments = _filterAppointments(
+                        list.appointments,
+                        state.filterStatus,
                       );
+                      content = Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _StatusFilterRow(
+                            selectedStatus: state.filterStatus,
+                            onSelected: cubit.setStatusFilter,
+                          ),
+                          const SizedBox(height: 12),
+                          Expanded(
+                            child: _UserAppointmentsList(
+                              appointments: filteredAppointments,
+                              isProcessing: state.isProcessing,
+                              onRefresh: cubit.refreshAppointments,
+                              onAppointmentTap: (appointment) =>
+                                  _showUserAppointmentEditor(
+                                      context, appointment),
+                              activeFilter: state.filterStatus,
+                              onClearFilter: () => cubit.setStatusFilter(null),
+                            ),
+                          ),
+                        ],
+                      );
+                      break;
                     case MyAppointmentsStatus.initial:
                     default:
-                      return const Center(
+                      content = const Center(
                         child: CircularProgressIndicator(),
                       );
                   }
+
+                  return Expanded(child: content);
                 },
               ),
-            ),
           ],
         ),
       ),
@@ -157,17 +181,27 @@ class _UserAppointmentsList extends StatelessWidget {
   final bool isProcessing;
   final Future<void> Function() onRefresh;
   final void Function(UserAppointmentModel) onAppointmentTap;
+  final String? activeFilter;
+  final VoidCallback? onClearFilter;
 
   const _UserAppointmentsList({
     required this.appointments,
     required this.isProcessing,
     required this.onRefresh,
     required this.onAppointmentTap,
+    this.activeFilter,
+    this.onClearFilter,
   });
 
   @override
   Widget build(BuildContext context) {
     if (appointments.isEmpty) {
+      if (activeFilter != null) {
+        return _AppointmentsEmptyFiltered(
+          onClearFilter: onClearFilter,
+          onReload: onRefresh,
+        );
+      }
       return _AppointmentsEmpty(onReload: onRefresh);
     }
 
@@ -390,6 +424,55 @@ class _AppointmentsError extends StatelessWidget {
   }
 }
 
+class _AppointmentsEmptyFiltered extends StatelessWidget {
+  final Future<void> Function()? onReload;
+  final VoidCallback? onClearFilter;
+
+  const _AppointmentsEmptyFiltered({this.onReload, this.onClearFilter});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.filter_alt_rounded,
+            size: 48,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Text(
+              'appointments.list.filter.empty'.tr(),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            children: [
+              if (onClearFilter != null)
+                TextButton.icon(
+                  onPressed: onClearFilter,
+                  icon: const Icon(Icons.clear_rounded),
+                  label: Text('appointments.list.filter.all'.tr()),
+                ),
+              if (onReload != null)
+                TextButton.icon(
+                  onPressed: () => onReload!(),
+                  icon: const Icon(Icons.refresh_rounded),
+                  label: Text('appointments.list.reload'.tr()),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _AppointmentDateField extends StatelessWidget {
   final String label;
   final String value;
@@ -428,6 +511,77 @@ String _localizedMessage(String? value, String fallbackKey) {
   }
   final localized = value.tr();
   return localized != value ? localized : value;
+}
+
+class _StatusFilterRow extends StatelessWidget {
+  const _StatusFilterRow({
+    required this.selectedStatus,
+    required this.onSelected,
+  });
+
+  final String? selectedStatus;
+  final ValueChanged<String?> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final borderColor = theme.colorScheme.outlineVariant.withOpacity(0.4);
+    final options = <String?>[null, ..._statusOptions];
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceVariant.withOpacity(
+          theme.brightness == Brightness.dark ? 0.35 : 0.7,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'appointments.list.filter.label'.tr(),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 10),
+          DropdownButtonFormField<String?>(
+            value: selectedStatus,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: theme.colorScheme.surface,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: borderColor),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: borderColor),
+              ),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            ),
+            dropdownColor: theme.colorScheme.surface,
+            items: options
+                .map(
+                  (status) => DropdownMenuItem<String?>(
+                    value: status,
+                    child: Text(
+                      status == null
+                          ? 'appointments.list.filter.all'.tr()
+                          : _statusLabel(context, status),
+                    ),
+                  ),
+                )
+                .toList(growable: false),
+            onChanged: onSelected,
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 Future<void> _showUserAppointmentEditor(
@@ -608,6 +762,7 @@ String _formatFieldDate(BuildContext context, DateTime dateTime) {
 }
 
 const _userStatusOptions = ['cancelled'];
+const _statusOptions = ['pending', 'confirmed', 'completed', 'cancelled'];
 
 class _StatusPill extends StatelessWidget {
   final String label;
@@ -661,4 +816,12 @@ String _statusLabel(BuildContext context, String status) {
     'cancelled': 'Cancelled',
   };
   return fallback[status] ?? status;
+}
+
+List<UserAppointmentModel> _filterAppointments(
+  List<UserAppointmentModel> appointments,
+  String? status,
+) {
+  if (status == null) return appointments;
+  return appointments.where((appointment) => appointment.status == status).toList();
 }

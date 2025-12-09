@@ -71,6 +71,9 @@ import '../../presentation/features/hospitals/viewmodel/hospital_reviews_cubit.d
 import '../../data/reviews/doctor_reviews/doctor_reviews_remote_service.dart';
 import '../../data/reviews/doctor_reviews/doctor_reviews_repository.dart';
 import '../../presentation/features/doctors/viewmodel/doctor_reviews_cubit.dart';
+import '../../data/reviews/service_offering_reviews/service_offering_reviews_remote_service.dart';
+import '../../data/reviews/service_offering_reviews/service_offering_reviews_repository.dart';
+import '../../presentation/features/service_offerings/viewmodel/service_offering_reviews_cubit.dart';
 
 import '../../presentation/features/home/sections/ads/viewmodel/ads_section_cubit.dart';
 import '../../data/users/user_remote_service.dart';
@@ -129,6 +132,12 @@ Future<void> configureDependencies(AppConfig config) async {
           apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
   sl.registerLazySingleton<DoctorReviewsRepository>(() =>
       DoctorReviewsRepository(remote: sl<DoctorReviewsRemoteService>()));
+  sl.registerLazySingleton<ServiceOfferingReviewsRemoteService>(() =>
+      ServiceOfferingReviewsRemoteService(
+          apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
+  sl.registerLazySingleton<ServiceOfferingReviewsRepository>(() =>
+      ServiceOfferingReviewsRepository(
+          remote: sl<ServiceOfferingReviewsRemoteService>()));
   sl.registerFactory<HospitalsChoiceCubit>(
       () => HospitalsChoiceCubit(repository: sl<HospitalsRepository>()));
   sl.registerFactory<FeaturedHospitalsCubit>(
@@ -165,6 +174,9 @@ Future<void> configureDependencies(AppConfig config) async {
       () => ServiceOfferingsByServiceCubit(sl<ServicesRepository>()));
   sl.registerFactory<ServiceOfferingDetailCubit>(() =>
       ServiceOfferingDetailCubit(repository: sl<ServiceOfferingsRepository>()));
+  sl.registerFactory<ServiceOfferingReviewsCubit>(() =>
+      ServiceOfferingReviewsCubit(
+          repository: sl<ServiceOfferingReviewsRepository>()));
   sl.registerLazySingleton<ClinicsRemoteService>(
       () => ClinicsRemoteService(apiClient: sl<ApiClient>()));
   sl.registerLazySingleton<ClinicsRepository>(

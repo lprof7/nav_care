@@ -35,6 +35,13 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final outline = theme.colorScheme.outlineVariant
+        .withOpacity(theme.brightness == Brightness.dark ? 0.6 : 0.4);
+    final fillColor = theme.colorScheme.surfaceVariant.withOpacity(
+      theme.brightness == Brightness.dark ? 0.35 : 0.9,
+    );
+
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
@@ -48,13 +55,31 @@ class AppTextField extends StatelessWidget {
       onChanged: onChanged,
       decoration: InputDecoration(
         hintText: hintText,
+        hintStyle: theme.textTheme.bodyMedium
+            ?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.65)),
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
+        filled: true,
+        fillColor: fillColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(
-            color: AppColors.border,
-            width: 0.5,
+          borderSide: BorderSide(
+            color: outline,
+            width: 0.7,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: outline,
+            width: 0.7,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: theme.colorScheme.primary,
+            width: 1.1,
           ),
         ),
       ),

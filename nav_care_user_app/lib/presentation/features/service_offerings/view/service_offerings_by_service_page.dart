@@ -165,7 +165,7 @@ class _OfferingsList extends StatelessWidget {
           itemCount: offerings.length,
           itemBuilder: (context, index) {
             final offering = offerings[index];
-            final serviceName = offering.service.nameForLocale(locale);
+            final serviceName = offering.nameForLocale(locale);
             final providerName = offering.provider.name;
             final specialty = offering.provider.specialty;
             final cover = offering.images.isNotEmpty
@@ -284,8 +284,10 @@ SearchResultItem _toSearchResult(
 }) {
   final service = offering.service;
   final provider = offering.provider;
-  final serviceName = service.nameForLocale(locale);
-  final image = _resolveImage(service.image, baseUrl);
+  final serviceName = offering.nameForLocale(locale);
+  final image = offering.images.isNotEmpty
+      ? _resolveImage(offering.images.first, baseUrl)
+      : _resolveImage(service.image, baseUrl);
   final avatar = _resolveImage(provider.profilePicture, baseUrl);
 
   return SearchResultItem(
@@ -307,6 +309,14 @@ SearchResultItem _toSearchResult(
         'name_ar': service.nameAr,
         'name_sp': service.nameSp,
         'image': image,
+      },
+      'offering': {
+        '_id': offering.id,
+        'name_en': offering.nameEn,
+        'name_fr': offering.nameFr,
+        'name_ar': offering.nameAr,
+        'name_sp': offering.nameSp,
+        'image': offering.images.isNotEmpty ? offering.images.first : null,
       },
       'provider': {
         '_id': provider.id,

@@ -1143,13 +1143,15 @@ class _OfferingsTab extends StatelessWidget {
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final offering = offerings[index];
-                final serviceName = offering.service.nameForLocale(locale);
+                final serviceName = offering.nameForLocale(locale);
                 final price = offering.price != null
                     ? 'services.offerings.price'.tr(namedArgs: {
                         'price': offering.price!.toStringAsFixed(2)
                       })
                     : '';
-                final image = _resolveImage(offering.service.image, baseUrl);
+                final image = offering.images.isNotEmpty
+                    ? _resolveImage(offering.images.first, baseUrl)
+                    : _resolveImage(offering.service.image, baseUrl);
                 return ServiceOfferingCard(
                   title: serviceName,
                   subtitle: 'hospitals.detail.offerings_subtitle'.tr(),
@@ -1248,8 +1250,10 @@ SearchResultItem _toSearchResult(
   String baseUrl, {
   required String locale,
 }) {
-  final serviceName = offering.service.nameForLocale(locale);
-  final image = _resolveImage(offering.service.image, baseUrl);
+  final serviceName = offering.nameForLocale(locale);
+  final image = offering.images.isNotEmpty
+      ? _resolveImage(offering.images.first, baseUrl)
+      : _resolveImage(offering.service.image, baseUrl);
   final avatar = _resolveImage(offering.provider.profilePicture, baseUrl);
   return SearchResultItem(
     id: offering.id,
@@ -1270,6 +1274,14 @@ SearchResultItem _toSearchResult(
         'name_ar': offering.service.nameAr,
         'name_sp': offering.service.nameSp,
         'image': offering.service.image,
+      },
+      'offering': {
+        '_id': offering.id,
+        'name_en': offering.nameEn,
+        'name_fr': offering.nameFr,
+        'name_ar': offering.nameAr,
+        'name_sp': offering.nameSp,
+        'image': offering.images.isNotEmpty ? offering.images.first : null,
       },
       'provider': {
         '_id': offering.provider.id,

@@ -15,6 +15,10 @@ class ServiceOffering {
   final ServiceCategory service;
   final ProviderSummary provider;
   final String providerType;
+  final String? nameEn;
+  final String? nameFr;
+  final String? nameAr;
+  final String? nameSp;
   final double price;
   final List<String> images;
   final List<String> offers;
@@ -30,6 +34,10 @@ class ServiceOffering {
     required this.service,
     required this.provider,
     required this.providerType,
+    this.nameEn,
+    this.nameFr,
+    this.nameAr,
+    this.nameSp,
     required this.price,
     this.images = const [],
     this.offers = const [],
@@ -49,6 +57,10 @@ class ServiceOffering {
       service: ServiceCategory.fromJson(serviceJson),
       provider: ProviderSummary.fromJson(providerJson),
       providerType: json['providerType']?.toString() ?? 'Hospital',
+      nameEn: json['name_en']?.toString(),
+      nameFr: json['name_fr']?.toString(),
+      nameAr: json['name_ar']?.toString(),
+      nameSp: json['name_sp']?.toString(),
       price: _parseDouble(json['price']) ?? 0,
       images: _mapStringList(json['images']),
       offers: _mapStringList(json['offers']),
@@ -59,6 +71,20 @@ class ServiceOffering {
       createdAt: _parseDate(json['createdAt'] ?? json['created_at']),
       updatedAt: _parseDate(json['updatedAt'] ?? json['updated_at']),
     );
+  }
+
+  String localizedName(String locale) {
+    switch (locale) {
+      case 'ar':
+        return _firstNonEmpty([nameAr, nameEn, nameFr, nameSp, service.localizedName(locale)]);
+      case 'fr':
+        return _firstNonEmpty([nameFr, nameEn, nameAr, nameSp, service.localizedName(locale)]);
+      case 'sp':
+      case 'es':
+        return _firstNonEmpty([nameSp, nameEn, nameFr, nameAr, service.localizedName(locale)]);
+      default:
+        return _firstNonEmpty([nameEn, nameFr, nameAr, nameSp, service.localizedName(locale)]);
+    }
   }
 }
 
@@ -208,4 +234,13 @@ List<String> _mapStringList(dynamic source) {
     return [source];
   }
   return const [];
+}
+
+String _firstNonEmpty(List<dynamic> values) {
+  for (final value in values) {
+    if (value == null) continue;
+    final text = value.toString();
+    if (text.trim().isNotEmpty) return text;
+  }
+  return '';
 }

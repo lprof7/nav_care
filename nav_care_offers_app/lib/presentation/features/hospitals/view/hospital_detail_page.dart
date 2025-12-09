@@ -920,12 +920,17 @@ class _OfferingsTab extends StatelessWidget {
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final offering = offerings[index];
-                final serviceName = offering.service.localizedName(locale);
+                final serviceName = offering.localizedName(locale);
                 final price = offering.price > 0
                     ? 'service_offerings.list.price'
                         .tr(args: [offering.price.toStringAsFixed(2)])
                     : '';
-                final image = _resolveImage(offering.service.image, baseUrl);
+                final image = _resolveImage(
+                  offering.images.isNotEmpty
+                      ? offering.images.first
+                      : offering.service.image,
+                  baseUrl,
+                );
                 return ServiceOfferingCard(
                   title: serviceName,
                   subtitle: 'hospitals.detail.offerings_subtitle'.tr(),

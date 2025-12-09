@@ -28,6 +28,8 @@ class ApiConfig {
       '$baseUrl/api/reviews/hospitals/$hospitalId';
   String doctorReviews(String doctorId) =>
       '$baseUrl/api/reviews/doctors/$doctorId';
+  String serviceOfferingReviews(String offeringId) =>
+      '$baseUrl/api/reviews/service-offerings/$offeringId';
 
   // Hospitals
   String get createHospital => '$baseUrl/api/hospitals';

@@ -8,8 +8,11 @@ import 'package:nav_care_user_app/data/service_offerings/models/service_offering
 import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/viewmodel/service_offering_detail_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/viewmodel/service_offering_detail_state.dart';
+import 'package:nav_care_user_app/presentation/features/service_offerings/viewmodel/service_offering_reviews_cubit.dart';
+import 'package:nav_care_user_app/presentation/features/service_offerings/viewmodel/service_offering_reviews_state.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/molecules/sign_in_required_card.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/cards/service_offering_card.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/cards/service_offering_review_card.dart';
 
 class ServiceOfferingDetailPage extends StatelessWidget {
   const ServiceOfferingDetailPage({
@@ -26,8 +29,16 @@ class ServiceOfferingDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final resolvedId = offeringId ?? item.id;
-    return BlocProvider(
-      create: (_) => sl<ServiceOfferingDetailCubit>()..load(resolvedId),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => sl<ServiceOfferingDetailCubit>()..load(resolvedId),
+        ),
+        BlocProvider(
+          create: (_) => sl<ServiceOfferingReviewsCubit>()
+            ..loadReviews(offeringId: resolvedId),
+        ),
+      ],
       child: _DetailView(
         item: item,
         baseUrl: baseUrl,
@@ -133,10 +144,18 @@ class _DetailViewState extends State<_DetailView> {
           final coverImage = offering.images.isNotEmpty
               ? _resolvePath(offering.images.first)
               : _resolvePath(offering.service.image);
-          final providerAvatar = _resolvePath(offering.provider.profilePicture);
+          final providerAvatar = _resolvePath(
+            offering.provider.profilePicture ?? offering.provider.cover,
+          );
           final providerName = offering.provider.name;
-          final providerSpecialty = offering.provider.specialty;
-          final serviceTitle = offering.service.nameForLocale(locale);
+          final providerSpecialty = offering.provider.specialty.isNotEmpty
+              ? offering.provider.specialty
+              : offering.providerType;
+          final providerDescription =
+              offering.provider.descriptionForLocale(locale);
+          final providerRating = offering.provider.rating;
+          final providerReviews = offering.provider.reviewsCount;
+          final serviceTitle = offering.nameForLocale(locale);
 
           final price = offering.price;
           final rating = offering.provider.rating ?? 0;
@@ -170,17 +189,7 @@ class _DetailViewState extends State<_DetailView> {
                       const SizedBox(height: 10),
                       Row(
                         children: [
-                          ...List.generate(
-                            5,
-                            (_) => const Padding(
-                              padding: EdgeInsets.only(right: 4),
-                              child: Icon(
-                                Icons.star_rounded,
-                                size: 18,
-                                color: Color(0xFFFFC107),
-                              ),
-                            ),
-                          ),
+                          _RatingStars(rating: rating),
                           const SizedBox(width: 4),
                           Text(
                             rating.toStringAsFixed(1),
@@ -203,6 +212,9 @@ class _DetailViewState extends State<_DetailView> {
                         avatar: providerAvatar,
                         name: providerName,
                         specialty: providerSpecialty,
+                        description: providerDescription,
+                        rating: providerRating,
+                        reviewsCount: providerReviews,
                       ),
                       const SizedBox(height: 26),
                       if (hasDescription) ...[
@@ -225,18 +237,23 @@ class _DetailViewState extends State<_DetailView> {
                                 ?.withOpacity(0.8),
                           ),
                         ),
-                        if (!_isDescriptionExpanded && description.length > 160)
-                          TextButton.icon(
-                            onPressed: () =>
-                                setState(() => _isDescriptionExpanded = true),
-                            icon:
-                                const Icon(Icons.keyboard_arrow_right_rounded),
-                            label: Text('services.detail.read_more'.tr()),
-                            style: TextButton.styleFrom(
-                              foregroundColor: theme.colorScheme.primary,
-                            ),
+                      if (!_isDescriptionExpanded && description.length > 160)
+                        TextButton.icon(
+                          onPressed: () =>
+                              setState(() => _isDescriptionExpanded = true),
+                          icon:
+                              const Icon(Icons.keyboard_arrow_right_rounded),
+                          label: Text('services.detail.read_more'.tr()),
+                          style: TextButton.styleFrom(
+                            foregroundColor: theme.colorScheme.primary,
                           ),
+                        ),
                       ],
+                      const SizedBox(height: 24),
+                      _ServiceOfferingReviewsSection(
+                        offeringId: widget.offeringId,
+                        baseUrl: widget.baseUrl,
+                      ),
                       const SizedBox(height: 24),
                       _RelatedOfferings(
                         baseUrl: widget.baseUrl,
@@ -389,11 +406,17 @@ class _ProviderHighlight extends StatelessWidget {
     required this.avatar,
     required this.name,
     required this.specialty,
+    required this.description,
+    required this.rating,
+    required this.reviewsCount,
   });
 
   final String? avatar;
   final String name;
   final String specialty;
+  final String description;
+  final double? rating;
+  final int reviewsCount;
 
   @override
   Widget build(BuildContext context) {
@@ -412,26 +435,102 @@ class _ProviderHighlight extends StatelessWidget {
               : null,
         ),
         const SizedBox(width: 14),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              name,
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w800,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              specialty,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
-                fontWeight: FontWeight.w500,
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  if (rating != null) ...[
+                    const Icon(Icons.star_rounded,
+                        size: 16, color: Color(0xFFFFC107)),
+                    const SizedBox(width: 4),
+                    Text(
+                      rating!.toStringAsFixed(1),
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    if (reviewsCount > 0) ...[
+                      const SizedBox(width: 6),
+                      Text(
+                        '(${reviewsCount})',
+                        style: theme.textTheme.bodySmall
+                            ?.copyWith(color: Colors.black54),
+                      ),
+                    ],
+                    const SizedBox(width: 8),
+                  ],
+                  Flexible(
+                    child: Text(
+                      specialty,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color:
+                            theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
+              if (description.trim().isNotEmpty) ...[
+                const SizedBox(height: 6),
+                Text(
+                  description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
       ],
+    );
+  }
+}
+
+class _RatingStars extends StatelessWidget {
+  const _RatingStars({required this.rating});
+
+  final double rating;
+
+  @override
+  Widget build(BuildContext context) {
+    const color = Color(0xFFFFC107);
+
+    Icon _iconForIndex(int index) {
+      final position = index + 1;
+      if (rating >= position - 0.25) {
+        return const Icon(Icons.star_rounded, size: 18, color: color);
+      }
+      if (rating >= position - 0.75) {
+        return const Icon(Icons.star_half_rounded, size: 18, color: color);
+      }
+      return const Icon(Icons.star_border_rounded, size: 18, color: color);
+    }
+
+    return Row(
+      children: List.generate(
+        5,
+        (index) => Padding(
+          padding: const EdgeInsets.only(right: 4),
+          child: _iconForIndex(index),
+        ),
+      ),
     );
   }
 }
@@ -572,6 +671,169 @@ class _RelatedOfferings extends StatelessWidget {
   }
 }
 
+class _ServiceOfferingReviewsSection extends StatefulWidget {
+  const _ServiceOfferingReviewsSection({
+    required this.offeringId,
+    required this.baseUrl,
+  });
+
+  final String offeringId;
+  final String baseUrl;
+
+  @override
+  State<_ServiceOfferingReviewsSection> createState() =>
+      _ServiceOfferingReviewsSectionState();
+}
+
+class _ServiceOfferingReviewsSectionState
+    extends State<_ServiceOfferingReviewsSection> {
+  static const int _initialVisible = 3;
+  bool _showAll = false;
+
+  @override
+  void didUpdateWidget(covariant _ServiceOfferingReviewsSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_showAll &&
+        context.read<ServiceOfferingReviewsCubit>().state.reviews.length <=
+            _initialVisible) {
+      _showAll = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'service_offerings.reviews.title'.tr(),
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 12),
+        BlocBuilder<ServiceOfferingReviewsCubit, ServiceOfferingReviewsState>(
+          builder: (context, state) {
+            if (state.status == ServiceOfferingReviewsStatus.loading &&
+                state.reviews.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state.status == ServiceOfferingReviewsStatus.failure &&
+                state.reviews.isEmpty) {
+              final errorText =
+                  (state.message ?? 'service_offerings.reviews.error')
+                      .replaceFirst('Exception: ', '')
+                      .tr();
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    errorText,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton.icon(
+                    onPressed: () => context
+                        .read<ServiceOfferingReviewsCubit>()
+                        .loadReviews(offeringId: widget.offeringId),
+                    icon: const Icon(Icons.refresh_rounded),
+                    label: Text('service_offerings.reviews.retry'.tr()),
+                  ),
+                ],
+              );
+            }
+
+            if (state.reviews.isEmpty) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'service_offerings.reviews.empty'.tr(),
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton.icon(
+                    onPressed: () => context
+                        .read<ServiceOfferingReviewsCubit>()
+                        .loadReviews(offeringId: widget.offeringId),
+                    icon: const Icon(Icons.refresh_rounded),
+                    label: Text('service_offerings.reviews.retry'.tr()),
+                  ),
+                ],
+              );
+            }
+
+            final visibleReviews = _showAll
+                ? state.reviews
+                : state.reviews.take(_initialVisible).toList();
+            final canShowLess =
+                _showAll && state.reviews.length > _initialVisible;
+            final canShowMore =
+                !_showAll && state.reviews.length > _initialVisible ||
+                    state.hasMore;
+
+            return Column(
+              children: [
+                ...visibleReviews
+                    .map(
+                      (review) => Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: ServiceOfferingReviewCard(
+                          review: review,
+                          baseUrl: widget.baseUrl,
+                          onTap: () {},
+                        ),
+                      ),
+                    )
+                    .toList(),
+                if (canShowMore || state.isLoadingMore) ...[
+                  const SizedBox(height: 4),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton.icon(
+                      onPressed: state.isLoadingMore
+                          ? null
+                          : () {
+                              setState(() => _showAll = true);
+                              if (state.hasMore) {
+                                context
+                                    .read<ServiceOfferingReviewsCubit>()
+                                    .loadMore();
+                              }
+                            },
+                      icon: state.isLoadingMore
+                          ? const SizedBox(
+                              height: 16,
+                              width: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.expand_more_rounded),
+                      label: Text('service_offerings.reviews.load_more'.tr()),
+                    ),
+                  ),
+                ],
+                if (canShowLess) ...[
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton.icon(
+                      onPressed: () => setState(() => _showAll = false),
+                      icon: const Icon(Icons.expand_less_rounded),
+                      label: Text('service_offerings.reviews.show_less'.tr()),
+                    ),
+                  ),
+                ],
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
 class _RelatedOfferingCard extends StatelessWidget {
   const _RelatedOfferingCard({
     required this.offering,
@@ -597,7 +859,7 @@ class _RelatedOfferingCard extends StatelessWidget {
     final coverImage = offering.images.isNotEmpty
         ? _resolvePath(offering.images.first)
         : _resolvePath(offering.service.image);
-    final serviceTitle = offering.service.nameForLocale(locale);
+    final serviceTitle = offering.nameForLocale(locale);
     final providerName = offering.provider.name;
     final price = offering.price;
 

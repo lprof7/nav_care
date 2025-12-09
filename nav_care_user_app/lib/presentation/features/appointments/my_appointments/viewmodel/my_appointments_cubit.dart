@@ -12,6 +12,7 @@ class MyAppointmentsCubit extends Cubit<MyAppointmentsState> {
     emit(state.copyWith(
       status: MyAppointmentsStatus.loading,
       resetError: true,
+      resetFilter: true,
     ));
 
     final result = await _repository.getMyAppointments();
@@ -88,5 +89,9 @@ class MyAppointmentsCubit extends Cubit<MyAppointmentsState> {
         actionId: state.actionId + 1,
       )),
     );
+  }
+
+  void setStatusFilter(String? status) {
+    emit(state.copyWith(filterStatus: status, resetError: false));
   }
 }

@@ -109,6 +109,15 @@ class SearchResultItem {
       return const [];
     }
 
+    String firstNonEmpty(List<dynamic> values) {
+      for (final value in values) {
+        if (value == null) continue;
+        final text = value.toString();
+        if (text.trim().isNotEmpty) return text;
+      }
+      return '';
+    }
+
     final type = resolveType();
 
     String title = json['name']?.toString() ?? '';
@@ -166,9 +175,20 @@ class SearchResultItem {
         final providerUser = provider?['user'] is Map
             ? Map<String, dynamic>.from(provider?['user'] as Map)
             : null;
-        title = service?['name_en']?.toString() ??
-            service?['name']?.toString() ??
-            title;
+        final offeringName = firstNonEmpty([
+          json['name_en'],
+          json['name_fr'],
+          json['name_ar'],
+          json['name_sp'],
+          json['name'],
+          extra['name_en'],
+          extra['name'],
+          service?['name_en'],
+          service?['name_fr'],
+          service?['name_ar'],
+          service?['name_sp'],
+        ]);
+        title = offeringName.isNotEmpty ? offeringName : title;
         subtitle = providerUser?['name']?.toString() ?? '';
         description = provider?['specialty']?.toString() ?? '';
         imagePath = service?['image']?.toString();

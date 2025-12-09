@@ -77,7 +77,8 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
         TextEditingController(text: initial?.descriptionAr ?? '');
     _descriptionSpController =
         TextEditingController(text: initial?.descriptionSp ?? '');
-    _nameEnController = TextEditingController(text: initial?.service.nameEn ?? '');
+    _nameEnController =
+        TextEditingController(text: initial?.nameEn ?? initial?.service.nameEn ?? '');
     _selectedServiceId = initial?.service.id;
   }
 

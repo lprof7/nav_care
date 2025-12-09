@@ -192,7 +192,7 @@ class _OfferingCard extends StatelessWidget {
     final locale = context.locale.languageCode;
     final subtitle =
         'service_offerings.list.price'.tr(args: [offering.price.toStringAsFixed(2)]);
-    final serviceName = offering.service.localizedName(locale);
+    final serviceName = offering.localizedName(locale);
 
     return InkWell(
       borderRadius: BorderRadius.circular(20),

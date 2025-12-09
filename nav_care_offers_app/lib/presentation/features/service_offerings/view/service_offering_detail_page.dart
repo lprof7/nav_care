@@ -85,13 +85,16 @@ class _ServiceOfferingDetailView extends StatelessWidget {
 
         final theme = Theme.of(context);
         final locale = context.locale.languageCode;
-        final serviceName = offering.service.localizedName(locale);
+        final serviceName = offering.localizedName(locale);
         final description = _localizedDescription(offering, locale);
         final rating = offering.provider.rating;
         final providerName = offering.provider.user.name;
         final providerSpecialty = offering.provider.specialty ?? '';
-        final image =
-            _resolvePath(offering.service.image ?? offering.provider.cover);
+        final image = _resolvePath(
+          offering.images.isNotEmpty
+              ? offering.images.first
+              : (offering.service.image ?? offering.provider.cover),
+        );
         final avatar = _resolvePath(offering.provider.user.profilePicture);
         final priceLabel =
             offering.price > 0 ? offering.price.toStringAsFixed(2) : '--';

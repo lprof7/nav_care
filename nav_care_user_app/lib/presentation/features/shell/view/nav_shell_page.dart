@@ -18,6 +18,7 @@ import 'package:nav_care_user_app/presentation/shared/ui/shell/nav_shell_app_bar
 import 'package:nav_care_user_app/presentation/shared/ui/shell/nav_shell_destination.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/shell/nav_shell_drawer.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/shell/nav_shell_nav_bar.dart';
+import 'package:nav_care_user_app/presentation/shared/theme/theme_mode_cubit.dart';
 
 import '../viewmodel/nav_shell_cubit.dart';
 
@@ -104,6 +105,7 @@ class NavShellPage extends StatelessWidget {
                 sessionUser?.profilePicture;
             final userName = profile?.name ?? sessionUser?.name;
             final userEmail = profile?.email ?? sessionUser?.email;
+            final themeMode = context.watch<ThemeModeCubit>().state;
 
             return Scaffold(
               appBar: NavShellAppBar(
@@ -156,6 +158,9 @@ class NavShellPage extends StatelessWidget {
                 onAboutTap: () => context.push('/about'),
                 onFeedbackTap: () {},
                 onSupportTap: () {},
+                themeMode: themeMode,
+                onThemeToggle: () =>
+                    context.read<ThemeModeCubit>().toggle(),
               ),
               body: IndexedStack(
                 index: state.currentIndex,
