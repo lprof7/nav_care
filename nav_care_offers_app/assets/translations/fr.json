@@ -21,6 +21,15 @@
     "become_doctor_default_name": "Docteur",
     "become_doctor_next_steps": "Nous vous guiderons très bientôt à travers les étapes restantes.",
     "become_doctor_back_to_signin": "Retour à la connexion",
+    "become_doctor_image_label": "Image de profil",
+    "become_doctor_image_hint": "Ajoutez une photo claire et professionnelle pour compléter votre profil.",
+    "become_doctor_image_cta": "Téléverser une image",
+    "become_doctor_image_required": "L'image de profil est obligatoire.",
+    "become_doctor_bio_label": "Courte bio (anglais)",
+    "become_doctor_bio_hint": "Décrivez votre expertise et ce que les patients peuvent attendre.",
+    "become_doctor_submit": "Envoyer la demande",
+    "become_doctor_submitting": "Envoi...",
+    "become_doctor_success": "Votre demande de profil médecin a été envoyée !",
     "home": {
         "welcome_message": "Voici ce qui se passe aujourd\u0027hui",
         "appointments": {

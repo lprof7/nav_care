@@ -21,6 +21,15 @@
     "become_doctor_default_name": "دكتور",
     "become_doctor_next_steps": "سنرشدك قريباً إلى الخطوات المتبقية.",
     "become_doctor_back_to_signin": "العودة إلى تسجيل الدخول",
+    "become_doctor_image_label": "صورة الملف",
+    "become_doctor_image_hint": "أضف صورة واضحة ومهنية لإكمال ملفك.",
+    "become_doctor_image_cta": "رفع صورة",
+    "become_doctor_image_required": "الصورة مطلوبة.",
+    "become_doctor_bio_label": "نبذة قصيرة (بالإنجليزية)",
+    "become_doctor_bio_hint": "عرّف بنفسك وخبرتك وما الذي سيجده المرضى.",
+    "become_doctor_submit": "إرسال الطلب",
+    "become_doctor_submitting": "جاري الإرسال...",
+    "become_doctor_success": "تم إرسال طلبك كطبيب بنجاح!",
     "home": {
         "welcome_message": "إليك ما يحدث اليوم",
         "appointments": {

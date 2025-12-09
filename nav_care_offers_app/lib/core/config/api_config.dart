@@ -6,6 +6,7 @@ class ApiConfig {
   String get login => '$baseUrl/api/doctors/login';
   String get userLogin => '$baseUrl/api/users/auth/login';
   String get register => '$baseUrl/api/users/auth/register';
+  String get becomeDoctor => '$baseUrl/api/doctors/become';
 
   // Doctor services
   String get doctors => '$baseUrl/api/doctors';

@@ -33,6 +33,10 @@ import '../../data/doctors/services/doctors_service.dart';
 import '../../data/doctors/services/remote_doctors_service.dart';
 import '../../data/doctors/doctors_repository.dart';
 import '../../presentation/features/authentication/auth_cubit.dart'; // Import AuthCubit
+import '../../data/doctors/become_doctor_repository.dart';
+import '../../data/doctors/services/become_doctor_service.dart';
+import '../../data/doctors/services/remote_become_doctor_service.dart';
+import '../../presentation/features/authentication/become_doctor/viewmodel/become_doctor_cubit.dart';
 import '../../presentation/features/authentication/logout/viewmodel/logout_cubit.dart';
 import '../../data/appointments/services/appointments_service.dart';
 import '../../data/appointments/services/remote_appointments_service.dart';
@@ -142,6 +146,15 @@ Future<void> configureDependencies(AppConfig config) async {
   sl.registerFactory<DoctorsCubit>(() => DoctorsCubit(sl<DoctorsRepository>()));
   sl.registerFactory<InviteDoctorCubit>(
       () => InviteDoctorCubit(sl<DoctorsRepository>()));
+  sl.registerLazySingleton<BecomeDoctorService>(
+      () => RemoteBecomeDoctorService(sl<ApiClient>()));
+  sl.registerLazySingleton<BecomeDoctorRepository>(() => BecomeDoctorRepository(
+        sl<BecomeDoctorService>(),
+        sl<TokenStore>(),
+        sl<DoctorStore>(),
+      ));
+  sl.registerFactory<BecomeDoctorCubit>(
+      () => BecomeDoctorCubit(sl<BecomeDoctorRepository>(), sl<AuthCubit>()));
   sl.registerFactoryParam<HospitalDetailCubit, Hospital, void>(
     (hospital, _) => HospitalDetailCubit(
       sl<HospitalsRepository>(),

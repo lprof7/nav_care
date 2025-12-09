@@ -111,9 +111,9 @@ class ApiClient {
         return const Failure.timeout();
       case DioExceptionType.badResponse:
         final sc = e.response?.statusCode;
-        final msg = (e.response?.data is Map)
-            ? (e.response?.data['message']?.toString() ?? '')
-            : '';
+        final rawMessage =
+            e.response?.data is Map ? (e.response?.data['message']) : null;
+        final msg = _pickLocalizedMessage(rawMessage);
         if (sc == 401) return const Failure.unauthorized();
         if (sc == 422) {
           return Failure.validation(
@@ -129,5 +129,26 @@ class ApiClient {
       default:
         return const Failure.unknown();
     }
+  }
+
+  String _pickLocalizedMessage(dynamic raw) {
+    if (raw is Map) {
+      final map = raw.map((key, value) => MapEntry(key.toString(), value));
+      final orderedKeys = ['ar', 'fr', 'en', 'sp', 'es'];
+      for (final key in orderedKeys) {
+        final val = map[key];
+        if (val is String && val.trim().isNotEmpty) {
+          return val.trim();
+        }
+      }
+      final firstString = map.values.firstWhere(
+        (v) => v is String && v.trim().isNotEmpty,
+        orElse: () => null,
+      );
+      if (firstString is String) return firstString.trim();
+      return map.toString();
+    }
+    if (raw is String) return raw;
+    return '';
   }
 }
