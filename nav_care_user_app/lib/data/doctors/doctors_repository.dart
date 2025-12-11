@@ -1,3 +1,5 @@
+import 'package:nav_care_user_app/core/responses/pagination.dart';
+
 import 'models/doctor_model.dart';
 import 'doctors_remote_service.dart';
 import 'responses/fake_doctors_choice_response.dart';
@@ -12,14 +14,17 @@ class DoctorsRepository {
     return Future.value(FakeDoctorsChoiceResponse.getFakeDoctorsChoice());
   }
 
-  Future<List<DoctorModel>> getNavcareDoctorsChoice({int limit = 6}) async {
+  Future<Paged<DoctorModel>> getNavcareDoctorsChoice({
+    int page = 1,
+    int limit = 6,
+  }) async {
     final requestLimit = limit < 1
         ? 1
         : limit > 20
             ? 20
             : limit;
     final result =
-        await remoteService.listDoctors(page: 1, limit: requestLimit);
+        await remoteService.listDoctors(page: page, limit: requestLimit);
 
     if (!result.isSuccess || result.data == null) {
       final message =
@@ -27,26 +32,41 @@ class DoctorsRepository {
       throw Exception(message);
     }
 
-    final doctorMaps = _extractDoctorMaps(result.data);
-    if (doctorMaps.isEmpty) {
-      return const [];
-    }
+    final payload = result.data!;
+    final data = _asMap(payload['data']) ?? _asMap(payload);
+    final doctorMaps = _extractDoctorMaps(data);
+    final pagination =
+        _parsePagination(_asMap(payload['pagination']) ?? _asMap(data?['pagination']));
 
-    return doctorMaps
-        .take(requestLimit)
-        .map(DoctorModel.fromJson)
-        .toList(growable: false);
+    final doctors =
+        doctorMaps.map(DoctorModel.fromJson).toList(growable: false);
+
+    return Paged<DoctorModel>(
+      items: doctors,
+      meta: pagination,
+    );
+  }
+
+  Future<Paged<DoctorModel>> getRecentDoctors({
+    int page = 1,
+    int limit = 6,
+  }) {
+    return getNavcareDoctorsChoice(page: page, limit: limit);
   }
 
   Future<List<DoctorModel>> getNavcareFeaturedDoctors({int limit = 3}) async {
     try {
-      return await getFeaturedDoctors(limit: limit);
+      final paged = await getFeaturedDoctors(limit: limit);
+      return paged.items;
     } on UnimplementedError {
       return getFakeFeaturedDoctors(limit: limit);
     }
   }
 
-  Future<List<DoctorModel>> getFeaturedDoctors({int limit = 6}) async {
+  Future<Paged<DoctorModel>> getFeaturedDoctors({
+    int page = 1,
+    int limit = 6,
+  }) async {
     final requestLimit = limit < 1
         ? 1
         : limit > 20
@@ -54,7 +74,7 @@ class DoctorsRepository {
             : limit;
     final result = await remoteService.listBoostedDoctors(
       type: 'featured',
-      page: 1,
+      page: page,
       limit: requestLimit,
     );
 
@@ -64,15 +84,19 @@ class DoctorsRepository {
       throw Exception(message);
     }
 
-    final doctorMaps = _extractDoctorMaps(result.data);
-    if (doctorMaps.isEmpty) {
-      return const [];
-    }
+    final payload = result.data!;
+    final data = _asMap(payload['data']) ?? _asMap(payload);
+    final doctorMaps = _extractDoctorMaps(data);
+    final pagination =
+        _parsePagination(_asMap(payload['pagination']) ?? _asMap(data?['pagination']));
 
-    return doctorMaps
-        .take(requestLimit)
-        .map(DoctorModel.fromJson)
-        .toList(growable: false);
+    final doctors =
+        doctorMaps.map(DoctorModel.fromJson).toList(growable: false);
+
+    return Paged<DoctorModel>(
+      items: doctors,
+      meta: pagination,
+    );
   }
 
   Future<List<DoctorModel>> getFakeFeaturedDoctors({int limit = 6}) async {
@@ -156,6 +180,24 @@ class DoctorsRepository {
       }
     }
     return null;
+  }
+
+  PageMeta? _parsePagination(Map<String, dynamic>? json) {
+    if (json == null || json.isEmpty) return null;
+
+    int? toInt(dynamic value) {
+      if (value is int) return value;
+      if (value is num) return value.toInt();
+      if (value is String) return int.tryParse(value);
+      return null;
+    }
+
+    return PageMeta(
+      page: toInt(json['page']) ?? 1,
+      pageSize: toInt(json['limit']) ?? toInt(json['pageSize']) ?? 10,
+      total: toInt(json['total']) ?? 0,
+      totalPages: toInt(json['pages']) ?? toInt(json['totalPages']) ?? 1,
+    );
   }
 
   Map<String, dynamic>? _asMap(dynamic value) {

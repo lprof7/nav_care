@@ -10,6 +10,9 @@ class ServiceOfferingReviewsState extends Equatable {
   final PageMeta? pagination;
   final bool isLoadingMore;
   final String? message;
+  final bool isSubmittingReview;
+  final String? submitMessage;
+  final bool submitSuccess;
 
   const ServiceOfferingReviewsState({
     this.status = ServiceOfferingReviewsStatus.initial,
@@ -17,6 +20,9 @@ class ServiceOfferingReviewsState extends Equatable {
     this.pagination,
     this.isLoadingMore = false,
     this.message,
+    this.isSubmittingReview = false,
+    this.submitMessage,
+    this.submitSuccess = false,
   });
 
   bool get hasMore {
@@ -31,6 +37,10 @@ class ServiceOfferingReviewsState extends Equatable {
     bool? isLoadingMore,
     String? message,
     bool clearMessage = false,
+    bool? isSubmittingReview,
+    String? submitMessage,
+    bool clearSubmitMessage = false,
+    bool? submitSuccess,
   }) {
     return ServiceOfferingReviewsState(
       status: status ?? this.status,
@@ -38,6 +48,10 @@ class ServiceOfferingReviewsState extends Equatable {
       pagination: pagination ?? this.pagination,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       message: clearMessage ? null : message ?? this.message,
+      isSubmittingReview: isSubmittingReview ?? this.isSubmittingReview,
+      submitMessage:
+          clearSubmitMessage ? null : submitMessage ?? this.submitMessage,
+      submitSuccess: submitSuccess ?? this.submitSuccess,
     );
   }
 
@@ -48,5 +62,8 @@ class ServiceOfferingReviewsState extends Equatable {
         pagination,
         isLoadingMore,
         message,
+        isSubmittingReview,
+        submitMessage,
+        submitSuccess,
       ];
 }

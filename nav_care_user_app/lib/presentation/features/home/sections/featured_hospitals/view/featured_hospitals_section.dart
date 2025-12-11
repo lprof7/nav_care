@@ -30,11 +30,13 @@ class _FeaturedHospitalsBody extends StatelessWidget {
       key: ValueKey(localeKey),
       child: BlocBuilder<FeaturedHospitalsCubit, FeaturedHospitalsState>(
         builder: (context, state) {
-          if (state.status == FeaturedHospitalsStatus.loading) {
+          if (state.status == FeaturedHospitalsStatus.loading &&
+              state.hospitals.isEmpty) {
             return const _FeaturedHospitalsLoading();
           }
 
-          if (state.status == FeaturedHospitalsStatus.failure) {
+          if (state.status == FeaturedHospitalsStatus.failure &&
+              state.hospitals.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -56,7 +58,13 @@ class _FeaturedHospitalsBody extends StatelessWidget {
           }
 
           if (state.hospitals.isEmpty) {
-            return const SizedBox.shrink();
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              child: Text(
+                'home.featured_hospitals.empty'.tr(),
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            );
           }
 
           return Padding(
@@ -67,7 +75,7 @@ class _FeaturedHospitalsBody extends StatelessWidget {
                 _SectionHeader(
                   title: 'home.featured_hospitals.title'.tr(),
                   actionLabel: 'home.featured_hospitals.see_more'.tr(),
-                  onTap: () => _openSeeMore(context, state.hospitals),
+                  onTap: () => _openSeeMore(context),
                 ),
                 const SizedBox(height: 14),
                 SizedBox(
@@ -90,10 +98,17 @@ class _FeaturedHospitalsBody extends StatelessWidget {
     );
   }
 
-  void _openSeeMore(BuildContext context, List<HospitalModel> hospitals) {
+  void _openSeeMore(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => NavcareHospitalsPage(hospitals: hospitals),
+        builder: (_) => BlocProvider.value(
+          value: context.read<FeaturedHospitalsCubit>(),
+          child: const NavcareHospitalsPage(
+            enablePagination: true,
+            titleKey: 'home.featured_hospitals.title',
+            emptyKey: 'home.featured_hospitals.empty',
+          ),
+        ),
       ),
     );
   }

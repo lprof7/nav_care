@@ -6,7 +6,8 @@ class ApiConfig {
   String get login => '$baseUrl/api/users/auth/login';
   String get register => '$baseUrl/api/users/auth/register';
   String get passwordResetCode => '$baseUrl/api/users/auth/password/reset-code';
-  String get passwordVerifyCode => '$baseUrl/api/users/auth/password/verify-code';
+  String get passwordVerifyCode =>
+      '$baseUrl/api/users/auth/password/verify-code';
   String get passwordReset => '$baseUrl/api/users/auth/password/reset';
 
   // Advertisings
@@ -43,4 +44,7 @@ class ApiConfig {
   // Doctors
   String doctorById(String id) => '$baseUrl/api/doctors/$id';
   String get serviceOfferingsByProvider => '$baseUrl/api/service-offerings';
+
+  // Feedback
+  String get sendFeedback => '$baseUrl/api/feedback';
 }

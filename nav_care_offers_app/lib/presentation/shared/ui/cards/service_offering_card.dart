@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 /// Reusable card for displaying a service offering (title, subtitle, badge/price, image, actions).
@@ -42,7 +43,7 @@ class ServiceOfferingCard extends StatelessWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(
             minWidth: 200,
-            maxWidth: 260,
+            maxWidth: 280,
             minHeight: 240,
           ),
           child: Container(
@@ -142,12 +143,15 @@ class ServiceOfferingCard extends StatelessWidget {
                             ?.copyWith(fontWeight: FontWeight.w800),
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        subtitle,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.blueGrey.shade700,
+                      SizedBox(
+                        height: 36,
+                        child: Text(
+                          subtitle,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: Colors.blueGrey.shade700,
+                          ),
                         ),
                       ),
                       if (priceLabel != null && priceLabel!.isNotEmpty) ...[
@@ -180,7 +184,7 @@ class ServiceOfferingCard extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        buttonLabel ?? 'View details',
+                        buttonLabel?.tr() ?? 'home.search.view_details'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

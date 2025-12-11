@@ -3,6 +3,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:nav_care_user_app/data/service_creation/service_creation_repository.dart';
 import 'package:nav_care_user_app/data/service_creation/services/remote_service_creation_service.dart';
 import 'package:nav_care_user_app/data/service_creation/services/service_creation_service.dart';
+import 'package:nav_care_user_app/presentation/features/home/sections/recent_doctors/viewmodel/recent_doctors_cubit.dart';
+import 'package:nav_care_user_app/presentation/features/home/sections/recent_hospitals/viewmodel/recent_hospitals_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/viewmodel/service_offering_detail_cubit.dart';
 import '../config/app_config.dart';
 import '../network/dio_client.dart';
@@ -79,6 +81,9 @@ import '../../presentation/features/home/sections/ads/viewmodel/ads_section_cubi
 import '../../data/users/user_remote_service.dart';
 import '../../data/users/user_repository.dart';
 import '../../presentation/features/profile/viewmodel/user_profile_cubit.dart';
+import '../../data/feedback/feedback_remote_service.dart';
+import '../../data/feedback/feedback_repository.dart';
+import '../../presentation/features/feedback/viewmodel/feedback_cubit.dart';
 
 final sl = GetIt.instance;
 Future<void> configureDependencies(AppConfig config) async {
@@ -106,8 +111,8 @@ Future<void> configureDependencies(AppConfig config) async {
 
   // Connectivity
   sl.registerLazySingleton<Connectivity>(() => Connectivity());
-  sl.registerSingleton<NetworkCubit>(
-      NetworkCubit(connectivity: sl<Connectivity>(), appConfig: sl<AppConfig>()));
+  sl.registerSingleton<NetworkCubit>(NetworkCubit(
+      connectivity: sl<Connectivity>(), appConfig: sl<AppConfig>()));
 
   // Advertisings
   sl.registerLazySingleton<AdvertisingService>(
@@ -130,8 +135,8 @@ Future<void> configureDependencies(AppConfig config) async {
   sl.registerLazySingleton<DoctorReviewsRemoteService>(() =>
       DoctorReviewsRemoteService(
           apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
-  sl.registerLazySingleton<DoctorReviewsRepository>(() =>
-      DoctorReviewsRepository(remote: sl<DoctorReviewsRemoteService>()));
+  sl.registerLazySingleton<DoctorReviewsRepository>(
+      () => DoctorReviewsRepository(remote: sl<DoctorReviewsRemoteService>()));
   sl.registerLazySingleton<ServiceOfferingReviewsRemoteService>(() =>
       ServiceOfferingReviewsRemoteService(
           apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
@@ -140,6 +145,8 @@ Future<void> configureDependencies(AppConfig config) async {
           remote: sl<ServiceOfferingReviewsRemoteService>()));
   sl.registerFactory<HospitalsChoiceCubit>(
       () => HospitalsChoiceCubit(repository: sl<HospitalsRepository>()));
+  sl.registerFactory<RecentHospitalsCubit>(
+      () => RecentHospitalsCubit(repository: sl<HospitalsRepository>()));
   sl.registerFactory<FeaturedHospitalsCubit>(
       () => FeaturedHospitalsCubit(repository: sl<HospitalsRepository>()));
 
@@ -151,6 +158,8 @@ Future<void> configureDependencies(AppConfig config) async {
       () => DoctorsChoiceCubit(repository: sl<DoctorsRepository>()));
   sl.registerFactory<FeaturedDoctorsCubit>(
       () => FeaturedDoctorsCubit(repository: sl<DoctorsRepository>()));
+  sl.registerFactory<RecentDoctorsCubit>(
+      () => RecentDoctorsCubit(repository: sl<DoctorsRepository>()));
   sl.registerLazySingleton<SearchRemoteService>(
       () => SearchRemoteService(apiClient: sl<ApiClient>()));
   sl.registerLazySingleton<SearchRepository>(
@@ -200,6 +209,16 @@ Future<void> configureDependencies(AppConfig config) async {
       userStore: sl<UserStore>(),
       authSessionCubit: sl<AuthSessionCubit>()));
 
+  // Feedback
+  sl.registerLazySingleton<FeedbackRemoteService>(() => FeedbackRemoteService(
+        apiClient: sl<ApiClient>(),
+        tokenStore: sl<TokenStore>(),
+      ));
+  sl.registerLazySingleton<FeedbackRepository>(
+      () => FeedbackRepository(remoteService: sl<FeedbackRemoteService>()));
+  sl.registerFactory<FeedbackCubit>(
+      () => FeedbackCubit(repository: sl<FeedbackRepository>()));
+
   // Signin
   sl.registerLazySingleton<SigninService>(
       () => RemoteSigninService(sl<ApiClient>()));
@@ -211,8 +230,8 @@ Future<void> configureDependencies(AppConfig config) async {
   sl.registerFactory<LogoutCubit>(() => LogoutCubit(sl<LogoutRepository>()));
   sl.registerLazySingleton<ResetPasswordService>(
       () => RemoteResetPasswordService(sl<ApiClient>()));
-  sl.registerLazySingleton<ResetPasswordRepository>(() =>
-      ResetPasswordRepository(service: sl<ResetPasswordService>()));
+  sl.registerLazySingleton<ResetPasswordRepository>(
+      () => ResetPasswordRepository(service: sl<ResetPasswordService>()));
   sl.registerFactory<ResetPasswordCubit>(
       () => ResetPasswordCubit(sl<ResetPasswordRepository>()));
 

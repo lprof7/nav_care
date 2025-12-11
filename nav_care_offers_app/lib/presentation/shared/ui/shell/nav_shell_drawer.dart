@@ -562,32 +562,33 @@ class _DrawerHeader extends StatelessWidget {
         onGoogleSignInTap == null) {
       return;
     }
-    showDialog(
-      context: context,
-      builder: (dialogCtx) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
+    final rootContext = context;
+    Navigator.of(context).pop();
+    showModalBottomSheet(
+      context: rootContext,
+      isScrollControlled: true,
+      builder: (sheetCtx) => SafeArea(
+        child: Padding(
+          padding: MediaQuery.of(sheetCtx).viewInsets,
           child: SignInRequiredCard(
             onSignIn: () {
-              Navigator.of(dialogCtx).pop();
+              Navigator.of(sheetCtx).pop();
               onSignInTap?.call();
             },
             onCreateAccount: () {
-              Navigator.of(dialogCtx).pop();
+              Navigator.of(sheetCtx).pop();
               onSignUpTap?.call();
             },
             onGoogleSignIn: onGoogleSignInTap == null
                 ? null
                 : () {
-                    Navigator.of(dialogCtx).pop();
+                    Navigator.of(sheetCtx).pop();
                     onGoogleSignInTap?.call();
                   },
             padding: const EdgeInsets.all(24),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

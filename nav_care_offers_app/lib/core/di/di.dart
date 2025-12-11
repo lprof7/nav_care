@@ -13,6 +13,10 @@ import '../../data/authentication/signin/services/signin_service.dart';
 import '../../data/authentication/signin/services/remote_signin_service.dart';
 import '../../data/authentication/signin/signin_repository.dart';
 import '../../presentation/features/authentication/signin/viewmodel/signin_cubit.dart';
+import '../../data/authentication/signup/services/signup_service.dart';
+import '../../data/authentication/signup/services/remote_signup_service.dart';
+import '../../data/authentication/signup/signup_repository.dart';
+import '../../presentation/features/authentication/signup/viewmodel/signup_cubit.dart';
 import '../../data/services/services/doctor_services_service.dart';
 import '../../data/services/services/remote_doctor_services_service.dart';
 import '../../data/services/doctor_services_repository.dart';
@@ -77,6 +81,14 @@ Future<void> configureDependencies(AppConfig config) async {
         sl<DoctorStore>(),
       ));
   sl.registerFactory<SigninCubit>(() => SigninCubit(sl<SigninRepository>()));
+  sl.registerLazySingleton<SignupService>(
+      () => RemoteSignupService(sl<ApiClient>()));
+  sl.registerLazySingleton<SignupRepository>(() => SignupRepository(
+        sl<SignupService>(),
+        sl<TokenStore>(),
+        sl<DoctorStore>(),
+      ));
+  sl.registerFactory<SignupCubit>(() => SignupCubit(sl<SignupRepository>()));
   sl.registerSingleton<AuthCubit>(AuthCubit(sl<DoctorStore>(), sl<TokenStore>()));
   sl.registerFactory<LogoutCubit>(() => LogoutCubit(sl<AuthCubit>()));
   sl.registerLazySingleton<UserRemoteService>(

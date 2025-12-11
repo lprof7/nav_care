@@ -58,6 +58,12 @@
     "shell.drawer_about":  "About",
     "shell.drawer_feedback":  "Feedback",
     "shell.drawer_support":  "Support",
+    "feedback":  {
+                     "auth_required":  "Please sign in to send feedback.",
+                     "comment_required":  "Please add a note before sending your feedback.",
+                     "submit_error":  "Unable to send feedback: {message}",
+                     "submit_success":  "Thanks! Your feedback was sent."
+                 },
     "shell.drawer_placeholder":  "{0} coming soon",
     "sign_up_with_google":  "Sign up with Google",
     "sign_up_with_apple":  "Sign up with Apple",
@@ -551,6 +557,16 @@
     "service_offerings":  {
                               "reviews":  {
                                               "anonymous":  "Anonymous user",
+                                              "add_button":  "Add review",
+                                              "add_title":  "Add service review",
+                                              "rating_label":  "Your rating",
+                                              "comment_label":  "Your comment",
+                                              "comment_hint":  "Share your experience...",
+                                              "submit":  "Submit",
+                                              "cancel":  "Cancel",
+                                              "validation.rating":  "Please select a rating.",
+                                              "validation.comment":  "Please enter a comment.",
+                                              "submit_success":  "Review added successfully.",
                                               "show_less":  "Show less",
                                               "retry":  "Try again",
                                               "load_more":  "Load more",

@@ -40,11 +40,13 @@ class _HospitalsChoiceBody extends StatelessWidget {
       key: ValueKey(localeKey),
       child: BlocBuilder<HospitalsChoiceCubit, HospitalsChoiceState>(
         builder: (context, state) {
-          if (state.status == HospitalsChoiceStatus.loading) {
+          if (state.status == HospitalsChoiceStatus.loading &&
+              state.hospitals.isEmpty) {
             return const _HospitalsChoiceLoading();
           }
 
-          if (state.status == HospitalsChoiceStatus.failure) {
+          if (state.status == HospitalsChoiceStatus.failure &&
+              state.hospitals.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -66,6 +68,16 @@ class _HospitalsChoiceBody extends StatelessWidget {
             );
           }
 
+          if (state.hospitals.isEmpty) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              child: Text(
+                _tr(context, 'empty'),
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            );
+          }
+
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Column(
@@ -74,7 +86,7 @@ class _HospitalsChoiceBody extends StatelessWidget {
                 _SectionHeader(
                   title: _tr(context, 'title'),
                   actionLabel: _tr(context, 'see_more'),
-                  onTap: () => _openSeeMore(context, state.hospitals),
+                  onTap: () => _openSeeMore(context),
                 ),
                 const SizedBox(height: 14),
                 SizedBox(
@@ -97,13 +109,16 @@ class _HospitalsChoiceBody extends StatelessWidget {
     );
   }
 
-  void _openSeeMore(BuildContext context, List<HospitalModel> hospitals) {
+  void _openSeeMore(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => NavcareHospitalsPage(
-          hospitals: hospitals,
-          titleKey: '$translationPrefix.title',
-          emptyKey: '$translationPrefix.empty',
+        builder: (_) => BlocProvider.value(
+          value: context.read<HospitalsChoiceCubit>(),
+          child: NavcareHospitalsPage(
+            titleKey: '$translationPrefix.title',
+            emptyKey: '$translationPrefix.empty',
+            enablePagination: true,
+          ),
         ),
       ),
     );

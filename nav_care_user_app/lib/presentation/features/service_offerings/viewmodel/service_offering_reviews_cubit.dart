@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nav_care_user_app/core/responses/pagination.dart';
 import 'package:nav_care_user_app/data/reviews/service_offering_reviews/models/service_offering_review_model.dart';
 import 'package:nav_care_user_app/data/reviews/service_offering_reviews/service_offering_reviews_repository.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/viewmodel/service_offering_reviews_state.dart';
@@ -22,6 +23,9 @@ class ServiceOfferingReviewsCubit extends Cubit<ServiceOfferingReviewsState> {
       status: ServiceOfferingReviewsStatus.loading,
       isLoadingMore: false,
       clearMessage: true,
+      isSubmittingReview: false,
+      submitSuccess: false,
+      clearSubmitMessage: true,
     ));
     await _fetch(page: page, limit: limit, append: false);
   }
@@ -36,6 +40,51 @@ class ServiceOfferingReviewsCubit extends Cubit<ServiceOfferingReviewsState> {
   Future<void> refresh({int limit = 10}) async {
     if (_offeringId == null) return;
     await loadReviews(offeringId: _offeringId!, page: 1, limit: limit);
+  }
+
+  Future<void> submitReview({
+    required double rating,
+    required String comment,
+  }) async {
+    final offeringId = _offeringId;
+    if (offeringId == null) return;
+    emit(state.copyWith(
+      isSubmittingReview: true,
+      submitSuccess: false,
+      clearSubmitMessage: true,
+    ));
+    try {
+      final result = await _repository.createReview(
+        offeringId: offeringId,
+        rating: rating,
+        comment: comment,
+      );
+      final updatedList = [result.review, ...state.reviews];
+      final meta = state.pagination;
+      final updatedMeta = meta != null
+          ? PageMeta(
+              page: 1,
+              pageSize: meta.pageSize,
+              total: meta.total + 1,
+              totalPages: meta.totalPages,
+            )
+          : null;
+      emit(state.copyWith(
+        reviews: updatedList,
+        status: ServiceOfferingReviewsStatus.success,
+        pagination: updatedMeta,
+        isSubmittingReview: false,
+        submitSuccess: true,
+        submitMessage: 'service_offerings.reviews.submit_success',
+      ));
+    } catch (error) {
+      final message = error.toString().replaceFirst('Exception: ', '');
+      emit(state.copyWith(
+        isSubmittingReview: false,
+        submitSuccess: false,
+        submitMessage: message,
+      ));
+    }
   }
 
   Future<void> _fetch({

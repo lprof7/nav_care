@@ -10,7 +10,6 @@ import 'package:nav_care_user_app/presentation/features/home/sections/featured_h
 import 'package:nav_care_user_app/presentation/features/home/sections/featured_services/viewmodel/featured_services_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/home/sections/hospitals_choice/viewmodel/hospitals_choice_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/home/sections/recent_service_offerings/viewmodel/recent_service_offerings_cubit.dart';
-import 'package:nav_care_user_app/presentation/shared/ui/atoms/app_button.dart';
 
 import '../sections/ads/view/ads_section.dart';
 import '../sections/featured_services/view/featured_services_section.dart';
@@ -21,6 +20,8 @@ import '../sections/featured_doctors/view/featured_doctors_section.dart';
 import '../sections/recent_hospitals/view/recent_hospitals_section.dart';
 import '../sections/recent_doctors/view/recent_doctors_section.dart';
 import '../sections/recent_service_offerings/view/recent_service_offerings_section.dart';
+import '../sections/recent_hospitals/viewmodel/recent_hospitals_cubit.dart';
+import '../sections/recent_doctors/viewmodel/recent_doctors_cubit.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -64,6 +65,12 @@ class HomePage extends StatelessWidget {
         BlocProvider<FeaturedDoctorsCubit>(
           create: (context) => sl<FeaturedDoctorsCubit>()..loadDoctors(),
         ),
+        BlocProvider<RecentHospitalsCubit>(
+          create: (context) => sl<RecentHospitalsCubit>()..loadHospitals(),
+        ),
+        BlocProvider<RecentDoctorsCubit>(
+          create: (context) => sl<RecentDoctorsCubit>()..loadDoctors(),
+        ),
         BlocProvider<RecentServiceOfferingsCubit>(
           create: (context) =>
               sl<RecentServiceOfferingsCubit>()..loadOfferings(),
@@ -85,6 +92,8 @@ class HomePage extends StatelessWidget {
                 context.read<DoctorsChoiceCubit>().loadDoctors();
                 context.read<FeaturedHospitalsCubit>().loadHospitals();
                 context.read<FeaturedDoctorsCubit>().loadDoctors();
+                context.read<RecentHospitalsCubit>().loadHospitals();
+                context.read<RecentDoctorsCubit>().loadDoctors();
                 context.read<RecentServiceOfferingsCubit>().loadOfferings();
               },
               child: ListView.separated(
@@ -156,6 +165,8 @@ class HomePage extends StatelessWidget {
     context.read<DoctorsChoiceCubit>().loadDoctors();
     context.read<FeaturedHospitalsCubit>().loadHospitals();
     context.read<FeaturedDoctorsCubit>().loadDoctors();
+    context.read<RecentHospitalsCubit>().loadHospitals();
+    context.read<RecentDoctorsCubit>().loadDoctors();
     context.read<RecentServiceOfferingsCubit>().loadOfferings();
   }
 }

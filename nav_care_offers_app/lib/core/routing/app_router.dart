@@ -26,11 +26,13 @@ import 'package:nav_care_offers_app/presentation/features/profile/view/edit_user
 import 'package:nav_care_offers_app/presentation/features/profile/view/forgot_password_page.dart';
 import 'package:nav_care_offers_app/presentation/features/profile/view/update_password_page.dart';
 import 'package:nav_care_offers_app/presentation/features/profile/viewmodel/user_profile_cubit.dart';
+import 'package:nav_care_offers_app/presentation/features/authentication/signup/view/signup_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 enum AppRoute {
   root('/'),
   signIn('/signin'),
+  signUp('/signup'),
   becomeDoctor('/become-doctor'),
   home('/home'),
   profileEdit('/profile/edit'),
@@ -64,6 +66,10 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
       GoRoute(
         path: AppRoute.signIn.path,
         builder: (ctx, st) => const SigninPage(),
+      ),
+      GoRoute(
+        path: AppRoute.signUp.path,
+        builder: (ctx, st) => const SignupPage(),
       ),
       GoRoute(
         path: AppRoute.becomeDoctor.path,

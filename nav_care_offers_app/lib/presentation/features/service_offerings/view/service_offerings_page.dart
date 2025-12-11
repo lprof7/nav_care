@@ -190,8 +190,9 @@ class _OfferingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final locale = context.locale.languageCode;
-    final subtitle =
-        'service_offerings.list.price'.tr(args: [offering.price.toStringAsFixed(2)]);
+    final subtitle = 'service_offerings.list.price'.tr(
+      namedArgs: {'price': offering.price.toStringAsFixed(2)},
+    );
     final serviceName = offering.localizedName(locale);
 
     return InkWell(

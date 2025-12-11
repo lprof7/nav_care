@@ -31,4 +31,22 @@ class ServiceOfferingReviewsRemoteService {
       parser: (json) => json as Map<String, dynamic>,
     );
   }
+
+  Future<Result<Map<String, dynamic>>> createReview({
+    required String offeringId,
+    required double rating,
+    required String comment,
+  }) async {
+    final token = await _tokenStore.getToken();
+    if (token == null || token.isEmpty) {
+      return Result.failure(const Failure.unauthorized());
+    }
+
+    return _apiClient.post(
+      _apiClient.apiConfig.serviceOfferingReviews(offeringId),
+      body: {'rating': rating, 'comment': comment},
+      headers: {'Authorization': 'Bearer $token'},
+      parser: (json) => json as Map<String, dynamic>,
+    );
+  }
 }

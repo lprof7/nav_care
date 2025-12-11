@@ -5,8 +5,6 @@ import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/doctors/models/doctor_model.dart';
 import 'package:nav_care_user_app/presentation/features/home/view/navcare_doctors_page.dart';
-import 'package:nav_care_user_app/presentation/features/home/sections/ads/view/ads_section.dart';
-import 'package:nav_care_user_app/presentation/features/home/sections/ads/viewmodel/ads_section_cubit.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/cards/doctor_grid_card.dart';
 import 'package:nav_care_user_app/presentation/features/doctors/view/doctor_detail_page.dart';
 
@@ -42,11 +40,13 @@ class _DoctorsChoiceBody extends StatelessWidget {
       key: ValueKey(localeKey),
       child: BlocBuilder<DoctorsChoiceCubit, DoctorsChoiceState>(
         builder: (context, state) {
-          if (state.status == DoctorsChoiceStatus.loading) {
+          if (state.status == DoctorsChoiceStatus.loading &&
+              state.doctors.isEmpty) {
             return const _DoctorsChoiceLoading();
           }
 
-          if (state.status == DoctorsChoiceStatus.failure) {
+          if (state.status == DoctorsChoiceStatus.failure &&
+              state.doctors.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -69,7 +69,13 @@ class _DoctorsChoiceBody extends StatelessWidget {
           }
 
           if (state.doctors.isEmpty) {
-            return const SizedBox.shrink();
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              child: Text(
+                _tr(context, 'empty'),
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            );
           }
 
           return Padding(
@@ -80,7 +86,7 @@ class _DoctorsChoiceBody extends StatelessWidget {
                 _SectionHeader(
                   title: _tr(context, 'title'),
                   actionLabel: _tr(context, 'see_more'),
-                  onTap: () => _openSeeMore(context, state.doctors),
+                  onTap: () => _openSeeMore(context),
                 ),
                 const SizedBox(height: 16),
                 SizedBox(
@@ -103,12 +109,15 @@ class _DoctorsChoiceBody extends StatelessWidget {
     );
   }
 
-  void _openSeeMore(BuildContext context, List<DoctorModel> doctors) {
+  void _openSeeMore(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => NavcareDoctorsPage(
-          doctors: doctors,
-          titleKey: '$translationPrefix.title',
+        builder: (_) => BlocProvider.value(
+          value: context.read<DoctorsChoiceCubit>(),
+          child: NavcareDoctorsPage(
+            titleKey: '$translationPrefix.title',
+            enablePagination: true,
+          ),
         ),
       ),
     );
@@ -122,8 +131,6 @@ class _DoctorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = context.locale.languageCode;
-    final bio = doctor.bioForLocale(locale);
     final baseUrl = sl<AppConfig>().api.baseUrl;
     final coverPath = doctor.avatarImage(baseUrl: baseUrl) ??
         doctor.coverImage(baseUrl: baseUrl);

@@ -1,3 +1,5 @@
+import 'package:nav_care_user_app/core/responses/pagination.dart';
+
 import 'models/hospital_model.dart';
 import 'responses/fake_featured_hospitals_response.dart';
 import 'hospitals_remote_service.dart';
@@ -9,26 +11,23 @@ class HospitalsRepository {
   HospitalsRepository({required HospitalsRemoteService remoteService})
       : _remoteService = remoteService;
 
-  Future<List<HospitalModel>> getNavcareHospitalsChoice({int limit = 6}) async {
+  Future<Paged<HospitalModel>> getNavcareHospitalsChoice({
+    int page = 1,
+    int limit = 6,
+  }) async {
     final requestLimit = limit < 1
         ? 1
         : limit > 20
             ? 20
             : limit;
 
-    final hospitals = await _fetchHospitals(limit: requestLimit);
-    if (hospitals.isEmpty) {
-      return hospitals;
-    }
-
-    final cappedLimit =
-        requestLimit > hospitals.length ? hospitals.length : requestLimit;
-    return hospitals.sublist(0, cappedLimit);
+    return _fetchHospitals(page: page, limit: requestLimit);
   }
 
   Future<List<HospitalModel>> getNavcareFeaturedHospitals(
       {int limit = 3}) async {
-    return getFeaturedHospitals(limit: limit);
+    final paged = await getFeaturedHospitals(limit: limit);
+    return paged.items;
   }
 
   Future<List<HospitalModel>> getNavcareFeaturedClinics({int limit = 6}) async {
@@ -39,12 +38,12 @@ class HospitalsRepository {
             : limit;
 
     final fetchLimit = ((requestLimit * 2).clamp(1, 40)).toInt();
-    final hospitals = await _fetchHospitals(limit: fetchLimit);
-    if (hospitals.isEmpty) {
-      return hospitals;
+    final pagedHospitals = await _fetchHospitals(limit: fetchLimit);
+    if (pagedHospitals.items.isEmpty) {
+      return pagedHospitals.items;
     }
 
-    final clinics = hospitals.where((hospital) {
+    final clinics = pagedHospitals.items.where((hospital) {
       final facilityType = hospital.facilityType.trim().toLowerCase();
       final field = hospital.field.trim().toLowerCase();
       return facilityType.contains('clinic') || field.contains('clinic');
@@ -60,7 +59,10 @@ class HospitalsRepository {
     return sorted.sublist(0, cappedLimit);
   }
 
-  Future<List<HospitalModel>> getFeaturedHospitals({int limit = 6}) async {
+  Future<Paged<HospitalModel>> getFeaturedHospitals({
+    int page = 1,
+    int limit = 6,
+  }) async {
     final requestLimit = limit < 1
         ? 1
         : limit > 20
@@ -68,7 +70,7 @@ class HospitalsRepository {
             : limit;
     final result = await _remoteService.listBoostedHospitals(
       type: 'nav_care',
-      page: 1,
+      page: page,
       limit: requestLimit,
     );
 
@@ -78,15 +80,26 @@ class HospitalsRepository {
       throw Exception(message);
     }
 
-    final hospitalMaps = _extractHospitalMaps(result.data);
-    if (hospitalMaps.isEmpty) {
-      return const [];
-    }
+    final payload = result.data!;
+    final data = _asMap(payload['data']) ?? _asMap(payload);
+    final hospitalMaps = _extractHospitalMaps(data);
+    final pagination =
+        _parsePagination(_asMap(payload['pagination']) ?? _asMap(data?['pagination']));
 
-    return hospitalMaps
-        .take(requestLimit)
-        .map(HospitalModel.fromJson)
-        .toList(growable: false);
+    final hospitals =
+        hospitalMaps.map(HospitalModel.fromJson).toList(growable: false);
+
+    return Paged<HospitalModel>(
+      items: hospitals,
+      meta: pagination,
+    );
+  }
+
+  Future<Paged<HospitalModel>> getRecentHospitals({
+    int page = 1,
+    int limit = 6,
+  }) {
+    return _fetchHospitals(page: page, limit: limit);
   }
 
   Future<List<HospitalModel>> getFakeFeaturedHospitals({int limit = 6}) async {
@@ -106,7 +119,7 @@ class HospitalsRepository {
     return hospitals.sublist(0, cappedLimit);
   }
 
-  Future<List<HospitalModel>> _fetchHospitals({
+  Future<Paged<HospitalModel>> _fetchHospitals({
     int page = 1,
     int limit = 10,
   }) async {
@@ -118,12 +131,19 @@ class HospitalsRepository {
       throw Exception(message);
     }
 
-    final hospitalMaps = _extractHospitalMaps(result.data);
-    if (hospitalMaps.isEmpty) {
-      return const [];
-    }
+    final payload = result.data!;
+    final data = _asMap(payload['data']) ?? _asMap(payload);
+    final hospitalMaps = _extractHospitalMaps(data);
+    final pagination =
+        _parsePagination(_asMap(payload['pagination']) ?? _asMap(data?['pagination']));
 
-    return hospitalMaps.map(HospitalModel.fromJson).toList(growable: false);
+    final hospitals =
+        hospitalMaps.map(HospitalModel.fromJson).toList(growable: false);
+
+    return Paged<HospitalModel>(
+      items: hospitals,
+      meta: pagination,
+    );
   }
 
   Future<HospitalModel> getHospitalById(String id) async {
@@ -200,5 +220,33 @@ class HospitalsRepository {
     }
 
     return <Map<String, dynamic>>[];
+  }
+
+  Map<String, dynamic>? _asMap(dynamic source) {
+    if (source is Map<String, dynamic>) {
+      return source;
+    }
+    if (source is Map) {
+      return source.map((key, value) => MapEntry(key.toString(), value));
+    }
+    return null;
+  }
+
+  PageMeta? _parsePagination(Map<String, dynamic>? json) {
+    if (json == null || json.isEmpty) return null;
+
+    int? toInt(dynamic value) {
+      if (value is int) return value;
+      if (value is num) return value.toInt();
+      if (value is String) return int.tryParse(value);
+      return null;
+    }
+
+    return PageMeta(
+      page: toInt(json['page']) ?? 1,
+      pageSize: toInt(json['limit']) ?? toInt(json['pageSize']) ?? 10,
+      total: toInt(json['total']) ?? 0,
+      totalPages: toInt(json['pages']) ?? toInt(json['totalPages']) ?? 1,
+    );
   }
 }

@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/doctors/models/doctor_model.dart';
+import 'package:nav_care_user_app/presentation/features/doctors/view/doctor_detail_page.dart';
 import 'package:nav_care_user_app/presentation/features/home/view/navcare_doctors_page.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/cards/doctor_grid_card.dart';
-import 'package:nav_care_user_app/presentation/features/doctors/view/doctor_detail_page.dart';
 
 import '../viewmodel/featured_doctors_cubit.dart';
 import '../viewmodel/featured_doctors_state.dart';
@@ -32,74 +32,88 @@ class _FeaturedDoctorsBody extends StatelessWidget {
         builder: (context, state) {
           switch (state.status) {
             case FeaturedDoctorsStatus.loading:
-              return const _FeaturedDoctorsLoading();
-            case FeaturedDoctorsStatus.failure:
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/error/failure.png', // الصورة عند الفشل
-                      width: 100, // تصغير حجم الصورة
-                      height: 100,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      state.message ??
-                          'common.error_occurred'.tr(), // رسالة خطأ عامة
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              );
-            case FeaturedDoctorsStatus.loaded:
               if (state.doctors.isEmpty) {
-                return const SizedBox.shrink();
+                return const _FeaturedDoctorsLoading();
               }
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _FeaturedSectionHeader(
-                      title: 'home.featured_doctors.title'.tr(),
-                      actionLabel:
-                          'home.featured_doctors.see_more_with_icon'.tr(),
-                      onTap: () => _openSeeMore(context, state.doctors),
-                    ),
-                    const SizedBox(height: 16),
-                    SizedBox(
-                      height: 270,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: state.doctors.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 14),
-                        itemBuilder: (context, index) {
-                          final doctor = state.doctors[index];
-                          return _FeaturedDoctorCard(doctor: doctor);
-                        },
+              break;
+            case FeaturedDoctorsStatus.failure:
+              if (state.doctors.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/error/failure.png',
+                        width: 100,
+                        height: 100,
                       ),
-                    ),
-                  ],
-                ),
-              );
+                      const SizedBox(height: 10),
+                      Text(
+                        state.message ?? 'common.error_occurred'.tr(),
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                );
+              }
+              break;
+            case FeaturedDoctorsStatus.loaded:
+              break;
             case FeaturedDoctorsStatus.initial:
-            default:
               return const SizedBox.shrink();
           }
+
+          if (state.doctors.isEmpty) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              child: Text(
+                'home.featured_doctors.empty'.tr(),
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            );
+          }
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _FeaturedSectionHeader(
+                  title: 'home.featured_doctors.title'.tr(),
+                  actionLabel: 'home.featured_doctors.see_more_with_icon'.tr(),
+                  onTap: () => _openSeeMore(context),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 270,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: state.doctors.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 14),
+                    itemBuilder: (context, index) {
+                      final doctor = state.doctors[index];
+                      return _FeaturedDoctorCard(doctor: doctor);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
         },
       ),
     );
   }
 
-  void _openSeeMore(BuildContext context, List<DoctorModel> doctors) {
+  void _openSeeMore(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => NavcareDoctorsPage(
-          doctors: doctors,
-          titleKey: 'home.featured_doctors.page_title',
+        builder: (_) => BlocProvider.value(
+          value: context.read<FeaturedDoctorsCubit>(),
+          child: const NavcareDoctorsPage(
+            enablePagination: true,
+            titleKey: 'home.featured_doctors.page_title',
+          ),
         ),
       ),
     );
@@ -113,8 +127,6 @@ class _FeaturedDoctorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locale = context.locale.languageCode;
-    final bio = doctor.bioForLocale(locale);
     final baseUrl = sl<AppConfig>().api.baseUrl;
     final coverPath = doctor.avatarImage(baseUrl: baseUrl) ??
         doctor.coverImage(baseUrl: baseUrl);

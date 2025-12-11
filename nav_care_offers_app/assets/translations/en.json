@@ -1,8 +1,27 @@
-﻿{
+{
     "sign_in": "Sign In",
+    "sign_up": "Sign Up",
+    "sign_up_subtitle": "Create an account to get started",
     "email": "Email",
     "email_or_phone": "E-mail or Phone Number",
     "password": "Password",
+    "confirm_password": "Confirm Password",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "birth_date_hint": "Select your birth date",
+    "phone_number": "Phone Number",
+    "algerian_phone_error": "Enter a valid Algerian phone number",
+    "upload_profile_picture": "Upload profile picture",
+    "upload_photo_hint": "Tap to add or update your profile photo",
+    "change_photo": "Change photo",
+    "remove_photo": "Remove photo",
+    "passwords_do_not_match": "Passwords do not match",
+    "accept_terms_error": "Please accept the Terms & Privacy Policy",
+    "invalid_email_format": "Please enter a valid e-mail address.",
+    "i_accept": "I accept",
+    "terms_and_policy": "Terms & Privacy Policy",
+    "already_have_account": "Already have an account?",
+    "dont_have_account": "Don't have an account?",
     "or": "Or",
     "book_an_appointment": "Book an appointment",
     "sign_in_subtitle": "Sign in to continue",
@@ -10,16 +29,20 @@
     "forgot_password": "Forgot password?",
     "sign_in_with_google": "Sign in with Google",
     "sign_in_with_apple": "Sign in with Apple",
+    "sign_up_with_google": "Sign up with Google",
+    "sign_up_with_apple": "Sign up with Apple",
     "signin_success_message": "Welcome {name}",
     "signin_error_message": "Error: {message}",
-    "signin_account_not_found": "We couldn\u0027t find an account with those credentials.",
+    "signin_account_not_found": "We couldn't find an account with those credentials.",
     "signin_doctor_profile_required": "We found your user account, but you still need to complete your doctor profile.",
+    "signup_success_message": "Account created successfully",
+    "signup_error_message": "Error: {message}",
     "field_required": "This field is required",
     "become_doctor_title": "Become a Doctor",
     "become_doctor_heading": "Complete your doctor profile",
     "become_doctor_description": "Hi {name}, to continue you need to confirm your professional information.",
     "become_doctor_default_name": "Doctor",
-    "become_doctor_next_steps": "We\u0027ll guide you through the remaining steps shortly.",
+    "become_doctor_next_steps": "We'll guide you through the remaining steps shortly.",
     "become_doctor_back_to_signin": "Back to sign in",
     "become_doctor_image_label": "Profile image",
     "become_doctor_image_hint": "Add a clear, professional photo to complete your profile.",
@@ -53,10 +76,10 @@
         }
     },
     "home": {
-        "welcome_message": "Here\u0027s what\u0027s happening today",
+        "welcome_message": "Here's what's happening today",
         "appointments": {
             "title": "Upcoming appointments",
-            "subtitle": "Manage today\u0027s patient schedule",
+            "subtitle": "Manage today's patient schedule",
             "empty": "No appointments available yet."
         },
         "quick_actions": {
@@ -70,9 +93,9 @@
             "subtitle": "Review, update, and publish your offerings",
             "prompt": "Tap the card above to load your services.",
             "loading": "Loading your services...",
-            "error": "We couldn\u0027t load your services",
+            "error": "We couldn't load your services",
             "retry": "Try again",
-            "empty": "You haven\u0027t added any services yet.",
+            "empty": "You haven't added any services yet.",
             "list_title": "Your active services",
             "more": "+{count} more services"
         }
@@ -105,11 +128,11 @@
         "list": {
             "title": "Hospital network",
             "subtitle": "Organise your hospitals and clinics in one place",
-            "empty": "You haven\u0027t added any facilities yet.",
-            "error_network": "We couldn\u0027t reach the server. Check your connection and try again.",
+            "empty": "You haven't added any facilities yet.",
+            "error_network": "We couldn't reach the server. Check your connection and try again.",
             "error_timeout": "The server is taking longer than expected. Please try again.",
             "error_unauthorized": "Your session has expired. Please sign in again.",
-            "error_generic": "We couldn\u0027t load your hospitals right now."
+            "error_generic": "We couldn't load your hospitals right now."
         },
         "actions": {
             "add": "Add hospital",
@@ -161,7 +184,7 @@
             "delete_cancel": "Cancel",
             "delete_confirm": "Delete",
             "delete_success": "Hospital removed successfully.",
-            "not_found": "We couldn\u0027t find the requested hospital.",
+            "not_found": "We couldn't find the requested hospital.",
             "manage_offerings": "Manage service offerings",
             "about": "About",
             "no_description": "No description available.",
@@ -231,7 +254,7 @@
             "title": "Manage service offerings",
             "heading": "Your service offerings",
             "subtitle": "Review and update the offers attached to this hospital.",
-            "price": "Price:",
+            "price": "Price: {price}",
             "add": "Add service offering",
             "empty": "No service offerings yet. Start by adding your first one.",
             "reload": "Reload",
@@ -239,7 +262,7 @@
         },
         "detail": {
             "title": "Service offering",
-            "not_found": "We couldn\u0027t find this service offering.",
+            "not_found": "We couldn't find this service offering.",
             "price": "Price: ",
             "provider": "Provider",
             "specialty": "Specialty",
@@ -250,38 +273,17 @@
             "edit": "Edit"
         },
         "form": {
-            "create_title": "Add service offering",
-            "edit_title": "Edit service offering",
-            "description": "Fill in the details below to publish your hospital services.",
-            "service": "Service",
-            "price": "Price",
-            "price_invalid": "Enter a valid price",
-            "reload_services": "Reload services",
-            "offers": "Offers",
-            "offers_hint": "Separate items with commas",
-            "description_en": "Description (English)",
-            "description_ar": "Description (Arabic)",
-            "description_fr": "Description (French)",
-            "description_sp": "Description (Spanish)",
-            "create_button": "Create offering",
-            "update_button": "Update offering",
-            "select_service": "Please choose a service first.",
-            "error": "Unable to save the service offering",
-            "create_success": "Service offering created successfully.",
-            "update_success": "Service offering updated successfully."
+            "name_en": "Name (English)",
+            "images": {
+                "label": "Images"
+            },
+            "add_image": "Add image"
         },
         "errors": {
             "parse_list": "Unable to parse service offerings response",
             "parse_detail": "Unable to load the selected service offering",
             "parse_submit": "Unable to save the service offering",
             "parse_catalog": "Unable to load the services catalog"
-        },
-        "form": {
-            "name_en": "Name (English)",
-            "images": {
-                "label": "Images"
-            },
-            "add_image": "Add image"
         }
     },
     "clinics": {

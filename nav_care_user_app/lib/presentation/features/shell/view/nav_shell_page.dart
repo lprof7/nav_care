@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:feedback/feedback.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -15,6 +16,7 @@ import 'package:nav_care_user_app/presentation/features/profile/viewmodel/user_p
 import 'package:nav_care_user_app/presentation/features/profile/viewmodel/user_profile_state.dart';
 import 'package:nav_care_user_app/presentation/features/search/view/search_page.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/shell/nav_shell_app_bar.dart';
+import 'package:nav_care_user_app/presentation/features/feedback/viewmodel/feedback_cubit.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/shell/nav_shell_destination.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/shell/nav_shell_drawer.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/shell/nav_shell_nav_bar.dart';
@@ -32,6 +34,7 @@ class NavShellPage extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => NavShellCubit(initialIndex: initialIndex)),
         BlocProvider(create: (_) => sl<LogoutCubit>()),
+        BlocProvider(create: (_) => sl<FeedbackCubit>()),
         BlocProvider<UserProfileCubit>(
           create: (context) => sl<UserProfileCubit>()
             ..loadProfile()
@@ -156,11 +159,10 @@ class NavShellPage extends StatelessWidget {
                 onContactTap: () => context.push('/contact'),
                 onSettingsTap: () {},
                 onAboutTap: () => context.push('/about'),
-                onFeedbackTap: () {},
+                onFeedbackTap: () => _onFeedbackTap(context),
                 onSupportTap: () {},
                 themeMode: themeMode,
-                onThemeToggle: () =>
-                    context.read<ThemeModeCubit>().toggle(),
+                onThemeToggle: () => context.read<ThemeModeCubit>().toggle(),
               ),
               body: IndexedStack(
                 index: state.currentIndex,
@@ -176,6 +178,77 @@ class NavShellPage extends StatelessWidget {
             );
           },
         ),
+      ),
+    );
+  }
+
+  Future<void> _onFeedbackTap(BuildContext context) async {
+    final scaffoldState = Scaffold.maybeOf(context);
+    if (scaffoldState?.isDrawerOpen ?? false) {
+      Navigator.of(context).pop();
+    }
+
+    final authCubit = context.read<AuthSessionCubit>();
+    await authCubit.verifyTokenValidity();
+    if (!context.mounted) return;
+    if (!authCubit.state.isAuthenticated) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('feedback.auth_required'.tr()),
+        ),
+      );
+      return;
+    }
+
+    final messenger = ScaffoldMessenger.of(context);
+
+    BetterFeedback.of(context).show((userFeedback) async {
+      final comment = (userFeedback.text ?? '').trim();
+      if (comment.isEmpty) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('feedback.comment_required'.tr()),
+          ),
+        );
+        return;
+      }
+
+      _showFeedbackLoader(context);
+      final success = await context.read<FeedbackCubit>().submit(
+            comment: comment,
+            screenshot: userFeedback.screenshot,
+          );
+      if (!context.mounted) return;
+      Navigator.of(context, rootNavigator: true).pop();
+      final feedbackState = context.read<FeedbackCubit>().state;
+      final successText =
+          feedbackState.message ?? 'feedback.submit_success'.tr();
+      final errorText = 'feedback.submit_error'
+          .tr(namedArgs: {'message': feedbackState.errorMessage ?? ''});
+
+      if (success) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(successText),
+          ),
+        );
+        context.read<FeedbackCubit>().reset();
+      } else {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(errorText),
+          ),
+        );
+      }
+    });
+  }
+
+  void _showFeedbackLoader(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }

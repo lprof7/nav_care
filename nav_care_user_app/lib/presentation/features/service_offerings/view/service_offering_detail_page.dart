@@ -6,6 +6,7 @@ import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/search/models/search_models.dart';
 import 'package:nav_care_user_app/data/service_offerings/models/service_offering_model.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
+import 'package:nav_care_user_app/presentation/features/service_offerings/view/service_offering_add_review_page.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/viewmodel/service_offering_detail_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/viewmodel/service_offering_detail_state.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/viewmodel/service_offering_reviews_cubit.dart';
@@ -253,6 +254,7 @@ class _DetailViewState extends State<_DetailView> {
                       _ServiceOfferingReviewsSection(
                         offeringId: widget.offeringId,
                         baseUrl: widget.baseUrl,
+                        onAddReview: () => _handleAddReview(context),
                       ),
                       const SizedBox(height: 24),
                       _RelatedOfferings(
@@ -285,42 +287,41 @@ class _DetailViewState extends State<_DetailView> {
 
   void _showSignInPrompt(BuildContext context) {
     final rootContext = context;
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (dialogContext) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
-          ),
+      isScrollControlled: true,
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: MediaQuery.of(sheetContext).viewInsets,
           child: SignInRequiredCard(
             onSignIn: () {
-              Navigator.of(dialogContext).pop();
-              Navigator.of(dialogContext).pop();
-              showModalBottomSheet(
-                context: rootContext,
-                isScrollControlled: true,
-                builder: (context) => SignInRequiredCard(
-                  onSignIn: () {
-                    Navigator.of(context).pop();
-                    context.go('/signin');
-                  },
-                  onCreateAccount: () {
-                    Navigator.of(context).pop();
-                    context.go('/signup');
-                  },
-                  onGoogleSignIn: () {},
-                ),
-              );
+              Navigator.of(sheetContext).pop();
+              rootContext.go('/signin');
             },
             onCreateAccount: () {
-              Navigator.of(dialogContext).pop();
+              Navigator.of(sheetContext).pop();
               rootContext.go('/signup');
             },
             onGoogleSignIn: () {},
           ),
-        );
-      },
+        ),
+      ),
     );
+  }
+
+  Future<void> _handleAddReview(BuildContext context) async {
+    final result = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => BlocProvider.value(
+          value: context.read<ServiceOfferingReviewsCubit>(),
+          child: const ServiceOfferingAddReviewPage(),
+        ),
+      ),
+    );
+    if (result == true) {
+      context.read<ServiceOfferingDetailCubit>().load(widget.offeringId);
+      context.read<ServiceOfferingReviewsCubit>().refresh();
+    }
   }
 }
 
@@ -501,6 +502,7 @@ class _ProviderHighlight extends StatelessWidget {
       ],
     );
   }
+
 }
 
 class _RatingStars extends StatelessWidget {
@@ -675,10 +677,12 @@ class _ServiceOfferingReviewsSection extends StatefulWidget {
   const _ServiceOfferingReviewsSection({
     required this.offeringId,
     required this.baseUrl,
+    required this.onAddReview,
   });
 
   final String offeringId;
   final String baseUrl;
+  final VoidCallback onAddReview;
 
   @override
   State<_ServiceOfferingReviewsSection> createState() =>
@@ -703,6 +707,14 @@ class _ServiceOfferingReviewsSectionState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final addButton = Align(
+      alignment: Alignment.centerRight,
+      child: TextButton.icon(
+        onPressed: widget.onAddReview,
+        icon: const Icon(Icons.rate_review_rounded),
+        label: Text('service_offerings.reviews.add_button'.tr()),
+      ),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -718,7 +730,14 @@ class _ServiceOfferingReviewsSectionState
           builder: (context, state) {
             if (state.status == ServiceOfferingReviewsStatus.loading &&
                 state.reviews.isEmpty) {
-              return const Center(child: CircularProgressIndicator());
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  addButton,
+                  const SizedBox(height: 4),
+                  const Center(child: CircularProgressIndicator()),
+                ],
+              );
             }
 
             if (state.status == ServiceOfferingReviewsStatus.failure &&
@@ -730,6 +749,8 @@ class _ServiceOfferingReviewsSectionState
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  addButton,
+                  const SizedBox(height: 4),
                   Text(
                     errorText,
                     style: theme.textTheme.bodyMedium,
@@ -750,6 +771,8 @@ class _ServiceOfferingReviewsSectionState
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  addButton,
+                  const SizedBox(height: 4),
                   Text(
                     'service_offerings.reviews.empty'.tr(),
                     style: theme.textTheme.bodyMedium,
@@ -777,6 +800,8 @@ class _ServiceOfferingReviewsSectionState
 
             return Column(
               children: [
+                addButton,
+                const SizedBox(height: 4),
                 ...visibleReviews
                     .map(
                       (review) => Padding(

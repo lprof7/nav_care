@@ -38,6 +38,37 @@ class ServiceOfferingReviewsRepository {
     return Paged(items: reviews, meta: pagination);
   }
 
+  Future<ServiceOfferingReviewCreationResult> createReview({
+    required String offeringId,
+    required double rating,
+    required String comment,
+  }) async {
+    final response = await _remote.createReview(
+      offeringId: offeringId,
+      rating: rating,
+      comment: comment,
+    );
+
+    if (!response.isSuccess || response.data == null) {
+      throw Exception(_resolveErrorMessage(response.error));
+    }
+
+    final data = response.data!;
+    final root = _asMap(data['data']) ?? data;
+    final reviewJson =
+        _asMap(root['review']) ?? _asMap(root['data']) ?? _asMap(root);
+    final review =
+        ServiceOfferingReviewModel.fromJson(reviewJson ?? const {});
+    final newRating = _toDouble(root['rating']);
+    final reviewsCount = _toInt(root['reviewsCount']);
+
+    return ServiceOfferingReviewCreationResult(
+      review: review,
+      rating: newRating,
+      reviewsCount: reviewsCount,
+    );
+  }
+
   Map<String, dynamic>? _asMap(dynamic value) {
     if (value is Map<String, dynamic>) return value;
     if (value is Map) {
@@ -85,4 +116,29 @@ class ServiceOfferingReviewsRepository {
         return 'reviews.error.generic';
     }
   }
+
+  double? _toDouble(dynamic value) {
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value);
+    return null;
+  }
+
+  int? _toInt(dynamic value) {
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    if (value is String) return int.tryParse(value);
+    return null;
+  }
+}
+
+class ServiceOfferingReviewCreationResult {
+  final ServiceOfferingReviewModel review;
+  final double? rating;
+  final int? reviewsCount;
+
+  const ServiceOfferingReviewCreationResult({
+    required this.review,
+    this.rating,
+    this.reviewsCount,
+  });
 }
