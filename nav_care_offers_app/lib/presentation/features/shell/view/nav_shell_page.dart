@@ -6,7 +6,6 @@ import 'package:nav_care_offers_app/core/config/app_config.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/data/users/models/user_profile_model.dart';
 import 'package:nav_care_offers_app/presentation/features/appointments/view/appointments_page.dart';
-import 'package:nav_care_offers_app/presentation/features/home/view/home_page.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/view/hospitals_feature_screen.dart';
 import 'package:nav_care_offers_app/presentation/features/profile/view/user_profile_page.dart';
 import 'package:nav_care_offers_app/presentation/features/profile/viewmodel/user_profile_cubit.dart';
@@ -14,7 +13,6 @@ import 'package:nav_care_offers_app/presentation/features/profile/viewmodel/user
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_app_bar.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_destination.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_drawer.dart';
-import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_nav_bar.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/logout/viewmodel/logout_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/auth_cubit.dart';
 
@@ -134,11 +132,6 @@ class NavShellPage extends StatelessWidget {
                 index: state.currentIndex,
                 children: destinations.map((destination) => destination.content).toList(),
               ),
-              bottomNavigationBar: NavShellNavBar(
-                currentIndex: state.currentIndex,
-                destinations: destinations,
-                onTap: cubit.setTab,
-              ),
             );
           },
         ),
@@ -149,20 +142,14 @@ class NavShellPage extends StatelessWidget {
   List<NavShellDestination> _buildDestinations(BuildContext context) {
     return [
       NavShellDestination(
-        label: 'shell.nav_home'.tr(),
-        icon: Icons.home_rounded,
-        content: const HomePage(),
-        badgeLabel: 'shell.badge_new'.tr(),
+        label: 'shell.nav_hospitals'.tr(),
+        icon: Icons.local_hospital_rounded,
+        content: const HospitalsFeatureScreen(),
       ),
       NavShellDestination(
         label: 'shell.nav_appointments'.tr(),
         icon: Icons.calendar_today_rounded,
         content: const AppointmentsPage(),
-      ),
-      NavShellDestination(
-        label: 'shell.nav_hospitals'.tr(),
-        icon: Icons.local_hospital_rounded,
-        content: const HospitalsFeatureScreen(),
       ),
       NavShellDestination(
         label: 'shell.nav_profile'.tr(),
