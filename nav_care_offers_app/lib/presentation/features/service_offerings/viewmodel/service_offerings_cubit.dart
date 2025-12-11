@@ -5,10 +5,13 @@ import 'package:nav_care_offers_app/data/service_offerings/models/service_offeri
 import 'package:nav_care_offers_app/data/service_offerings/service_offerings_repository.dart';
 
 class ServiceOfferingsCubit extends Cubit<ServiceOfferingsState> {
-  ServiceOfferingsCubit(this._repository)
-      : super(const ServiceOfferingsState());
+  ServiceOfferingsCubit(
+    this._repository, {
+    this.useHospitalToken = true,
+  }) : super(const ServiceOfferingsState());
 
   final ServiceOfferingsRepository _repository;
+  final bool useHospitalToken;
 
   Future<void> loadOfferings({bool refresh = false}) async {
     if (state.isLoading) return;
@@ -18,7 +21,9 @@ class ServiceOfferingsCubit extends Cubit<ServiceOfferingsState> {
       isRefreshing: refresh,
     ));
 
-    final result = await _repository.fetchMyOfferings();
+    final result = await _repository.fetchMyOfferings(
+      useHospitalToken: useHospitalToken,
+    );
     result.fold(
       onFailure: (failure) => emit(state.copyWith(
         isLoading: false,

@@ -29,9 +29,14 @@ class ServiceOfferingsRepository {
   Future<Result<ServiceOfferingsResult>> fetchMyOfferings({
     int? page,
     int? limit,
+    bool useHospitalToken = true,
   }) async {
     final response =
-        await _service.fetchMyOfferings(page: page, limit: limit ?? 20);
+        await _service.fetchMyOfferings(
+      page: page,
+      limit: limit ?? 20,
+      useHospitalToken: useHospitalToken,
+    );
     if (!response.isSuccess || response.data == null) {
       return Result.failure(response.error ?? const Failure.unknown());
     }

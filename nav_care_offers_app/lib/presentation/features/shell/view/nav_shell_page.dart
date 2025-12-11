@@ -7,6 +7,7 @@ import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/data/users/models/user_profile_model.dart';
 import 'package:nav_care_offers_app/presentation/features/appointments/view/appointments_page.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/view/hospitals_feature_screen.dart';
+import 'package:nav_care_offers_app/presentation/features/service_offerings/view/my_service_offerings_page.dart';
 import 'package:nav_care_offers_app/presentation/features/profile/view/user_profile_page.dart';
 import 'package:nav_care_offers_app/presentation/features/profile/viewmodel/user_profile_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/profile/viewmodel/user_profile_state.dart';
@@ -145,6 +146,11 @@ class NavShellPage extends StatelessWidget {
         label: 'shell.nav_hospitals'.tr(),
         icon: Icons.local_hospital_rounded,
         content: const HospitalsFeatureScreen(),
+      ),
+      NavShellDestination(
+        label: 'service_offerings.list.title'.tr(),
+        icon: Icons.medical_services_rounded,
+        content: const MyServiceOfferingsPage(),
       ),
       NavShellDestination(
         label: 'shell.nav_appointments'.tr(),

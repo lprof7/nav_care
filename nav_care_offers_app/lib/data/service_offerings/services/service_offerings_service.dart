@@ -5,6 +5,7 @@ abstract class ServiceOfferingsService {
   Future<Result<Map<String, dynamic>>> fetchMyOfferings({
     int? page,
     int? limit,
+    bool useHospitalToken = true,
   });
 
   Future<Result<Map<String, dynamic>>> fetchOfferingById(String offeringId);

@@ -14,6 +14,7 @@ class RemoteServiceOfferingsService implements ServiceOfferingsService {
   Future<Result<Map<String, dynamic>>> fetchMyOfferings({
     int? page,
     int? limit,
+    bool useHospitalToken = true,
   }) {
     final query = <String, dynamic>{};
     if (page != null) query['page'] = page;
@@ -22,7 +23,7 @@ class RemoteServiceOfferingsService implements ServiceOfferingsService {
       _apiClient.apiConfig.myServiceOfferings,
       query: query.isEmpty ? null : query,
       parser: _parseMap,
-      useHospitalToken: true,
+      useHospitalToken: useHospitalToken,
     );
   }
 
