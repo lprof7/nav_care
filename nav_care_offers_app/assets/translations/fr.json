@@ -558,5 +558,14 @@
     "faq.questions.password_reset.question": "J'ai oubliÃƒÂ© mon mot de passe, que faire ?",
     "faq.questions.password_reset.answer": "Utilisez l'option Ã‚Â« Mot de passe oubliÃƒÂ© Ã‚Â» sur l'ÃƒÂ©cran de connexion pour demander une rÃƒÂ©initialisation et suivez les ÃƒÂ©tapes pour dÃƒÂ©finir un nouveau mot de passe avec votre email ou numÃƒÂ©ro de tÃƒÂ©lÃƒÂ©phone.",
     "faq.questions.data_sync.question": "L'app ne charge pas les donnÃƒÂ©es, que puis-je essayer ?",
-    "faq.questions.data_sync.answer": "VÃƒÂ©rifiez votre connexion internet, puis tirez pour rafraÃƒÂ®chir sur Accueil, Recherche ou Rendez-vous. Si le problÃƒÂ¨me persiste, dÃƒÂ©connectez-vous puis reconnectez-vous pour renouveler la session avant de rÃƒÂ©essayer."
+    "faq.questions.data_sync.answer": "VÃƒÂ©rifiez votre connexion internet, puis tirez pour rafraÃƒÂ®chir sur Accueil, Recherche ou Rendez-vous. Si le problÃƒÂ¨me persiste, dÃƒÂ©connectez-vous puis reconnectez-vous pour renouveler la session avant de rÃƒÂ©essayer.",
+    "network_error": {
+        "title": "Pas de connexion Internet",
+        "subtitle": "Vérifiez votre Wi-Fi ou vos données mobiles, puis réessayez.",
+        "retry": "Réessayer"
+    },
+    "server_error": {
+        "title": "Serveur inaccessible",
+        "subtitle": "Impossible de joindre nos serveurs. Merci de réessayer."
+    }
 }

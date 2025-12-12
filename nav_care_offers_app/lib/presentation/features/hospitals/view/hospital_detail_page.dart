@@ -24,6 +24,7 @@ import 'package:nav_care_offers_app/presentation/shared/ui/cards/service_offerin
 import 'package:nav_care_offers_app/presentation/shared/ui/molecules/hospital_detail_components.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/hospital_reviews_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/hospital_reviews_state.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/network_image.dart';
 
 class HospitalDetailPage extends StatelessWidget {
   final String hospitalId;
@@ -1019,14 +1020,15 @@ class _HeroImageLayer extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     if (imageUrl != null) {
-      return Image.network(
-        imageUrl!,
+      return NetworkImageWrapper(
+        imageUrl: imageUrl,
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => Container(
+        fallback: Container(
           color: theme.colorScheme.surfaceVariant,
           alignment: Alignment.center,
           child: const Icon(Icons.local_hospital_rounded, size: 48),
         ),
+        shimmerChild: Container(color: theme.colorScheme.surfaceVariant),
       );
     }
     return Container(

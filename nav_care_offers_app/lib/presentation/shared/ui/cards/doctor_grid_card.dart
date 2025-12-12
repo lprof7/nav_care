@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/network_image.dart';
 
 /// Shared doctor card used across home sections and hospital details.
 class DoctorGridCard extends StatelessWidget {
@@ -200,13 +201,14 @@ Widget _buildImage({
     );
   }
 
-  return Image.network(
-    imageUrl,
+  return NetworkImageWrapper(
+    imageUrl: imageUrl,
     fit: fit,
-    errorBuilder: (_, __, ___) => Container(
+    fallback: Container(
       color: color,
       alignment: Alignment.center,
       child: const Icon(Icons.person_rounded),
     ),
+    shimmerChild: Container(color: color),
   );
 }

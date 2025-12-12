@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/network_image.dart';
 
 /// Reusable card for displaying a service offering (title, subtitle, badge/price, image, actions).
 class ServiceOfferingCard extends StatelessWidget {
@@ -235,14 +236,15 @@ Widget _buildImage({
   }
 
   if (imageUrl.startsWith('http')) {
-    return Image.network(
-      imageUrl,
+    return NetworkImageWrapper(
+      imageUrl: imageUrl,
       fit: fit,
-      errorBuilder: (_, __, ___) => Container(
+      fallback: Container(
         color: color,
         alignment: Alignment.center,
         child: const Icon(Icons.broken_image_rounded),
       ),
+      shimmerChild: Container(color: color),
     );
   }
 

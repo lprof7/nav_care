@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/network_image.dart';
 
 class HospitalCard extends StatelessWidget {
   final String title;
@@ -116,20 +117,18 @@ class HospitalCard extends StatelessWidget {
     return SizedBox(
       height: 160,
       width: double.infinity,
-      child: Image.network(
-        imageUrl!,
+      child: NetworkImageWrapper(
+        imageUrl: imageUrl,
         fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            color: theme.colorScheme.surfaceContainerHighest,
-            alignment: Alignment.center,
-            child: Icon(
-              Icons.broken_image_outlined,
-              size: 40,
-              color: theme.colorScheme.primary,
-            ),
-          );
-        },
+        fallback: Container(
+          color: theme.colorScheme.surfaceContainerHighest,
+          alignment: Alignment.center,
+          child: Icon(
+            Icons.broken_image_outlined,
+            size: 40,
+            color: theme.colorScheme.primary,
+          ),
+        ),
       ),
     );
   }

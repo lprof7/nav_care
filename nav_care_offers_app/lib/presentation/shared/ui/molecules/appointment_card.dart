@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nav_care_offers_app/data/appointments/models/appointment_model.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/network_image.dart';
 
 class AppointmentCard extends StatelessWidget {
   const AppointmentCard({
@@ -127,27 +128,29 @@ class _PatientAvatar extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(18),
       child: Container(
-        height: 72,
-        width: 72,
-        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.4),
-        child: imageUrl.isEmpty
-            ? Icon(
-                Icons.person_outline,
-                size: 36,
-                color: Theme.of(context).colorScheme.primary,
-              )
-            : Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) {
-                  return Icon(
+          height: 72,
+          width: 72,
+          color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.4),
+          child: imageUrl.isEmpty
+              ? Icon(
+                  Icons.person_outline,
+                  size: 36,
+                  color: Theme.of(context).colorScheme.primary,
+                )
+              : NetworkImageWrapper(
+                  imageUrl: imageUrl,
+                  fit: BoxFit.cover,
+                  fallback: Icon(
                     Icons.person_outline,
                     size: 36,
                     color: Theme.of(context).colorScheme.primary,
-                  );
-                },
-              ),
-      ),
+                  ),
+                  shimmerChild: Container(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .surfaceContainerHighest,
+                  ),
+                )),
     );
   }
 }

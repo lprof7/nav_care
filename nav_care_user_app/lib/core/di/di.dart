@@ -100,6 +100,12 @@ Future<void> configureDependencies(AppConfig config) async {
     baseUrl: config.api.baseUrl,
     timeout: const Duration(milliseconds: 20000),
     tokenStore: sl<TokenStore>(),
+    userStore: sl<UserStore>(),
+    onUnauthorized: () async {
+      if (sl.isRegistered<AuthSessionCubit>()) {
+        sl<AuthSessionCubit>().clearSession();
+      }
+    },
   ).build();
   sl.registerSingleton<ApiClient>(ApiClient(dio, sl<AppConfig>().api));
   sl.registerLazySingleton<AuthSessionCubit>(() => AuthSessionCubit(

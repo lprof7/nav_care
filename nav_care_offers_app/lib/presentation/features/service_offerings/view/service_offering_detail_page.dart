@@ -13,6 +13,7 @@ import 'package:nav_care_offers_app/presentation/features/service_offerings/view
 import 'package:nav_care_offers_app/data/service_offerings/service_offerings_repository.dart';
 import 'package:nav_care_offers_app/data/reviews/service_offering_reviews/service_offering_reviews_repository.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/view/service_offering_form_page.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/network_image.dart';
 
 class ServiceOfferingDetailPage extends StatelessWidget {
   const ServiceOfferingDetailPage({
@@ -532,16 +533,16 @@ class _TopPreview extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: imageUrl != null && imageUrl!.isNotEmpty
-                      ? Image.network(
-                          imageUrl!,
+                      ? NetworkImageWrapper(
+                          imageUrl: imageUrl,
                           fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: double.infinity,
-                          errorBuilder: (_, __, ___) => Icon(
+                          fallback: Icon(
                             Icons.medical_services_rounded,
                             size: 48,
                             color: colorScheme.primary,
                           ),
+                          shimmerChild:
+                              Container(color: theme.colorScheme.surfaceVariant),
                         )
                       : Icon(
                           Icons.medical_services_rounded,
@@ -578,16 +579,29 @@ class _ProviderHighlight extends StatelessWidget {
     final theme = Theme.of(context);
     return Row(
       children: [
-        CircleAvatar(
-          radius: 32,
-          backgroundColor: theme.colorScheme.surface,
-          backgroundImage: (avatar != null && avatar!.isNotEmpty)
-              ? NetworkImage(avatar!)
-              : null,
+        Container(
+          width: 64,
+          height: 64,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: theme.colorScheme.surface,
+          ),
           child: (avatar == null || avatar!.isEmpty)
               ? Icon(Icons.person_rounded,
                   color: theme.colorScheme.onSurface, size: 32)
-              : null,
+              : ClipOval(
+                  child: NetworkImageWrapper(
+                    imageUrl: avatar,
+                    fit: BoxFit.cover,
+                    fallback: Icon(
+                      Icons.person_rounded,
+                      color: theme.colorScheme.onSurface,
+                      size: 32,
+                    ),
+                    shimmerChild:
+                        Container(color: theme.colorScheme.surfaceVariant),
+                  ),
+                ),
         ),
         const SizedBox(width: 14),
         Expanded(

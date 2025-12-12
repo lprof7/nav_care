@@ -5,9 +5,11 @@ import 'package:go_router/go_router.dart';
 import 'package:feedback/feedback.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/core/routing/app_router.dart';
+import 'package:nav_care_offers_app/core/network/network_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/auth_cubit.dart';
 import 'package:nav_care_offers_app/presentation/shared/theme/app_theme.dart';
 import 'package:nav_care_offers_app/presentation/shared/theme/theme_mode_cubit.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/network_gate.dart';
 
 class MyApp extends StatefulWidget {
   final String initialRoute;
@@ -17,13 +19,27 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   late final GoRouter _router;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _router = createAppRouter(initialLocation: widget.initialRoute);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      context.read<NetworkCubit>().recheckConnectivity();
+    }
   }
 
   @override
@@ -34,6 +50,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<ThemeModeCubit>(
           create: (_) => ThemeModeCubit(initialMode: ThemeMode.system),
         ),
+        BlocProvider<NetworkCubit>(create: (_) => sl<NetworkCubit>()),
       ],
       child: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
@@ -55,6 +72,11 @@ class _MyAppState extends State<MyApp> {
                 localizationsDelegates: context.localizationDelegates,
                 supportedLocales: context.supportedLocales,
                 locale: context.locale,
+                builder: (context, child) {
+                  return NetworkGate(
+                    child: child ?? const SizedBox.shrink(),
+                  );
+                },
               ),
             );
           },

@@ -4,6 +4,8 @@ import 'package:nav_care_offers_app/presentation/features/doctors/viewmodel/doct
 import '../config/app_config.dart';
 import '../network/dio_client.dart';
 import '../network/api_client.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import '../network/network_cubit.dart';
 import '../storage/doctor_store.dart';
 import '../storage/secure_doctor_store.dart';
 import '../storage/secure_token_store.dart';
@@ -87,6 +89,11 @@ Future<void> configureDependencies(AppConfig config) async {
     tokenStore: sl<TokenStore>(),
   ).build();
   sl.registerSingleton<ApiClient>(ApiClient(dio, sl<AppConfig>().api));
+  sl.registerLazySingleton<Connectivity>(() => Connectivity());
+  sl.registerSingleton<NetworkCubit>(NetworkCubit(
+    connectivity: sl<Connectivity>(),
+    appConfig: sl<AppConfig>(),
+  ));
 
   // Authentication
   sl.registerLazySingleton<SigninService>(

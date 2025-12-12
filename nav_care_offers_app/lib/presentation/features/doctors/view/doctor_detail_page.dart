@@ -10,6 +10,7 @@ import 'package:nav_care_offers_app/data/reviews/doctor_reviews/models/doctor_re
 import 'package:nav_care_offers_app/presentation/features/doctors/viewmodel/doctor_reviews_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/doctors/viewmodel/doctor_reviews_state.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/doctor_review_card.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/network_image.dart';
 
 class DoctorDetailPage extends StatefulWidget {
   final String doctorId;
@@ -237,14 +238,16 @@ class _HeroImage extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           imageUrl != null && imageUrl!.isNotEmpty
-              ? Image.network(
-                  imageUrl!,
+              ? NetworkImageWrapper(
+                  imageUrl: imageUrl,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
+                  fallback: Container(
                     color: theme.colorScheme.surfaceVariant,
                     alignment: Alignment.center,
                     child: const Icon(Icons.person_rounded, size: 48),
                   ),
+                  shimmerChild:
+                      Container(color: theme.colorScheme.surfaceVariant),
                 )
               : Container(
                   color: theme.colorScheme.surfaceVariant,
@@ -300,16 +303,25 @@ class _SummaryCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              CircleAvatar(
-                radius: 36,
-                backgroundColor: theme.colorScheme.surfaceVariant,
-                backgroundImage: (avatarUrl != null && avatarUrl!.isNotEmpty)
-                    ? NetworkImage(avatarUrl!)
-                    : null,
-                onBackgroundImageError: (_, __) {},
+              Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: theme.colorScheme.surfaceVariant,
+                ),
                 child: (avatarUrl == null || avatarUrl!.isEmpty)
                     ? const Icon(Icons.person_rounded, size: 30)
-                    : null,
+                    : ClipOval(
+                        child: NetworkImageWrapper(
+                          imageUrl: avatarUrl,
+                          fit: BoxFit.cover,
+                          fallback: const Icon(Icons.person_rounded, size: 30),
+                          shimmerChild: Container(
+                            color: theme.colorScheme.surfaceContainerHighest,
+                          ),
+                        ),
+                      ),
               ),
               const SizedBox(width: 14),
               Expanded(
