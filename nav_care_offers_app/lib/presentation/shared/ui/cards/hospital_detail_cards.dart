@@ -75,8 +75,8 @@ class HospitalDetailSectionCard extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 title,
-                style:
-                    theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -115,7 +115,7 @@ class HospitalOverviewCard extends StatelessWidget {
     super.key,
     required this.title,
     required this.subtitle,
-    required this.rating,
+    this.rating = 0,
     required this.stats,
     required this.primaryActionLabel,
     required this.secondaryActionLabel,
@@ -147,8 +147,8 @@ class HospitalOverviewCard extends StatelessWidget {
                       title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style:
-                          theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+                      style: theme.textTheme.titleLarge
+                          ?.copyWith(fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -156,7 +156,8 @@ class HospitalOverviewCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                        color:
+                            theme.textTheme.bodySmall?.color?.withOpacity(0.7),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -178,13 +179,6 @@ class HospitalOverviewCard extends StatelessWidget {
                   ],
                 ),
               ),
-              IconButton(
-                onPressed: onToggleSave,
-                icon: Icon(
-                  isSaved ? Icons.favorite_rounded : Icons.favorite_border,
-                  color: isSaved ? theme.colorScheme.primary : null,
-                ),
-              ),
             ],
           ),
           const SizedBox(height: 14),
@@ -201,22 +195,24 @@ class HospitalOverviewCard extends StatelessWidget {
                 .asMap()
                 .entries
                 .map((entry) {
-              final index = entry.key;
-              final widget = entry.value;
-              if (index < stats.length - 1) {
-                return [
-                  widget,
-                  const SizedBox(
-                    height: 40,
-                    child: VerticalDivider(
-                      width: 20,
-                      thickness: 1,
-                    ),
-                  )
-                ];
-              }
-              return [widget];
-            }).expand((element) => element).toList(),
+                  final index = entry.key;
+                  final widget = entry.value;
+                  if (index < stats.length - 1) {
+                    return [
+                      widget,
+                      const SizedBox(
+                        height: 40,
+                        child: VerticalDivider(
+                          width: 20,
+                          thickness: 1,
+                        ),
+                      )
+                    ];
+                  }
+                  return [widget];
+                })
+                .expand((element) => element)
+                .toList(),
           ),
           const SizedBox(height: 14),
           Row(
@@ -422,14 +418,14 @@ class InfoGridCard extends StatelessWidget {
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style:
-                      theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+                  style: theme.textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.w800),
                 ),
                 if (badge != null && badge.isNotEmpty) ...[
                   const SizedBox(height: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 7),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                     decoration: BoxDecoration(
                       color: accent.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(18),
@@ -491,8 +487,8 @@ class _StatItem extends StatelessWidget {
       children: [
         Text(
           value,
-          style: theme.textTheme.titleLarge
-              ?.copyWith(fontWeight: FontWeight.w800),
+          style:
+              theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: 4),
         Text(
@@ -543,7 +539,8 @@ class _HeaderImage extends StatelessWidget {
               top: 10,
               left: 10,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(14),
@@ -551,12 +548,13 @@ class _HeaderImage extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.star_rounded, size: 16, color: Colors.amber),
+                    const Icon(Icons.star_rounded,
+                        size: 16, color: Colors.amber),
                     const SizedBox(width: 4),
                     Text(
                       rating! > 0 ? rating!.toStringAsFixed(1) : '--',
-                      style:
-                          theme.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(fontWeight: FontWeight.w700),
                     ),
                   ],
                 ),

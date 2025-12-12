@@ -50,6 +50,7 @@ dependencies:
   salomon_bottom_bar: ^3.3.2
   freezed_annotation: ^2.4.1
   json_annotation: ^4.9.0
+  feedback: ^3.0.1
 
 dev_dependencies:
   flutter_test:

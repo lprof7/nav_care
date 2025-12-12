@@ -12,6 +12,7 @@ class NetworkCubit extends Cubit<NetworkState> {
   final AppConfig _appConfig; // Inject AppConfig instead of ApiClient
   late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
   Timer? _serverCheckTimer; // Add a timer for periodic server checks
+  Timer? _errorDelayTimer; // Controls how long we keep showing shimmer before exposing errors
 
   NetworkCubit({required Connectivity connectivity, required AppConfig appConfig})
       : _connectivity = connectivity,
@@ -19,6 +20,7 @@ class NetworkCubit extends Cubit<NetworkState> {
         super(const NetworkState(status: NetworkStatus.connected)) {
     _initConnectivity();
     _startServerCheckTimer(); // Start the periodic server check
+    _startErrorDelayTimer(); // Keep shimmer up for the first few seconds
   }
 
   Future<void> _initConnectivity() async {
@@ -31,6 +33,13 @@ class NetworkCubit extends Cubit<NetworkState> {
   void _startServerCheckTimer() {
     _serverCheckTimer = Timer.periodic(const Duration(seconds:10), (_) {
       _checkNetworkAndServerStatus();
+    });
+  }
+
+  void _startErrorDelayTimer() {
+    _errorDelayTimer?.cancel();
+    _errorDelayTimer = Timer(const Duration(seconds: 10), () {
+      emit(state.copyWith(canShowError: true));
     });
   }
 
@@ -74,6 +83,8 @@ class NetworkCubit extends Cubit<NetworkState> {
   }
 
   Future<void> recheckConnectivity() async {
+    emit(state.copyWith(canShowError: false));
+    _startErrorDelayTimer();
     await _checkNetworkAndServerStatus();
   }
 
@@ -81,6 +92,7 @@ class NetworkCubit extends Cubit<NetworkState> {
   Future<void> close() {
     _connectivitySubscription.cancel();
     _serverCheckTimer?.cancel(); // Cancel the timer
+    _errorDelayTimer?.cancel();
     return super.close();
   }
 }

@@ -10,6 +10,7 @@ import 'package:nav_care_user_app/presentation/features/home/sections/featured_h
 import 'package:nav_care_user_app/presentation/features/home/sections/featured_services/viewmodel/featured_services_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/home/sections/hospitals_choice/viewmodel/hospitals_choice_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/home/sections/recent_service_offerings/viewmodel/recent_service_offerings_cubit.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../sections/ads/view/ads_section.dart';
 import '../sections/featured_services/view/featured_services_section.dart';
@@ -103,6 +104,8 @@ class HomePage extends StatelessWidget {
                 itemBuilder: (context, index) => sections[index],
               ),
             );
+          } else if (!state.canShowError) {
+            return const _HomeConnectionShimmer();
           } else {
             String imagePath;
             String messageKey;
@@ -267,6 +270,133 @@ class _BannerButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
+      ),
+    );
+  }
+}
+
+class _HomeConnectionShimmer extends StatelessWidget {
+  const _HomeConnectionShimmer();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final baseColor = theme.brightness == Brightness.dark
+        ? Colors.grey.shade800
+        : Colors.grey.shade300;
+    final highlightColor = theme.brightness == Brightness.dark
+        ? Colors.grey.shade700
+        : Colors.grey.shade100;
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Shimmer.fromColors(
+          baseColor: baseColor,
+          highlightColor: highlightColor,
+          child: ListView.separated(
+            itemCount: 8,
+            separatorBuilder: (_, __) => const SizedBox(height: 16),
+            itemBuilder: (_, index) {
+              if (index == 0) {
+                return const _ShimmerHeaderCard();
+              }
+              return const _ShimmerSectionCard();
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ShimmerHeaderCard extends StatelessWidget {
+  const _ShimmerHeaderCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final tileColor = Theme.of(context).brightness == Brightness.dark
+        ? Colors.grey.shade900
+        : Colors.white;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: tileColor,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(height: 18, width: 160, color: tileColor),
+          const SizedBox(height: 12),
+          Container(height: 14, width: 220, color: tileColor),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(child: Container(height: 44, color: tileColor)),
+              const SizedBox(width: 12),
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: tileColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ShimmerSectionCard extends StatelessWidget {
+  const _ShimmerSectionCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final tileColor = Theme.of(context).brightness == Brightness.dark
+        ? Colors.grey.shade900
+        : Colors.white;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: tileColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(height: 16, width: 120, color: tileColor),
+          const SizedBox(height: 12),
+          Container(height: 14, width: 200, color: tileColor),
+          const SizedBox(height: 16),
+          Row(
+            children: List.generate(3, (index) {
+              return Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(right: index == 2 ? 0 : 10),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 90,
+                        decoration: BoxDecoration(
+                          color: tileColor,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(height: 12, color: tileColor),
+                    ],
+                  ),
+                ),
+              );
+            }),
+          ),
+        ],
       ),
     );
   }

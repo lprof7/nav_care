@@ -1,10 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nav_care_offers_app/core/config/app_config.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/data/doctors/doctors_repository.dart';
 import 'package:nav_care_offers_app/data/doctors/models/doctor_model.dart';
 import 'package:nav_care_offers_app/data/invitations/models/hospital_invitation.dart';
+import 'package:nav_care_offers_app/data/reviews/doctor_reviews/models/doctor_review_model.dart';
+import 'package:nav_care_offers_app/presentation/features/doctors/viewmodel/doctor_reviews_cubit.dart';
+import 'package:nav_care_offers_app/presentation/features/doctors/viewmodel/doctor_reviews_state.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/cards/doctor_review_card.dart';
 
 class DoctorDetailPage extends StatefulWidget {
   final String doctorId;
@@ -47,155 +52,174 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
   @override
   Widget build(BuildContext context) {
     final baseUrl = sl<AppConfig>().api.baseUrl;
-    return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () async {
-          setState(() {
-            _future = _load();
-          });
-          await _future;
-        },
-        child: FutureBuilder<DoctorModel>(
-          future: _future,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError || !snapshot.hasData) {
-              return _ErrorView(
-                message: 'hospitals.detail.doctors_empty'.tr(),
-                onRetry: () => setState(() {
-                  _future = _load();
-                }),
-              );
-            }
+    return BlocProvider(
+        create: (_) =>
+            sl<DoctorReviewsCubit>()..loadReviews(doctorId: widget.doctorId),
+        child: Scaffold(
+          body: RefreshIndicator(
+            onRefresh: () async {
+              setState(() {
+                _future = _load();
+              });
+              await _future;
+              context.read<DoctorReviewsCubit>().refresh();
+            },
+            child: FutureBuilder<DoctorModel>(
+              future: _future,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError || !snapshot.hasData) {
+                  return _ErrorView(
+                    message: 'hospitals.detail.doctors_empty'.tr(),
+                    onRetry: () => setState(() {
+                      _future = _load();
+                    }),
+                  );
+                }
 
-            final doctor = snapshot.data!;
-            final locale = context.locale.languageCode;
-            final bio = doctor.bioForLocale(locale);
-            final avatar =
-                doctor.avatarImage(baseUrl: baseUrl) ?? doctor.coverImage(baseUrl: baseUrl);
-            final cover = avatar ?? doctor.coverImage(baseUrl: baseUrl);
-            final isMember = (widget.hospitalDoctors ?? [])
-                .any((d) => d.id == doctor.id || d.userId == doctor.userId);
-            HospitalInvitation? invitation;
-            for (final inv in widget.invitations ?? []) {
-              if (inv.inviteeDoctor?.id == doctor.id) {
-                invitation = inv;
-                break;
-              }
-            }
-            final bool canSendInvitation =
-                !isMember && (invitation == null || invitation.status == 'rejected');
+                final doctor = snapshot.data!;
+                final reviewsState = context.watch<DoctorReviewsCubit>().state;
+                final locale = context.locale.languageCode;
+                final bio = doctor.bioForLocale(locale);
+                final avatar = doctor.avatarImage(baseUrl: baseUrl) ??
+                    doctor.coverImage(baseUrl: baseUrl);
+                final cover = avatar ?? doctor.coverImage(baseUrl: baseUrl);
+                final isMember = (widget.hospitalDoctors ?? [])
+                    .any((d) => d.id == doctor.id || d.userId == doctor.userId);
+                HospitalInvitation? invitation;
+                for (final inv in widget.invitations ?? []) {
+                  if (inv.inviteeDoctor?.id == doctor.id) {
+                    invitation = inv;
+                    break;
+                  }
+                }
+                final bool canSendInvitation = !isMember &&
+                    (invitation == null || invitation.status == 'rejected');
 
-            return CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  pinned: true,
-                  leading: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                    onPressed: () => Navigator.of(context).maybePop(),
-                  ),
-                  title: Text(
-                    doctor.displayName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      _HeroImage(imageUrl: cover),
-                      _SummaryCard(
-                        doctor: doctor,
-                        avatarUrl: avatar,
+                return CustomScrollView(
+                  slivers: [
+                    SliverAppBar(
+                      pinned: true,
+                      leading: IconButton(
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                        onPressed: () => Navigator.of(context).maybePop(),
                       ),
-                    ],
-                  ),
-                ),
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate(
-                      [
-                        if (widget.hospitalId != null && !isMember)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: FilledButton(
-                              onPressed: canSendInvitation
-                                  ? () {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            'hospitals.detail.invitation_send'.tr(),
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  : null,
-                              child: Text(canSendInvitation
-                                  ? 'hospitals.detail.invitation_send'.tr()
-                                  : 'hospitals.detail.invitation_sent'.tr()),
-                            ),
-                          ),
-                        _Section(
-                          icon: Icons.info_rounded,
-                          title: 'hospitals.detail.about'.tr(),
-                          child: Text(
-                            bio.isNotEmpty
-                                ? bio
-                                : 'hospitals.detail.no_description'.tr(),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        _Section(
-                          icon: Icons.contact_phone_rounded,
-                          title: 'hospitals.detail.contact'.tr(),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _InfoRow(
-                                icon: Icons.email_rounded,
-                                label: doctor.email ?? '--',
-                              ),
-                              const SizedBox(height: 8),
-                              _InfoRow(
-                                icon: Icons.phone_rounded,
-                                label: doctor.phone ?? '--',
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (doctor.affiliations.isNotEmpty) ...[
-                          const SizedBox(height: 12),
-                          _Section(
-                            icon: Icons.business_center_rounded,
-                            title: 'hospitals.detail.stats.clinics'.tr(),
-                            child: Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: doctor.affiliations
-                                  .map(
-                                    (aff) => Chip(
-                                      label: Text(aff),
-                                      materialTapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
+                      title: Text(
+                        doctor.displayName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Column(
+                        children: [
+                          _HeroImage(imageUrl: cover),
+                          _SummaryCard(
+                            doctor: doctor,
+                            avatarUrl: avatar,
                           ),
                         ],
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
-    );
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                      sliver: SliverList(
+                        delegate: SliverChildListDelegate(
+                          [
+                            if (widget.hospitalId != null && !isMember)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: FilledButton(
+                                  onPressed: canSendInvitation
+                                      ? () {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'hospitals.detail.invitation_send'
+                                                    .tr(),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      : null,
+                                  child: Text(canSendInvitation
+                                      ? 'hospitals.detail.invitation_send'.tr()
+                                      : 'hospitals.detail.invitation_sent'
+                                          .tr()),
+                                ),
+                              ),
+                            _Section(
+                              icon: Icons.info_rounded,
+                              title: 'hospitals.detail.about'.tr(),
+                              child: Text(
+                                bio.isNotEmpty
+                                    ? bio
+                                    : 'hospitals.detail.no_description'.tr(),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            _Section(
+                              icon: Icons.contact_phone_rounded,
+                              title: 'hospitals.detail.contact'.tr(),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _InfoRow(
+                                    icon: Icons.email_rounded,
+                                    label: doctor.email ?? '--',
+                                  ),
+                                  const SizedBox(height: 8),
+                                  _InfoRow(
+                                    icon: Icons.phone_rounded,
+                                    label: doctor.phone ?? '--',
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (doctor.affiliations.isNotEmpty) ...[
+                              const SizedBox(height: 12),
+                              _Section(
+                                icon: Icons.business_center_rounded,
+                                title: 'hospitals.detail.stats.clinics'.tr(),
+                                child: Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: doctor.affiliations
+                                      .map(
+                                        (aff) => Chip(
+                                          label: Text(aff),
+                                          materialTapTargetSize:
+                                              MaterialTapTargetSize.shrinkWrap,
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              ),
+                            ],
+                            const SizedBox(height: 12),
+                            DoctorReviewsSection(
+                              reviews: reviewsState.reviews,
+                              status: reviewsState.status,
+                              baseUrl: baseUrl,
+                              isLoadingMore: reviewsState.isLoadingMore,
+                              onReload: () =>
+                                  context.read<DoctorReviewsCubit>().refresh(),
+                              onLoadMore: () =>
+                                  context.read<DoctorReviewsCubit>().loadMore(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ));
   }
 }
 
@@ -279,8 +303,9 @@ class _SummaryCard extends StatelessWidget {
               CircleAvatar(
                 radius: 36,
                 backgroundColor: theme.colorScheme.surfaceVariant,
-                backgroundImage:
-                    (avatarUrl != null && avatarUrl!.isNotEmpty) ? NetworkImage(avatarUrl!) : null,
+                backgroundImage: (avatarUrl != null && avatarUrl!.isNotEmpty)
+                    ? NetworkImage(avatarUrl!)
+                    : null,
                 onBackgroundImageError: (_, __) {},
                 child: (avatarUrl == null || avatarUrl!.isEmpty)
                     ? const Icon(Icons.person_rounded, size: 30)
@@ -370,8 +395,8 @@ class _Section extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 title,
-                style:
-                    theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -436,6 +461,175 @@ class _ErrorView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class DoctorReviewsSection extends StatefulWidget {
+  final List<DoctorReviewModel> reviews;
+  final DoctorReviewsStatus status;
+  final String baseUrl;
+  final VoidCallback onReload;
+  final VoidCallback onLoadMore;
+  final bool isLoadingMore;
+
+  const DoctorReviewsSection({
+    super.key,
+    required this.reviews,
+    required this.status,
+    required this.baseUrl,
+    required this.onReload,
+    required this.onLoadMore,
+    required this.isLoadingMore,
+  });
+
+  @override
+  State<DoctorReviewsSection> createState() => _DoctorReviewsSectionState();
+}
+
+class _DoctorReviewsSectionState extends State<DoctorReviewsSection> {
+  static const int _initialVisible = 3;
+  bool _showAll = false;
+
+  @override
+  void didUpdateWidget(covariant DoctorReviewsSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_showAll && widget.reviews.length <= _initialVisible) {
+      _showAll = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    if (widget.status == DoctorReviewsStatus.loading &&
+        widget.reviews.isEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'service_offerings.reviews.title'.tr(),
+            style: theme.textTheme.titleMedium
+                ?.copyWith(fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 8),
+          const Center(child: CircularProgressIndicator()),
+        ],
+      );
+    }
+
+    if (widget.status == DoctorReviewsStatus.failure &&
+        widget.reviews.isEmpty) {
+      final errorText = (context.read<DoctorReviewsCubit>().state.message ??
+              'service_offerings.reviews.error')
+          .tr();
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'service_offerings.reviews.title'.tr(),
+            style: theme.textTheme.titleMedium
+                ?.copyWith(fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 8),
+          Text(errorText, style: theme.textTheme.bodyMedium),
+          const SizedBox(height: 8),
+          TextButton.icon(
+            onPressed: widget.onReload,
+            icon: const Icon(Icons.refresh_rounded),
+            label: Text('service_offerings.reviews.retry'.tr()),
+          ),
+        ],
+      );
+    }
+
+    if (widget.reviews.isEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'service_offerings.reviews.title'.tr(),
+            style: theme.textTheme.titleMedium
+                ?.copyWith(fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'service_offerings.reviews.empty'.tr(),
+            style: theme.textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 8),
+          TextButton.icon(
+            onPressed: widget.onReload,
+            icon: const Icon(Icons.refresh_rounded),
+            label: Text('service_offerings.reviews.retry'.tr()),
+          ),
+        ],
+      );
+    }
+
+    final visible = _showAll
+        ? widget.reviews
+        : widget.reviews.take(_initialVisible).toList();
+    final canShowMore =
+        (!_showAll && widget.reviews.length > _initialVisible) ||
+            widget.isLoadingMore;
+    final canShowLess = _showAll && widget.reviews.length > _initialVisible;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'service_offerings.reviews.title'.tr(),
+          style: theme.textTheme.titleMedium
+              ?.copyWith(fontWeight: FontWeight.w800),
+        ),
+        const SizedBox(height: 12),
+        ...visible
+            .map(
+              (review) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: DoctorReviewCard(
+                  review: review,
+                  baseUrl: widget.baseUrl,
+                ),
+              ),
+            )
+            .toList(),
+        if (canShowMore ||
+            (widget.status == DoctorReviewsStatus.loading &&
+                widget.reviews.isNotEmpty))
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              onPressed: widget.isLoadingMore
+                  ? null
+                  : () {
+                      setState(() => _showAll = true);
+                      if (!widget.isLoadingMore) {
+                        widget.onLoadMore();
+                      }
+                    },
+              icon: widget.isLoadingMore
+                  ? const SizedBox(
+                      height: 16,
+                      width: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.expand_more_rounded),
+              label: Text('service_offerings.reviews.load_more'.tr()),
+            ),
+          ),
+        if (canShowLess)
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              onPressed: () => setState(() => _showAll = false),
+              icon: const Icon(Icons.expand_less_rounded),
+              label: Text('service_offerings.reviews.show_less'.tr()),
+            ),
+          ),
+      ],
     );
   }
 }

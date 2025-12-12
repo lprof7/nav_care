@@ -15,6 +15,7 @@ class Hospital extends Equatable {
   final List<String> images;
   final List<HospitalClinic> clinics;
   final List<Doctor> doctors;
+  final double? rating;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -32,6 +33,7 @@ class Hospital extends Equatable {
     this.images = const [],
     this.clinics = const [],
     this.doctors = const [],
+    this.rating = 0,
     this.createdAt,
     this.updatedAt,
   });
@@ -72,6 +74,7 @@ class Hospital extends Equatable {
       images: _parseStringList(json['images'], baseUrl: baseUrl),
       clinics: _parseClinics(rawClinics, baseUrl: baseUrl),
       doctors: _parseDoctors(rawDoctors),
+      rating: HospitalCoordinates._parseDouble(json['rating']) ?? 0,
       createdAt: _parseDate(json['created_at']),
       updatedAt: _parseDate(json['updated_at']),
     );
@@ -91,6 +94,7 @@ class Hospital extends Equatable {
     List<String>? images,
     List<HospitalClinic>? clinics,
     List<Doctor>? doctors,
+    double? rating,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -108,6 +112,7 @@ class Hospital extends Equatable {
       images: images ?? this.images,
       clinics: clinics ?? this.clinics,
       doctors: doctors ?? this.doctors,
+      rating: rating ?? this.rating ?? 0,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -130,6 +135,7 @@ class Hospital extends Equatable {
         'clinics': clinics.map((e) => e.toJson()).toList(),
       if (doctors.isNotEmpty)
         'doctors': doctors.map((e) => e.toJson()).toList(),
+      if (rating != null) 'rating': rating,
       if (createdAt != null) 'created_at': createdAt!.toIso8601String(),
       if (updatedAt != null) 'updated_at': updatedAt!.toIso8601String(),
     };

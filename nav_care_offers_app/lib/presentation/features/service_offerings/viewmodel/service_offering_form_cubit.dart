@@ -12,6 +12,7 @@ class ServiceOfferingFormCubit extends Cubit<ServiceOfferingFormState> {
   ServiceOfferingFormCubit(
     this._repository, {
     ServiceOffering? initial,
+    this.useHospitalToken = true,
   }) : super(ServiceOfferingFormState(
           mode: initial == null
               ? ServiceOfferingFormMode.create
@@ -21,6 +22,7 @@ class ServiceOfferingFormCubit extends Cubit<ServiceOfferingFormState> {
         ));
 
   final ServiceOfferingsRepository _repository;
+  final bool useHospitalToken;
 
   static List<ServiceCategory> _initialCatalog(ServiceOffering offering) {
     return [offering.service];
@@ -81,8 +83,15 @@ class ServiceOfferingFormCubit extends Cubit<ServiceOfferingFormState> {
     );
 
     final result = state.mode == ServiceOfferingFormMode.create
-        ? await _repository.createOffering(payload)
-        : await _repository.updateOffering(state.initial!.id, payload);
+        ? await _repository.createOffering(
+            payload,
+            useHospitalToken: useHospitalToken,
+          )
+        : await _repository.updateOffering(
+            state.initial!.id,
+            payload,
+            useHospitalToken: useHospitalToken,
+          );
 
     result.fold(
       onFailure: (failure) => emit(

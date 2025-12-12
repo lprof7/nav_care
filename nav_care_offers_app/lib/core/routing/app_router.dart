@@ -22,22 +22,35 @@ import 'package:nav_care_offers_app/presentation/features/service_offerings/view
 import 'package:nav_care_offers_app/presentation/features/service_offerings/view/service_offering_form_page.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/view/service_offering_detail_page.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/viewmodel/service_offerings_cubit.dart';
+import 'package:nav_care_offers_app/presentation/features/authentication/reset_password/view/reset_password_code_page.dart';
+import 'package:nav_care_offers_app/presentation/features/authentication/reset_password/view/reset_password_email_page.dart';
+import 'package:nav_care_offers_app/presentation/features/authentication/reset_password/view/reset_password_new_password_page.dart';
+import 'package:nav_care_offers_app/presentation/features/authentication/reset_password/viewmodel/reset_password_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/profile/view/edit_user_profile_page.dart';
 import 'package:nav_care_offers_app/presentation/features/profile/view/forgot_password_page.dart';
 import 'package:nav_care_offers_app/presentation/features/profile/view/update_password_page.dart';
 import 'package:nav_care_offers_app/presentation/features/profile/viewmodel/user_profile_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/signup/view/signup_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nav_care_offers_app/presentation/features/faq/view/faq_page.dart';
+import 'package:nav_care_offers_app/presentation/features/contact/view/contact_page.dart';
+import 'package:nav_care_offers_app/presentation/features/about/view/about_page.dart';
 
 enum AppRoute {
   root('/'),
   signIn('/signin'),
   signUp('/signup'),
   becomeDoctor('/become-doctor'),
+  resetPasswordEmail('/reset-password/email'),
+  resetPasswordCode('/reset-password/code'),
+  resetPasswordNewPassword('/reset-password/new-password'),
   home('/home'),
   profileEdit('/profile/edit'),
   profilePassword('/profile/password'),
   profileForgotPassword('/profile/forgot-password'),
+  faq('/faq'),
+  contact('/contact'),
+  about('/about'),
   hospitalNew('/hospitals/new'),
   hospitalDetail('/hospitals/:id'),
   hospitalEdit('/hospitals/:id/edit'),
@@ -78,6 +91,45 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
       GoRoute(
         path: AppRoute.home.path,
         builder: (ctx, st) => const NavShellPage(),
+      ),
+      GoRoute(
+        path: AppRoute.resetPasswordEmail.path,
+        builder: (ctx, st) => BlocProvider(
+          create: (_) => sl<ResetPasswordCubit>(),
+          child: const ResetPasswordEmailPage(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoute.resetPasswordCode.path,
+        builder: (ctx, st) {
+          final extra = st.extra;
+          if (extra is ResetPasswordCubit) {
+            return BlocProvider.value(
+              value: extra,
+              child: const ResetPasswordCodePage(),
+            );
+          }
+          return BlocProvider(
+            create: (_) => sl<ResetPasswordCubit>(),
+            child: const ResetPasswordEmailPage(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoute.resetPasswordNewPassword.path,
+        builder: (ctx, st) {
+          final extra = st.extra;
+          if (extra is ResetPasswordCubit) {
+            return BlocProvider.value(
+              value: extra,
+              child: const ResetPasswordNewPasswordPage(),
+            );
+          }
+          return BlocProvider(
+            create: (_) => sl<ResetPasswordCubit>(),
+            child: const ResetPasswordEmailPage(),
+          );
+        },
       ),
       GoRoute(
         path: AppRoute.profileEdit.path,
@@ -132,6 +184,18 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
             child: const ForgotPasswordPage(),
           );
         },
+      ),
+      GoRoute(
+        path: AppRoute.faq.path,
+        builder: (ctx, st) => const FaqPage(),
+      ),
+      GoRoute(
+        path: AppRoute.contact.path,
+        builder: (ctx, st) => const ContactPage(),
+      ),
+      GoRoute(
+        path: AppRoute.about.path,
+        builder: (ctx, st) => const AboutPage(),
       ),
       GoRoute(
         path: AppRoute.hospitalNew.path,

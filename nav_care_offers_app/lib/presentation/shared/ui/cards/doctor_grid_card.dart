@@ -7,8 +7,6 @@ class DoctorGridCard extends StatelessWidget {
   final String? buttonLabel;
   final String? imageUrl;
   final double? rating;
-  final bool isSaved;
-  final VoidCallback? onToggleSave;
   final VoidCallback? onTap;
   final VoidCallback? onPressed;
 
@@ -19,8 +17,6 @@ class DoctorGridCard extends StatelessWidget {
     this.buttonLabel,
     this.imageUrl,
     this.rating,
-    this.isSaved = false,
-    this.onToggleSave,
     this.onTap,
     this.onPressed,
   });
@@ -28,118 +24,128 @@ class DoctorGridCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final accent = theme.colorScheme.primary;
+    final cardRadius = 28.0;
+    final showButton = buttonLabel != null && buttonLabel!.isNotEmpty;
+
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: accent.withOpacity(0.1), width: 1.1),
+        borderRadius: BorderRadius.circular(cardRadius),
+        border: Border.all(
+          color: Colors.black.withOpacity(0.04),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: accent.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 8),
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(cardRadius),
         onTap: onTap ?? onPressed,
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
-              child: Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(18),
-                    child: SizedBox(
-                      height: 110,
-                      width: double.infinity,
-                      child: _buildImage(
-                        imageUrl: imageUrl,
-                        fit: BoxFit.cover,
-                        placeholderColor: theme.colorScheme.surfaceVariant,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 10,
-                    left: 10,
-                    child: _RatingBadge(rating: rating),
-                  ),
-                  if (onToggleSave != null)
-                    Positioned(
-                      top: 4,
-                      right: 4,
-                      child: IconButton(
-                        style: IconButton.styleFrom(
-                          backgroundColor: Colors.white,
-                        ),
-                        icon: Icon(
-                          isSaved ? Icons.favorite_rounded : Icons.favorite_border,
-                          color: isSaved ? accent : Colors.blueGrey,
-                        ),
-                        onPressed: onToggleSave,
-                      ),
-                    ),
-                ],
+            ClipRRect(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(cardRadius),
+                topRight: Radius.circular(cardRadius),
               ),
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 20,
-                    child: Text(
-                      title,
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w800),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    subtitle,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      fontSize: 13,
-                      color: Colors.blueGrey.shade700,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (buttonLabel != null && buttonLabel!.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: onPressed ?? onTap,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0F73F6),
-                      foregroundColor: Colors.white,
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(22),
-                      ),
-                    ),
-                    child: Text(buttonLabel!),
-                  ),
+              child: SizedBox(
+                height: 135,
+                child: _buildImage(
+                  imageUrl: imageUrl,
+                  fit: BoxFit.cover,
+                  placeholderColor: theme.colorScheme.surfaceVariant,
                 ),
               ),
-            ] else
-              const SizedBox(height: 12),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 15.5,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Icon(
+                    Icons.verified_rounded,
+                    size: 18,
+                    color: theme.colorScheme.primary,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                subtitle,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  fontSize: 13,
+                  height: 1.35,
+                  color: Colors.blueGrey.shade700,
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+              child: Row(
+                children: [
+                  if (rating != null && rating! > 0)
+                    _RatingBadge(rating: rating)
+                  else
+                    const SizedBox.shrink(),
+                  if (showButton) ...[
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: SizedBox(
+                        height: 40,
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: onPressed ?? onTap,
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            backgroundColor: theme.colorScheme.primary,
+                            foregroundColor: theme.colorScheme.onPrimary,
+                            shape: const StadiumBorder(),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                            ),
+                          ),
+                          icon: const Icon(
+                            Icons.arrow_outward_rounded,
+                            size: 18,
+                          ),
+                          label: Text(
+                            buttonLabel!,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -155,32 +161,27 @@ class _RatingBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          )
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.star_rounded, size: 16, color: Colors.amber),
-          const SizedBox(width: 4),
-          Text(
-            rating != null && rating! > 0 ? rating!.toStringAsFixed(1) : '--',
-            style: theme.textTheme.labelMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+
+    if (rating == null || rating! <= 0) {
+      return const SizedBox.shrink();
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Icon(
+          Icons.star_rounded,
+          size: 18,
+          color: Color(0xFFFFB33E),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          rating!.toStringAsFixed(1),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w600,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

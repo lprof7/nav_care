@@ -184,7 +184,7 @@ class _SigninFormState extends State<SigninForm> {
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () => context.go(AppRoute.resetPasswordEmail.path),
                 child: Text('forgot_password'.tr()),
               ),
             ],

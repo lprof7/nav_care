@@ -8,13 +8,26 @@ abstract class ServiceOfferingsService {
     bool useHospitalToken = true,
   });
 
-  Future<Result<Map<String, dynamic>>> fetchOfferingById(String offeringId);
+  Future<Result<Map<String, dynamic>>> fetchOfferingById(
+    String offeringId, {
+    bool useHospitalToken = true,
+  });
 
   Future<Result<Map<String, dynamic>>> createOffering(
-      ServiceOfferingPayload payload);
+    ServiceOfferingPayload payload, {
+    bool useHospitalToken = true,
+  });
 
   Future<Result<Map<String, dynamic>>> updateOffering(
-      String offeringId, ServiceOfferingPayload payload);
+    String offeringId,
+    ServiceOfferingPayload payload, {
+    bool useHospitalToken = true,
+  });
+
+  Future<Result<Map<String, dynamic>>> deleteOffering(
+    String offeringId, {
+    bool useHospitalToken = true,
+  });
 
   Future<Result<Map<String, dynamic>>> fetchServicesCatalog({
     int? page,

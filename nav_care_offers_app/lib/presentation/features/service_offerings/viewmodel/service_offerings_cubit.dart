@@ -50,6 +50,12 @@ class ServiceOfferingsCubit extends Cubit<ServiceOfferingsState> {
       emit(state.copyWith(offerings: updated));
     }
   }
+
+  void removeOffering(String offeringId) {
+    final updated =
+        state.offerings.where((element) => element.id != offeringId).toList();
+    emit(state.copyWith(offerings: updated));
+  }
 }
 
 class ServiceOfferingsState extends Equatable {

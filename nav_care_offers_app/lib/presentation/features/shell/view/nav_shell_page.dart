@@ -16,6 +16,9 @@ import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_desti
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_drawer.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/logout/viewmodel/logout_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/auth_cubit.dart';
+import 'package:nav_care_offers_app/presentation/shared/theme/theme_mode_cubit.dart';
+import 'package:nav_care_offers_app/presentation/features/feedback/viewmodel/feedback_cubit.dart';
+import 'package:feedback/feedback.dart';
 
 import '../viewmodel/nav_shell_cubit.dart';
 
@@ -33,6 +36,7 @@ class NavShellPage extends StatelessWidget {
             ..loadProfile()
             ..listenToAuth(),
         ),
+        BlocProvider(create: (_) => sl<FeedbackCubit>()),
       ],
       child: MultiBlocListener(
         listeners: [
@@ -89,6 +93,7 @@ class NavShellPage extends StatelessWidget {
             final userName = profile?.name ?? sessionUser?.name;
             final userEmail = profile?.email ?? sessionUser?.email;
             final userPhone = profile?.phone ?? sessionUser?.phone;
+            final themeMode = context.watch<ThemeModeCubit>().state;
 
             return Scaffold(
               appBar: const NavShellAppBar(
@@ -126,8 +131,10 @@ class NavShellPage extends StatelessWidget {
                 onContactTap: () => context.push('/contact'),
                 onSettingsTap: () {},
                 onAboutTap: () => context.push('/about'),
-                onFeedbackTap: () {},
-                onSupportTap: () {},
+                onFeedbackTap: () => _onFeedbackTap(context),
+                onSupportTap: () => context.push('/contact'),
+                themeMode: themeMode,
+                onThemeToggle: () => context.read<ThemeModeCubit>().toggle(),
               ),
               body: IndexedStack(
                 index: state.currentIndex,
@@ -163,5 +170,74 @@ class NavShellPage extends StatelessWidget {
         content: const UserProfilePage(),
       ),
     ];
+  }
+
+  Future<void> _onFeedbackTap(BuildContext context) async {
+    final scaffoldState = Scaffold.maybeOf(context);
+    if (scaffoldState?.isDrawerOpen ?? false) {
+      Navigator.of(context).pop();
+    }
+
+    await context.read<AuthCubit>().checkAuthStatus();
+    if (!context.mounted) return;
+    final authState = context.read<AuthCubit>().state;
+    if (authState.status != AuthStatus.authenticated) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('feedback.auth_required'.tr())),
+      );
+      return;
+    }
+
+    final messenger = ScaffoldMessenger.of(context);
+
+    BetterFeedback.of(context).show((userFeedback) async {
+      final comment = userFeedback.text.trim();
+      if (comment.isEmpty) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('feedback.comment_required'.tr()),
+          ),
+        );
+        return;
+      }
+
+      _showFeedbackLoader(context);
+      final success = await context.read<FeedbackCubit>().submit(
+            comment: comment,
+            screenshot: userFeedback.screenshot,
+          );
+      if (!context.mounted) return;
+      Navigator.of(context, rootNavigator: true).pop();
+      final feedbackState = context.read<FeedbackCubit>().state;
+      final successText =
+          feedbackState.message ?? 'feedback.submit_success'.tr();
+      final errorText = 'feedback.submit_error'
+          .tr(namedArgs: {'message': feedbackState.errorMessage ?? ''});
+
+      if (success) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(successText),
+          ),
+        );
+        context.read<FeedbackCubit>().reset();
+      } else {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(errorText),
+          ),
+        );
+      }
+    });
+  }
+
+  void _showFeedbackLoader(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
   }
 }

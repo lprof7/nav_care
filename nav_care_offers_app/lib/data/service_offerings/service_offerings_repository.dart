@@ -31,8 +31,7 @@ class ServiceOfferingsRepository {
     int? limit,
     bool useHospitalToken = true,
   }) async {
-    final response =
-        await _service.fetchMyOfferings(
+    final response = await _service.fetchMyOfferings(
       page: page,
       limit: limit ?? 20,
       useHospitalToken: useHospitalToken,
@@ -53,12 +52,18 @@ class ServiceOfferingsRepository {
     }
   }
 
-  Future<Result<ServiceOffering>> fetchOfferingById(String offeringId) async {
+  Future<Result<ServiceOffering>> fetchOfferingById(
+    String offeringId, {
+    bool useHospitalToken = true,
+  }) async {
     final cached = findById(offeringId);
     if (cached != null) {
       return Result.success(cached);
     }
-    final response = await _service.fetchOfferingById(offeringId);
+    final response = await _service.fetchOfferingById(
+      offeringId,
+      useHospitalToken: useHospitalToken,
+    );
     if (!response.isSuccess || response.data == null) {
       return Result.failure(response.error ?? const Failure.unknown());
     }
@@ -80,8 +85,13 @@ class ServiceOfferingsRepository {
   }
 
   Future<Result<ServiceOffering>> createOffering(
-      ServiceOfferingPayload payload) async {
-    final response = await _service.createOffering(payload);
+    ServiceOfferingPayload payload, {
+    bool useHospitalToken = true,
+  }) async {
+    final response = await _service.createOffering(
+      payload,
+      useHospitalToken: useHospitalToken,
+    );
     if (!response.isSuccess || response.data == null) {
       return Result.failure(response.error ?? const Failure.unknown());
     }
@@ -104,9 +114,14 @@ class ServiceOfferingsRepository {
 
   Future<Result<ServiceOffering>> updateOffering(
     String offeringId,
-    ServiceOfferingPayload payload,
-  ) async {
-    final response = await _service.updateOffering(offeringId, payload);
+    ServiceOfferingPayload payload, {
+    bool useHospitalToken = true,
+  }) async {
+    final response = await _service.updateOffering(
+      offeringId,
+      payload,
+      useHospitalToken: useHospitalToken,
+    );
     if (!response.isSuccess || response.data == null) {
       return Result.failure(response.error ?? const Failure.unknown());
     }
@@ -138,7 +153,8 @@ class ServiceOfferingsRepository {
       final rawServices = data['services'] ?? data['data'];
       if (rawServices is! List) {
         return Result.failure(
-          const Failure.server(message: 'service_offerings.errors.parse_catalog'),
+          const Failure.server(
+              message: 'service_offerings.errors.parse_catalog'),
         );
       }
 
@@ -176,6 +192,21 @@ class ServiceOfferingsRepository {
       offerings: offerings,
       pagination: pagination,
     );
+  }
+
+  Future<Result<bool>> deleteOffering(
+    String offeringId, {
+    bool useHospitalToken = true,
+  }) async {
+    final response = await _service.deleteOffering(
+      offeringId,
+      useHospitalToken: useHospitalToken,
+    );
+    if (!response.isSuccess) {
+      return Result.failure(response.error ?? const Failure.unknown());
+    }
+    _cache = _cache.where((element) => element.id != offeringId).toList();
+    return Result.success(true);
   }
 
   Map<String, dynamic> _extractDataMap(Map<String, dynamic> json) {

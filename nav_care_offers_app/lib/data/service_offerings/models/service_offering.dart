@@ -146,6 +146,7 @@ class ServiceCategory {
 class ProviderSummary {
   final String id;
   final ProviderUser user;
+  final String? profilePicture;
   final String? specialty;
   final double? rating;
   final String? cover;
@@ -157,6 +158,7 @@ class ProviderSummary {
   ProviderSummary({
     required this.id,
     required this.user,
+    this.profilePicture,
     this.specialty,
     this.rating,
     this.cover,
@@ -171,8 +173,16 @@ class ProviderSummary {
     final userMap =
         userJson is Map<String, dynamic> ? userJson : <String, dynamic>{};
     return ProviderSummary(
-      id: (json['_id'] ?? userMap['_id'] ?? userMap['id'] ?? '').toString(),
-      user: ProviderUser.fromJson(userMap),
+      id: (json['_id'] ?? userMap['_id'] ?? userMap['id'] ?? json['id'] ?? '')
+          .toString(),
+      user: ProviderUser.fromJson(
+        userMap,
+        fallback: json,
+      ),
+      profilePicture: (json['profilePicture'] ??
+              userMap['profilePicture'] ??
+              json['cover'])
+          ?.toString(),
       specialty: json['specialty']?.toString(),
       rating: _parseDouble(json['rating']),
       cover: json['cover']?.toString(),
@@ -199,18 +209,32 @@ class ProviderUser {
     this.profilePicture,
   });
 
-  factory ProviderUser.fromJson(Map<String, dynamic> json) {
-    final id = json['_id'] ?? json['id'] ?? '';
+  factory ProviderUser.fromJson(
+    Map<String, dynamic> json, {
+    Map<String, dynamic>? fallback,
+  }) {
+    final fallbackMap = fallback ?? const <String, dynamic>{};
+    final id = json['_id'] ??
+        json['id'] ??
+        fallbackMap['_id'] ??
+        fallbackMap['id'] ??
+        '';
     final name = json['name'] ??
         json['fullName'] ??
         json['displayName'] ??
+        fallbackMap['name'] ??
+        fallbackMap['fullName'] ??
+        fallbackMap['displayName'] ??
         'Provider';
+    final profilePicture = json['profilePicture'] ??
+        fallbackMap['profilePicture'] ??
+        fallbackMap['cover'];
     return ProviderUser(
       id: id.toString(),
       name: name.toString(),
       phone: json['phone']?.toString(),
       email: json['email']?.toString(),
-      profilePicture: json['profilePicture']?.toString(),
+      profilePicture: profilePicture?.toString(),
     );
   }
 }

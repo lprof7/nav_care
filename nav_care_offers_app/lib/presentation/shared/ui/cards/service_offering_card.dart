@@ -13,6 +13,7 @@ class ServiceOfferingCard extends StatelessWidget {
   final bool isSaved;
   final VoidCallback? onToggleSave;
   final String? buttonLabel;
+  final double? rating;
 
   const ServiceOfferingCard({
     super.key,
@@ -26,6 +27,7 @@ class ServiceOfferingCard extends StatelessWidget {
     this.isSaved = false,
     this.onToggleSave,
     this.buttonLabel,
+    this.rating,
   });
 
   @override
@@ -154,6 +156,24 @@ class ServiceOfferingCard extends StatelessWidget {
                           ),
                         ),
                       ),
+                      if (rating != null) ...[
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            const Icon(Icons.star_rounded,
+                                size: 16, color: Colors.amber),
+                            const SizedBox(width: 4),
+                            Text(
+                              rating! > 0 ? rating!.toStringAsFixed(1) : '--',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: theme.textTheme.bodySmall?.color
+                                    ?.withOpacity(0.8),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                       if (priceLabel != null && priceLabel!.isNotEmpty) ...[
                         const SizedBox(height: 6),
                         Text(
@@ -184,7 +204,8 @@ class ServiceOfferingCard extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        buttonLabel?.tr() ?? 'home.search.view_details'.tr(),
+                        buttonLabel?.tr() ??
+                            'hospitals.actions.view_details'.tr(),
                         textAlign: TextAlign.center,
                       ),
                     ),

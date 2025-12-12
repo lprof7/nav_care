@@ -33,6 +33,8 @@ class NavShellDrawer extends StatelessWidget {
   final VoidCallback? onAboutTap;
   final VoidCallback? onFeedbackTap;
   final VoidCallback? onSupportTap;
+  final ThemeMode themeMode;
+  final VoidCallback onThemeToggle;
 
   const NavShellDrawer({
     super.key,
@@ -63,6 +65,8 @@ class NavShellDrawer extends StatelessWidget {
     this.onAboutTap,
     this.onFeedbackTap,
     this.onSupportTap,
+    required this.themeMode,
+    required this.onThemeToggle,
   });
 
   @override
@@ -150,6 +154,8 @@ class NavShellDrawer extends StatelessWidget {
                 onAboutTap: onAboutTap,
                 onFeedbackTap: onFeedbackTap,
                 onSupportTap: onSupportTap,
+                themeMode: themeMode,
+                onThemeToggle: onThemeToggle,
               ),
             ),
             Expanded(
@@ -276,6 +282,8 @@ class _DrawerHeader extends StatelessWidget {
   final VoidCallback? onAboutTap;
   final VoidCallback? onFeedbackTap;
   final VoidCallback? onSupportTap;
+  final ThemeMode themeMode;
+  final VoidCallback onThemeToggle;
 
   const _DrawerHeader({
     required this.onClose,
@@ -301,6 +309,8 @@ class _DrawerHeader extends StatelessWidget {
     this.onAboutTap,
     this.onFeedbackTap,
     this.onSupportTap,
+    required this.themeMode,
+    required this.onThemeToggle,
   });
 
   @override
@@ -340,6 +350,17 @@ class _DrawerHeader extends StatelessWidget {
                 onPressed: onClose,
               ),
               const Spacer(),
+              IconButton(
+                tooltip: 'shell.drawer_theme'.tr(),
+                icon: Icon(
+                  themeMode == ThemeMode.dark
+                      ? Icons.dark_mode_rounded
+                      : Icons.light_mode_rounded,
+                  color: AppColors.textOnPrimary,
+                ),
+                onPressed: onThemeToggle,
+              ),
+              const SizedBox(width: 4),
               _LanguageSelector(
                 currentLocale: currentLocale,
                 supportedLocales: supportedLocales,

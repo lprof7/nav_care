@@ -10,12 +10,14 @@ import 'package:nav_care_offers_app/presentation/features/service_offerings/view
 class ServiceOfferingFormPage extends StatelessWidget {
   const ServiceOfferingFormPage({
     super.key,
-    required this.hospitalId,
+    this.hospitalId,
     this.initial,
+    this.useHospitalToken = true,
   });
 
-  final String hospitalId;
+  final String? hospitalId;
   final ServiceOffering? initial;
+  final bool useHospitalToken;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,7 @@ class ServiceOfferingFormPage extends StatelessWidget {
       create: (_) => ServiceOfferingFormCubit(
         sl<ServiceOfferingsRepository>(),
         initial: initial,
+        useHospitalToken: useHospitalToken,
       )..loadCatalog(),
       child: _ServiceOfferingFormView(
         hospitalId: hospitalId,
@@ -38,7 +41,7 @@ class _ServiceOfferingFormView extends StatefulWidget {
     this.initial,
   });
 
-  final String hospitalId;
+  final String? hospitalId;
   final ServiceOffering? initial;
 
   @override

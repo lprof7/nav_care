@@ -17,6 +17,10 @@ import '../../data/authentication/signup/services/signup_service.dart';
 import '../../data/authentication/signup/services/remote_signup_service.dart';
 import '../../data/authentication/signup/signup_repository.dart';
 import '../../presentation/features/authentication/signup/viewmodel/signup_cubit.dart';
+import '../../data/authentication/reset_password/services/reset_password_service.dart';
+import '../../data/authentication/reset_password/services/remote_reset_password_service.dart';
+import '../../data/authentication/reset_password/reset_password_repository.dart';
+import '../../presentation/features/authentication/reset_password/viewmodel/reset_password_cubit.dart';
 import '../../data/services/services/doctor_services_service.dart';
 import '../../data/services/services/remote_doctor_services_service.dart';
 import '../../data/services/doctor_services_repository.dart';
@@ -50,12 +54,24 @@ import '../../data/service_offerings/services/service_offerings_service.dart';
 import '../../data/service_offerings/services/remote_service_offerings_service.dart';
 import '../../data/service_offerings/service_offerings_repository.dart';
 import '../../presentation/features/service_offerings/viewmodel/service_offerings_cubit.dart';
+import '../../data/reviews/service_offering_reviews/service_offering_reviews_remote_service.dart';
+import '../../data/reviews/service_offering_reviews/service_offering_reviews_repository.dart';
+import '../../presentation/features/service_offerings/viewmodel/service_offering_reviews_cubit.dart';
+import '../../data/reviews/hospital_reviews/hospital_reviews_remote_service.dart';
+import '../../data/reviews/hospital_reviews/hospital_reviews_repository.dart';
+import '../../presentation/features/hospitals/viewmodel/hospital_reviews_cubit.dart';
+import '../../data/reviews/doctor_reviews/doctor_reviews_remote_service.dart';
+import '../../data/reviews/doctor_reviews/doctor_reviews_repository.dart';
+import '../../presentation/features/doctors/viewmodel/doctor_reviews_cubit.dart';
 import '../../data/invitations/hospital_invitations_repository.dart';
 import '../../data/invitations/hospital_invitations_service.dart';
 import '../../data/invitations/remote_hospital_invitations_service.dart';
 import '../../data/users/user_remote_service.dart';
 import '../../data/users/user_repository.dart';
 import '../../presentation/features/profile/viewmodel/user_profile_cubit.dart';
+import '../../data/feedback/feedback_remote_service.dart';
+import '../../data/feedback/feedback_repository.dart';
+import '../../presentation/features/feedback/viewmodel/feedback_cubit.dart';
 
 final sl = GetIt.instance;
 Future<void> configureDependencies(AppConfig config) async {
@@ -89,6 +105,12 @@ Future<void> configureDependencies(AppConfig config) async {
         sl<DoctorStore>(),
       ));
   sl.registerFactory<SignupCubit>(() => SignupCubit(sl<SignupRepository>()));
+  sl.registerLazySingleton<ResetPasswordService>(
+      () => RemoteResetPasswordService(sl<ApiClient>()));
+  sl.registerLazySingleton<ResetPasswordRepository>(
+      () => ResetPasswordRepository(service: sl<ResetPasswordService>()));
+  sl.registerFactory<ResetPasswordCubit>(
+      () => ResetPasswordCubit(sl<ResetPasswordRepository>()));
   sl.registerSingleton<AuthCubit>(AuthCubit(sl<DoctorStore>(), sl<TokenStore>()));
   sl.registerFactory<LogoutCubit>(() => LogoutCubit(sl<AuthCubit>()));
   sl.registerLazySingleton<UserRemoteService>(
@@ -124,6 +146,37 @@ Future<void> configureDependencies(AppConfig config) async {
       () => ServiceOfferingsRepository(sl<ServiceOfferingsService>()));
   sl.registerFactory<ServiceOfferingsCubit>(
       () => ServiceOfferingsCubit(sl<ServiceOfferingsRepository>()));
+  sl.registerLazySingleton<ServiceOfferingReviewsRemoteService>(
+      () => ServiceOfferingReviewsRemoteService(
+            apiClient: sl<ApiClient>(),
+            tokenStore: sl<TokenStore>(),
+          ));
+  sl.registerLazySingleton<ServiceOfferingReviewsRepository>(
+      () => ServiceOfferingReviewsRepository(
+            remote: sl<ServiceOfferingReviewsRemoteService>(),
+          ));
+  sl.registerFactory<ServiceOfferingReviewsCubit>(
+      () => ServiceOfferingReviewsCubit(
+            repository: sl<ServiceOfferingReviewsRepository>(),
+          ));
+  sl.registerLazySingleton<HospitalReviewsRemoteService>(
+      () => HospitalReviewsRemoteService(
+            apiClient: sl<ApiClient>(),
+            tokenStore: sl<TokenStore>(),
+          ));
+  sl.registerLazySingleton<HospitalReviewsRepository>(
+      () => HospitalReviewsRepository(remote: sl<HospitalReviewsRemoteService>()));
+  sl.registerFactory<HospitalReviewsCubit>(
+      () => HospitalReviewsCubit(repository: sl<HospitalReviewsRepository>()));
+  sl.registerLazySingleton<DoctorReviewsRemoteService>(
+      () => DoctorReviewsRemoteService(
+            apiClient: sl<ApiClient>(),
+            tokenStore: sl<TokenStore>(),
+          ));
+  sl.registerLazySingleton<DoctorReviewsRepository>(
+      () => DoctorReviewsRepository(remote: sl<DoctorReviewsRemoteService>()));
+  sl.registerFactory<DoctorReviewsCubit>(
+      () => DoctorReviewsCubit(repository: sl<DoctorReviewsRepository>()));
 
   // Invitations
   sl.registerLazySingleton<HospitalInvitationsService>(
@@ -184,4 +237,11 @@ Future<void> configureDependencies(AppConfig config) async {
       initialHospital: hospital,
     ),
   );
+
+  // Feedback
+  sl.registerLazySingleton<FeedbackRemoteService>(
+      () => FeedbackRemoteService(apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
+  sl.registerLazySingleton<FeedbackRepository>(
+      () => FeedbackRepository(remoteService: sl<FeedbackRemoteService>()));
+  sl.registerFactory<FeedbackCubit>(() => FeedbackCubit(repository: sl<FeedbackRepository>()));
 }

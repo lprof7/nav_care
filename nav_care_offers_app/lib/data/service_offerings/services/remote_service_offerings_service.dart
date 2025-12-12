@@ -29,17 +29,21 @@ class RemoteServiceOfferingsService implements ServiceOfferingsService {
 
   @override
   Future<Result<Map<String, dynamic>>> fetchOfferingById(
-      String offeringId) async {
+    String offeringId, {
+    bool useHospitalToken = true,
+  }) async {
     return _apiClient.get(
       _apiClient.apiConfig.serviceOfferingById(offeringId),
       parser: _parseMap,
-      useHospitalToken: true,
+      useHospitalToken: useHospitalToken,
     );
   }
 
   @override
   Future<Result<Map<String, dynamic>>> createOffering(
-      ServiceOfferingPayload payload) async {
+    ServiceOfferingPayload payload, {
+    bool useHospitalToken = true,
+  }) async {
     final formData = FormData.fromMap(payload.toJson());
     if (payload.images != null) {
       for (final image in payload.images!) {
@@ -54,7 +58,7 @@ class RemoteServiceOfferingsService implements ServiceOfferingsService {
       _apiClient.apiConfig.serviceOfferingsBase,
       body: formData,
       parser: _parseMap,
-      useHospitalToken: true,
+      useHospitalToken: useHospitalToken,
     );
   }
 
@@ -62,13 +66,25 @@ class RemoteServiceOfferingsService implements ServiceOfferingsService {
   Future<Result<Map<String, dynamic>>> updateOffering(
     String offeringId,
     ServiceOfferingPayload payload,
-  ) {
+    {bool useHospitalToken = true}) {
     final formData = FormData.fromMap(payload.toJson());
     return _apiClient.patch(
       _apiClient.apiConfig.serviceOfferingById(offeringId),
       body: formData,
       parser: _parseMap,
-      useHospitalToken: true,
+      useHospitalToken: useHospitalToken,
+    );
+  }
+
+  @override
+  Future<Result<Map<String, dynamic>>> deleteOffering(
+    String offeringId, {
+    bool useHospitalToken = true,
+  }) {
+    return _apiClient.delete(
+      _apiClient.apiConfig.serviceOfferingById(offeringId),
+      parser: _parseMap,
+      useHospitalToken: useHospitalToken,
     );
   }
 

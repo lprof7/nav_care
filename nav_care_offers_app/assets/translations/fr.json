@@ -1,4 +1,4 @@
-{
+﻿{
     "sign_in": "Se connecter",
     "sign_up": "S'inscrire",
     "sign_up_subtitle": "Créez votre compte pour commencer",
@@ -27,6 +27,29 @@
     "sign_in_subtitle": "Connectez-vous pour continuer",
     "remember_me": "Se souvenir de moi",
     "forgot_password": "Mot de passe oublié ?",
+    "reset_password": {
+        "title": "R?initialiser le mot de passe",
+        "subtitle": "Entrez votre e-mail pour recevoir un code de r?initialisation.",
+        "email_hint": "Votre adresse e-mail",
+        "send_code": "Envoyer le code",
+        "code_title": "Saisissez le code de v?rification",
+        "code_subtitle": "Nous avons envoy? un code ? 6 chiffres ? {email}",
+        "code_hint": "Code ? 6 chiffres",
+        "verify": "Suivant",
+        "timer_title": "Le code expire dans",
+        "timer_label": "{seconds}s restantes",
+        "timer_expired": "Code expir?",
+        "back_to_email": "Retour ? l'e-mail",
+        "code_sent": "Code de r?initialisation envoy? ? votre e-mail.",
+        "code_verified": "Code v?rifi?. D?finissez votre nouveau mot de passe.",
+        "password_title": "D?finir un nouveau mot de passe",
+        "password_subtitle": "Cr?ez un mot de passe fort pour s?curiser votre compte.",
+        "new_password": "Nouveau mot de passe",
+        "confirm_password": "Confirmez le mot de passe",
+        "submit": "R?initialiser le mot de passe",
+        "success": "Mot de passe r?initialis? avec succ?s. Connectez-vous.",
+        "error": "Impossible de traiter votre demande. R?essayez."
+    },
     "sign_in_with_google": "Se connecter avec Google",
     "sign_in_with_apple": "Se connecter avec Apple",
     "sign_up_with_google": "S'inscrire avec Google",
@@ -37,6 +60,7 @@
     "signin_doctor_profile_required": "Nous avons trouvé votre compte utilisateur, mais vous devez compléter votre profil de docteur.",
     "signup_success_message": "Compte créé avec succès",
     "signup_error_message": "Erreur : {message}",
+    "loading": "Chargement...",
     "field_required": "Ce champ est requis",
     "become_doctor_title": "Devenir médecin",
     "become_doctor_heading": "Complétez votre profil de docteur",
@@ -85,6 +109,7 @@
         "nav_profile": "Profil",
         "badge_new": "Nouveau",
         "drawer_settings": "Paramètres",
+        "drawer_theme": "Th?me",
         "drawer_default_name": "Dr NavCare",
         "drawer_default_email": "doctor@navcare.com",
         "drawer_verify_phone": "Vérifier le numéro",
@@ -98,7 +123,8 @@
             "support": "Support",
             "favorites": "Favoris",
             "notifications": "Notifications"
-        }
+        },
+        "drawer_logout": "Se déconnecter"
     },
     "appointments": {
         "status": {
@@ -271,34 +297,52 @@
             "no_offers": "Aucun avantage n'a encore été ajouté.",
             "description": "Description",
             "no_description": "Aucune description disponible.",
-            "edit": "Modifier"
+            "edit": "Modifier",
+            "delete_title": "Supprimer cette offre ?",
+            "delete_message": "Cette action est irr?versible. Supprimer cette offre ?",
+            "price_label": "Prix"
         },
         "form": {
             "create_title": "Ajouter une offre de service",
             "edit_title": "Modifier l'offre de service",
-            "description": "Complétez les informations pour publier vos services.",
+            "description": "Renseignez les détails pour publier cette offre.",
             "service": "Service",
+            "reload_services": "Recharger les services",
             "price": "Prix",
             "price_invalid": "Saisissez un prix valide",
-            "reload_services": "Recharger les services",
-            "offers": "Offres",
-            "offers_hint": "Séparez les éléments par des virgules",
+            "offers": "Offres incluses",
+            "offers_hint": "Offres ou avantages séparés par des virgules",
+            "name_en": "Nom (anglais)",
             "description_en": "Description (anglais)",
             "description_ar": "Description (arabe)",
             "description_fr": "Description (français)",
             "description_sp": "Description (espagnol)",
+            "images": {
+                "label": "Images"
+            },
+            "add_image": "Ajouter une image",
+            "select_service": "Veuillez choisir un service.",
             "create_button": "Créer l'offre",
             "update_button": "Mettre à jour l'offre",
-            "select_service": "Veuillez choisir un service au préalable.",
-            "error": "Impossible d'enregistrer l'offre de service",
             "create_success": "Offre de service créée avec succès.",
-            "update_success": "Offre de service mise à jour avec succès."
+            "update_success": "Offre de service mise à jour avec succès.",
+            "error": "Impossible d'enregistrer l'offre de service."
         },
         "errors": {
             "parse_list": "Impossible de lire la liste des offres de service",
             "parse_detail": "Impossible de charger l'offre sélectionnée",
             "parse_submit": "Impossible d'enregistrer l'offre de service",
             "parse_catalog": "Impossible de charger le catalogue des services"
+        },
+        "reviews": {
+            "title": "Avis",
+            "empty": "Aucun avis pour le moment.",
+            "error": "Impossible de charger les avis.",
+            "retry": "R?essayer",
+            "no_comment": "Pas de commentaire.",
+            "anonymous": "Anonyme",
+            "load_more": "Afficher plus",
+            "show_less": "Afficher moins"
         }
     },
     "clinics": {
@@ -389,5 +433,130 @@
     "profile.member_since_unknown": "Membre depuis -",
     "profile.drawer_status_loading": "Chargement du profil...",
     "profile.drawer_status_error": "Échec du chargement du profil.",
-    "profile.view_profile": "Voir le profil"
+    "profile.view_profile": "Voir le profil",
+    "reviews": "Avis",
+    "services": {
+        "detail": {
+            "description": "Description",
+            "read_more": "Lire plus"
+        }
+    },
+    "about": {
+        "title": "Ãƒâ‚¬ propos",
+        "hero": {
+            "title": "Bienvenue chez NavCare",
+            "subtitle": "Nous connectons patients et professionnels de santÃƒÂ© dans le monde entier avec un parcours sÃƒÂ©curisÃƒÂ© de prise de rendez-vous, messagerie et paiement."
+        },
+        "about_us": {
+            "title": "Ãƒâ‚¬ propos de NavCare",
+            "body": "NavCare est une plateforme web et mobile qui relie les patients aux professionnels de santÃƒÂ© partout dans le monde. GrÃƒÂ¢ce ÃƒÂ  la prise de rendez-vous, la messagerie intÃƒÂ©grÃƒÂ©e et les paiements sÃƒÂ©curisÃƒÂ©s, l'accÃƒÂ¨s aux soins devient simple et sÃƒÂ»r. Au-delÃƒÂ  d'une plateforme, c'est une vision d'une prise en charge internationale fluide qui ÃƒÂ©voluera en hub multi-services, avec des solutions de santÃƒÂ© numÃƒÂ©riques, un accompagnement personnalisÃƒÂ© et une expÃƒÂ©rience sans friction ÃƒÂ  chaque ÃƒÂ©tape."
+        },
+        "story": {
+            "title": "Notre histoire",
+            "body": "FondÃƒÂ© en 2024, NavMarket est nÃƒÂ© de notre volontÃƒÂ© de combler les limites des marketplaces existantes. Nous voulions crÃƒÂ©er un espace sÃƒÂ»r, efficace et riche en fonctionnalitÃƒÂ©s qui amÃƒÂ©liore l'expÃƒÂ©rience de chaque utilisateur."
+        },
+        "priorities": {
+            "title": "Nos prioritÃƒÂ©s",
+            "body": "La qualitÃƒÂ©, la fiabilitÃƒÂ© et la sÃƒÂ©curitÃƒÂ© guident la conception et la livraison de chaque solution.",
+            "quality": {
+                "title": "QualitÃƒÂ©",
+                "body": "La qualitÃƒÂ© est un standard intÃƒÂ©grÃƒÂ© ÃƒÂ  chaque service. Nous livrons des produits de haut niveau grÃƒÂ¢ce ÃƒÂ  des contrÃƒÂ´les rigoureux ÃƒÂ  chaque ÃƒÂ©tape, garantissant fiabilitÃƒÂ©, efficacitÃƒÂ© et adÃƒÂ©quation aux besoins de nos clients."
+            },
+            "reliability": {
+                "title": "FiabilitÃƒÂ©",
+                "body": "La fiabilitÃƒÂ© est au cÃ…â€œur de notre travail. Nous concevons des produits robustes, stables et performants sur le long terme grÃƒÂ¢ce ÃƒÂ  des processus disciplinÃƒÂ©s et un suivi continu."
+            },
+            "security": {
+                "title": "SÃƒÂ©curitÃƒÂ©",
+                "body": "La sÃƒÂ©curitÃƒÂ© est une prioritÃƒÂ© absolue. Nous protÃƒÂ©geons donnÃƒÂ©es et transactions financiÃƒÂ¨res avec des protocoles avancÃƒÂ©s, en mettant constamment ÃƒÂ  jour nos dÃƒÂ©fenses pour que nos clients opÃƒÂ¨rent en toute confiance."
+            }
+        },
+        "company": {
+            "title": "Notre entreprise",
+            "body": "KIG (Koudri Innovations Group) est le prolongement dynamique et innovant de notre organisation, dÃƒÂ©jÃƒÂ  spÃƒÂ©cialisÃƒÂ©e dans trois domaines. En tant que nouvelle filiale, nous restons attentifs aux tendances et avancÃƒÂ©es technologiques, alliant expertise ÃƒÂ©tablie et agilitÃƒÂ© centrÃƒÂ©e client pour proposer des solutions logicielles, technologiques et digitales de pointe. Notre engagement pour l'innovation et l'excellence nous permet d'anticiper les dÃƒÂ©fis de demain tout en crÃƒÂ©ant de la valeur pour nos clients et partenaires."
+        },
+        "offerings": {
+            "title": "Ce que nous offrons",
+            "body": "Une plateforme pensÃƒÂ©e pour hÃƒÂ©berger et mettre en avant les services recherchÃƒÂ©s au quotidien.",
+            "diverse_listings": {
+                "title": "Offres variÃƒÂ©es",
+                "body": "Immobilier, automobiles, services ou besoins du quotidien : nous rÃƒÂ©unissons une large sÃƒÂ©lection pour rÃƒÂ©pondre ÃƒÂ  chaque besoin."
+            },
+            "user_experience": {
+                "title": "ExpÃƒÂ©rience fluide",
+                "body": "Un design intuitif et une interface simple rendent l'achat et la vente clairs et sans effort."
+            },
+            "subscriptions": {
+                "title": "Formules d'abonnement",
+                "body": "Des plans flexibles offrent des avantages supplÃƒÂ©mentaires et des opportunitÃƒÂ©s promotionnelles."
+            }
+        },
+        "values": {
+            "title": "Nos valeurs",
+            "body": "La communautÃƒÂ©, le client d'abord et l'innovation faÃƒÂ§onnent la maniÃƒÂ¨re dont nous construisons NavCare.",
+            "community": {
+                "title": "CommunautÃƒÂ©",
+                "body": "Notre marketplace dÃƒÂ©passe la transaction pour devenir une communautÃƒÂ© vivante oÃƒÂ¹ soutien et croissance se rejoignent."
+            },
+            "customer_first": {
+                "title": "Client d'abord",
+                "body": "Les utilisateurs sont au centre de chaque dÃƒÂ©cision afin de rÃƒÂ©pondre ÃƒÂ  leurs besoins et garantir leur satisfaction."
+            },
+            "innovation": {
+                "title": "Innovation",
+                "body": "Nous amÃƒÂ©liorons en continu la plateforme pour proposer des fonctionnalitÃƒÂ©s modernes et avant-gardistes."
+            }
+        },
+        "cta": {
+            "title": "Construire l'avenir des soins connectÃƒÂ©s",
+            "body": "Alors que NavCare devient un hub multi-services, nous restons engagÃƒÂ©s ÃƒÂ  offrir des consultations sÃƒÂ©curisÃƒÂ©es, un accompagnement personnalisÃƒÂ© et une expÃƒÂ©rience fluide pour chaque utilisateur."
+        }
+    },
+    "contact": {
+        "title": "Contactez-nous",
+        "heading": "Discutons",
+        "subtitle": "Questions, commentaires ou suggestions ? Remplissez le formulaire et nous vous recontacterons rapidement.",
+        "first_name": "PrÃƒÂ©nom",
+        "last_name": "Nom",
+        "email": "E-mail",
+        "phone": "NumÃƒÂ©ro de tÃƒÂ©lÃƒÂ©phone",
+        "message": "Votre message*",
+        "message_hint": "Ãƒâ€°crivez votre message ici",
+        "remaining": "{count} caractÃƒÂ¨res restants",
+        "send": "Envoyer le message",
+        "submit_placeholder": "L'envoi sera configurÃƒÂ© ultÃƒÂ©rieurement."
+    },
+    "feedback": {
+        "auth_required": "Connectez-vous pour envoyer un retour.",
+        "comment_required": "Ajoutez un commentaire avant d'envoyer votre retour.",
+        "submit_error": "Impossible d'envoyer le retour : {message}",
+        "submit_success": "Merci ! Votre retour a été envoyé.",
+        "hint": "Partagez vos remarques ou problèmes ici"
+    },
+    "faq.title": "Aide & FAQ",
+    "faq.subtitle": "RÃƒÂ©ponses rapides sur les rÃƒÂ©servations, les comptes et l'utilisation de Nav Care.",
+    "faq.tags.general": "Ãƒâ‚¬ propos de l'app",
+    "faq.tags.appointments": "Rendez-vous",
+    "faq.tags.accounts": "Compte",
+    "faq.tags.app_settings": "ParamÃƒÂ¨tres",
+    "faq.tags.search": "Recherche",
+    "faq.tags.support": "DÃƒÂ©pannage",
+    "faq.questions.about_app.question": "Qu'est-ce que Nav Care et comment ÃƒÂ§a m'aide ?",
+    "faq.questions.about_app.answer": "Nav Care vous permet d'explorer les hÃƒÂ´pitaux, mÃƒÂ©decins et offres de services, voir les tarifs et la localisation, puis gÃƒÂ©rer vos rendez-vous au mÃƒÂªme endroit.",
+    "faq.questions.account_needed.question": "Ai-je besoin d'un compte pour utiliser l'app ?",
+    "faq.questions.account_needed.answer": "Vous pouvez parcourir librement, mais il faut se connecter pour rÃƒÂ©server, reprogrammer ou annuler un rendez-vous et synchroniser votre profil entre vos appareils.",
+    "faq.questions.book_appointment.question": "Comment prendre un rendez-vous ?",
+    "faq.questions.book_appointment.answer": "Ouvrez une offre de service depuis l'Accueil ou la Recherche, appuyez sur Ã‚Â« Prendre rendez-vous Ã‚Â», choisissez l'heure de dÃƒÂ©but et de fin puis validez. Si vous n'ÃƒÂªtes pas connectÃƒÂ©, l'app vous demandera de vous identifier.",
+    "faq.questions.manage_appointment.question": "Comment modifier ou annuler un rendez-vous ?",
+    "faq.questions.manage_appointment.answer": "Allez dans l'onglet Rendez-vous, sÃƒÂ©lectionnez la carte du rendez-vous, puis ajustez les horaires ou passez le statut ÃƒÂ  Ã‚Â« annulÃƒÂ© Ã‚Â». La liste se met ÃƒÂ  jour automatiquement aprÃƒÂ¨s la sauvegarde.",
+    "faq.questions.search_services.question": "Comment trouver le bon mÃƒÂ©decin ou le bon service ?",
+    "faq.questions.search_services.answer": "Utilisez l'onglet Recherche pour saisir un nom de mÃƒÂ©decin, d'hÃƒÂ´pital ou de service. Affinez avec les filtres disponibles (lieu, note, prix ou langue quand ils sont fournis), puis ouvrez un rÃƒÂ©sultat pour voir les dÃƒÂ©tails et rÃƒÂ©server.",
+    "faq.questions.profile_updates.question": "OÃƒÂ¹ mettre ÃƒÂ  jour mon profil ou mon numÃƒÂ©ro de tÃƒÂ©lÃƒÂ©phone ?",
+    "faq.questions.profile_updates.answer": "Dans l'onglet Profil, appuyez sur Ã‚Â« Modifier le profil Ã‚Â» pour changer votre nom, tÃƒÂ©lÃƒÂ©phone, adresse ou photo. Faites glisser vers le bas pour rafraÃƒÂ®chir les donnÃƒÂ©es aprÃƒÂ¨s l'enregistrement.",
+    "faq.questions.language_switch.question": "Puis-je changer la langue de l'application ?",
+    "faq.questions.language_switch.answer": "Oui. Ouvrez le menu latÃƒÂ©ral et choisissez arabe, anglais ou franÃƒÂ§ais dans le sÃƒÂ©lecteur de langue ; l'interface se met ÃƒÂ  jour immÃƒÂ©diatement.",
+    "faq.questions.password_reset.question": "J'ai oubliÃƒÂ© mon mot de passe, que faire ?",
+    "faq.questions.password_reset.answer": "Utilisez l'option Ã‚Â« Mot de passe oubliÃƒÂ© Ã‚Â» sur l'ÃƒÂ©cran de connexion pour demander une rÃƒÂ©initialisation et suivez les ÃƒÂ©tapes pour dÃƒÂ©finir un nouveau mot de passe avec votre email ou numÃƒÂ©ro de tÃƒÂ©lÃƒÂ©phone.",
+    "faq.questions.data_sync.question": "L'app ne charge pas les donnÃƒÂ©es, que puis-je essayer ?",
+    "faq.questions.data_sync.answer": "VÃƒÂ©rifiez votre connexion internet, puis tirez pour rafraÃƒÂ®chir sur Accueil, Recherche ou Rendez-vous. Si le problÃƒÂ¨me persiste, dÃƒÂ©connectez-vous puis reconnectez-vous pour renouveler la session avant de rÃƒÂ©essayer."
 }

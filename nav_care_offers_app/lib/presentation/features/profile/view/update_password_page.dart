@@ -171,12 +171,16 @@ class _OutlinedPasswordField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final primary = theme.colorScheme.primary;
+    final borderColor = theme.colorScheme.outline.withOpacity(0.6);
+    final fill = theme.colorScheme.surfaceVariant;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.primary.withOpacity(0.5), width: 1.2),
+            border: Border.all(color: borderColor, width: 1.2),
             borderRadius: BorderRadius.circular(14),
           ),
           child: TextFormField(
@@ -185,17 +189,17 @@ class _OutlinedPasswordField extends StatelessWidget {
             validator: validator,
             onChanged: onChanged,
             decoration: InputDecoration(
-              prefixIcon: Icon(Icons.lock_outline, color: AppColors.primary),
+              prefixIcon: Icon(Icons.lock_outline, color: primary),
               suffixIcon: IconButton(
                 onPressed: onToggleVisibility,
                 icon: Icon(
                   obscureText ? Icons.visibility_off : Icons.visibility,
-                  color: AppColors.primary,
+                  color: primary,
                 ),
               ),
               hintText: label,
               filled: true,
-              fillColor: Colors.white,
+              fillColor: fill,
               border: InputBorder.none,
             ),
           ),
@@ -258,8 +262,12 @@ class _RequirementRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final icon = met ? Icons.check_circle : Icons.radio_button_unchecked;
-    final color = met ? AppColors.primary : AppColors.textSecondary;
+    final color = met
+        ? theme.colorScheme.primary
+        : theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ??
+            AppColors.textSecondary;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -269,7 +277,8 @@ class _RequirementRow extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: TextStyle(color: color, fontWeight: FontWeight.w600),
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(color: color, fontWeight: FontWeight.w600),
             ),
           ),
         ],
