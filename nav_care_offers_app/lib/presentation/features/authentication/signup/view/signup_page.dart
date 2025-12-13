@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/gestures.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/core/routing/app_router.dart';
@@ -145,11 +147,13 @@ class _SignupFormState extends State<_SignupForm> {
   String? _completePhoneNumber;
   XFile? _profileImage;
   bool _acceptTerms = false;
+  late final TapGestureRecognizer _privacyRecognizer;
 
   @override
   void initState() {
     super.initState();
     _passwordController.addListener(_onPasswordChanged);
+    _privacyRecognizer = TapGestureRecognizer()..onTap = _openPrivacyPolicy;
   }
 
   @override
@@ -166,6 +170,7 @@ class _SignupFormState extends State<_SignupForm> {
     _cityController.dispose();
     _stateController.dispose();
     _countryController.dispose();
+    _privacyRecognizer.dispose();
     super.dispose();
   }
 
@@ -265,6 +270,16 @@ class _SignupFormState extends State<_SignupForm> {
     final trimmed = sanitized.replaceFirst(RegExp(r'^\\+?213'), '');
     final withoutLeadingZeros = trimmed.replaceFirst(RegExp(r'^0+'), '');
     return '+213$withoutLeadingZeros';
+  }
+
+  Future<void> _openPrivacyPolicy() async {
+    const url = 'https://www.nav-care.com/privacy-policy';
+    final uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('cannot_open_link'.tr())),
+      );
+    }
   }
 
   @override
@@ -449,7 +464,7 @@ class _SignupFormState extends State<_SignupForm> {
           ),
           const SizedBox(height: 16),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Checkbox(
                 value: _acceptTerms,
@@ -474,6 +489,7 @@ class _SignupFormState extends State<_SignupForm> {
                           color: AppColors.primary,
                           fontWeight: FontWeight.w600,
                         ),
+                        recognizer: _privacyRecognizer,
                       ),
                     ],
                   ),

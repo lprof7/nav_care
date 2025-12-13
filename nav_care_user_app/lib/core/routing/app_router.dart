@@ -17,6 +17,9 @@ import 'package:nav_care_user_app/presentation/features/authentication/reset_pas
 import 'package:nav_care_user_app/presentation/features/authentication/reset_password/viewmodel/reset_password_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/social/view/social_complete_profile_page.dart';
 import 'package:nav_care_user_app/data/authentication/google/google_user.dart';
+import 'package:nav_care_user_app/presentation/features/service_offerings/view/service_offering_detail_page.dart';
+import 'package:nav_care_user_app/data/search/models/search_models.dart';
+import 'package:nav_care_user_app/core/config/app_config.dart';
 
 import '../../presentation/features/authentication/signup/view/signup_page.dart';
 import '../../presentation/features/appointments/appointment_creation/view/add_appointment_page.dart';
@@ -141,6 +144,37 @@ final appRouter = GoRouter(
         return BlocProvider.value(
           value: cubit,
           child: const ForgotPasswordPage(),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/service-offering/:id',
+      builder: (ctx, st) {
+        final id = st.pathParameters['id'] ?? '';
+        SearchResultItem? item;
+        String? baseUrl;
+        final extra = st.extra;
+        if (extra is Map) {
+          final map =
+              extra.map((key, value) => MapEntry(key.toString(), value));
+          if (map['item'] is SearchResultItem) {
+            item = map['item'] as SearchResultItem;
+          }
+          if (map['baseUrl'] is String) {
+            baseUrl = map['baseUrl'] as String;
+          }
+        }
+        final resolvedItem = item ??
+            SearchResultItem(
+              id: id,
+              type: SearchResultType.serviceOffering,
+              title: '',
+            );
+        final resolvedBaseUrl = baseUrl ?? sl<AppConfig>().api.baseUrl;
+        return ServiceOfferingDetailPage(
+          item: resolvedItem,
+          baseUrl: resolvedBaseUrl,
+          offeringId: id,
         );
       },
     ),

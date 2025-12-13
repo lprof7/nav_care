@@ -527,7 +527,7 @@ class _StatusFilterRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final borderColor = theme.colorScheme.outlineVariant.withOpacity(0.4);
-    final options = <String?>[null, ..._statusOptions];
+    final options = <String?>['all', ..._statusOptions];
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -570,9 +570,9 @@ class _StatusFilterRow extends StatelessWidget {
                   (status) => DropdownMenuItem<String?>(
                     value: status,
                     child: Text(
-                      status == null
+                      status == 'all'
                           ? 'appointments.list.filter.all'.tr()
-                          : _statusLabel(context, status),
+                          : _statusLabel(context, status!),
                     ),
                   ),
                 )
@@ -823,7 +823,7 @@ List<UserAppointmentModel> _filterAppointments(
   List<UserAppointmentModel> appointments,
   String? status,
 ) {
-  if (status == null) return appointments;
+  if (status == null || status == 'all') return appointments;
   return appointments
       .where((appointment) => appointment.status == status)
       .toList();

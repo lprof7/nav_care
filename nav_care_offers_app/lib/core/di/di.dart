@@ -74,6 +74,10 @@ import '../../presentation/features/profile/viewmodel/user_profile_cubit.dart';
 import '../../data/feedback/feedback_remote_service.dart';
 import '../../data/feedback/feedback_repository.dart';
 import '../../presentation/features/feedback/viewmodel/feedback_cubit.dart';
+import '../../data/faq/faq_service.dart';
+import '../../data/faq/remote_faq_service.dart';
+import '../../data/faq/faq_repository.dart';
+import '../../presentation/features/faq/viewmodel/faq_cubit.dart';
 
 final sl = GetIt.instance;
 Future<void> configureDependencies(AppConfig config) async {
@@ -257,4 +261,7 @@ Future<void> configureDependencies(AppConfig config) async {
   sl.registerLazySingleton<FeedbackRepository>(
       () => FeedbackRepository(remoteService: sl<FeedbackRemoteService>()));
   sl.registerFactory<FeedbackCubit>(() => FeedbackCubit(repository: sl<FeedbackRepository>()));
+  sl.registerLazySingleton<FaqService>(() => RemoteFaqService(sl<ApiClient>()));
+  sl.registerLazySingleton<FaqRepository>(() => FaqRepository(sl<FaqService>()));
+  sl.registerFactory<FaqCubit>(() => FaqCubit(sl<FaqRepository>()));
 }

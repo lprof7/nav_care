@@ -37,6 +37,7 @@ class ApiConfig {
       '$baseUrl/api/reviews/doctors/$doctorId';
 
   String accessHospitalById(String id) => '$baseUrl/api/hospitals/access/$id';
+  String get faq => '$baseUrl/api/faq';
 
   // Clinics
   String get clinics => '$baseUrl/api/hospitals';
