@@ -167,12 +167,20 @@ class _OutlinedPasswordField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+    final borderColor =
+        colorScheme.outlineVariant.withOpacity(isDark ? 0.6 : 0.8);
+    final fillColor =
+        isDark ? colorScheme.surfaceVariant.withOpacity(0.6) : Colors.white;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.primary.withOpacity(0.5), width: 1.2),
+            border: Border.all(color: borderColor, width: 1.2),
             borderRadius: BorderRadius.circular(14),
           ),
           child: TextFormField(
@@ -181,17 +189,18 @@ class _OutlinedPasswordField extends StatelessWidget {
             validator: validator,
             onChanged: onChanged,
             decoration: InputDecoration(
-              prefixIcon: Icon(Icons.lock_outline, color: AppColors.primary),
+              prefixIcon:
+                  Icon(Icons.lock_outline, color: colorScheme.primary),
               suffixIcon: IconButton(
                 onPressed: onToggleVisibility,
                 icon: Icon(
                   obscureText ? Icons.visibility_off : Icons.visibility,
-                  color: AppColors.primary,
+                  color: colorScheme.primary,
                 ),
               ),
               hintText: label,
               filled: true,
-              fillColor: Colors.white,
+              fillColor: fillColor,
               border: InputBorder.none,
             ),
           ),
@@ -255,7 +264,10 @@ class _RequirementRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final icon = met ? Icons.check_circle : Icons.radio_button_unchecked;
-    final color = met ? AppColors.primary : AppColors.textSecondary;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final color =
+        met ? colorScheme.primary : colorScheme.onSurfaceVariant;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(

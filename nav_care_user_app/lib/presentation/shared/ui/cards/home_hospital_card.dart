@@ -103,7 +103,7 @@ class HomeHospitalCard extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 40, // تحديد ارتفاع ثابت للعنوان
+                    height: 50,
                     child: Text(
                       title,
                       textAlign: TextAlign.center,

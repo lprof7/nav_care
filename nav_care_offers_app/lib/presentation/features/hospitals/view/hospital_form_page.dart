@@ -113,7 +113,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                   TextFormField(
                     controller: _nameController,
                     decoration: InputDecoration(
-                      labelText: 'hospitals.form.name'.tr(),
+                      labelText: _requiredLabel('hospitals.form.name'.tr()),
                     ),
                     validator: (value) => value == null || value.trim().isEmpty
                         ? 'field_required'.tr()
@@ -123,7 +123,8 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                   TextFormField(
                     controller: _descriptionController,
                     decoration: InputDecoration(
-                      labelText: 'hospitals.form.description_en'.tr(),
+                      labelText:
+                          _requiredLabel('hospitals.form.description_en'.tr()),
                     ),
                     maxLines: 4,
                     validator: (value) => value == null || value.trim().isEmpty
@@ -134,7 +135,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                   TextFormField(
                     controller: _addressController,
                     decoration: InputDecoration(
-                      labelText: 'hospitals.form.address'.tr(),
+                      labelText: _requiredLabel('hospitals.form.address'.tr()),
                     ),
                     validator: (value) => value == null || value.trim().isEmpty
                         ? 'field_required'.tr()
@@ -293,6 +294,8 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
       _selectedImages.remove(image);
     });
   }
+
+  String _requiredLabel(String text) => '$text *';
 
   void _removeField(int index, List<TextEditingController> controllers) {
     setState(() {

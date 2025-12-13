@@ -1,5 +1,6 @@
 ﻿import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../shared/theme/colors.dart';
 import '../molecules/sign_in_required_card.dart';
@@ -77,34 +78,24 @@ class NavShellDrawer extends StatelessWidget {
     final List<dynamic> allDrawerItems = [
       ...destinations,
       _DrawerAction(
-        icon: Icons.help_center_rounded,
+        icon: PhosphorIconsBold.question,
         label: 'shell.drawer_faq'.tr(),
         onTap: onFaqTap,
       ),
       _DrawerAction(
-        icon: Icons.mail_outline_rounded,
+        icon: PhosphorIconsBold.envelopeSimple,
         label: 'shell.drawer_contact'.tr(),
         onTap: onContactTap,
       ),
       _DrawerAction(
-        icon: Icons.settings_rounded,
-        label: 'shell.drawer_settings'.tr(),
-        onTap: onSettingsTap,
-      ),
-      _DrawerAction(
-        icon: Icons.info_outline_rounded,
+        icon: PhosphorIconsBold.info,
         label: 'shell.drawer_about'.tr(),
         onTap: onAboutTap,
       ),
       _DrawerAction(
-        icon: Icons.feedback_rounded,
+        icon: PhosphorIconsBold.chatTeardropText,
         label: 'shell.drawer_feedback'.tr(),
         onTap: onFeedbackTap,
-      ),
-      _DrawerAction(
-        icon: Icons.support_agent_rounded,
-        label: 'shell.drawer_support'.tr(),
-        onTap: onSupportTap,
       ),
     ];
 
@@ -204,8 +195,6 @@ class NavShellDrawer extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              if (item.badgeLabel != null)
-                                _BadgeChip(label: item.badgeLabel!),
                             ],
                           ),
                         ),
@@ -230,7 +219,7 @@ class NavShellDrawer extends StatelessWidget {
             const Divider(height: 1),
             ListTile(
               leading: Icon(
-                Icons.logout_rounded,
+                PhosphorIconsBold.signOut,
                 color: theme.iconTheme.color,
               ),
               title: Text(
@@ -345,7 +334,7 @@ class _DrawerHeader extends StatelessWidget {
           Row(
             children: [
               IconButton(
-                icon: const Icon(Icons.close_rounded),
+                icon: const Icon(PhosphorIconsBold.x),
                 color: AppColors.textOnPrimary,
                 onPressed: onClose,
               ),
@@ -354,8 +343,8 @@ class _DrawerHeader extends StatelessWidget {
                 tooltip: 'shell.drawer_theme'.tr(),
                 icon: Icon(
                   themeMode == ThemeMode.dark
-                      ? Icons.dark_mode_rounded
-                      : Icons.light_mode_rounded,
+                      ? PhosphorIconsBold.moonStars
+                      : PhosphorIconsBold.sunDim,
                   color: AppColors.textOnPrimary,
                 ),
                 onPressed: onThemeToggle,
@@ -451,7 +440,7 @@ class _DrawerHeader extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Icon(
-                              Icons.error_outline_rounded,
+                              PhosphorIconsBold.warning,
                               color: AppColors.textOnPrimary,
                               size: 16,
                             ),
@@ -485,7 +474,7 @@ class _DrawerHeader extends StatelessWidget {
                         TextButton.icon(
                           onPressed: onProfileTap,
                           icon: const Icon(
-                            Icons.person_outline_rounded,
+                            PhosphorIconsBold.userCircle,
                             size: 18,
                             color: AppColors.textOnPrimary,
                           ),
@@ -508,17 +497,6 @@ class _DrawerHeader extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.textOnPrimary,
-                foregroundColor: AppColors.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              ),
-              onPressed: onVerifyTap,
-              child: Text('shell.drawer_verify_phone'.tr()),
-            ),
           ] else ...[
             InkWell(
               borderRadius: BorderRadius.circular(18),
@@ -536,7 +514,7 @@ class _DrawerHeader extends StatelessWidget {
                 child: Row(
                   children: [
                     const Icon(
-                      Icons.lock_outline_rounded,
+                      PhosphorIconsBold.lockKey,
                       color: AppColors.textOnPrimary,
                     ),
                     const SizedBox(width: 12),
@@ -563,8 +541,8 @@ class _DrawerHeader extends StatelessWidget {
                       ),
                     ),
                     const Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 16,
+                      PhosphorIconsBold.caretRight,
+                      size: 18,
                       color: AppColors.textOnPrimary,
                     ),
                   ],
@@ -703,7 +681,7 @@ class _LanguageSelector extends StatelessWidget {
         child: DropdownButton<Locale>(
           value: effectiveLocale,
           icon: const Icon(
-            Icons.keyboard_arrow_down_rounded,
+            PhosphorIconsBold.caretDown,
             color: AppColors.textOnPrimary,
           ),
           dropdownColor: AppColors.primary,
@@ -722,7 +700,7 @@ class _LanguageSelector extends StatelessWidget {
               child: Row(
                 children: [
                   const Icon(
-                    Icons.language_rounded,
+                    PhosphorIconsBold.globeHemisphereEast,
                     color: AppColors.textOnPrimary,
                     size: 18,
                   ),
@@ -746,5 +724,3 @@ class _LanguageSelector extends StatelessWidget {
     return supportedLocales.isNotEmpty ? supportedLocales.first : currentLocale;
   }
 }
-
-

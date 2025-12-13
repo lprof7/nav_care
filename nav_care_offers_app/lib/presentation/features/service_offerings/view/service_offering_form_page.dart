@@ -155,17 +155,18 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                       DropdownButtonFormField<String>(
                         value: selectedServiceExists ? _selectedServiceId : null,
                         decoration: InputDecoration(
-                          labelText: 'service_offerings.form.service'.tr(),
+                          labelText:
+                              _requiredLabel('service_offerings.form.service'.tr()),
                         ),
                         items: services
                             .map(
                               (service) => DropdownMenuItem<String>(
                                 value: service.id,
-                                child: Text(service.localizedName(
-                                    context.locale.languageCode)),
-                              ),
-                            )
-                            .toList(),
+                            child: Text(service.localizedName(
+                                context.locale.languageCode)),
+                          ),
+                        )
+                        .toList(),
                         onChanged: (value) {
                           setState(() {
                             _selectedServiceId = value;
@@ -187,10 +188,11 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                               keyboardType:
                                   const TextInputType.numberWithOptions(
                                 decimal: true,
-                              ),
-                              decoration: InputDecoration(
-                                labelText: 'service_offerings.form.price'.tr(),
-                              ),
+                          ),
+                          decoration: InputDecoration(
+                            labelText:
+                                _requiredLabel('service_offerings.form.price'.tr()),
+                          ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'field_required'.tr();
@@ -358,6 +360,8 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
       });
     }
   }
+
+  String _requiredLabel(String text) => '$text *';
 }
 
 class _MultilineField extends StatelessWidget {

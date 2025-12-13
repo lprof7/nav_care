@@ -535,14 +535,14 @@ class _TopPreview extends StatelessWidget {
                   child: imageUrl != null && imageUrl!.isNotEmpty
                       ? NetworkImageWrapper(
                           imageUrl: imageUrl,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fill,
                           fallback: Icon(
                             Icons.medical_services_rounded,
                             size: 48,
                             color: colorScheme.primary,
                           ),
-                          shimmerChild:
-                              Container(color: theme.colorScheme.surfaceVariant),
+                          shimmerChild: Container(
+                              color: theme.colorScheme.surfaceVariant),
                         )
                       : Icon(
                           Icons.medical_services_rounded,

@@ -17,19 +17,18 @@ class AppointmentsRepository {
 
   Future<Result<AppointmentListModel>> getMyDoctorAppointments() async {
     final response = await _service.getMyDoctorAppointments();
-
     return response.fold(
       onSuccess: (data) {
-        final appointmentListData = data['data']['appointments'];
-        final paginationData = data['data']['pagination'];
+        final appointmentListData = _asMap(data['data'])?['appointments'] ?? [];
+        final paginationData = _asMap(data['data'])?['pagination'];
 
-        final List<AppointmentModel> appointments = (appointmentListData
-                as List)
-            .map(
-                (appointmentJson) => AppointmentModel.fromJson(appointmentJson))
+        final List<AppointmentModel> appointments = (appointmentListData as List)
+            .whereType<Map>()
+            .map((appointmentJson) =>
+                AppointmentModel.fromJson(_normalizeAppointment(appointmentJson)))
             .toList();
 
-        final pagination = core_pagination.Pagination.fromJson(paginationData);
+        final pagination = _parsePagination(paginationData);
 
         _cache = appointments;
         _lastPagination = pagination;
@@ -42,6 +41,34 @@ class AppointmentsRepository {
       onFailure: (failure) {
         return Result.failure(failure);
       },
+    );
+  }
+
+  Future<Result<AppointmentListModel>> getMyHospitalAppointments() async {
+    final response = await _service.getMyHospitalAppointments();
+    return response.fold(
+      onSuccess: (data) {
+        final container = _asMap(data['data']) ?? _asMap(data);
+        final appointmentListData = container?['appointments'] ?? [];
+        final paginationData = container?['pagination'];
+
+        final List<AppointmentModel> appointments = (appointmentListData as List)
+            .whereType<Map>()
+            .map((appointmentJson) =>
+                AppointmentModel.fromJson(_normalizeAppointment(appointmentJson)))
+            .toList();
+
+        final pagination = _parsePagination(paginationData);
+
+        _cache = appointments;
+        _lastPagination = pagination;
+
+        return Result.success(AppointmentListModel(
+          appointments: appointments,
+          pagination: pagination,
+        ));
+      },
+      onFailure: (failure) => Result.failure(failure),
     );
   }
 
@@ -121,6 +148,31 @@ class AppointmentsRepository {
     }
 
     return null;
+  }
+
+  Map<String, dynamic>? _asMap(dynamic value) {
+    if (value is Map<String, dynamic>) return value;
+    if (value is Map) {
+      return value.map((key, dynamic val) => MapEntry(key.toString(), val));
+    }
+    return null;
+  }
+
+  core_pagination.Pagination _parsePagination(dynamic source) {
+    final map = _asMap(source);
+    if (map == null) {
+      return core_pagination.Pagination(
+        total: _cache.length,
+        page: 1,
+        limit: _cache.length,
+        pages: 1,
+        hasNextPage: false,
+        hasPrevPage: false,
+        nextPage: null,
+        prevPage: null,
+      );
+    }
+    return core_pagination.Pagination.fromJson(map);
   }
 
   Map<String, dynamic> _mergeWithCachedAppointment({
@@ -222,5 +274,80 @@ class AppointmentsRepository {
     });
 
     return result;
+  }
+
+  Map<String, dynamic> _normalizeAppointment(Map appointmentJson) {
+    final map =
+        appointmentJson.map((key, value) => MapEntry(key.toString(), value));
+
+    Map<String, dynamic> normalizeProvider(Map? provider) {
+      final p = (provider ?? const <String, dynamic>{})
+          .map((k, v) => MapEntry(k.toString(), v));
+
+      final images = (p['images'] is List)
+          ? (p['images'] as List).whereType<dynamic>().toList()
+          : const [];
+
+      final user = _asMap(p['user']) ??
+          {
+            '_id': p['_id']?.toString() ?? '',
+            'phone': '',
+            'name': p['name']?.toString() ?? '',
+            'email': '',
+            'profilePicture': images.isNotEmpty ? images.first.toString() : '',
+          };
+
+      p['user'] = user;
+      p['specialty'] ??= p['facility_type']?.toString() ?? '';
+      p['rating'] = _toDouble(p['rating']) ?? 0.0;
+      p['cover'] ??= images.isNotEmpty ? images.first.toString() : '';
+
+      return p;
+    }
+
+    Map<String, dynamic> normalizePatient(Map? patient) {
+      final p = (patient ?? const <String, dynamic>{})
+          .map((k, v) => MapEntry(k.toString(), v));
+      return {
+        '_id': p['_id']?.toString() ?? '',
+        'phone': p['phone']?.toString() ?? '',
+        'name': p['name']?.toString() ?? '',
+        'email': p['email']?.toString() ?? '',
+        'profilePicture': p['profilePicture']?.toString() ?? '',
+      };
+    }
+
+    Map<String, dynamic> normalizeService(Map? service) {
+      final s = (service ?? const <String, dynamic>{})
+          .map((k, v) => MapEntry(k.toString(), v));
+      return {
+        'name': _extractLocalizedName(s['name']) ??
+            s['name']?.toString() ??
+            '',
+        'provider': s['provider']?.toString() ?? '',
+        'providerType': s['providerType']?.toString() ?? '',
+      };
+    }
+
+    map['provider'] = normalizeProvider(_asMap(map['provider']));
+    map['patient'] = normalizePatient(_asMap(map['patient']));
+    map['service'] = normalizeService(_asMap(map['service']) ?? _asMap(map['service_offering']));
+    return map;
+  }
+
+  String? _extractLocalizedName(dynamic value) {
+    final map = _asMap(value);
+    if (map == null) return null;
+    for (final key in ['en', 'ar', 'fr', 'sp', 'es']) {
+      final v = map[key];
+      if (v is String && v.trim().isNotEmpty) return v;
+    }
+    return null;
+  }
+
+  double? _toDouble(dynamic value) {
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value);
+    return null;
   }
 }

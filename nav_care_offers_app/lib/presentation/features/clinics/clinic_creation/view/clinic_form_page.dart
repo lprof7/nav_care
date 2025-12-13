@@ -125,7 +125,7 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
                   TextFormField(
                     controller: _nameController,
                     decoration: InputDecoration(
-                      labelText: 'clinics.form.name'.tr(),
+                      labelText: _requiredLabel('clinics.form.name'.tr()),
                     ),
                     validator: (value) => value == null || value.trim().isEmpty
                         ? 'field_required'.tr()
@@ -143,7 +143,7 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
                   TextFormField(
                     controller: _addressController,
                     decoration: InputDecoration(
-                      labelText: 'clinics.form.address'.tr(),
+                      labelText: _requiredLabel('clinics.form.address'.tr()),
                     ),
                     validator: (value) => value == null || value.trim().isEmpty
                         ? 'field_required'.tr()
@@ -312,6 +312,8 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
       if (controllers.isEmpty) controllers.add(TextEditingController());
     });
   }
+
+  String _requiredLabel(String text) => '$text *';
 
   void _submit(BuildContext context) {
     if (!_formKey.currentState!.validate()) return;

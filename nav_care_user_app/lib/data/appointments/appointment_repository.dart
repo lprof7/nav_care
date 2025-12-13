@@ -13,14 +13,13 @@ class AppointmentRepository {
   AppointmentRepository({required RemoteAppointmentService remoteService})
       : _remoteService = remoteService;
 
-  Future<Result<String>> createAppointment(
-      AppointmentModel appointment) async {
+  Future<Result<String>> createAppointment(AppointmentModel appointment) async {
     final response = await _remoteService.createAppointment(appointment);
     return response.fold(
       onSuccess: (data) {
         final map = _asMap(data);
-        final message = _localizedMessage(map?['message']) ??
-            'appointment_created_success';
+        final message =
+            _localizedMessage(map?['message']) ?? 'appointment_created_success';
         return Result.success(message);
       },
       onFailure: (failure) => Result.failure(failure),
@@ -161,7 +160,8 @@ class AppointmentRepository {
     if (message is String) return message;
     if (message is Map) {
       final localeCode = Intl.getCurrentLocale().split('_').first;
-      if (message[localeCode] is String && (message[localeCode] as String).isNotEmpty) {
+      if (message[localeCode] is String &&
+          (message[localeCode] as String).isNotEmpty) {
         return message[localeCode];
       }
       if (message['en'] is String && (message['en'] as String).isNotEmpty) {

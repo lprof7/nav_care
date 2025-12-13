@@ -16,15 +16,29 @@ class RemoteAppointmentsService implements AppointmentsService {
 
   @override
   Future<Result<Map<String, dynamic>>> getMyDoctorAppointments() async {
-    final doctorToken = await _tokenStore.getUserToken();
-    if (doctorToken == null) {
+    final token = await _tokenStore.getUserToken();
+    if (token == null || token.isEmpty) {
       return Result.failure(const Failure.unauthorized());
     }
 
     return _apiClient.get(
       _apiClient.apiConfig.doctorAppointments,
-      headers: {'Authorization': 'Bearer $doctorToken'},
       parser: (data) => data as Map<String, dynamic>,
+      useHospitalToken: false,
+    );
+  }
+
+  @override
+  Future<Result<Map<String, dynamic>>> getMyHospitalAppointments() async {
+    final token = await _tokenStore.getHospitalToken();
+    if (token == null || token.isEmpty) {
+      return Result.failure(const Failure.unauthorized());
+    }
+
+    return _apiClient.get(
+      _apiClient.apiConfig.hospitalAppointments,
+      parser: (data) => data as Map<String, dynamic>,
+      useHospitalToken: true,
     );
   }
 
@@ -33,8 +47,8 @@ class RemoteAppointmentsService implements AppointmentsService {
     required String appointmentId,
     required Map<String, dynamic> payload,
   }) async {
-    final doctorToken = await _tokenStore.getUserToken();
-    if (doctorToken == null) {
+    final token = await _tokenStore.getUserToken();
+    if (token == null || token.isEmpty) {
       return Result.failure(const Failure.unauthorized());
     }
 
@@ -44,6 +58,7 @@ class RemoteAppointmentsService implements AppointmentsService {
       parser: (data) {
         return data as Map<String, dynamic>;
       },
+      useHospitalToken: false,
     );
   }
 }

@@ -126,7 +126,7 @@ class DoctorGridCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: SizedBox(
-                        height: 40,
+                        height: 50,
                         width: double.infinity,
                         child: ElevatedButton.icon(
                           onPressed: onPressed ?? onTap,

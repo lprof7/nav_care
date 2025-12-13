@@ -24,32 +24,38 @@ import '../sections/recent_service_offerings/view/recent_service_offerings_secti
 import '../sections/recent_hospitals/viewmodel/recent_hospitals_cubit.dart';
 import '../sections/recent_doctors/viewmodel/recent_doctors_cubit.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    const sections = [
-      _BecomeDoctorBanner(),
-      AdsSectionView(),
-      FeaturedServicesSection(),
-      HospitalsChoiceSection(),
-      DoctorsChoiceSection(),
-      AdsSectionView(),
-      FeaturedHospitalsSection(),
-      FeaturedDoctorsSection(),
-      AdsSectionView(),
-      RecentHospitalsSection(),
-      RecentServiceOfferingsSection(),
-      RecentDoctorsSection(),
-      AdsSectionView(),
-    ];
+  State<HomePage> createState() => _HomePageState();
+}
 
+class _HomePageState extends State<HomePage> {
+  late final List<AdsSectionCubit> _adsCubits;
+
+  @override
+  void initState() {
+    super.initState();
+    _adsCubits = List.generate(
+      4,
+      (_) => sl<AdsSectionCubit>()..loadAdvertisings(),
+    );
+  }
+
+  @override
+  void dispose() {
+    for (final cubit in _adsCubits) {
+      cubit.close();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final sections = _sections;
     return MultiBlocProvider(
       providers: [
-        BlocProvider<AdsSectionCubit>(
-          create: (context) => sl<AdsSectionCubit>()..loadAdvertisings(),
-        ),
         BlocProvider<FeaturedServicesCubit>(
           create: (context) =>
               sl<FeaturedServicesCubit>()..loadFeaturedServices(),
@@ -87,7 +93,9 @@ class HomePage extends StatelessWidget {
           if (state.status == NetworkStatus.connected) {
             return RefreshIndicator(
               onRefresh: () async {
-                context.read<AdsSectionCubit>().loadAdvertisings();
+                for (final cubit in _adsCubits) {
+                  cubit.loadAdvertisings();
+                }
                 context.read<FeaturedServicesCubit>().loadFeaturedServices();
                 context.read<HospitalsChoiceCubit>().loadHospitals();
                 context.read<DoctorsChoiceCubit>().loadDoctors();
@@ -162,7 +170,9 @@ class HomePage extends StatelessWidget {
   }
 
   void _loadAllData(BuildContext context) {
-    context.read<AdsSectionCubit>().loadAdvertisings();
+    for (final cubit in _adsCubits) {
+      cubit.loadAdvertisings();
+    }
     context.read<FeaturedServicesCubit>().loadFeaturedServices();
     context.read<HospitalsChoiceCubit>().loadHospitals();
     context.read<DoctorsChoiceCubit>().loadDoctors();
@@ -171,6 +181,40 @@ class HomePage extends StatelessWidget {
     context.read<RecentHospitalsCubit>().loadHospitals();
     context.read<RecentDoctorsCubit>().loadDoctors();
     context.read<RecentServiceOfferingsCubit>().loadOfferings();
+  }
+
+  List<Widget> get _sections => [
+        const _BecomeDoctorBanner(),
+        _AdsSectionProvider(cubit: _adsCubits[0], index: 0),
+        const FeaturedServicesSection(),
+        const HospitalsChoiceSection(),
+        const DoctorsChoiceSection(),
+        _AdsSectionProvider(cubit: _adsCubits[1], index: 1),
+        const FeaturedHospitalsSection(),
+        const FeaturedDoctorsSection(),
+        _AdsSectionProvider(cubit: _adsCubits[2], index: 2),
+        const RecentHospitalsSection(),
+        const RecentServiceOfferingsSection(),
+        const RecentDoctorsSection(),
+        _AdsSectionProvider(cubit: _adsCubits[3], index: 3),
+      ];
+}
+
+class _AdsSectionProvider extends StatelessWidget {
+  final AdsSectionCubit cubit;
+  final int index;
+
+  const _AdsSectionProvider({
+    required this.cubit,
+    required this.index,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<AdsSectionCubit>.value(
+      value: cubit,
+      child: AdsSectionView(key: ValueKey('ads_section_$index')),
+    );
   }
 }
 

@@ -19,6 +19,16 @@ class AppointmentsCubit extends Cubit<AppointmentsState> {
     );
   }
 
+  Future<void> getMyHospitalAppointments() async {
+    emit(const AppointmentsState.loading());
+    final result = await _appointmentsRepository.getMyHospitalAppointments();
+    result.fold(
+      onSuccess: (appointmentList) =>
+          emit(AppointmentsState.success(appointmentList)),
+      onFailure: (failure) => emit(AppointmentsState.failure(failure)),
+    );
+  }
+
   Future<void> updateAppointment({
     required String appointmentId,
     required DateTime startTime,

@@ -59,92 +59,91 @@ class _MyAppointmentsView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             BlocConsumer<MyAppointmentsCubit, MyAppointmentsState>(
-                listenWhen: (previous, current) =>
-                    previous.actionId != current.actionId,
-                listener: (context, state) {
-                  if (state.actionStatus == AppointmentActionStatus.success) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content:
-                            Text('appointments.messages.update_success'.tr()),
-                      ),
+              listenWhen: (previous, current) =>
+                  previous.actionId != current.actionId,
+              listener: (context, state) {
+                if (state.actionStatus == AppointmentActionStatus.success) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content:
+                          Text('appointments.messages.update_success'.tr()),
+                    ),
+                  );
+                } else if (state.actionStatus ==
+                    AppointmentActionStatus.failure) {
+                  final fallback = 'appointments.messages.update_failure'.tr();
+                  final errorMessage = state.actionError?.message;
+                  final message =
+                      (errorMessage != null && errorMessage.isNotEmpty)
+                          ? errorMessage
+                          : fallback;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(message)),
+                  );
+                }
+              },
+              builder: (context, state) {
+                final cubit = context.read<MyAppointmentsCubit>();
+                Widget content;
+                switch (state.status) {
+                  case MyAppointmentsStatus.loading:
+                    content = const Center(
+                      child: CircularProgressIndicator(),
                     );
-                  } else if (state.actionStatus ==
-                      AppointmentActionStatus.failure) {
-                    final fallback =
-                        'appointments.messages.update_failure'.tr();
-                    final errorMessage = state.actionError?.message;
+                    break;
+                  case MyAppointmentsStatus.failure:
                     final message =
-                        (errorMessage != null && errorMessage.isNotEmpty)
-                            ? errorMessage
-                            : fallback;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(message)),
+                        state.error?.message ?? 'appointments.list.error'.tr();
+                    content = _AppointmentsError(
+                      message: message,
+                      onRetry: cubit.fetchAppointments,
                     );
-                  }
-                },
-                builder: (context, state) {
-                  final cubit = context.read<MyAppointmentsCubit>();
-                  Widget content;
-                  switch (state.status) {
-                    case MyAppointmentsStatus.loading:
-                      content = const Center(
-                        child: CircularProgressIndicator(),
+                    break;
+                  case MyAppointmentsStatus.success:
+                    final list = state.appointments;
+                    if (list == null) {
+                      content = _AppointmentsEmpty(
+                        onReload: cubit.fetchAppointments,
                       );
                       break;
-                    case MyAppointmentsStatus.failure:
-                      final message = state.error?.message ??
-                          'appointments.list.error'.tr();
-                      content = _AppointmentsError(
-                        message: message,
-                        onRetry: cubit.fetchAppointments,
-                      );
-                      break;
-                    case MyAppointmentsStatus.success:
-                      final list = state.appointments;
-                      if (list == null) {
-                        content = _AppointmentsEmpty(
-                          onReload: cubit.fetchAppointments,
-                        );
-                        break;
-                      }
-                      final filteredAppointments = _filterAppointments(
-                        list.appointments,
-                        state.filterStatus,
-                      );
-                      content = Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _StatusFilterRow(
-                            selectedStatus: state.filterStatus,
-                            onSelected: cubit.setStatusFilter,
+                    }
+                    final filteredAppointments = _filterAppointments(
+                      list.appointments,
+                      state.filterStatus,
+                    );
+                    content = Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _StatusFilterRow(
+                          selectedStatus: state.filterStatus,
+                          onSelected: cubit.setStatusFilter,
+                        ),
+                        const SizedBox(height: 12),
+                        Expanded(
+                          child: _UserAppointmentsList(
+                            appointments: filteredAppointments,
+                            isProcessing: state.isProcessing,
+                            onRefresh: cubit.refreshAppointments,
+                            onAppointmentTap: (appointment) =>
+                                _showUserAppointmentEditor(
+                                    context, appointment),
+                            activeFilter: state.filterStatus,
+                            onClearFilter: () => cubit.setStatusFilter(null),
                           ),
-                          const SizedBox(height: 12),
-                          Expanded(
-                            child: _UserAppointmentsList(
-                              appointments: filteredAppointments,
-                              isProcessing: state.isProcessing,
-                              onRefresh: cubit.refreshAppointments,
-                              onAppointmentTap: (appointment) =>
-                                  _showUserAppointmentEditor(
-                                      context, appointment),
-                              activeFilter: state.filterStatus,
-                              onClearFilter: () => cubit.setStatusFilter(null),
-                            ),
-                          ),
-                        ],
-                      );
-                      break;
-                    case MyAppointmentsStatus.initial:
-                    default:
-                      content = const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                  }
+                        ),
+                      ],
+                    );
+                    break;
+                  case MyAppointmentsStatus.initial:
+                  default:
+                    content = const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                }
 
-                  return Expanded(child: content);
-                },
-              ),
+                return Expanded(child: content);
+              },
+            ),
           ],
         ),
       ),
@@ -205,12 +204,14 @@ class _UserAppointmentsList extends StatelessWidget {
       return _AppointmentsEmpty(onReload: onRefresh);
     }
 
+    final localeCode = context.locale.languageCode;
     final listView = RefreshIndicator(
       onRefresh: onRefresh,
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           final appointment = appointments[index];
+          final serviceName = appointment.serviceNameForLocale(localeCode);
           final statusLabel = _statusLabel(context, appointment.status);
           final statusColor = _statusColor(
             context,
@@ -247,7 +248,7 @@ class _UserAppointmentsList extends StatelessWidget {
                     children: [
                       Flexible(
                         child: Text(
-                          appointment.serviceName,
+                          serviceName,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context)
@@ -279,8 +280,8 @@ class _UserAppointmentsList extends StatelessWidget {
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
-                          _formatAppointmentRange(
-                              context, appointment.startTime, appointment.endTime),
+                          _formatAppointmentRange(context,
+                              appointment.startTime, appointment.endTime),
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall
@@ -650,14 +651,14 @@ Future<void> _showUserAppointmentEditor(
                   },
                 ),
                 const SizedBox(height: 16),
-                      DropdownButtonFormField<String>(
-                        value: status,
-                        items: statuses
-                            .map((value) => DropdownMenuItem(
-                                  value: value,
-                                  child: Text(_statusLabel(context, value)),
-                                ))
-                            .toList(),
+                DropdownButtonFormField<String>(
+                  value: status,
+                  items: statuses
+                      .map((value) => DropdownMenuItem(
+                            value: value,
+                            child: Text(_statusLabel(context, value)),
+                          ))
+                      .toList(),
                   onChanged: (value) {
                     if (value != null) {
                       setSheetState(() {
@@ -823,5 +824,7 @@ List<UserAppointmentModel> _filterAppointments(
   String? status,
 ) {
   if (status == null) return appointments;
-  return appointments.where((appointment) => appointment.status == status).toList();
+  return appointments
+      .where((appointment) => appointment.status == status)
+      .toList();
 }

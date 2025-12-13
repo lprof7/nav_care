@@ -41,11 +41,6 @@ class NavShellAppBar extends StatelessWidget implements PreferredSizeWidget {
                 onPressed: onMenuTap ?? () => Scaffold.of(context).openDrawer(),
               ),
               const SizedBox(width: 8),
-              _RoundedIconButton(
-                icon: Icons.support_agent_rounded,
-                tooltip: 'shell.app_bar.support'.tr(),
-                onPressed: onSupportTap,
-              ),
               Expanded(
                 child: Center(
                   child: Image.asset(
@@ -54,11 +49,6 @@ class NavShellAppBar extends StatelessWidget implements PreferredSizeWidget {
                     fit: BoxFit.contain,
                   ),
                 ),
-              ),
-              _RoundedIconButton(
-                icon: Icons.favorite_border_rounded,
-                tooltip: 'shell.app_bar.favorites'.tr(),
-                onPressed: onFavoritesTap,
               ),
               const SizedBox(width: 8),
               Stack(

@@ -48,7 +48,8 @@ class _FeaturedHospitalsBody extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    state.message ?? 'common.error_occurred'.tr(), // رسالة خطأ عامة
+                    state.message ??
+                        'common.error_occurred'.tr(), // رسالة خطأ عامة
                     style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
@@ -79,7 +80,7 @@ class _FeaturedHospitalsBody extends StatelessWidget {
                 ),
                 const SizedBox(height: 14),
                 SizedBox(
-                  height: 355,
+                  height: 360,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: state.hospitals.length,

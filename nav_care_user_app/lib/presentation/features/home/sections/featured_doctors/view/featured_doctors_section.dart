@@ -86,7 +86,7 @@ class _FeaturedDoctorsBody extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 SizedBox(
-                  height: 270,
+                  height: 280,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: state.doctors.length,

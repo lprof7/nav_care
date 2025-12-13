@@ -82,11 +82,18 @@ Future<void> configureDependencies(AppConfig config) async {
   // Storage
   sl.registerLazySingleton<TokenStore>(() => SecureTokenStore());
   sl.registerLazySingleton<DoctorStore>(() => SecureDoctorStore());
+  sl.registerSingleton<AuthCubit>(AuthCubit(sl<DoctorStore>(), sl<TokenStore>()));
 
   final dio = DioClient(
     baseUrl: config.api.baseUrl,
     timeout: const Duration(milliseconds: 20000),
     tokenStore: sl<TokenStore>(),
+    doctorStore: sl<DoctorStore>(),
+    onUnauthorized: () async {
+      if (sl.isRegistered<AuthCubit>()) {
+        await sl<AuthCubit>().logout();
+      }
+    },
   ).build();
   sl.registerSingleton<ApiClient>(ApiClient(dio, sl<AppConfig>().api));
   sl.registerLazySingleton<Connectivity>(() => Connectivity());
@@ -118,7 +125,6 @@ Future<void> configureDependencies(AppConfig config) async {
       () => ResetPasswordRepository(service: sl<ResetPasswordService>()));
   sl.registerFactory<ResetPasswordCubit>(
       () => ResetPasswordCubit(sl<ResetPasswordRepository>()));
-  sl.registerSingleton<AuthCubit>(AuthCubit(sl<DoctorStore>(), sl<TokenStore>()));
   sl.registerFactory<LogoutCubit>(() => LogoutCubit(sl<AuthCubit>()));
   sl.registerLazySingleton<UserRemoteService>(
       () => UserRemoteService(apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
