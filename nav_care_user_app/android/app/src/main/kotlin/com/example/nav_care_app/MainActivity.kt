@@ -1,4 +1,4 @@
-package com.example.nav_care_user_app
+package com.sarlkig.navcare_user
 
 import io.flutter.embedding.android.FlutterActivity
 

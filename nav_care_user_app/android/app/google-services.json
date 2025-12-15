@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:487217403446:android:585268be69461480616a97",
+        "mobilesdk_app_id": "1:487217403446:android:59309f1211f6578f616a97",
         "android_client_info": {
-          "package_name": "com.example.nav_care_user_app"
+          "package_name": "com.sarlkig.navcare_user"
         }
       },
       "oauth_client": [

@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAfJbqRr3ZI0PmvOU-5HAUWWXRMLxJk0aU',
-    appId: '1:487217403446:android:585268be69461480616a97',
+    appId: '1:487217403446:android:59309f1211f6578f616a97',
     messagingSenderId: '487217403446',
     projectId: 'navcare-f864c',
     storageBucket: 'navcare-f864c.firebasestorage.app',
@@ -64,6 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '487217403446',
     projectId: 'navcare-f864c',
     storageBucket: 'navcare-f864c.firebasestorage.app',
+    androidClientId: '487217403446-2jb3c0tld086n6rovhh1qqndr7g6u38l.apps.googleusercontent.com',
     iosClientId: '487217403446-dgab31hffefa4125rarkohjhm0dula21.apps.googleusercontent.com',
     iosBundleId: 'com.example.navCareApp',
   );
@@ -74,6 +75,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '487217403446',
     projectId: 'navcare-f864c',
     storageBucket: 'navcare-f864c.firebasestorage.app',
+    androidClientId: '487217403446-2jb3c0tld086n6rovhh1qqndr7g6u38l.apps.googleusercontent.com',
     iosClientId: '487217403446-dgab31hffefa4125rarkohjhm0dula21.apps.googleusercontent.com',
     iosBundleId: 'com.example.navCareApp',
   );
