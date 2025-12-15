@@ -86,7 +86,6 @@ Future<void> configureDependencies(AppConfig config) async {
   // Storage
   sl.registerLazySingleton<TokenStore>(() => SecureTokenStore());
   sl.registerLazySingleton<DoctorStore>(() => SecureDoctorStore());
-  sl.registerSingleton<AuthCubit>(AuthCubit(sl<DoctorStore>(), sl<TokenStore>()));
 
   final dio = DioClient(
     baseUrl: config.api.baseUrl,
@@ -100,6 +99,8 @@ Future<void> configureDependencies(AppConfig config) async {
     },
   ).build();
   sl.registerSingleton<ApiClient>(ApiClient(dio, sl<AppConfig>().api));
+  sl.registerLazySingleton<AuthCubit>(
+      () => AuthCubit(sl<DoctorStore>(), sl<TokenStore>(), sl<ApiClient>()));
   sl.registerLazySingleton<Connectivity>(() => Connectivity());
   sl.registerSingleton<NetworkCubit>(NetworkCubit(
     connectivity: sl<Connectivity>(),

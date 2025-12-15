@@ -72,10 +72,17 @@ class NavShellPage extends StatelessWidget {
               }
             },
           ),
+          BlocListener<AuthCubit, AuthState>(
+            listenWhen: (prev, curr) =>
+                prev.status != curr.status &&
+                curr.status == AuthStatus.unauthenticated,
+            listener: (context, state) {
+              context.go('/signin');
+            },
+          ),
         ],
         child: BlocBuilder<NavShellCubit, NavShellState>(
           builder: (context, state) {
-            final cubit = context.read<NavShellCubit>();
             final destinations = _buildDestinations(context);
             final logoutState = context.watch<LogoutCubit>().state;
             final isLogoutLoading = logoutState is LogoutInProgress;
@@ -102,7 +109,8 @@ class NavShellPage extends StatelessWidget {
               drawer: NavShellDrawer(
                 selectedIndex: state.currentIndex,
                 destinations: destinations,
-                onDestinationSelected: cubit.setTab,
+                onDestinationSelected: (index) =>
+                    _onDestinationSelected(context, index),
                 onVerifyTap: () {},
                 currentLocale: context.locale,
                 supportedLocales: context.supportedLocales,
@@ -123,7 +131,7 @@ class NavShellPage extends StatelessWidget {
                 onProfileRetry: () => context.read<UserProfileCubit>().loadProfile(),
                 onProfileTap: () {
                   Navigator.of(context).pop();
-                  cubit.setTab(destinations.length - 1);
+                  _onDestinationSelected(context, destinations.length - 1);
                 },
                 isAuthenticated: isAuthenticated,
                 onSignInTap: () => context.go('/signin'),
@@ -172,15 +180,28 @@ class NavShellPage extends StatelessWidget {
     ];
   }
 
+  Future<void> _onDestinationSelected(
+    BuildContext context,
+    int index,
+  ) async {
+    final authCubit = context.read<AuthCubit>();
+    if (authCubit.state.status == AuthStatus.authenticated) {
+      await authCubit.verifyTokenValidity();
+      if (authCubit.state.status != AuthStatus.authenticated) return;
+    }
+    context.read<NavShellCubit>().setTab(index);
+  }
+
   Future<void> _onFeedbackTap(BuildContext context) async {
     final scaffoldState = Scaffold.maybeOf(context);
     if (scaffoldState?.isDrawerOpen ?? false) {
       Navigator.of(context).pop();
     }
 
-    await context.read<AuthCubit>().checkAuthStatus();
+    final authCubit = context.read<AuthCubit>();
+    await authCubit.verifyTokenValidity();
     if (!context.mounted) return;
-    final authState = context.read<AuthCubit>().state;
+    final authState = authCubit.state;
     if (authState.status != AuthStatus.authenticated) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('feedback.auth_required'.tr())),

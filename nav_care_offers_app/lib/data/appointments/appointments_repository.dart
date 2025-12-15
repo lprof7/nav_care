@@ -283,6 +283,7 @@ class AppointmentsRepository {
     Map<String, dynamic> normalizeProvider(Map? provider) {
       final p = (provider ?? const <String, dynamic>{})
           .map((k, v) => MapEntry(k.toString(), v));
+      p['_id'] = p['_id']?.toString() ?? '';
 
       final images = (p['images'] is List)
           ? (p['images'] as List).whereType<dynamic>().toList()

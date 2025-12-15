@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:nav_care_offers_app/core/config/api_config.dart';
 import 'package:nav_care_offers_app/core/network/api_client.dart';
 import 'package:nav_care_offers_app/core/responses/failure.dart';
@@ -23,7 +24,10 @@ class RemoteAppointmentsService implements AppointmentsService {
 
     return _apiClient.get(
       _apiClient.apiConfig.doctorAppointments,
-      parser: (data) => data as Map<String, dynamic>,
+      parser: (data)  {
+        print(data);
+        return
+        data as Map<String, dynamic>;},
       useHospitalToken: false,
     );
   }

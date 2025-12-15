@@ -327,6 +327,7 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
             hospitalId: hospitalId,
             offeringId: offeringId,
             initial: offering is ServiceOffering ? offering : null,
+            allowDelete: true,
           );
         },
       ),

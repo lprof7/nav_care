@@ -163,6 +163,8 @@ class _ServiceOfferingsBody extends StatelessWidget {
     context.push(route, extra: offering).then((value) {
       if (value is ServiceOffering) {
         context.read<ServiceOfferingsCubit>().updateOffering(value);
+      } else if (value == 'deleted') {
+        context.read<ServiceOfferingsCubit>().removeOffering(offering.id);
       }
     });
   }

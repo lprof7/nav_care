@@ -13,6 +13,9 @@ void main() async {
   await configureDependencies(AppConfig.fromEnv());
 
   await sl<AuthCubit>().checkAuthStatus();
+  if (sl<AuthCubit>().state.status == AuthStatus.authenticated) {
+    await sl<AuthCubit>().verifyTokenValidity();
+  }
   final initialRoute = sl<AuthCubit>().state.status == AuthStatus.authenticated
       ? '/home'
       : '/signin';

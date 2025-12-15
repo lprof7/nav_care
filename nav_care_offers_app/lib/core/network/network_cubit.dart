@@ -62,7 +62,8 @@ class NetworkCubit extends Cubit<NetworkState> {
             sendTimeout: const Duration(seconds: 5),
           ),
         );
-        await dio.get('/');
+        // Hit a lightweight public endpoint instead of root to avoid false server errors.
+        await dio.get('/api/faq');
         isServerReachable = true;
       } on DioException catch (e) {
         if (e.type == DioExceptionType.connectionError ||
