@@ -214,7 +214,9 @@ Future<void> configureDependencies(AppConfig config) async {
     () => ClinicsCubit(sl<ClinicsRepository>()),
   );
   sl.registerFactory<ClinicCreationCubit>(() => ClinicCreationCubit(
-      sl<ClinicsRepository>())); // Register ClinicCreationCubit
+        sl<ClinicsRepository>(),
+        sl<TranslationService>(),
+      )); // Register ClinicCreationCubit
 
   // Appointments
   sl.registerLazySingleton<AppointmentsService>(
@@ -240,7 +242,11 @@ Future<void> configureDependencies(AppConfig config) async {
         sl<DoctorStore>(),
       ));
   sl.registerFactory<BecomeDoctorCubit>(
-      () => BecomeDoctorCubit(sl<BecomeDoctorRepository>(), sl<AuthCubit>()));
+      () => BecomeDoctorCubit(
+            sl<BecomeDoctorRepository>(),
+            sl<AuthCubit>(),
+            sl<TranslationService>(),
+          ));
   sl.registerFactoryParam<HospitalDetailCubit, Hospital, void>(
     (hospital, _) => HospitalDetailCubit(
       sl<HospitalsRepository>(),
@@ -255,6 +261,7 @@ Future<void> configureDependencies(AppConfig config) async {
   sl.registerFactoryParam<HospitalFormCubit, Hospital?, void>(
     (hospital, _) => HospitalFormCubit(
       sl<HospitalsRepository>(),
+      translationService: sl<TranslationService>(),
       initialHospital: hospital,
     ),
   );

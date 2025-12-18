@@ -77,6 +77,7 @@ class AppointmentsRepository {
     DateTime? startTime,
     DateTime? endTime,
     String? status,
+    bool useHospitalToken = false,
   }) async {
     final payload = <String, dynamic>{};
     if (startTime != null) {
@@ -98,6 +99,7 @@ class AppointmentsRepository {
     final response = await _service.updateAppointment(
       appointmentId: appointmentId,
       payload: payload,
+      useHospitalToken: useHospitalToken,
     );
 
     return response.fold(

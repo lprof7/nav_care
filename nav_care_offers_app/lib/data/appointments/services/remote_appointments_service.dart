@@ -50,8 +50,11 @@ class RemoteAppointmentsService implements AppointmentsService {
   Future<Result<Map<String, dynamic>>> updateAppointment({
     required String appointmentId,
     required Map<String, dynamic> payload,
+    bool useHospitalToken = false,
   }) async {
-    final token = await _tokenStore.getUserToken();
+    final token = useHospitalToken
+        ? await _tokenStore.getHospitalToken()
+        : await _tokenStore.getUserToken();
     if (token == null || token.isEmpty) {
       return Result.failure(const Failure.unauthorized());
     }
@@ -62,7 +65,7 @@ class RemoteAppointmentsService implements AppointmentsService {
       parser: (data) {
         return data as Map<String, dynamic>;
       },
-      useHospitalToken: false,
+      useHospitalToken: useHospitalToken,
     );
   }
 }

@@ -3,7 +3,8 @@ class ApiConfig {
   const ApiConfig({required this.baseUrl});
 
   // Translation
-  String get translateText => '$baseUrl/api/backend-services/translate-text';
+  String get translateText =>
+      'https://api.naviguihfood.com/api/backend-services/translate-text';
 
   // Auth
   String get login => '$baseUrl/api/doctors/login';

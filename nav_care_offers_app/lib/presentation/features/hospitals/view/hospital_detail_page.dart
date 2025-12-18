@@ -1288,6 +1288,7 @@ Future<void> _showHospitalAppointmentEditor(
                               startTime: selectedStart.toUtc(),
                               endTime: selectedEnd.toUtc(),
                               status: selectedStatus,
+                              useHospitalToken: true,
                             );
                           },
                           child: Text('appointments.edit.submit'.tr()),

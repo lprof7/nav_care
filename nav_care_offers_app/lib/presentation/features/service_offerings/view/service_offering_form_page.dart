@@ -24,6 +24,7 @@ class ServiceOfferingFormPage extends StatelessWidget {
     return BlocProvider(
       create: (_) => ServiceOfferingFormCubit(
         sl<ServiceOfferingsRepository>(),
+        translationService: sl(),
         initial: initial,
         useHospitalToken: useHospitalToken,
       )..loadCatalog(),

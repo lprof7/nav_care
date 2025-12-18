@@ -54,16 +54,17 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
   Widget build(BuildContext context) {
     final baseUrl = sl<AppConfig>().api.baseUrl;
     return BlocProvider(
-        create: (_) =>
-            sl<DoctorReviewsCubit>()..loadReviews(doctorId: widget.doctorId),
-        child: Scaffold(
+      create: (_) =>
+          sl<DoctorReviewsCubit>()..loadReviews(doctorId: widget.doctorId),
+      child: Builder(
+        builder: (innerContext) => Scaffold(
           body: RefreshIndicator(
             onRefresh: () async {
               setState(() {
                 _future = _load();
               });
               await _future;
-              context.read<DoctorReviewsCubit>().refresh();
+              innerContext.read<DoctorReviewsCubit>().refresh();
             },
             child: FutureBuilder<DoctorModel>(
               future: _future,
@@ -81,7 +82,8 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                 }
 
                 final doctor = snapshot.data!;
-                final reviewsState = context.watch<DoctorReviewsCubit>().state;
+                final reviewsState =
+                    innerContext.watch<DoctorReviewsCubit>().state;
                 final locale = context.locale.languageCode;
                 final bio = doctor.bioForLocale(locale);
                 final avatar = doctor.avatarImage(baseUrl: baseUrl) ??
@@ -105,7 +107,7 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                       pinned: true,
                       leading: IconButton(
                         icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                        onPressed: () => Navigator.of(context).maybePop(),
+                        onPressed: () => Navigator.of(innerContext).maybePop(),
                       ),
                       title: Text(
                         doctor.displayName,
@@ -135,7 +137,7 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                                 child: FilledButton(
                                   onPressed: canSendInvitation
                                       ? () {
-                                          ScaffoldMessenger.of(context)
+                                          ScaffoldMessenger.of(innerContext)
                                               .showSnackBar(
                                             SnackBar(
                                               content: Text(
@@ -206,10 +208,12 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                               status: reviewsState.status,
                               baseUrl: baseUrl,
                               isLoadingMore: reviewsState.isLoadingMore,
-                              onReload: () =>
-                                  context.read<DoctorReviewsCubit>().refresh(),
-                              onLoadMore: () =>
-                                  context.read<DoctorReviewsCubit>().loadMore(),
+                              onReload: () => innerContext
+                                  .read<DoctorReviewsCubit>()
+                                  .refresh(),
+                              onLoadMore: () => innerContext
+                                  .read<DoctorReviewsCubit>()
+                                  .loadMore(),
                             ),
                           ],
                         ),
@@ -220,7 +224,9 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
               },
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
 

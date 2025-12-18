@@ -6,5 +6,6 @@ abstract class AppointmentsService {
   Future<Result<Map<String, dynamic>>> updateAppointment({
     required String appointmentId,
     required Map<String, dynamic> payload,
+    bool useHospitalToken = false,
   });
 }

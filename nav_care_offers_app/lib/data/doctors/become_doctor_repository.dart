@@ -24,6 +24,8 @@ class BecomeDoctorRepository {
 
   Future<Result<Doctor>> becomeDoctor({
     required String bioEn,
+    String? bioFr,
+    String? bioAr,
     XFile? image,
     String? specialty,
     String? availabilityJson,
@@ -39,6 +41,8 @@ class BecomeDoctorRepository {
 
     final formMap = <String, dynamic>{
       'bio_en': normalizedBio,
+      if (bioFr != null && bioFr.isNotEmpty) 'bio_fr': bioFr,
+      if (bioAr != null && bioAr.isNotEmpty) 'bio_ar': bioAr,
       'specialty': normalizedSpecialty,
       'availability': normalizedAvailability,
     };

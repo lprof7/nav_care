@@ -13,6 +13,8 @@ class ServiceOfferingPayload {
   final String? descriptionAr;
   final String? descriptionSp;
   final String? nameEn;
+  final String? nameFr;
+  final String? nameAr;
   final List<XFile>? images;
 
   const ServiceOfferingPayload({
@@ -24,6 +26,8 @@ class ServiceOfferingPayload {
     this.descriptionAr,
     this.descriptionSp,
     this.nameEn,
+    this.nameFr,
+    this.nameAr,
     this.images,
   });
 
@@ -31,6 +35,8 @@ class ServiceOfferingPayload {
     required ServiceOffering offering,
     String? overrideServiceId,
     String? nameEn,
+    String? nameFr,
+    String? nameAr,
     List<XFile>? images,
   }) {
     return ServiceOfferingPayload(
@@ -42,6 +48,8 @@ class ServiceOfferingPayload {
       descriptionAr: offering.descriptionAr,
       descriptionSp: offering.descriptionSp,
       nameEn: nameEn,
+      nameFr: nameFr,
+      nameAr: nameAr,
       images: images,
     );
   }
@@ -66,6 +74,12 @@ class ServiceOfferingPayload {
     }
     if (nameEn != null && nameEn!.isNotEmpty) {
       map['name_en'] = nameEn;
+    }
+    if (nameFr != null && nameFr!.isNotEmpty) {
+      map['name_fr'] = nameFr;
+    }
+    if (nameAr != null && nameAr!.isNotEmpty) {
+      map['name_ar'] = nameAr;
     }
 
     return map;

@@ -22,6 +22,7 @@ class AppointmentsCubit extends Cubit<AppointmentsState> {
   Future<void> getMyHospitalAppointments() async {
     emit(const AppointmentsState.loading());
     final result = await _appointmentsRepository.getMyHospitalAppointments();
+    print("data from cubit is result.data is ${result.data}");
     result.fold(
       onSuccess: (appointmentList) =>
           emit(AppointmentsState.success(appointmentList)),
@@ -34,6 +35,7 @@ class AppointmentsCubit extends Cubit<AppointmentsState> {
     required DateTime startTime,
     required DateTime endTime,
     required String status,
+    bool useHospitalToken = false,
   }) async {
     final currentList = _currentAppointments;
     if (currentList == null) return;
@@ -45,6 +47,7 @@ class AppointmentsCubit extends Cubit<AppointmentsState> {
       startTime: startTime,
       endTime: endTime,
       status: status,
+      useHospitalToken: useHospitalToken,
     );
 
     result.fold(

@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nav_care_offers_app/core/responses/failure.dart';
+import 'package:nav_care_offers_app/core/translation/translation_service.dart';
 import 'package:nav_care_offers_app/data/service_offerings/models/service_offering.dart';
 import 'package:nav_care_offers_app/data/service_offerings/models/service_offering_payload.dart';
 import 'package:nav_care_offers_app/data/service_offerings/service_offerings_repository.dart';
@@ -11,9 +12,11 @@ enum ServiceOfferingFormMode { create, edit }
 class ServiceOfferingFormCubit extends Cubit<ServiceOfferingFormState> {
   ServiceOfferingFormCubit(
     this._repository, {
+    required TranslationService translationService,
     ServiceOffering? initial,
     this.useHospitalToken = true,
-  }) : super(ServiceOfferingFormState(
+  })  : _translationService = translationService,
+        super(ServiceOfferingFormState(
           mode: initial == null
               ? ServiceOfferingFormMode.create
               : ServiceOfferingFormMode.edit,
@@ -22,6 +25,7 @@ class ServiceOfferingFormCubit extends Cubit<ServiceOfferingFormState> {
         ));
 
   final ServiceOfferingsRepository _repository;
+  final TranslationService _translationService;
   final bool useHospitalToken;
 
   static List<ServiceCategory> _initialCatalog(ServiceOffering offering) {
@@ -62,6 +66,8 @@ class ServiceOfferingFormCubit extends Cubit<ServiceOfferingFormState> {
     String? descriptionAr,
     String? descriptionSp,
     String? nameEn,
+    String? nameFr,
+    String? nameAr,
     List<XFile>? images,
   }) async {
     emit(state.copyWith(
@@ -70,15 +76,32 @@ class ServiceOfferingFormCubit extends Cubit<ServiceOfferingFormState> {
       isSuccess: false,
     ));
 
+    final nameTranslations = await _translateText(nameEn);
+    final descriptionTranslations = await _translateText(descriptionEn);
+
     final payload = ServiceOfferingPayload(
       serviceId: serviceId,
       price: price,
       offers: offers?.trim().isEmpty ?? true ? null : offers?.trim(),
-      descriptionEn: descriptionEn,
-      descriptionFr: descriptionFr,
-      descriptionAr: descriptionAr,
+      descriptionEn: descriptionTranslations?['en'] ?? descriptionEn,
+      descriptionFr: descriptionTranslations == null
+          ? null
+          : descriptionTranslations['fr'] ??
+              descriptionTranslations['en'] ??
+              descriptionEn,
+      descriptionAr: descriptionTranslations == null
+          ? null
+          : descriptionTranslations['ar'] ??
+              descriptionTranslations['en'] ??
+              descriptionEn,
       descriptionSp: descriptionSp,
-      nameEn: nameEn,
+      nameEn: nameTranslations?['en'] ?? nameEn,
+      nameFr: nameTranslations == null
+          ? null
+          : nameTranslations['fr'] ?? nameTranslations['en'] ?? nameEn,
+      nameAr: nameTranslations == null
+          ? null
+          : nameTranslations['ar'] ?? nameTranslations['en'] ?? nameEn,
       images: images,
     );
 
@@ -105,6 +128,16 @@ class ServiceOfferingFormCubit extends Cubit<ServiceOfferingFormState> {
           result: offering,
         ),
       ),
+    );
+  }
+
+  Future<Map<String, String>?> _translateText(String? text) async {
+    final trimmed = text?.trim() ?? '';
+    if (trimmed.isEmpty) return <String, String>{};
+    final result = await _translationService.translate(trimmed);
+    return result.fold(
+      onFailure: (_) => null, // On failure fall back to en only
+      onSuccess: (data) => data,
     );
   }
 }

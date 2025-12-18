@@ -87,6 +87,8 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
 
             return Scaffold(
               appBar: NavShellAppBar(
+                useBackButton: true,
+                onBackTap: () => context.go(AppRoute.home.path),
                 notificationCount: 0,
                 onNotificationsTap: () {},
               ),
@@ -131,6 +133,7 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
       BuildContext innerContext, HospitalDetailState detailState, String baseUrl) {
     final hospital = detailState.hospital;
     final reviewsState = innerContext.watch<HospitalReviewsCubit>().state;
+    final shellContext = innerContext;
 
     return [
       NavShellDestination(
@@ -142,8 +145,8 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
           baseUrl: baseUrl,
           status: detailState.status,
           onReload: () =>
-              context.read<HospitalDetailCubit>().loadDetails(refresh: true),
-          onManage: () => _openManage(context, hospital, 'clinics'),
+              shellContext.read<HospitalDetailCubit>().loadDetails(refresh: true),
+          onManage: () => _openManage(shellContext, hospital, 'clinics'),
         ),
       ),
       NavShellDestination(
@@ -156,9 +159,9 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
           baseUrl: baseUrl,
           status: detailState.status,
           onReload: () =>
-              context.read<HospitalDetailCubit>().loadDetails(refresh: true),
-          onManage: () => _openManage(context, hospital, 'doctors'),
-          onInvite: () => _openInviteDoctor(context, baseUrl, detailState),
+              shellContext.read<HospitalDetailCubit>().loadDetails(refresh: true),
+          onManage: () => _openManage(shellContext, hospital, 'doctors'),
+          onInvite: () => _openInviteDoctor(shellContext, baseUrl, detailState),
         ),
       ),
       NavShellDestination(
@@ -169,11 +172,11 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
           baseUrl: baseUrl,
           status: detailState.status,
           onReload: () =>
-              context.read<HospitalDetailCubit>().loadDetails(refresh: true),
-          onManage: () => _openServiceOfferings(context, hospital),
-          onCreate: () => _openOfferingCreation(context, hospital.id),
+              shellContext.read<HospitalDetailCubit>().loadDetails(refresh: true),
+          onManage: () => _openServiceOfferings(shellContext, hospital),
+          onCreate: () => _openOfferingCreation(shellContext, hospital.id),
           onOpenDetail: (offering) =>
-              _openOfferingDetail(context, hospital.id, offering),
+              _openOfferingDetail(shellContext, hospital.id, offering),
         ),
       ),
       NavShellDestination(
@@ -199,14 +202,14 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
           reviewsState: reviewsState,
           isReviewsLoadingMore: reviewsState.isLoadingMore,
           onReviewsReload: () =>
-              context.read<HospitalReviewsCubit>().refresh(),
-          onManageClinics: () => _openManage(context, hospital, 'clinics'),
-          onManageDoctors: () => _openManage(context, hospital, 'doctors'),
-          onManageOfferings: () => _openServiceOfferings(context, hospital),
-          onEdit: () => _openEdit(context, hospital),
+              shellContext.read<HospitalReviewsCubit>().refresh(),
+          onManageClinics: () => _openManage(shellContext, hospital, 'clinics'),
+          onManageDoctors: () => _openManage(shellContext, hospital, 'doctors'),
+          onManageOfferings: () => _openServiceOfferings(shellContext, hospital),
+          onEdit: () => _openEdit(shellContext, hospital),
           onDelete: detailState.isDeleting
               ? null
-              : () => _confirmDelete(context, hospital),
+              : () => _confirmDelete(shellContext, hospital),
           isDeleting: detailState.isDeleting,
           status: detailState.status,
           errorMessage: detailState.errorMessage,
@@ -1526,6 +1529,7 @@ Future<void> _showHospitalAppointmentEditor(
                               startTime: selectedStart.toUtc(),
                               endTime: selectedEnd.toUtc(),
                               status: selectedStatus,
+                              useHospitalToken: true,
                             );
                           },
                           child: Text('appointments.edit.submit'.tr()),

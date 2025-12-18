@@ -5,7 +5,9 @@ import 'hospital.dart';
 class HospitalPayload {
   final String? id;
   final String name;
-  final String? descriptionEn; // Make descriptionEn optional
+  final String? descriptionEn; // Optional source text / English fallback
+  final String? descriptionFr;
+  final String? descriptionAr;
   final String address;
   final List<String> phones;
   final List<XFile> images;
@@ -16,6 +18,8 @@ class HospitalPayload {
     this.id,
     required this.name,
     this.descriptionEn, // Make descriptionEn optional
+    this.descriptionFr,
+    this.descriptionAr,
     required this.address,
     this.phones = const [],
     this.images = const [],
@@ -28,6 +32,8 @@ class HospitalPayload {
       'name': name,
       if (descriptionEn != null)
         'description_en': descriptionEn, // Conditionally add descriptionEn
+      if (descriptionFr != null) 'description_fr': descriptionFr,
+      if (descriptionAr != null) 'description_ar': descriptionAr,
       'address': address,
       'facility_type': facilityType.apiValue, // Use dynamic facilityType
       'coordinates':
@@ -52,5 +58,31 @@ class HospitalPayload {
     }
 
     return payload;
+  }
+
+  HospitalPayload copyWith({
+    String? id,
+    String? name,
+    String? descriptionEn,
+    String? descriptionFr,
+    String? descriptionAr,
+    String? address,
+    List<String>? phones,
+    List<XFile>? images,
+    FacilityType? facilityType,
+    String? hospitalId,
+  }) {
+    return HospitalPayload(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      descriptionEn: descriptionEn ?? this.descriptionEn,
+      descriptionFr: descriptionFr ?? this.descriptionFr,
+      descriptionAr: descriptionAr ?? this.descriptionAr,
+      address: address ?? this.address,
+      phones: phones ?? this.phones,
+      images: images ?? this.images,
+      facilityType: facilityType ?? this.facilityType,
+      hospitalId: hospitalId ?? this.hospitalId,
+    );
   }
 }

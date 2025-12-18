@@ -10,6 +10,8 @@ class NavShellAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onFavoritesTap;
   final VoidCallback? onNotificationsTap;
   final int notificationCount;
+  final bool useBackButton;
+  final VoidCallback? onBackTap;
 
   const NavShellAppBar({
     super.key,
@@ -19,12 +21,18 @@ class NavShellAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onFavoritesTap,
     this.onNotificationsTap,
     this.notificationCount = 0,
+    this.useBackButton = false,
+    this.onBackTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final leadingIcon = useBackButton ? Icons.arrow_back_ios_new_rounded : Icons.menu_rounded;
+    final leadingOnPressed = useBackButton
+        ? (onBackTap ?? () => Navigator.of(context).maybePop())
+        : (onMenuTap ?? () => Scaffold.of(context).openDrawer());
 
     return Material(
       color: colorScheme.surface,
@@ -36,9 +44,10 @@ class NavShellAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: Row(
             children: [
               _RoundedIconButton(
-                icon: Icons.menu_rounded,
-                tooltip: 'shell.app_bar.menu'.tr(),
-                onPressed: onMenuTap ?? () => Scaffold.of(context).openDrawer(),
+                icon: leadingIcon,
+                // Avoid missing localization keys for back tooltip.
+                tooltip: useBackButton ? null : 'shell.app_bar.menu'.tr(),
+                onPressed: leadingOnPressed,
               ),
               const SizedBox(width: 8),
               Expanded(
