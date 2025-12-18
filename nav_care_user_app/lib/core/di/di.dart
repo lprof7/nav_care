@@ -13,6 +13,7 @@ import '../storage/secure_token_store.dart';
 import '../storage/token_store.dart';
 import '../storage/user_store.dart';
 import '../network/network_cubit.dart';
+import '../translation/translation_service.dart';
 
 // example entity wires:
 import '../../data/example/services/remote_service.dart';
@@ -112,6 +113,8 @@ Future<void> configureDependencies(AppConfig config) async {
     },
   ).build();
   sl.registerSingleton<ApiClient>(ApiClient(dio, sl<AppConfig>().api));
+  sl.registerLazySingleton<TranslationService>(
+      () => TranslationService(apiClient: sl<ApiClient>()));
   sl.registerLazySingleton<AuthSessionCubit>(() => AuthSessionCubit(
         tokenStore: sl<TokenStore>(),
         userStore: sl<UserStore>(),

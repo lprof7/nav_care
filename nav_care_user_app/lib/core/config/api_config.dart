@@ -2,6 +2,9 @@ class ApiConfig {
   final String baseUrl;
   const ApiConfig({required this.baseUrl});
 
+  // Translation
+  String get translateText => '$baseUrl/api/backend-services/translate-text';
+
   // Auth
   String get login => '$baseUrl/api/users/auth/login';
   String get register => '$baseUrl/api/users/auth/register';

@@ -10,6 +10,7 @@ import '../storage/doctor_store.dart';
 import '../storage/secure_doctor_store.dart';
 import '../storage/secure_token_store.dart';
 import '../storage/token_store.dart';
+import '../translation/translation_service.dart';
 
 import '../../data/authentication/signin/services/signin_service.dart';
 import '../../data/authentication/signin/services/remote_signin_service.dart';
@@ -99,6 +100,8 @@ Future<void> configureDependencies(AppConfig config) async {
     },
   ).build();
   sl.registerSingleton<ApiClient>(ApiClient(dio, sl<AppConfig>().api));
+  sl.registerLazySingleton<TranslationService>(
+      () => TranslationService(apiClient: sl<ApiClient>()));
   sl.registerLazySingleton<AuthCubit>(
       () => AuthCubit(sl<DoctorStore>(), sl<TokenStore>(), sl<ApiClient>()));
   sl.registerLazySingleton<Connectivity>(() => Connectivity());
