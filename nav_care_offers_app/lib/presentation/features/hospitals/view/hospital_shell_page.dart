@@ -60,8 +60,8 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
         BlocProvider(create: (_) => NavShellCubit()),
         BlocProvider(create: (_) => sl<AppointmentsCubit>()),
         BlocProvider(
-          create: (_) =>
-              sl<HospitalReviewsCubit>()..loadReviews(hospitalId: widget.hospital.id),
+          create: (_) => sl<HospitalReviewsCubit>()
+            ..loadReviews(hospitalId: widget.hospital.id),
         ),
         BlocProvider(
           create: (_) =>
@@ -83,7 +83,9 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
         child: BlocBuilder<NavShellCubit, NavShellState>(
           builder: (context, navState) {
             final detailState = context.watch<HospitalDetailCubit>().state;
-            final destinations = _buildDestinations(context, detailState, baseUrl);
+            print("detail state offerings ${detailState.offerings.length}");
+            final destinations =
+                _buildDestinations(context, detailState, baseUrl);
 
             return Scaffold(
               appBar: NavShellAppBar(
@@ -92,7 +94,8 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
                 notificationCount: 0,
                 onNotificationsTap: () {},
               ),
-              body: _buildBody(detailState, destinations, navState.currentIndex),
+              body:
+                  _buildBody(detailState, destinations, navState.currentIndex),
               bottomNavigationBar: NavShellNavBar(
                 currentIndex: navState.currentIndex,
                 destinations: destinations,
@@ -100,8 +103,8 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
               ),
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.centerFloat,
-              floatingActionButton:
-                  _buildFab(context, navState.currentIndex, detailState, baseUrl),
+              floatingActionButton: _buildFab(
+                  context, navState.currentIndex, detailState, baseUrl),
             );
           },
         ),
@@ -129,8 +132,8 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
     );
   }
 
-  List<NavShellDestination> _buildDestinations(
-      BuildContext innerContext, HospitalDetailState detailState, String baseUrl) {
+  List<NavShellDestination> _buildDestinations(BuildContext innerContext,
+      HospitalDetailState detailState, String baseUrl) {
     final hospital = detailState.hospital;
     final reviewsState = innerContext.watch<HospitalReviewsCubit>().state;
     final shellContext = innerContext;
@@ -144,8 +147,9 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
           fallbackClinics: hospital.clinics,
           baseUrl: baseUrl,
           status: detailState.status,
-          onReload: () =>
-              shellContext.read<HospitalDetailCubit>().loadDetails(refresh: true),
+          onReload: () => shellContext
+              .read<HospitalDetailCubit>()
+              .loadDetails(refresh: true),
           onManage: () => _openManage(shellContext, hospital, 'clinics'),
         ),
       ),
@@ -158,8 +162,9 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
           invitations: detailState.invitations,
           baseUrl: baseUrl,
           status: detailState.status,
-          onReload: () =>
-              shellContext.read<HospitalDetailCubit>().loadDetails(refresh: true),
+          onReload: () => shellContext
+              .read<HospitalDetailCubit>()
+              .loadDetails(refresh: true),
           onManage: () => _openManage(shellContext, hospital, 'doctors'),
           onInvite: () => _openInviteDoctor(shellContext, baseUrl, detailState),
         ),
@@ -171,8 +176,9 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
           offerings: detailState.offerings,
           baseUrl: baseUrl,
           status: detailState.status,
-          onReload: () =>
-              shellContext.read<HospitalDetailCubit>().loadDetails(refresh: true),
+          onReload: () => shellContext
+              .read<HospitalDetailCubit>()
+              .loadDetails(refresh: true),
           onManage: () => _openServiceOfferings(shellContext, hospital),
           onCreate: () => _openOfferingCreation(shellContext, hospital.id),
           onOpenDetail: (offering) =>
@@ -205,7 +211,8 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
               shellContext.read<HospitalReviewsCubit>().refresh(),
           onManageClinics: () => _openManage(shellContext, hospital, 'clinics'),
           onManageDoctors: () => _openManage(shellContext, hospital, 'doctors'),
-          onManageOfferings: () => _openServiceOfferings(shellContext, hospital),
+          onManageOfferings: () =>
+              _openServiceOfferings(shellContext, hospital),
           onEdit: () => _openEdit(shellContext, hospital),
           onDelete: detailState.isDeleting
               ? null
@@ -218,8 +225,8 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
     ];
   }
 
-  Widget _buildFab(BuildContext context, int index,
-      HospitalDetailState state, String baseUrl) {
+  Widget _buildFab(BuildContext context, int index, HospitalDetailState state,
+      String baseUrl) {
     final hospital = state.hospital;
     final map = <int, Widget>{
       0: ElevatedButton.icon(
@@ -275,7 +282,8 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
   void _openServiceOfferings(BuildContext context, Hospital hospital) {
     context
         .push('/hospitals/${hospital.id}/service-offerings', extra: hospital)
-        .then((_) => context.read<HospitalDetailCubit>().loadDetails(refresh: true));
+        .then((_) =>
+            context.read<HospitalDetailCubit>().loadDetails(refresh: true));
   }
 
   void _openOfferingCreation(BuildContext context, String hospitalId) {
@@ -347,7 +355,9 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
   void _openEdit(BuildContext context, Hospital hospital) {
     final router = GoRouter.of(context);
     final cubit = context.read<HospitalDetailCubit>();
-    router.push('/hospitals/${hospital.id}/edit', extra: hospital).then((value) {
+    router
+        .push('/hospitals/${hospital.id}/edit', extra: hospital)
+        .then((value) {
       if (value == true) {
         context.pop(true);
       } else if (value is Hospital) {
@@ -357,8 +367,7 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
     });
   }
 
-  Future<void> _confirmDelete(
-      BuildContext context, Hospital hospital) async {
+  Future<void> _confirmDelete(BuildContext context, Hospital hospital) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) {
@@ -469,8 +478,9 @@ class ClinicsTabContent extends StatelessWidget {
         separatorBuilder: (_, __) => const SizedBox(height: 14),
         itemBuilder: (context, index) {
           final clinic = items[index];
-          final image =
-              clinic.images.isNotEmpty ? _resolveImage(clinic.images.first, baseUrl) : null;
+          final image = clinic.images.isNotEmpty
+              ? _resolveImage(clinic.images.first, baseUrl)
+              : null;
           return HospitalDetailSectionCard(
             title: clinic.name,
             icon: Icons.local_hospital_rounded,
@@ -615,7 +625,8 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
                 ? ListView(
                     children: [
                       const SizedBox(height: 80),
-                      Center(child: Text('hospitals.detail.doctors_empty'.tr())),
+                      Center(
+                          child: Text('hospitals.detail.doctors_empty'.tr())),
                       const SizedBox(height: 12),
                       Center(
                         child: TextButton(
@@ -627,7 +638,8 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
                   )
                 : GridView.builder(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       mainAxisSpacing: 14,
                       crossAxisSpacing: 14,
@@ -788,14 +800,21 @@ class OfferingsTabContent extends StatelessWidget {
               offering.descriptionFr ??
               offering.descriptionSp ??
               'service_offerings.detail.no_description'.tr();
-          final image = offering.images.isNotEmpty
-              ? _resolveImage(offering.images.first, baseUrl)
-              : null;
+          final image = _resolveImage(
+            offering.images.isNotEmpty
+                ? offering.images.first
+                : (offering.service.image ??
+                    offering.provider.cover ??
+                    offering.provider.profilePicture ??
+                    offering.provider.user.profilePicture),
+            baseUrl,
+          );
           return ServiceOfferingCard(
             title: title,
             subtitle: subtitle,
             priceLabel: priceText,
             imageUrl: image,
+            baseUrl: baseUrl,
             onTap: () => onOpenDetail(offering),
           );
         },
@@ -1584,7 +1603,11 @@ String _formatFieldDate(BuildContext context, DateTime dateTime) {
 String? _resolveImage(String? image, String baseUrl) {
   if (image == null || image.isEmpty) return null;
   if (image.startsWith('http')) return image;
-  return '$baseUrl$image';
+  try {
+    return Uri.parse(baseUrl).resolve(image).toString();
+  } catch (_) {
+    return '$baseUrl/$image';
+  }
 }
 
 String? _resolveDescription(String locale, Hospital hospital) {

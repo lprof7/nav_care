@@ -1432,6 +1432,7 @@ class _OfferingsTab extends StatelessWidget {
                   badgeLabel: 'hospitals.detail.tabs.offerings'.tr(),
                   priceLabel: price,
                   imageUrl: image,
+                  baseUrl: baseUrl,
                   rating: rating,
                   buttonLabel: 'hospitals.detail.cta.view_service'.tr(),
                   onTap: () => onOpenDetail(offering),

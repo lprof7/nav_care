@@ -81,6 +81,10 @@ class HospitalDetailCubit extends Cubit<HospitalDetailState> {
     final doctorsResult =
         await _doctorsRepository.getHospitalDoctors(state.hospital.id);
     final offeringsResult = await _offeringsRepository.fetchMyOfferings();
+    for (var i in offeringsResult.data!.offerings) {
+      print("offering result : ${i.images}");
+    }
+
     final invitationsResult = await _invitationsRepository.fetchInvitations();
 
     final doctors = doctorsResult.fold(

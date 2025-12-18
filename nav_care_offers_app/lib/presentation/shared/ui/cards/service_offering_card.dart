@@ -9,6 +9,7 @@ class ServiceOfferingCard extends StatelessWidget {
   final String? badgeLabel;
   final String? priceLabel;
   final String? imageUrl;
+  final String? baseUrl;
   final VoidCallback? onPressed;
   final VoidCallback? onTap;
   final bool isSaved;
@@ -23,6 +24,7 @@ class ServiceOfferingCard extends StatelessWidget {
     this.badgeLabel,
     this.priceLabel,
     this.imageUrl,
+    this.baseUrl,
     this.onPressed,
     this.onTap,
     this.isSaved = false,
@@ -75,6 +77,7 @@ class ServiceOfferingCard extends StatelessWidget {
                           width: double.infinity,
                           child: _buildImage(
                             imageUrl: imageUrl,
+                            baseUrl: baseUrl,
                             fit: BoxFit.cover,
                             placeholderColor: theme.colorScheme.surfaceVariant,
                           ),
@@ -89,7 +92,9 @@ class ServiceOfferingCard extends StatelessWidget {
                               backgroundColor: Colors.white,
                             ),
                             icon: Icon(
-                              isSaved ? Icons.favorite_rounded : Icons.favorite_border,
+                              isSaved
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_border,
                               color: isSaved ? accent : Colors.blueGrey,
                             ),
                             onPressed: onToggleSave,
@@ -100,8 +105,8 @@ class ServiceOfferingCard extends StatelessWidget {
                           left: 8,
                           bottom: 8,
                           child: Container(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 6),
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.92),
                               borderRadius: BorderRadius.circular(16),
@@ -223,21 +228,35 @@ class ServiceOfferingCard extends StatelessWidget {
 
 Widget _buildImage({
   required String? imageUrl,
+  String? baseUrl,
   required BoxFit fit,
   Color? placeholderColor,
 }) {
+  print("build image url : $imageUrl");
   final color = placeholderColor ?? Colors.grey.shade200;
   if (imageUrl == null || imageUrl.isEmpty) {
     return Container(
       color: color,
       alignment: Alignment.center,
-      child: const Icon(Icons.image_not_supported_rounded),
     );
   }
 
-  if (imageUrl.startsWith('http')) {
+  // Resolve relative path to a full URL when possible (align with detail page behavior).
+  final resolvedUrl = () {
+    if (imageUrl.startsWith('https')) return imageUrl;
+    if (baseUrl != null && baseUrl.isNotEmpty) {
+      try {
+        return Uri.parse(baseUrl).resolve(imageUrl).toString();
+      } catch (_) {
+        return imageUrl;
+      }
+    }
+    return imageUrl;
+  }();
+
+  if (resolvedUrl.startsWith('http')) {
     return NetworkImageWrapper(
-      imageUrl: imageUrl,
+      imageUrl: resolvedUrl,
       fit: fit,
       fallback: Container(
         color: color,
@@ -248,13 +267,9 @@ Widget _buildImage({
     );
   }
 
-  return Image.asset(
-    imageUrl,
-    fit: fit,
-    errorBuilder: (_, __, ___) => Container(
-      color: color,
-      alignment: Alignment.center,
-      child: const Icon(Icons.broken_image_rounded),
-    ),
+  // If still not a valid URL, show fallback instead of attempting asset load.
+  return Container(
+    color: color,
+    alignment: Alignment.center,
   );
 }

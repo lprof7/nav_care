@@ -117,6 +117,7 @@ class _MyServiceOfferingsView extends StatelessWidget {
                                 badgeLabel: offering.providerType,
                                 priceLabel: price,
                                 imageUrl: image,
+                                baseUrl: baseUrl,
                                 rating: rating,
                                 buttonLabel:
                                     'hospitals.actions.view_details'.tr(),
