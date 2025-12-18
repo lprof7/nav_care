@@ -26,6 +26,7 @@ import 'package:nav_care_offers_app/presentation/features/authentication/reset_p
 import 'package:nav_care_offers_app/presentation/features/authentication/reset_password/view/reset_password_email_page.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/reset_password/view/reset_password_new_password_page.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/reset_password/viewmodel/reset_password_cubit.dart';
+import 'package:nav_care_offers_app/presentation/features/hospitals/view/hospital_shell_page.dart';
 import 'package:nav_care_offers_app/presentation/features/profile/view/edit_user_profile_page.dart';
 import 'package:nav_care_offers_app/presentation/features/profile/view/forgot_password_page.dart';
 import 'package:nav_care_offers_app/presentation/features/profile/view/update_password_page.dart';
@@ -54,6 +55,7 @@ enum AppRoute {
   hospitalNew('/hospitals/new'),
   hospitalDetail('/hospitals/:id'),
   hospitalEdit('/hospitals/:id/edit'),
+  hospitalShell('/hospitals/:id/app'),
   hospitalClinics('/hospitals/:hospitalId/clinics'),
   hospitalClinicsNew('/hospitals/:hospitalId/clinics/new'),
   hospitalDoctors('/hospitals/:hospitalId/doctors'),
@@ -213,6 +215,20 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
             hospitalId: id,
             initial: hospital,
           );
+        },
+      ),
+      GoRoute(
+        path: AppRoute.hospitalShell.path,
+        builder: (ctx, st) {
+          final id = st.pathParameters['id'] ?? '';
+          final passed = st.extra;
+          final hospital = passed is Hospital
+              ? passed
+              : sl<HospitalsRepository>().findById(id);
+          if (hospital == null) {
+            return HospitalDetailPage(hospitalId: id);
+          }
+          return HospitalShellPage(hospital: hospital);
         },
       ),
       GoRoute(

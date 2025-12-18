@@ -1,0 +1,240 @@
+[33mcommit 3c656e6c9da810601369f39587a6e785810f3aea[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Wed Dec 17 13:39:17 2025 +0000
+
+    the version 1
+
+[33mcommit 6f6c46354138021f739d2bca2dfc0228b820cdc7[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Mon Dec 15 17:48:45 2025 +0000
+
+    the version 1
+
+[33mcommit aab141b8f0d4d0cbb6b43971e2bae9653a18da65[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Mon Dec 15 15:41:55 2025 +0000
+
+    brfor publishing
+
+[33mcommit 09775ef60be2ffb681f18061253f60c8db9c8e0f[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Sat Dec 13 16:08:30 2025 +0100
+
+    version 1 : done
+
+[33mcommit 65cb4e95b6c0c2a89072e36ae5fe4b0a735d71b5[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Sat Dec 13 15:10:02 2025 +0100
+
+    version 1 : done
+
+[33mcommit 1c958b7bf5e1b02f83cb3633b1e46ac464108f72[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Sat Dec 13 12:34:34 2025 +0100
+
+    after fixin فخنثى
+
+[33mcommit 474b7b991f97c6e6a12df3d8861ab293a933600a[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Fri Dec 12 14:57:15 2025 +0100
+
+    after fixin فخنثى
+
+[33mcommit 6d3a106e993c9b11a82ffa9969d1a764263c85fb[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Fri Dec 12 12:14:16 2025 +0100
+
+    after fixin network
+
+[33mcommit 562be12d5468f4702a8fe090c1cf5df79eb910d1[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Fri Dec 12 12:13:48 2025 +0100
+
+    after fixin network
+
+[33mcommit 549bc825e4436d018f7696e62a7fc3af8ef9d0df[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Thu Dec 11 10:42:36 2025 +0100
+
+    after reshape
+
+[33mcommit 8ab15e08e45b3b26dffd269c27175fbf3e36e8a0[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Thu Dec 11 10:17:56 2025 +0100
+
+    after reshape
+
+[33mcommit 2141444e9b6a27f062fc6190518b1a7cbf280676[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Thu Dec 11 08:00:11 2025 +0000
+
+    finish the user app
+
+[33mcommit 38e9bd6c28c59aa73bea4f8f7d82343282c992c6[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Wed Dec 10 10:01:17 2025 +0000
+
+    finish the user app
+
+[33mcommit 8ff93cedc7431c9dab1c10b2994b17970227376c[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Tue Dec 9 12:44:44 2025 +0000
+
+    before pagination
+
+[33mcommit b763d90bd051347e187cc2f1da0dccb71ade7509[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Tue Dec 9 10:36:34 2025 +0000
+
+    1
+
+[33mcommit f27af8126025c029cb415efc002be800adf19e4f[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Tue Dec 9 08:40:37 2025 +0000
+
+    after fixing items
+
+[33mcommit 76780c3fce92620fbe1fc46e16ce520682226d8c[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Sat Dec 6 16:39:43 2025 +0100
+
+    before update to stores
+
+[33mcommit adc5c4a01d9eff9e85903ac37377780731494a10[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Tue Dec 2 11:01:25 2025 +0000
+
+    finish the first version with api
+
+[33mcommit 7af45d3064806e98c4249b0eee9566bf64d81cf7[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Mon Dec 1 22:51:03 2025 +0000
+
+    finish the first version
+
+[33mcommit 2a766eb1063cb99400d821ef5e49c4165479650b[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Sat Nov 29 16:03:43 2025 +0100
+
+    al;ost finishing offers app
+
+[33mcommit 16e2466b6bfdf1d33da609ce4892c4ffafe5b341[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Sat Nov 29 08:32:39 2025 +0000
+
+    add hospital details offers app
+
+[33mcommit 26755759558210325a646100eb201d9678280c75[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Fri Nov 28 11:17:15 2025 +0100
+
+    before offers app
+
+[33mcommit 9457a7cf92dfc694c87c1d9dd4872bb8d5c2d9d4[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Thu Nov 27 09:39:14 2025 +0000
+
+    befor finishing the last version of user app
+
+[33mcommit 62376a2bf1850352c8db1ad3e77e9d73244e5808[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Sat Nov 22 17:17:00 2025 +0100
+
+     finish user app
+
+[33mcommit 2b3c01dd49f86c9ffc87ff6c1a3a9f567b449a9c[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Fri Nov 21 16:28:23 2025 +0100
+
+     add about
+
+[33mcommit c2c630261e80dc53046dcd5f3ab4a368b41d284a[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Fri Nov 21 14:30:50 2025 +0000
+
+    improve the design
+
+[33mcommit 763ddc3c184e31b02573cd01a302b46a7fc1bc85[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Fri Nov 21 09:44:56 2025 +0000
+
+    almost finish user app
+
+[33mcommit ef70f822f76a726af10e8b5d9fdfaa2001c70a74[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Sat Nov 15 16:20:23 2025 +0100
+
+    doctor app : complete appointments , service offering and other features
+
+[33mcommit e9a05a52af6d07421ba9aa2935d012f73029d959[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Fri Nov 14 15:42:20 2025 +0000
+
+    add hospitals clinics
+
+[33mcommit b4aa6cb2ecde7821e3bea18755876f500734e1d7[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Fri Nov 14 07:29:51 2025 +0100
+
+    fixing some bugs
+
+[33mcommit 8c7933b9f99ef5adf9b7b57ba49bc37711ffa5b1[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Thu Nov 13 08:26:27 2025 +0000
+
+    user app : appointement link api , offers app :add hospital
+
+[33mcommit fcbbe6c3573dd48c2620430295ca69984c497de4[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Wed Nov 5 23:31:46 2025 +0000
+
+    appointement service
+
+[33mcommit 277be252b073274ea72969d8041c972ed31b68b8[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Sat Nov 1 07:19:29 2025 +0100
+
+    search feature
+
+[33mcommit 4a9407caa64de7db02512d23303a87819b00ce3c[m
+Merge: 72a6394 d27348d
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Sat Nov 1 07:19:14 2025 +0100
+
+    search feature
+
+[33mcommit d27348dfcf93b2f55263190937a9dd056eba6e32[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Thu Oct 30 10:13:33 2025 +0000
+
+    after reszing sections
+
+[33mcommit 72a63945b7c2789166ba98e23a8173f21159ee5a[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Wed Oct 22 16:02:33 2025 +0100
+
+    fixing the structure
+
+[33mcommit d06cd546619ff7cd4925d490355db851c69b4b23[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Wed Oct 22 14:32:06 2025 +0100
+
+    fixing the structure
+
+[33mcommit 2a83c19427c80706a782237c04331f1ccd607943[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Wed Oct 22 12:21:01 2025 +0100
+
+    the first sprint
+
+[33mcommit 73a4f9045242c211a91fd4f8f3a8a0f07624463c[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Wed Oct 22 12:19:53 2025 +0100
+
+    the first sprint
+
+[33mcommit 8be1efe350768b71be8b52f1ff9ff8836a5d839d[m
+Author: lprof7 <barkisaberziad@gmail.com>
+Date:   Mon Oct 13 16:13:14 2025 +0100
+
+    first commit
