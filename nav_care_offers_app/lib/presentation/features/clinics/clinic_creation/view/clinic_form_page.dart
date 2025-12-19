@@ -50,6 +50,7 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
   late final TextEditingController _descriptionController;
   late final TextEditingController _addressController;
   final List<TextEditingController> _phoneControllers = [];
+  final List<_SocialField> _socialFields = [];
   final List<XFile> _selectedImages = [];
   final ImagePicker _picker = ImagePicker();
 
@@ -66,6 +67,7 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
       source: widget.initial?.phones ?? const [],
       target: _phoneControllers,
     );
+    _initSocialFields();
   }
 
   @override
@@ -75,6 +77,9 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
     _addressController.dispose();
     for (final controller in _phoneControllers) {
       controller.dispose();
+    }
+    for (final field in _socialFields) {
+      field.controller.dispose();
     }
     super.dispose();
   }
@@ -201,6 +206,18 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
                     icon: const Icon(Icons.add_photo_alternate),
                     label: Text('clinics.form.add_image'.tr()),
                   ),
+                  const SizedBox(height: AppSpacing.lg),
+                  _SectionLabel(label: 'clinics.form.social.label'.tr()),
+                  const SizedBox(height: AppSpacing.sm),
+                  ..._buildSocialFields(),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton.icon(
+                      onPressed: _nextAvailableType() == null ? null : _addSocialField,
+                      icon: const Icon(Icons.add),
+                      label: Text('clinics.form.social.add'.tr()),
+                    ),
+                  ),
                   const SizedBox(height: AppSpacing.xl),
                   SafeArea(
                     top: false,
@@ -290,6 +307,105 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
     setState(() => _phoneControllers.add(TextEditingController()));
   }
 
+  void _initSocialFields() {
+    if (_socialFields.isEmpty) {
+      _socialFields
+          .add(_SocialField(type: _socialTypes.first, controller: TextEditingController()));
+    }
+  }
+
+  List<Widget> _buildSocialFields() {
+    return List.generate(_socialFields.length, (index) {
+      final field = _socialFields[index];
+      final available = _availableTypesForField(field);
+      if (!available.contains(field.type) && available.isNotEmpty) {
+        field.type = available.first;
+      }
+      return Padding(
+        padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 140,
+              child: DropdownButtonFormField<String>(
+                value: field.type,
+                decoration: InputDecoration(
+                  labelText: 'clinics.form.social.type_label'.tr(),
+                ),
+                items: available
+                    .map(
+                      (type) => DropdownMenuItem<String>(
+                        value: type,
+                        child: Text(
+                          'clinics.form.social.types.$type'.tr(),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() => field.type = value);
+                },
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: TextFormField(
+                controller: field.controller,
+                decoration: InputDecoration(
+                  labelText: 'clinics.form.social.link_label'.tr(),
+                  hintText: 'clinics.form.social.link_hint'.tr(),
+                ),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            IconButton(
+              onPressed:
+                  _socialFields.length > 1 ? () => _removeSocialField(index) : null,
+              icon: const Icon(Icons.remove_circle_outline),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  void _addSocialField() {
+    final next = _nextAvailableType();
+    if (next == null) return;
+    setState(() {
+      _socialFields
+          .add(_SocialField(type: next, controller: TextEditingController()));
+    });
+  }
+
+  void _removeSocialField(int index) {
+    setState(() {
+      final removed = _socialFields.removeAt(index);
+      removed.controller.dispose();
+      if (_socialFields.isEmpty) {
+        _socialFields.add(
+          _SocialField(type: _socialTypes.first, controller: TextEditingController()),
+        );
+      }
+    });
+  }
+
+  List<String> _availableTypesForField(_SocialField current) {
+    final used = _socialFields.where((f) => f != current).map((f) => f.type).toSet();
+    return _socialTypes.where((t) => !used.contains(t) || t == current.type).toList();
+  }
+
+  String? _nextAvailableType() {
+    final used = _socialFields.map((f) => f.type).toSet();
+    try {
+      return _socialTypes.firstWhere((t) => !used.contains(t));
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -323,6 +439,14 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
         .map((controller) => controller.text.trim())
         .where((value) => value.isNotEmpty)
         .toList();
+    final socialLinks = _socialFields
+        .map((field) {
+          final link = field.controller.text.trim();
+          if (link.isEmpty) return null;
+          return SocialMediaLink(type: field.type, link: link);
+        })
+        .whereType<SocialMediaLink>()
+        .toList();
 
     if (_selectedImages.isEmpty && (widget.initial?.images ?? []).isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -340,6 +464,7 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
       images: _selectedImages,
       facilityType: FacilityType.clinic, // This is a clinic form
       hospitalId: widget.hospitalId,
+      socialMedia: socialLinks,
     );
 
     cubit.submitClinic(payload);
@@ -362,3 +487,19 @@ class _SectionLabel extends StatelessWidget {
     );
   }
 }
+
+class _SocialField {
+  String type;
+  final TextEditingController controller;
+
+  _SocialField({required this.type, required this.controller});
+}
+
+const _socialTypes = [
+  'facebook',
+  'instagram',
+  'youtube',
+  'x',
+  'linkedin',
+  'other',
+];

@@ -13,6 +13,7 @@ class HospitalPayload {
   final List<XFile> images;
   final FacilityType facilityType; // Add facilityType
   final String? hospitalId;
+  final List<SocialMediaLink> socialMedia;
 
   HospitalPayload({
     this.id,
@@ -25,6 +26,7 @@ class HospitalPayload {
     this.images = const [],
     this.facilityType = FacilityType.hospital, // Default to hospital
     this.hospitalId,
+    this.socialMedia = const [],
   });
 
   Map<String, dynamic> toJson() {
@@ -42,6 +44,11 @@ class HospitalPayload {
 
     if (phones.isNotEmpty) {
       payload['phone'] = phones.join(', ');
+    }
+
+    if (socialMedia.isNotEmpty) {
+      payload['social_media'] =
+          socialMedia.map((entry) => entry.toJson()).toList();
     }
 
     // Images will be handled separately in the service layer as multipart/form-data
@@ -71,6 +78,7 @@ class HospitalPayload {
     List<XFile>? images,
     FacilityType? facilityType,
     String? hospitalId,
+    List<SocialMediaLink>? socialMedia,
   }) {
     return HospitalPayload(
       id: id ?? this.id,
@@ -83,6 +91,16 @@ class HospitalPayload {
       images: images ?? this.images,
       facilityType: facilityType ?? this.facilityType,
       hospitalId: hospitalId ?? this.hospitalId,
+      socialMedia: socialMedia ?? this.socialMedia,
     );
   }
+}
+
+class SocialMediaLink {
+  final String type;
+  final String link;
+
+  const SocialMediaLink({required this.type, required this.link});
+
+  Map<String, dynamic> toJson() => {'type': type, 'link': link};
 }

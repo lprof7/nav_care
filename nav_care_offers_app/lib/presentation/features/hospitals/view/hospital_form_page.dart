@@ -38,6 +38,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
   late final TextEditingController _descriptionController;
   late final TextEditingController _addressController;
   final List<TextEditingController> _phoneControllers = [];
+  final List<_SocialField> _socialFields = [];
   final List<XFile> _selectedImages = []; // Changed to store XFile
   final ImagePicker _picker = ImagePicker(); // Image picker instance
 
@@ -53,6 +54,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
       source: widget.initial?.phones ?? const [],
       target: _phoneControllers,
     );
+    _initSocialFields();
     // For existing images, we will not load them into XFile as it's meant for local files.
     // They will be handled by the display logic if widget.initial?.images is not empty.
   }
@@ -64,6 +66,9 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     _addressController.dispose();
     for (final controller in _phoneControllers) {
       controller.dispose();
+    }
+    for (final field in _socialFields) {
+      field.controller.dispose();
     }
     super.dispose();
   }
@@ -191,6 +196,19 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                     icon: const Icon(Icons.add_photo_alternate),
                     label: Text('hospitals.form.add_image'.tr()),
                   ),
+                  const SizedBox(height: 24),
+                  _SectionLabel(label: 'hospitals.form.social.label'.tr()),
+                  const SizedBox(height: 8),
+                  ..._buildSocialFields(),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton.icon(
+                      onPressed:
+                          _nextAvailableType() == null ? null : _addSocialField,
+                      icon: const Icon(Icons.add),
+                      label: Text('hospitals.form.social.add'.tr()),
+                    ),
+                  ),
                   const SizedBox(height: 32),
                   SafeArea(
                     top: false,
@@ -280,6 +298,117 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     setState(() => _phoneControllers.add(TextEditingController()));
   }
 
+  void _initSocialFields() {
+    if (_socialFields.isEmpty) {
+      _socialFields.add(
+        _SocialField(
+          type: _socialTypes.first,
+          controller: TextEditingController(),
+        ),
+      );
+    }
+  }
+
+  List<Widget> _buildSocialFields() {
+    return List.generate(_socialFields.length, (index) {
+      final field = _socialFields[index];
+      final availableTypes = _availableTypesForField(field);
+      if (!availableTypes.contains(field.type) && availableTypes.isNotEmpty) {
+        field.type = availableTypes.first;
+      }
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 140,
+              child: DropdownButtonFormField<String>(
+                value: field.type,
+                decoration: InputDecoration(
+                  labelText: 'hospitals.form.social.type_label'.tr(),
+                ),
+                items: availableTypes
+                    .map(
+                      (type) => DropdownMenuItem<String>(
+                        value: type,
+                        child: Text(
+                          'hospitals.form.social.types.$type'.tr(),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() => field.type = value);
+                },
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: TextFormField(
+                controller: field.controller,
+                decoration: InputDecoration(
+                  labelText: 'hospitals.form.social.link_label'.tr(),
+                  hintText: 'hospitals.form.social.link_hint'.tr(),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            IconButton(
+              onPressed: _socialFields.length > 1
+                  ? () => _removeSocialField(index)
+                  : null,
+              icon: const Icon(Icons.remove_circle_outline),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  void _addSocialField() {
+    final nextType = _nextAvailableType();
+    if (nextType == null) return;
+    setState(() {
+      _socialFields.add(
+        _SocialField(
+          type: nextType,
+          controller: TextEditingController(),
+        ),
+      );
+    });
+  }
+
+  void _removeSocialField(int index) {
+    setState(() {
+      final removed = _socialFields.removeAt(index);
+      removed.controller.dispose();
+      if (_socialFields.isEmpty) {
+        _socialFields.add(
+          _SocialField(
+            type: _nextAvailableType() ?? _socialTypes.first,
+            controller: TextEditingController(),
+          ),
+        );
+      }
+    });
+  }
+
+  List<String> _availableTypesForField(_SocialField current) {
+    final used = _socialFields.where((f) => f != current).map((f) => f.type).toSet();
+    return _socialTypes.where((t) => !used.contains(t) || t == current.type).toList();
+  }
+
+  String? _nextAvailableType() {
+    final used = _socialFields.map((f) => f.type).toSet();
+    try {
+      return _socialTypes.firstWhere((t) => !used.contains(t));
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -314,6 +443,15 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
         .where((value) => value.isNotEmpty)
         .toList();
 
+    final socialLinks = _socialFields
+        .map((field) {
+          final link = field.controller.text.trim();
+          if (link.isEmpty) return null;
+          return SocialMediaLink(type: field.type, link: link);
+        })
+        .whereType<SocialMediaLink>()
+        .toList();
+
     if (_selectedImages.isEmpty && cubit.state.isSubmitting) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('hospitals.form.images_required'.tr())),
@@ -330,6 +468,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
       // Coordinates will be set to 0,0 in HospitalPayload
       // FacilityType will be set to Hospital in HospitalPayload
       images: _selectedImages, // Pass XFile list directly
+      socialMedia: socialLinks,
     );
 
     cubit.submit(payload);
@@ -352,3 +491,19 @@ class _SectionLabel extends StatelessWidget {
     );
   }
 }
+
+class _SocialField {
+  String type;
+  final TextEditingController controller;
+
+  _SocialField({required this.type, required this.controller});
+}
+
+const _socialTypes = [
+  'facebook',
+  'instagram',
+  'youtube',
+  'x',
+  'linkedin',
+  'other',
+];

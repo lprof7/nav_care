@@ -258,6 +258,21 @@
                 "hint": "https://example.com/hospital.jpg"
             },
             "add_image": "Add image",
+            "social": {
+                "label": "Social media",
+                "add": "Add social link",
+                "type_label": "Platform",
+                "link_label": "Link",
+                "link_hint": "https://facebook.com/your-page",
+                "types": {
+                    "facebook": "Facebook",
+                    "instagram": "Instagram",
+                    "youtube": "YouTube",
+                    "x": "X (Twitter)",
+                    "linkedin": "LinkedIn",
+                    "other": "Other links"
+                }
+            },
             "address": "Address",
             "add_entry": "Add another",
             "saving": "Savingâ€¦",
@@ -358,6 +373,21 @@
                 "label": "Images"
             },
             "add_image": "Add image",
+            "social": {
+                "label": "Social media",
+                "add": "Add social link",
+                "type_label": "Platform",
+                "link_label": "Link",
+                "link_hint": "https://facebook.com/your-page",
+                "types": {
+                    "facebook": "Facebook",
+                    "instagram": "Instagram",
+                    "youtube": "YouTube",
+                    "x": "X (Twitter)",
+                    "linkedin": "LinkedIn",
+                    "other": "Other links"
+                }
+            },
             "images_required": "Please add at least one image.",
             "saving": "Saving...",
             "save": "Save clinic",

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:nav_care_offers_app/core/config/api_config.dart';
 import 'package:nav_care_offers_app/core/network/api_client.dart';
@@ -36,8 +37,12 @@ class RemoteHospitalsService implements HospitalsService {
   @override
   Future<Result<Map<String, dynamic>>> submitHospital(
       HospitalPayload payload) async {
-    print(payload.facilityType);
-    final formData = FormData.fromMap(payload.toJson());
+    final map = payload.toJson();
+    if (payload.socialMedia.isNotEmpty) {
+      map['social_media'] =
+          jsonEncode(payload.socialMedia.map((e) => e.toJson()).toList());
+    }
+    final formData = FormData.fromMap(map);
 
     for (final image in payload.images) {
       final bytes = await image.readAsBytes(); // Read file as bytes
@@ -57,7 +62,12 @@ class RemoteHospitalsService implements HospitalsService {
   @override
   Future<Result<Map<String, dynamic>>> updateHospital(
       HospitalPayload payload) async {
-    final formData = FormData.fromMap(payload.toJson());
+    final map = payload.toJson();
+    if (payload.socialMedia.isNotEmpty) {
+      map['social_media'] =
+          jsonEncode(payload.socialMedia.map((e) => e.toJson()).toList());
+    }
+    final formData = FormData.fromMap(map);
 
     for (final image in payload.images) {
       final bytes = await image.readAsBytes(); // Read file as bytes
