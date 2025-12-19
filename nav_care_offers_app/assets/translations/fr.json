@@ -1,54 +1,54 @@
 {
     "sign_in": "Se connecter",
     "sign_up": "S'inscrire",
-    "sign_up_subtitle": "Cr�ez votre compte pour commencer",
+    "sign_up_subtitle": "Créez votre compte pour commencer",
     "email": "E-mail",
-    "email_or_phone": "E-mail ou num�ro de t�l�phone",
+    "email_or_phone": "E-mail ou numéro de téléphone",
     "password": "Mot de passe",
     "confirm_password": "Confirmez le mot de passe",
-    "first_name": "Pr�nom",
+    "first_name": "Prénom",
     "last_name": "Nom de famille",
-    "birth_date_hint": "S�lectionnez votre date de naissance",
-    "phone_number": "Num�ro de t�l�phone",
-    "algerian_phone_error": "Veuillez saisir un num�ro de t�l�phone alg�rien valide",
-    "upload_profile_picture": "T�l�charger la photo de profil",
-    "upload_photo_hint": "Touchez pour ajouter ou mettre � jour votre photo",
+    "birth_date_hint": "Sélectionnez votre date de naissance",
+    "phone_number": "Numéro de téléphone",
+    "algerian_phone_error": "Veuillez saisir un numéro de téléphone algérien valide",
+    "upload_profile_picture": "Télécharger la photo de profil",
+    "upload_photo_hint": "Touchez pour ajouter ou mettre à jour votre photo",
     "change_photo": "Changer la photo",
     "remove_photo": "Supprimer la photo",
     "passwords_do_not_match": "Les mots de passe ne correspondent pas",
-    "accept_terms_error": "Veuillez accepter les Conditions et la Politique de confidentialit�",
+    "accept_terms_error": "Veuillez accepter les Conditions et la Politique de confidentialité",
     "invalid_email_format": "Veuillez saisir une adresse e-mail valide.",
     "i_accept": "J'accepte",
-    "terms_and_policy": "Conditions et Politique de confidentialit�",
-    "already_have_account": "Vous avez d�j� un compte ?",
+    "terms_and_policy": "Conditions et Politique de confidentialité",
+    "already_have_account": "Vous avez déjà un compte ?",
     "dont_have_account": "Vous n'avez pas de compte ?",
     "or": "Ou",
     "book_an_appointment": "Prendre un rendez-vous",
     "sign_in_subtitle": "Connectez-vous pour continuer",
     "remember_me": "Se souvenir de moi",
-    "forgot_password": "Mot de passe oubli� ?",
+    "forgot_password": "Mot de passe oublié ?",
     "reset_password": {
-        "title": "R?initialiser le mot de passe",
-        "subtitle": "Entrez votre e-mail pour recevoir un code de r?initialisation.",
+        "title": "Réinitialiser le mot de passe",
+        "subtitle": "Entrez votre e-mail pour recevoir un code de réinitialisation.",
         "email_hint": "Votre adresse e-mail",
         "send_code": "Envoyer le code",
-        "code_title": "Saisissez le code de v?rification",
-        "code_subtitle": "Nous avons envoy? un code ? 6 chiffres ? {email}",
-        "code_hint": "Code ? 6 chiffres",
+        "code_title": "Saisissez le code de vérification",
+        "code_subtitle": "Nous avons envoyé un code à 6 chiffres à {email}",
+        "code_hint": "Code à 6 chiffres",
         "verify": "Suivant",
         "timer_title": "Le code expire dans",
         "timer_label": "{seconds}s restantes",
-        "timer_expired": "Code expir?",
-        "back_to_email": "Retour ? l'e-mail",
-        "code_sent": "Code de r?initialisation envoy? ? votre e-mail.",
-        "code_verified": "Code v?rifi?. D?finissez votre nouveau mot de passe.",
-        "password_title": "D?finir un nouveau mot de passe",
-        "password_subtitle": "Cr?ez un mot de passe fort pour s?curiser votre compte.",
+        "timer_expired": "Code expiré",
+        "back_to_email": "Retour à l'e-mail",
+        "code_sent": "Code de réinitialisation envoyé à votre e-mail.",
+        "code_verified": "Code vérifié. Définissez votre nouveau mot de passe.",
+        "password_title": "Définir un nouveau mot de passe",
+        "password_subtitle": "Créez un mot de passe fort pour sécuriser votre compte.",
         "new_password": "Nouveau mot de passe",
         "confirm_password": "Confirmez le mot de passe",
-        "submit": "R?initialiser le mot de passe",
-        "success": "Mot de passe r?initialis? avec succ?s. Connectez-vous.",
-        "error": "Impossible de traiter votre demande. R?essayez."
+        "submit": "Réinitialiser le mot de passe",
+        "success": "Mot de passe réinitialisé avec succès. Connectez-vous.",
+        "error": "Impossible de traiter votre demande. Réessayez."
     },
     "sign_in_with_google": "Se connecter avec Google",
     "sign_in_with_apple": "Se connecter avec Apple",
@@ -56,67 +56,67 @@
     "sign_up_with_apple": "S'inscrire avec Apple",
     "signin_success_message": "Bienvenue {name}",
     "signin_error_message": "Erreur : {message}",
-    "signin_account_not_found": "Nous n'avons trouv� aucun compte avec ces identifiants.",
-    "signin_doctor_profile_required": "Nous avons trouv� votre compte utilisateur, mais vous devez compl�ter votre profil de docteur.",
-    "signup_success_message": "Compte cr�� avec succ�s",
+    "signin_account_not_found": "Nous n'avons trouvé aucun compte avec ces identifiants.",
+    "signin_doctor_profile_required": "Nous avons trouvé votre compte utilisateur, mais vous devez compléter votre profil de docteur.",
+    "signup_success_message": "Compte créé avec succès",
     "signup_error_message": "Erreur : {message}",
     "loading": "Chargement...",
     "field_required": "Ce champ est requis",
-    "become_doctor_title": "Devenir m�decin",
-    "become_doctor_heading": "Compl�tez votre profil de docteur",
+    "become_doctor_title": "Devenir médecin",
+    "become_doctor_heading": "Complétez votre profil de docteur",
     "become_doctor_description": "Bonjour {name}, pour continuer vous devez confirmer vos informations professionnelles.",
     "become_doctor_default_name": "Docteur",
-    "become_doctor_next_steps": "Nous vous guiderons tr�s bient�t � travers les �tapes restantes.",
-    "become_doctor_back_to_signin": "Retour � la connexion",
+    "become_doctor_next_steps": "Nous vous guiderons très bientôt à travers les étapes restantes.",
+    "become_doctor_back_to_signin": "Retour à la connexion",
     "become_doctor_image_label": "Image de profil",
-    "become_doctor_image_hint": "Ajoutez une photo claire et professionnelle pour compl�ter votre profil.",
-    "become_doctor_image_cta": "T�l�verser une image",
+    "become_doctor_image_hint": "Ajoutez une photo claire et professionnelle pour compléter votre profil.",
+    "become_doctor_image_cta": "Téléverser une image",
     "become_doctor_image_required": "L'image de profil est obligatoire.",
     "become_doctor_bio_label": "Courte bio (anglais)",
-    "become_doctor_bio_hint": "D�crivez votre expertise et ce que les patients peuvent attendre.",
+    "become_doctor_bio_hint": "Décrivez votre expertise et ce que les patients peuvent attendre.",
     "become_doctor_submit": "Envoyer la demande",
     "become_doctor_submitting": "Envoi...",
-    "become_doctor_success": "Votre demande de profil m�decin a �t� envoy�e !",
+    "become_doctor_success": "Votre demande de profil médecin a été envoyée !",
     "home": {
         "welcome_message": "Voici ce qui se passe aujourd'hui",
         "appointments": {
-            "title": "Rendez-vous � venir",
-            "subtitle": "G�rez l'agenda des patients du jour",
+            "title": "Rendez-vous à venir",
+            "subtitle": "Gérez l'agenda des patients du jour",
             "empty": "Aucun rendez-vous disponible pour le moment."
         },
         "quick_actions": {
             "title": "Actions rapides",
             "add_offer": "Ajouter une nouvelle offre",
-            "manage_calendar": "G�rer le calendrier",
+            "manage_calendar": "Gérer le calendrier",
             "view_reports": "Voir les rapports"
         },
         "services_manage": {
             "title": "Gestion des services",
-            "subtitle": "Consultez, mettez � jour et publiez vos offres",
+            "subtitle": "Consultez, mettez à jour et publiez vos offres",
             "prompt": "Appuyez sur la carte ci-dessus pour charger vos services.",
             "loading": "Chargement de vos services...",
             "error": "Impossible de charger vos services",
-            "retry": "R�essayer",
-            "empty": "Vous n'avez pas encore ajout� de services.",
+            "retry": "Réessayer",
+            "empty": "Vous n'avez pas encore ajouté de services.",
             "list_title": "Vos services actifs",
-            "more": "+{count} services suppl�mentaires"
+            "more": "+{count} services supplémentaires"
         }
     },
     "shell": {
         "nav_home": "Accueil",
         "nav_appointments": "Rendez-vous",
-        "nav_hospitals": "H�pitaux",
+        "nav_hospitals": "Hôpitaux",
         "nav_profile": "Profil",
         "badge_new": "Nouveau",
-        "drawer_settings": "Param�tres",
-        "drawer_theme": "Th?me",
+        "drawer_settings": "Paramètres",
+        "drawer_theme": "Thème",
         "drawer_default_name": "Dr NavCare",
         "drawer_default_email": "doctor@navcare.com",
-        "drawer_verify_phone": "V�rifier le num�ro",
+        "drawer_verify_phone": "Vérifier le numéro",
         "language": {
             "en": "Anglais",
             "ar": "Arabe",
-            "fr": "Fran�ais"
+            "fr": "Français"
         },
         "app_bar": {
             "menu": "Ouvrir le menu",
@@ -124,132 +124,132 @@
             "favorites": "Favoris",
             "notifications": "Notifications"
         },
-        "drawer_logout": "Se d�connecter"
+        "drawer_logout": "Se déconnecter"
     },
     "appointments": {
         "status": {
             "pending": "En attente",
-            "confirmed": "Confirm�",
-            "completed": "Termin�",
-            "cancelled": "Annul�"
+            "confirmed": "Confirmé",
+            "completed": "Terminé",
+            "cancelled": "Annulé"
         },
         "edit": {
-            "title": "Mettre � jour le rendez-vous",
-            "start_label": "Heure de d�but",
+            "title": "Mettre à jour le rendez-vous",
+            "start_label": "Heure de début",
             "end_label": "Heure de fin",
             "status_label": "Statut",
             "cancel": "Annuler",
             "submit": "Enregistrer"
         },
         "messages": {
-            "update_success": "Rendez-vous mis � jour avec succ�s",
-            "update_failure": "Impossible de mettre � jour le rendez-vous"
+            "update_success": "Rendez-vous mis à jour avec succès",
+            "update_failure": "Impossible de mettre à jour le rendez-vous"
         },
         "validation": {
-            "invalid_range": "L'heure de fin doit �tre post�rieure � l'heure de d�but",
+            "invalid_range": "L'heure de fin doit être postérieure à l'heure de début",
             "invalid_dates": "Dates de rendez-vous invalides"
         }
     },
     "hospitals": {
         "list": {
-            "title": "R�seau hospitalier",
-            "subtitle": "Organisez vos h�pitaux et cliniques au m�me endroit",
-            "empty": "Vous n'avez pas encore ajout� de structure.",
-            "error_network": "Impossible de contacter le serveur. V�rifiez votre connexion puis r�essayez.",
-            "error_timeout": "Le serveur met plus de temps que pr�vu � r�pondre. Merci de r�essayer.",
-            "error_unauthorized": "Votre session a expir�. Veuillez vous reconnecter.",
-            "error_generic": "Impossible de charger vos h�pitaux pour le moment."
+            "title": "Réseau hospitalier",
+            "subtitle": "Organisez vos hôpitaux et cliniques au même endroit",
+            "empty": "Vous n'avez pas encore ajouté de structure.",
+            "error_network": "Impossible de contacter le serveur. Vérifiez votre connexion puis réessayez.",
+            "error_timeout": "Le serveur met plus de temps que prévu à répondre. Merci de réessayer.",
+            "error_unauthorized": "Votre session a expiré. Veuillez vous reconnecter.",
+            "error_generic": "Impossible de charger vos hôpitaux pour le moment."
         },
         "actions": {
-            "add": "Ajouter un h�pital",
+            "add": "Ajouter un hôpital",
             "reload": "Recharger",
-            "retry": "R�essayer",
-            "view_details": "Voir les d�tails",
+            "retry": "Réessayer",
+            "view_details": "Voir les détails",
             "add_clinic": "Ajouter une clinique",
             "add_offering": "Ajouter une offre"
         },
         "stats": {
             "clinics": "{0} cliniques",
-            "doctors": "{0} m�decins"
+            "doctors": "{0} médecins"
         },
         "facility_type": {
-            "hospital": "H�pital",
+            "hospital": "Hôpital",
             "clinic": "Clinique",
-            "unknown": "�tablissement"
+            "unknown": "Établissement"
         },
         "detail": {
-            "app_bar": "H�pital # {0}",
+            "app_bar": "Hôpital # {0}",
             "tabs": {
-                "details": "D�tails",
+                "details": "Détails",
                 "clinics": "Cliniques",
-                "doctors": "M�decins",
+                "doctors": "Médecins",
                 "invitations": "Invitations",
                 "offerings": "Offres"
             },
             "stats": {
                 "clinics": "Cliniques",
-                "doctors": "M�decins",
+                "doctors": "Médecins",
                 "offerings": "Offres",
                 "rating": "Note"
             },
             "cta": {
-                "view_service": "G�rer"
+                "view_service": "Gérer"
             },
-            "facility_type": "Type d'�tablissement",
-            "phone": "T�l�phone de contact",
-            "coordinates": "Coordonn�es",
-            "manage_clinics": "G�rer les cliniques",
-            "manage_doctors": "G�rer les m�decins",
-            "clinics_title": "Cliniques au sein de cet h�pital",
-            "doctors_title": "M�decins associ�s",
-            "edit": "Modifier l'h�pital",
-            "delete": "Supprimer l'h�pital",
-            "deleting": "Suppression�",
-            "delete_confirm_title": "Supprimer l'h�pital",
-            "delete_confirm_message": "�tes-vous s�r de vouloir supprimer cet h�pital ? Cette action est irr�versible.",
+            "facility_type": "Type d'établissement",
+            "phone": "Téléphone de contact",
+            "coordinates": "Coordonnées",
+            "manage_clinics": "Gérer les cliniques",
+            "manage_doctors": "Gérer les médecins",
+            "clinics_title": "Cliniques au sein de cet hôpital",
+            "doctors_title": "Médecins associés",
+            "edit": "Modifier l'hôpital",
+            "delete": "Supprimer l'hôpital",
+            "deleting": "Suppression...",
+            "delete_confirm_title": "Supprimer l'hôpital",
+            "delete_confirm_message": "Êtes-vous sûr de vouloir supprimer cet hôpital ? Cette action est irréversible.",
             "delete_cancel": "Annuler",
             "delete_confirm": "Supprimer",
-            "delete_success": "H�pital supprim� avec succ�s.",
-            "not_found": "Impossible de trouver l'h�pital demand�.",
-            "manage_offerings": "G�rer les offres de service",
-            "about": "� propos de l'h�pital",
+            "delete_success": "Hôpital supprimé avec succès.",
+            "not_found": "Impossible de trouver l'hôpital demandé.",
+            "manage_offerings": "Gérer les offres de service",
+            "about": "À propos de l'hôpital",
             "no_description": "Aucune description disponible.",
             "overview": "Vue d'ensemble",
             "contact": "Informations de contact",
             "filters": "Filtres",
             "sorting": "Trier par",
-            "search_doctors": "Rechercher des m�decins...",
-            "offerings_subtitle": "Service propos� par cet h�pital",
-            "clinics_empty": "Aucune clinique disponible pour cet h�pital.",
-            "doctors_empty": "Aucun m�decin disponible pour cet h�pital.",
-            "offerings_empty": "Aucune offre de service pour cet h�pital.",
-            "invite_doctor": "Inviter un m�decin",
-            "invite_doctor_title": "Inviter un m�decin",
-            "invite_doctor_subtitle": "Recherchez et choisissez un m�decin � inviter.",
+            "search_doctors": "Rechercher des médecins...",
+            "offerings_subtitle": "Service proposé par cet hôpital",
+            "clinics_empty": "Aucune clinique disponible pour cet hôpital.",
+            "doctors_empty": "Aucun médecin disponible pour cet hôpital.",
+            "offerings_empty": "Aucune offre de service pour cet hôpital.",
+            "invite_doctor": "Inviter un médecin",
+            "invite_doctor_title": "Inviter un médecin",
+            "invite_doctor_subtitle": "Recherchez et choisissez un médecin à inviter.",
             "invite_doctor_search": "Rechercher par nom ou ID",
-            "invite_doctor_empty": "Aucun m�decin ne correspond � votre recherche.",
+            "invite_doctor_empty": "Aucun médecin ne correspond à votre recherche.",
             "invite_doctor_reload": "Recharger la liste",
             "invite_doctor_view_profile": "Voir le profil",
             "invitations_title": "Invitations",
             "invitations_empty": "Aucune invitation pour le moment.",
             "invitation_send": "Envoyer une invitation",
-            "invitation_sent": "Invitation envoy�e"
+            "invitation_sent": "Invitation envoyée"
         },
         "form": {
-            "create_title": "Ajouter un h�pital",
-            "edit_title": "Modifier l'h�pital",
-            "name": "Nom de l'�tablissement",
+            "create_title": "Ajouter un hôpital",
+            "edit_title": "Modifier l'hôpital",
+            "name": "Nom de l'établissement",
             "description_en": "Description (anglais)",
             "facility_type": {
-                "label": "Type d'�tablissement",
-                "hospital": "H�pital",
+                "label": "Type d'établissement",
+                "hospital": "Hôpital",
                 "clinic": "Clinique",
-                "unknown": "�tablissement"
+                "unknown": "Établissement"
             },
-            "phone_label": "Num�ros de t�l�phone",
+            "phone_label": "Numéros de téléphone",
             "phone_hint": "+1234567890",
             "coordinates": {
-                "label": "Coordonn�es",
+                "label": "Coordonnées",
                 "latitude": "Latitude",
                 "longitude": "Longitude"
             },
@@ -259,7 +259,7 @@
             },
             "add_image": "Ajouter une image",
             "social": {
-                "label": "R�seaux sociaux",
+                "label": "Réseaux sociaux",
                 "add": "Ajouter un lien",
                 "type_label": "Plateforme",
                 "link_label": "Lien",
@@ -275,77 +275,77 @@
             },
             "address": "Adresse",
             "add_entry": "Ajouter un champ",
-            "saving": "Enregistrement�",
-            "save": "Enregistrer l'h�pital",
-            "success_create": "H�pital cr�� avec succ�s.",
-            "success_update": "H�pital mis � jour avec succ�s.",
+            "saving": "Enregistrement...",
+            "save": "Enregistrer l'hôpital",
+            "success_create": "Hôpital créé avec succès.",
+            "success_update": "Hôpital mis à jour avec succès.",
             "images_required": "Au moins une image est requise."
         },
         "manage": {
             "title": "{0}",
-            "clinics_title": "G�rer les cliniques",
-            "doctors_title": "G�rer les m�decins",
-            "clinics_description": "Vous pourrez bient�t cr�er, mettre � jour et organiser vos cliniques ici.",
-            "no_clinics_message": "Aucune clinique enregistr�e pour cet h�pital.",
-            "doctors_description": "Vous pourrez bient�t g�rer les m�decins li�s � cet h�pital.",
-            "placeholder": "Nous pr�parons actuellement cette exp�rience. Restez connect�s !"
+            "clinics_title": "Gérer les cliniques",
+            "doctors_title": "Gérer les médecins",
+            "clinics_description": "Vous pourrez bientôt créer, mettre à jour et organiser vos cliniques ici.",
+            "no_clinics_message": "Aucune clinique enregistrée pour cet hôpital.",
+            "doctors_description": "Vous pourrez bientôt gérer les médecins liés à cet hôpital.",
+            "placeholder": "Nous préparons actuellement cette expérience. Restez connectés !"
         }
     },
     "service_offerings": {
         "list": {
-            "title": "G�rer les offres de service",
+            "title": "Gérer les offres de service",
             "heading": "Vos offres de service",
-            "subtitle": "Consultez et mettez � jour les offres li�es � cet h�pital.",
+            "subtitle": "Consultez et mettez à jour les offres liées à cet hôpital.",
             "price": "Prix : {price}",
             "add": "Ajouter une offre de service",
-            "empty": "Aucune offre de service pour le moment. Ajoutez votre premi�re offre.",
+            "empty": "Aucune offre de service pour le moment. Ajoutez votre première offre.",
             "reload": "Actualiser",
-            "retry": "R�essayer"
+            "retry": "Réessayer"
         },
         "detail": {
             "title": "Offre de service",
-            "not_found": "Nous n'avons pas trouv� cette offre de service.",
+            "not_found": "Nous n'avons pas trouvé cette offre de service.",
             "price": "Prix :",
             "provider": "Prestataire",
-            "specialty": "Sp�cialit�",
+            "specialty": "Spécialité",
             "offers": "Avantages inclus",
-            "no_offers": "Aucun avantage n'a encore �t� ajout�.",
+            "no_offers": "Aucun avantage n'a encore été ajouté.",
             "description": "Description",
             "no_description": "Aucune description disponible.",
             "edit": "Modifier",
             "delete_title": "Supprimer cette offre ?",
-            "delete_message": "Cette action est irr?versible. Supprimer cette offre ?",
+            "delete_message": "Cette action est irréversible. Supprimer cette offre ?",
             "price_label": "Prix"
         },
         "form": {
             "create_title": "Ajouter une offre de service",
             "edit_title": "Modifier l'offre de service",
-            "description": "Renseignez les d�tails pour publier cette offre.",
+            "description": "Renseignez les détails pour publier cette offre.",
             "service": "Service",
             "reload_services": "Recharger les services",
             "price": "Prix",
             "price_invalid": "Saisissez un prix valide",
             "offers": "Offres incluses",
-            "offers_hint": "Offres ou avantages s�par�s par des virgules",
+            "offers_hint": "Offres ou avantages séparés par des virgules",
             "name_en": "Nom (anglais)",
             "description_en": "Description (anglais)",
             "description_ar": "Description (arabe)",
-            "description_fr": "Description (fran�ais)",
+            "description_fr": "Description (français)",
             "description_sp": "Description (espagnol)",
             "images": {
                 "label": "Images"
             },
             "add_image": "Ajouter une image",
             "select_service": "Veuillez choisir un service.",
-            "create_button": "Cr�er l'offre",
-            "update_button": "Mettre � jour l'offre",
-            "create_success": "Offre de service cr��e avec succ�s.",
-            "update_success": "Offre de service mise � jour avec succ�s.",
+            "create_button": "Créer l'offre",
+            "update_button": "Mettre à jour l'offre",
+            "create_success": "Offre de service créée avec succès.",
+            "update_success": "Offre de service mise à jour avec succès.",
             "error": "Impossible d'enregistrer l'offre de service."
         },
         "errors": {
             "parse_list": "Impossible de lire la liste des offres de service",
-            "parse_detail": "Impossible de charger l'offre s�lectionn�e",
+            "parse_detail": "Impossible de charger l'offre sélectionnée",
             "parse_submit": "Impossible d'enregistrer l'offre de service",
             "parse_catalog": "Impossible de charger le catalogue des services"
         },
@@ -353,7 +353,7 @@
             "title": "Avis",
             "empty": "Aucun avis pour le moment.",
             "error": "Impossible de charger les avis.",
-            "retry": "R?essayer",
+            "retry": "Réessayer",
             "no_comment": "Pas de commentaire.",
             "anonymous": "Anonyme",
             "load_more": "Afficher plus",
@@ -362,14 +362,14 @@
     },
     "clinics": {
         "form": {
-            "success_update": "Clinique mise � jour avec succ�s.",
+            "success_update": "Clinique mise à jour avec succès.",
             "save": "Enregistrer la clinique",
-            "phone_label": "Num�ros de t�l�phone",
+            "phone_label": "Numéros de téléphone",
             "edit_title": "Modifier la clinique",
             "phone_hint": "+1234567890",
             "create_title": "Ajouter une clinique",
             "name": "Nom de la clinique",
-            "success_create": "Clinique ajout�e avec succ�s.",
+            "success_create": "Clinique ajoutée avec succès.",
             "saving": "Enregistrement...",
             "description_en": "Description (anglais)",
             "images": {
@@ -377,7 +377,7 @@
             },
             "images_required": "Ajoutez au moins une image.",
             "add_image": "Ajouter une image",
-            "add_entry": "Ajouter un num�ro",
+            "add_entry": "Ajouter un numéro",
             "address": "Adresse"
         }
     },
@@ -385,69 +385,69 @@
     "service_offerings.form.images.label": "Images",
     "service_offerings.form.add_image": "Ajouter une image",
     "doctor": "Docteur",
-    "logout_success_message": "Vous avez �t� d�connect�.",
-    "logout_error_message": "Impossible de se d�connecter : {message}",
+    "logout_success_message": "Vous avez été déconnecté.",
+    "logout_error_message": "Impossible de se déconnecter : {message}",
     "auth_required": {
         "title": "Connexion requise",
-        "description": "Veuillez vous connecter ou cr�er un compte pour continuer.",
-        "create_account": "Cr�er un compte"
+        "description": "Veuillez vous connecter ou créer un compte pour continuer.",
+        "create_account": "Créer un compte"
     },
     "shell.drawer_faq": "FAQ",
     "shell.drawer_contact": "Contact",
-    "shell.drawer_settings": "Param�tres",
-    "shell.drawer_about": "� propos",
+    "shell.drawer_settings": "Paramètres",
+    "shell.drawer_about": "À propos",
     "shell.drawer_feedback": "Retour",
     "shell.drawer_support": "Support",
-    "shell.drawer_placeholder": "{0} arrive bient�t",
+    "shell.drawer_placeholder": "{0} arrive bientôt",
     "city": "Ville",
-    "state": "�tat / Province",
+    "state": "État / Province",
     "country": "Pays",
     "profile.title": "Mon profil",
     "profile.edit_profile": "Modifier le profil",
     "profile.address_label": "Adresse",
-    "profile.first_name": "Pr�nom",
+    "profile.first_name": "Prénom",
     "profile.last_name": "Nom",
-    "profile.update_profile_button": "Mettre � jour le profil",
-    "profile.update_password_short": "Mettre � jour le mot de passe",
+    "profile.update_profile_button": "Mettre à jour le profil",
+    "profile.update_password_short": "Mettre à jour le mot de passe",
     "profile.password_current": "Mot de passe actuel",
     "profile.password_new": "Nouveau mot de passe",
     "profile.password_confirm_new": "Confirmer le nouveau mot de passe",
-    "profile.forgot_password": "Mot de passe oubli�",
-    "profile.reset_password_hint": "Entrez votre e-mail pour recevoir un lien de r�initialisation.",
+    "profile.forgot_password": "Mot de passe oublié",
+    "profile.reset_password_hint": "Entrez votre e-mail pour recevoir un lien de réinitialisation.",
     "profile.send_reset": "Envoyer le lien",
-    "profile.reset_link_sent": "Lien envoy�, v�rifiez votre bo�te mail.",
+    "profile.reset_link_sent": "Lien envoyé, vérifiez votre boîte mail.",
     "profile.reset_link_failed": "Impossible d'envoyer le lien.",
-    "profile.password_update_success": "Mot de passe mis � jour avec succ�s.",
-    "profile.password_update_error": "Impossible de mettre � jour le mot de passe.",
+    "profile.password_update_success": "Mot de passe mis à jour avec succès.",
+    "profile.password_update_error": "Impossible de mettre à jour le mot de passe.",
     "profile.invalid_email": "Veuillez saisir une adresse e-mail valide.",
     "profile.edit_section": "Modifier le profil",
     "profile.name_label": "Nom complet",
     "profile.password_label": "Nouveau mot de passe",
     "profile.password_helper": "Laissez vide pour garder votre mot de passe actuel",
-    "profile.password_invalid": "Le mot de passe doit contenir au moins 8 caract�res",
+    "profile.password_invalid": "Le mot de passe doit contenir au moins 8 caractères",
     "profile.confirm_password_label": "Confirmer le nouveau mot de passe",
     "profile.confirm_password_required": "Veuillez confirmer votre nouveau mot de passe",
     "profile.password_mismatch": "Les mots de passe ne correspondent pas",
     "profile.password_requirements_title": "Exigences du mot de passe :",
-    "profile.password_requirement_length": "au moins 8 caract�res",
+    "profile.password_requirement_length": "au moins 8 caractères",
     "profile.password_requirement_upper": "au moins une lettre majuscule",
     "profile.password_requirement_number": "au moins un chiffre",
-    "profile.password_requirement_special": "au moins un caract�re sp�cial",
+    "profile.password_requirement_special": "au moins un caractère spécial",
     "profile.save_changes": "Enregistrer",
     "profile.updating": "Enregistrement...",
-    "profile.no_changes": "Aucun changement � enregistrer.",
-    "profile.update_success": "Profil mis � jour avec succ�s.",
-    "profile.update_error": "Impossible de mettre � jour le profil.",
+    "profile.no_changes": "Aucun changement à enregistrer.",
+    "profile.update_success": "Profil mis à jour avec succès.",
+    "profile.update_error": "Impossible de mettre à jour le profil.",
     "profile.load_error": "Impossible de charger votre profil.",
-    "profile.retry": "R�essayer",
-    "profile.empty": "Les donn�es du profil ne sont pas disponibles.",
-    "profile.phone": "T�l�phone",
+    "profile.retry": "Réessayer",
+    "profile.empty": "Les données du profil ne sont pas disponibles.",
+    "profile.phone": "Téléphone",
     "profile.email": "E-mail",
-    "profile.verified": "Compte v�rifi�",
-    "profile.not_verified": "Non v�rifi�",
+    "profile.verified": "Compte vérifié",
+    "profile.not_verified": "Non vérifié",
     "profile.member_since_unknown": "Membre depuis -",
     "profile.drawer_status_loading": "Chargement du profil...",
-    "profile.drawer_status_error": "�chec du chargement du profil.",
+    "profile.drawer_status_error": "Échec du chargement du profil.",
     "profile.view_profile": "Voir le profil",
     "reviews": "Avis",
     "services": {
@@ -457,130 +457,136 @@
         }
     },
     "about": {
-        "title": "Ã€ propos",
+        "title": "À propos",
         "hero": {
             "title": "Bienvenue chez NavCare",
-            "subtitle": "Nous connectons patients et professionnels de santÃ© dans le monde entier avec un parcours sÃ©curisÃ© de prise de rendez-vous, messagerie et paiement."
+            "subtitle": "Nous connectons patients et professionnels de santé dans le monde entier avec un parcours sécurisé de prise de rendez-vous, messagerie et paiement."
         },
         "about_us": {
-            "title": "Ã€ propos de NavCare",
-            "body": "NavCare est une plateforme web et mobile qui relie les patients aux professionnels de santÃ© partout dans le monde. GrÃ¢ce Ã  la prise de rendez-vous, la messagerie intÃ©grÃ©e et les paiements sÃ©curisÃ©s, l'accÃ¨s aux soins devient simple et sÃ»r. Au-delÃ  d'une plateforme, c'est une vision d'une prise en charge internationale fluide qui Ã©voluera en hub multi-services, avec des solutions de santÃ© numÃ©riques, un accompagnement personnalisÃ© et une expÃ©rience sans friction Ã  chaque Ã©tape."
+            "title": "À propos de NavCare",
+            "body": "NavCare est une plateforme web et mobile qui relie les patients aux professionnels de santé partout dans le monde. Grâce à la prise de rendez-vous, la messagerie intégrée et les paiements sécurisés, l'accès aux soins devient simple et sûr. Au-delà d'une plateforme, c'est une vision d'une prise en charge internationale fluide qui évoluera en hub multi-services, avec des solutions de santé numériques, un accompagnement personnalisé et une expérience sans friction à chaque étape."
         },
         "story": {
             "title": "Notre histoire",
-            "body": "FondÃ© en 2024, NavMarket est nÃ© de notre volontÃ© de combler les limites des marketplaces existantes. Nous voulions crÃ©er un espace sÃ»r, efficace et riche en fonctionnalitÃ©s qui amÃ©liore l'expÃ©rience de chaque utilisateur."
+            "body": "Fondé en 2024, NavMarket est né de notre volonté de combler les limites des marketplaces existantes. Nous voulions créer un espace sûr, efficace et riche en fonctionnalités qui améliore l'expérience de chaque utilisateur."
         },
         "priorities": {
-            "title": "Nos prioritÃ©s",
-            "body": "La qualitÃ©, la fiabilitÃ© et la sÃ©curitÃ© guident la conception et la livraison de chaque solution.",
+            "title": "Nos priorités",
+            "body": "La qualité, la fiabilité et la sécurité guident la conception et la livraison de chaque solution.",
             "quality": {
-                "title": "QualitÃ©",
-                "body": "La qualitÃ© est un standard intÃ©grÃ© Ã  chaque service. Nous livrons des produits de haut niveau grÃ¢ce Ã  des contrÃ´les rigoureux Ã  chaque Ã©tape, garantissant fiabilitÃ©, efficacitÃ© et adÃ©quation aux besoins de nos clients."
+                "title": "Qualité",
+                "body": "La qualité est un standard intégré à chaque service. Nous livrons des produits de haut niveau grâce à des contrôles rigoureux à chaque étape, garantissant fiabilité, efficacité et adéquation aux besoins de nos clients."
             },
             "reliability": {
-                "title": "FiabilitÃ©",
-                "body": "La fiabilitÃ© est au cÅ“ur de notre travail. Nous concevons des produits robustes, stables et performants sur le long terme grÃ¢ce Ã  des processus disciplinÃ©s et un suivi continu."
+                "title": "Fiabilité",
+                "body": "La fiabilité est au cœur de notre travail. Nous concevons des produits robustes, stables et performants sur le long terme grâce à des processus disciplinés et un suivi continu."
             },
             "security": {
-                "title": "SÃ©curitÃ©",
-                "body": "La sÃ©curitÃ© est une prioritÃ© absolue. Nous protÃ©geons donnÃ©es et transactions financiÃ¨res avec des protocoles avancÃ©s, en mettant constamment Ã  jour nos dÃ©fenses pour que nos clients opÃ¨rent en toute confiance."
+                "title": "Sécurité",
+                "body": "La sécurité est une priorité absolue. Nous protégeons données et transactions financières avec des protocoles avancés, en mettant constamment à jour nos défenses pour que nos clients opèrent en toute confiance."
             }
         },
         "company": {
             "title": "Notre entreprise",
-            "body": "KIG (Koudri Innovations Group) est le prolongement dynamique et innovant de notre organisation, dÃ©jÃ  spÃ©cialisÃ©e dans trois domaines. En tant que nouvelle filiale, nous restons attentifs aux tendances et avancÃ©es technologiques, alliant expertise Ã©tablie et agilitÃ© centrÃ©e client pour proposer des solutions logicielles, technologiques et digitales de pointe. Notre engagement pour l'innovation et l'excellence nous permet d'anticiper les dÃ©fis de demain tout en crÃ©ant de la valeur pour nos clients et partenaires."
+            "body": "KIG (Koudri Innovations Group) est le prolongement dynamique et innovant de notre organisation, déjà spécialisée dans trois domaines. En tant que nouvelle filiale, nous restons attentifs aux tendances et avancées technologiques, alliant expertise établie et agilité centrée client pour proposer des solutions logicielles, technologiques et digitales de pointe. Notre engagement pour l'innovation et l'excellence nous permet d'anticiper les défis de demain tout en créant de la valeur pour nos clients et partenaires."
         },
         "offerings": {
             "title": "Ce que nous offrons",
-            "body": "Une plateforme pensÃ©e pour hÃ©berger et mettre en avant les services recherchÃ©s au quotidien.",
+            "body": "Une plateforme pensée pour héberger et mettre en avant les services recherchés au quotidien.",
             "diverse_listings": {
-                "title": "Offres variÃ©es",
-                "body": "Immobilier, automobiles, services ou besoins du quotidien : nous rÃ©unissons une large sÃ©lection pour rÃ©pondre Ã  chaque besoin."
+                "title": "Offres variées",
+                "body": "Immobilier, automobiles, services ou besoins du quotidien : nous réunissons une large sélection pour répondre à chaque besoin."
             },
             "user_experience": {
-                "title": "ExpÃ©rience fluide",
+                "title": "Expérience fluide",
                 "body": "Un design intuitif et une interface simple rendent l'achat et la vente clairs et sans effort."
             },
             "subscriptions": {
                 "title": "Formules d'abonnement",
-                "body": "Des plans flexibles offrent des avantages supplÃ©mentaires et des opportunitÃ©s promotionnelles."
+                "body": "Des plans flexibles offrent des avantages supplémentaires et des opportunités promotionnelles."
             }
         },
         "values": {
             "title": "Nos valeurs",
-            "body": "La communautÃ©, le client d'abord et l'innovation faÃ§onnent la maniÃ¨re dont nous construisons NavCare.",
+            "body": "La communauté, le client d'abord et l'innovation façonnent la manière dont nous construisons NavCare.",
             "community": {
-                "title": "CommunautÃ©",
-                "body": "Notre marketplace dÃ©passe la transaction pour devenir une communautÃ© vivante oÃ¹ soutien et croissance se rejoignent."
+                "title": "Communauté",
+                "body": "Notre marketplace dépasse la transaction pour devenir une communauté vivante où soutien et croissance se rejoignent."
             },
             "customer_first": {
                 "title": "Client d'abord",
-                "body": "Les utilisateurs sont au centre de chaque dÃ©cision afin de rÃ©pondre Ã  leurs besoins et garantir leur satisfaction."
+                "body": "Les utilisateurs sont au centre de chaque décision afin de répondre à leurs besoins et garantir leur satisfaction."
             },
             "innovation": {
                 "title": "Innovation",
-                "body": "Nous amÃ©liorons en continu la plateforme pour proposer des fonctionnalitÃ©s modernes et avant-gardistes."
+                "body": "Nous améliorons en continu la plateforme pour proposer des fonctionnalités modernes et avant-gardistes."
             }
         },
         "cta": {
-            "title": "Construire l'avenir des soins connectÃ©s",
-            "body": "Alors que NavCare devient un hub multi-services, nous restons engagÃ©s Ã  offrir des consultations sÃ©curisÃ©es, un accompagnement personnalisÃ© et une expÃ©rience fluide pour chaque utilisateur."
+            "title": "Construire l'avenir des soins connectés",
+            "body": "Alors que NavCare devient un hub multi-services, nous restons engagés à offrir des consultations sécurisées, un accompagnement personnalisé et une expérience fluide pour chaque utilisateur."
         }
     },
     "contact": {
         "title": "Contactez-nous",
         "heading": "Discutons",
         "subtitle": "Questions, commentaires ou suggestions ? Remplissez le formulaire et nous vous recontacterons rapidement.",
-        "first_name": "PrÃ©nom",
+        "first_name": "Prénom",
         "last_name": "Nom",
         "email": "E-mail",
-        "phone": "NumÃ©ro de tÃ©lÃ©phone",
+        "phone": "Numéro de téléphone",
         "message": "Votre message*",
-        "message_hint": "Ã‰crivez votre message ici",
-        "remaining": "{count} caractÃ¨res restants",
+        "message_hint": "Écrivez votre message ici",
+        "remaining": "{count} caractères restants",
         "send": "Envoyer le message",
-        "submit_placeholder": "L'envoi sera configurÃ© ultÃ©rieurement."
+        "submit_placeholder": "L'envoi sera configuré ultérieurement."
     },
     "feedback": {
         "auth_required": "Connectez-vous pour envoyer un retour.",
         "comment_required": "Ajoutez un commentaire avant d'envoyer votre retour.",
         "submit_error": "Impossible d'envoyer le retour : {message}",
-        "submit_success": "Merci ! Votre retour a �t� envoy�.",
-        "hint": "Partagez vos remarques ou probl�mes ici"
+        "submit_success": "Merci ! Votre retour a été envoyé.",
+        "hint": "Partagez vos remarques ou problèmes ici"
     },
     "faq.title": "Aide & FAQ",
-    "faq.subtitle": "RÃ©ponses rapides sur les rÃ©servations, les comptes et l'utilisation de Nav Care.",
-    "faq.tags.general": "Ã€ propos de l'app",
+    "faq.subtitle": "Réponses rapides sur les réservations, les comptes et l'utilisation de Nav Care.",
+    "faq.tags.general": "À propos de l'app",
     "faq.tags.appointments": "Rendez-vous",
     "faq.tags.accounts": "Compte",
-    "faq.tags.app_settings": "ParamÃ¨tres",
+    "faq.tags.app_settings": "Paramètres",
     "faq.tags.search": "Recherche",
-    "faq.tags.support": "DÃ©pannage",
-    "faq.questions.about_app.question": "Qu'est-ce que Nav Care et comment Ã§a m'aide ?",
-    "faq.questions.about_app.answer": "Nav Care vous permet d'explorer les hÃ´pitaux, mÃ©decins et offres de services, voir les tarifs et la localisation, puis gÃ©rer vos rendez-vous au mÃªme endroit.",
+    "faq.tags.support": "Dépannage",
+    "faq.questions.about_app.question": "Qu'est-ce que Nav Care et comment ça m'aide ?",
+    "faq.questions.about_app.answer": "Nav Care vous permet d'explorer les hôpitaux, médecins et offres de services, voir les tarifs et la localisation, puis gérer vos rendez-vous au même endroit.",
     "faq.questions.account_needed.question": "Ai-je besoin d'un compte pour utiliser l'app ?",
-    "faq.questions.account_needed.answer": "Vous pouvez parcourir librement, mais il faut se connecter pour rÃ©server, reprogrammer ou annuler un rendez-vous et synchroniser votre profil entre vos appareils.",
+    "faq.questions.account_needed.answer": "Vous pouvez parcourir librement, mais il faut se connecter pour réserver, reprogrammer ou annuler un rendez-vous et synchroniser votre profil entre vos appareils.",
     "faq.questions.book_appointment.question": "Comment prendre un rendez-vous ?",
-    "faq.questions.book_appointment.answer": "Ouvrez une offre de service depuis l'Accueil ou la Recherche, appuyez sur Â« Prendre rendez-vous Â», choisissez l'heure de dÃ©but et de fin puis validez. Si vous n'Ãªtes pas connectÃ©, l'app vous demandera de vous identifier.",
+    "faq.questions.book_appointment.answer": "Ouvrez une offre de service depuis l'Accueil ou la Recherche, appuyez sur « Prendre rendez-vous », choisissez l'heure de début et de fin puis validez. Si vous n'êtes pas connecté, l'app vous demandera de vous identifier.",
     "faq.questions.manage_appointment.question": "Comment modifier ou annuler un rendez-vous ?",
-    "faq.questions.manage_appointment.answer": "Allez dans l'onglet Rendez-vous, sÃ©lectionnez la carte du rendez-vous, puis ajustez les horaires ou passez le statut Ã  Â« annulÃ© Â». La liste se met Ã  jour automatiquement aprÃ¨s la sauvegarde.",
-    "faq.questions.search_services.question": "Comment trouver le bon mÃ©decin ou le bon service ?",
-    "faq.questions.search_services.answer": "Utilisez l'onglet Recherche pour saisir un nom de mÃ©decin, d'hÃ´pital ou de service. Affinez avec les filtres disponibles (lieu, note, prix ou langue quand ils sont fournis), puis ouvrez un rÃ©sultat pour voir les dÃ©tails et rÃ©server.",
-    "faq.questions.profile_updates.question": "OÃ¹ mettre Ã  jour mon profil ou mon numÃ©ro de tÃ©lÃ©phone ?",
-    "faq.questions.profile_updates.answer": "Dans l'onglet Profil, appuyez sur Â« Modifier le profil Â» pour changer votre nom, tÃ©lÃ©phone, adresse ou photo. Faites glisser vers le bas pour rafraÃ®chir les donnÃ©es aprÃ¨s l'enregistrement.",
+    "faq.questions.manage_appointment.answer": "Allez dans l'onglet Rendez-vous, sélectionnez la carte du rendez-vous, puis ajustez les horaires ou passez le statut à « annulé ». La liste se met à jour automatiquement après la sauvegarde.",
+    "faq.questions.search_services.question": "Comment trouver le bon médecin ou le bon service ?",
+    "faq.questions.search_services.answer": "Utilisez l'onglet Recherche pour saisir un nom de médecin, d'hôpital ou de service. Affinez avec les filtres disponibles (lieu, note, prix ou langue quand ils sont fournis), puis ouvrez un résultat pour voir les détails et réserver.",
+    "faq.questions.profile_updates.question": "Où mettre à jour mon profil ou mon numéro de téléphone ?",
+    "faq.questions.profile_updates.answer": "Dans l'onglet Profil, appuyez sur « Modifier le profil » pour changer votre nom, téléphone, adresse ou photo. Faites glisser vers le bas pour rafraîchir les données après l'enregistrement.",
     "faq.questions.language_switch.question": "Puis-je changer la langue de l'application ?",
-    "faq.questions.language_switch.answer": "Oui. Ouvrez le menu latÃ©ral et choisissez arabe, anglais ou franÃ§ais dans le sÃ©lecteur de langue ; l'interface se met Ã  jour immÃ©diatement.",
-    "faq.questions.password_reset.question": "J'ai oubliÃ© mon mot de passe, que faire ?",
-    "faq.questions.password_reset.answer": "Utilisez l'option Â« Mot de passe oubliÃ© Â» sur l'Ã©cran de connexion pour demander une rÃ©initialisation et suivez les Ã©tapes pour dÃ©finir un nouveau mot de passe avec votre email ou numÃ©ro de tÃ©lÃ©phone.",
-    "faq.questions.data_sync.question": "L'app ne charge pas les donnÃ©es, que puis-je essayer ?",
-    "faq.questions.data_sync.answer": "VÃ©rifiez votre connexion internet, puis tirez pour rafraÃ®chir sur Accueil, Recherche ou Rendez-vous. Si le problÃ¨me persiste, dÃ©connectez-vous puis reconnectez-vous pour renouveler la session avant de rÃ©essayer.",
+    "faq.questions.language_switch.answer": "Oui. Ouvrez le menu latéral et choisissez arabe, anglais ou français dans le sélecteur de langue ; l'interface se met à jour immédiatement.",
+    "faq.questions.password_reset.question": "J'ai oublié mon mot de passe, que faire ?",
+    "faq.questions.password_reset.answer": "Utilisez l'option « Mot de passe oublié » sur l'écran de connexion pour demander une réinitialisation et suivez les étapes pour définir un nouveau mot de passe avec votre email ou numéro de téléphone.",
+    "faq.questions.data_sync.question": "L'app ne charge pas les données, que puis-je essayer ?",
+    "faq.questions.data_sync.answer": "Vérifiez votre connexion internet, puis tirez pour rafraîchir sur Accueil, Recherche ou Rendez-vous. Si le problème persiste, déconnectez-vous puis reconnectez-vous pour renouveler la session avant de réessayer.",
     "network_error": {
         "title": "Pas de connexion Internet",
-        "subtitle": "V�rifiez votre Wi-Fi ou vos donn�es mobiles, puis r�essayez.",
-        "retry": "R�essayer"
+        "subtitle": "Vérifiez votre Wi-Fi ou vos données mobiles, puis réessayez.",
+        "retry": "Réessayer"
     },
     "server_error": {
         "title": "Serveur inaccessible",
-        "subtitle": "Impossible de joindre nos serveurs. Merci de r�essayer."
+        "subtitle": "Impossible de joindre nos serveurs. Merci de réessayer."
+    },
+    "notifications": {
+        "title": "Notifications",
+        "empty_title": "Aucune notification pour le moment",
+        "empty_subtitle": "Vous êtes à jour ! Lorsqu'il y aura de nouvelles mises à jour, elles apparaîtront ici.",
+        "refresh": "Actualiser"
     }
 }

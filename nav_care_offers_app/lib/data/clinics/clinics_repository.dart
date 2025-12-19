@@ -19,6 +19,7 @@ class ClinicsRepository {
 
   Future<Result<ClinicListModel>> getHospitalClinics(String hospitalId) async {
     final response = await _service.getHospitalClinics(hospitalId);
+    print("data from repository is ${response.data}");
 
     return response.fold(
       onSuccess: (data) {

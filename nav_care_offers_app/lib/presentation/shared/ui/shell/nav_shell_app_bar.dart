@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../theme/colors.dart';
 
@@ -33,6 +34,8 @@ class NavShellAppBar extends StatelessWidget implements PreferredSizeWidget {
     final leadingOnPressed = useBackButton
         ? (onBackTap ?? () => Navigator.of(context).maybePop())
         : (onMenuTap ?? () => Scaffold.of(context).openDrawer());
+    final notificationsPressed =
+        onNotificationsTap ?? () => GoRouter.of(context).push('/notifications');
 
     return Material(
       color: colorScheme.surface,
@@ -66,7 +69,7 @@ class NavShellAppBar extends StatelessWidget implements PreferredSizeWidget {
                   _RoundedIconButton(
                     icon: Icons.notifications_none_rounded,
                     tooltip: 'shell.app_bar.notifications'.tr(),
-                    onPressed: onNotificationsTap,
+                    onPressed: notificationsPressed,
                   ),
                   if (notificationCount > 0)
                     Positioned(

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:nav_care_offers_app/core/responses/pagination.dart';
+import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
 
 class ClinicModel extends Equatable {
   final String id;
@@ -66,6 +67,21 @@ class ClinicModel extends Equatable {
           .toList(growable: false);
     }
     return const [];
+  }
+
+  Hospital toHospital() {
+    return Hospital(
+      id: id,
+      name: name,
+      descriptionEn: description,
+      address: address,
+      phones: phones,
+      images: images,
+      facilityType: FacilityType.clinic,
+      clinics: const [],
+      doctors: const [],
+      rating: 0,
+    );
   }
 
   @override

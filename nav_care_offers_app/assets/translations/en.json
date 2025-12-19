@@ -93,16 +93,22 @@
             "ar": "Arabic",
             "fr": "French"
         },
-        "app_bar": {
-            "menu": "Open menu",
-            "support": "Support",
-            "favorites": "Favorites",
-            "notifications": "Notifications"
-        },
-        "drawer_logout": "Sign out"
+    "app_bar": {
+        "menu": "Open menu",
+        "support": "Support",
+        "favorites": "Favorites",
+        "notifications": "Notifications"
     },
-    "home": {
-        "welcome_message": "Here's what's happening today",
+    "drawer_logout": "Sign out"
+},
+"notifications": {
+    "title": "Notifications",
+    "empty_title": "No notifications yet",
+    "empty_subtitle": "You're all caught up! When there are new updates, they'll show up here.",
+    "refresh": "Refresh"
+},
+"home": {
+    "welcome_message": "Here's what's happening today",
         "appointments": {
             "title": "Upcoming appointments",
             "subtitle": "Manage today's patient schedule",

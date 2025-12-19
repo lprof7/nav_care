@@ -45,7 +45,7 @@ class RemoteClinicsService implements ClinicsService {
       ));
     }
     return _apiClient.post(_config.hospitals,
-        body: formData, parser: _parseMap, useHospitalToken: false);
+        body: formData, parser: _parseMap, useHospitalToken: true);
   }
 
   @override
@@ -70,6 +70,7 @@ class RemoteClinicsService implements ClinicsService {
       _config.clinicById(payload.id!), // Assuming a clinicById endpoint
       body: formData,
       parser: _parseMap,
+      useHospitalToken: true,
     );
   }
 
@@ -78,6 +79,7 @@ class RemoteClinicsService implements ClinicsService {
     return _apiClient.delete(
       _config.clinicById(clinicId),
       parser: _parseMap,
+      useHospitalToken: true,
     );
   }
 

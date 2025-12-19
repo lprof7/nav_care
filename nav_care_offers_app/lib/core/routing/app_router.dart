@@ -13,7 +13,6 @@ import 'package:nav_care_offers_app/presentation/features/hospitals/view/hospita
 import 'package:nav_care_offers_app/presentation/features/shell/view/nav_shell_page.dart';
 import 'package:nav_care_offers_app/presentation/features/clinics/clinic_creation/view/clinic_form_page.dart';
 import 'package:nav_care_offers_app/presentation/features/clinics/clinic_creation/viewmodel/clinic_creation_cubit.dart';
-import 'package:nav_care_offers_app/presentation/features/clinics/view/clinics_list_page.dart';
 import 'package:nav_care_offers_app/presentation/features/clinics/viewmodel/clinics_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/doctors/view/doctor_detail_page.dart';
 import 'package:nav_care_offers_app/presentation/features/doctors/view/doctors_list_page.dart';
@@ -22,6 +21,7 @@ import 'package:nav_care_offers_app/presentation/features/service_offerings/view
 import 'package:nav_care_offers_app/presentation/features/service_offerings/view/service_offering_form_page.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/view/service_offering_detail_page.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/viewmodel/service_offerings_cubit.dart';
+import 'package:nav_care_offers_app/presentation/features/notifications/view/notifications_page.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/reset_password/view/reset_password_code_page.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/reset_password/view/reset_password_email_page.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/reset_password/view/reset_password_new_password_page.dart';
@@ -52,11 +52,11 @@ enum AppRoute {
   faq('/faq'),
   contact('/contact'),
   about('/about'),
+  notifications('/notifications'),
   hospitalNew('/hospitals/new'),
   hospitalDetail('/hospitals/:id'),
   hospitalEdit('/hospitals/:id/edit'),
   hospitalShell('/hospitals/:id/app'),
-  hospitalClinics('/hospitals/:hospitalId/clinics'),
   hospitalClinicsNew('/hospitals/:hospitalId/clinics/new'),
   hospitalDoctors('/hospitals/:hospitalId/doctors'),
   doctorDetail('/doctors/:doctorId/detail'),
@@ -200,6 +200,10 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
         builder: (ctx, st) => const AboutPage(),
       ),
       GoRoute(
+        path: AppRoute.notifications.path,
+        builder: (ctx, st) => const NotificationsPage(),
+      ),
+      GoRoute(
         path: AppRoute.hospitalNew.path,
         builder: (ctx, st) => const HospitalFormPage(),
       ),
@@ -240,16 +244,6 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
               ? passed
               : sl<HospitalsRepository>().findById(id);
           return HospitalFormPage(initial: hospital);
-        },
-      ),
-      GoRoute(
-        path: AppRoute.hospitalClinics.path,
-        builder: (ctx, st) {
-          final hospitalId = st.pathParameters['hospitalId'] ?? '';
-          return BlocProvider(
-            create: (context) => sl<ClinicsCubit>(),
-            child: ClinicsListPage(hospitalId: hospitalId),
-          );
         },
       ),
       GoRoute(

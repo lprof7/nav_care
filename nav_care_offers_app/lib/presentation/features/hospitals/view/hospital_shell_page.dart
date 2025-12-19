@@ -29,10 +29,12 @@ import 'package:nav_care_offers_app/presentation/shared/ui/cards/invitation_card
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/hospital_review_card.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/service_offering_card.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/molecules/appointment_card.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/molecules/hospital_card.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/molecules/hospital_detail_components.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_app_bar.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_destination.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_nav_bar.dart';
+import 'hospital_detail_page.dart' show HospitalDetailsSummaryView, HospitalDetailPage;
 
 /// Hospital app shell with bottom navigation (no drawer).
 /// Tabs: Clinics, Doctors (with invitations), Service offerings, Appointments, Profile.
@@ -92,7 +94,7 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
                 useBackButton: true,
                 onBackTap: () => context.go(AppRoute.home.path),
                 notificationCount: 0,
-                onNotificationsTap: () {},
+                onNotificationsTap: () => context.push('/notifications'),
               ),
               body:
                   _buildBody(detailState, destinations, navState.currentIndex),
@@ -150,7 +152,7 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
           onReload: () => shellContext
               .read<HospitalDetailCubit>()
               .loadDetails(refresh: true),
-          onManage: () => _openManage(shellContext, hospital, 'clinics'),
+          onOpenClinic: (clinic) => _openClinicAsHospital(shellContext, clinic),
         ),
       ),
       NavShellDestination(
@@ -195,7 +197,7 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
       NavShellDestination(
         label: 'shell.nav_profile'.tr(),
         icon: Icons.person_rounded,
-        content: HospitalProfileTab(
+        content: HospitalDetailsSummaryView(
           hospital: hospital,
           clinicsCount: detailState.clinics.isNotEmpty
               ? detailState.clinics.length
@@ -211,8 +213,7 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
               shellContext.read<HospitalReviewsCubit>().refresh(),
           onManageClinics: () => _openManage(shellContext, hospital, 'clinics'),
           onManageDoctors: () => _openManage(shellContext, hospital, 'doctors'),
-          onManageOfferings: () =>
-              _openServiceOfferings(shellContext, hospital),
+          onManageOfferings: () => _openServiceOfferings(shellContext, hospital),
           onEdit: () => _openEdit(shellContext, hospital),
           onDelete: detailState.isDeleting
               ? null
@@ -309,6 +310,11 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
     context.push('/hospitals/${hospital.id}/clinics/new').then((_) {
       context.read<HospitalDetailCubit>().loadDetails(refresh: true);
     });
+  }
+
+  void _openClinicAsHospital(BuildContext context, ClinicModel clinic) {
+    final hospital = clinic.toHospital();
+    context.push('/hospitals/${hospital.id}', extra: hospital);
   }
 
   void _openInviteDoctor(
@@ -420,7 +426,7 @@ class ClinicsTabContent extends StatelessWidget {
   final String baseUrl;
   final HospitalDetailStatus status;
   final VoidCallback onReload;
-  final VoidCallback onManage;
+  final void Function(ClinicModel clinic) onOpenClinic;
 
   const ClinicsTabContent({
     super.key,
@@ -429,7 +435,7 @@ class ClinicsTabContent extends StatelessWidget {
     required this.baseUrl,
     required this.status,
     required this.onReload,
-    required this.onManage,
+    required this.onOpenClinic,
   });
 
   @override
@@ -481,40 +487,14 @@ class ClinicsTabContent extends StatelessWidget {
           final image = clinic.images.isNotEmpty
               ? _resolveImage(clinic.images.first, baseUrl)
               : null;
-          return HospitalDetailSectionCard(
+          return HospitalCard(
             title: clinic.name,
-            icon: Icons.local_hospital_rounded,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  clinic.description ?? 'hospitals.detail.no_description'.tr(),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (image != null) ...[
-                  const SizedBox(height: 10),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      image,
-                      height: 120,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ],
-                const SizedBox(height: 10),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton.icon(
-                    onPressed: onManage,
-                    icon: const Icon(Icons.manage_accounts_rounded),
-                    label: Text('hospitals.actions.manage'.tr()),
-                  ),
-                ),
-              ],
-            ),
+            subtitle:
+                clinic.description ?? 'hospitals.detail.no_description'.tr(),
+            facilityLabel: 'hospitals.facility_type.clinic'.tr(),
+            phoneLabel: clinic.phones.join(' | '),
+            imageUrl: image,
+            onTap: () => onOpenClinic(clinic),
           );
         },
       ),
