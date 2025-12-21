@@ -17,18 +17,16 @@ class RemoteAppointmentsService implements AppointmentsService {
 
   @override
   Future<Result<Map<String, dynamic>>> getMyDoctorAppointments() async {
-    final token = await _tokenStore.getUserToken();
+    final token = await _tokenStore.getDoctorToken();
     if (token == null || token.isEmpty) {
       return Result.failure(const Failure.unauthorized());
     }
+    print("the link is ${_apiClient.apiConfig.doctorAppointments}");
 
     return _apiClient.get(
       _apiClient.apiConfig.doctorAppointments,
-      parser: (data)  {
-        print(data);
-        return
-        data as Map<String, dynamic>;},
-      useHospitalToken: false,
+      parser: (data) => data as Map<String, dynamic>,
+      useDoctorToken: true,
     );
   }
 
@@ -54,7 +52,7 @@ class RemoteAppointmentsService implements AppointmentsService {
   }) async {
     final token = useHospitalToken
         ? await _tokenStore.getHospitalToken()
-        : await _tokenStore.getUserToken();
+        : await _tokenStore.getDoctorToken();
     if (token == null || token.isEmpty) {
       return Result.failure(const Failure.unauthorized());
     }
@@ -66,6 +64,7 @@ class RemoteAppointmentsService implements AppointmentsService {
         return data as Map<String, dynamic>;
       },
       useHospitalToken: useHospitalToken,
+      useDoctorToken: !useHospitalToken,
     );
   }
 }

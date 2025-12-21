@@ -17,7 +17,7 @@ class HospitalReviewsRemoteService {
     int page = 1,
     int limit = 10,
   }) async {
-    final token = await _tokenStore.getUserToken();
+    final token = await _resolveToken();
     final headers = <String, String>{};
     if (token != null && token.isNotEmpty) {
       headers['Authorization'] = 'Bearer $token';
@@ -29,5 +29,16 @@ class HospitalReviewsRemoteService {
       headers: headers.isEmpty ? null : headers,
       parser: (json) => json as Map<String, dynamic>,
     );
+  }
+
+  Future<String?> _resolveToken() async {
+    final isDoctor = await _tokenStore.getIsDoctor() ?? false;
+    if (isDoctor) {
+      final doctorToken = await _tokenStore.getDoctorToken();
+      if (doctorToken != null && doctorToken.isNotEmpty) {
+        return doctorToken;
+      }
+    }
+    return _tokenStore.getUserToken();
   }
 }

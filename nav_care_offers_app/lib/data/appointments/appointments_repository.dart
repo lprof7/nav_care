@@ -17,16 +17,18 @@ class AppointmentsRepository {
 
   Future<Result<AppointmentListModel>> getMyDoctorAppointments() async {
     final response = await _service.getMyDoctorAppointments();
+
     return response.fold(
       onSuccess: (data) {
         final appointmentListData = _asMap(data['data'])?['appointments'] ?? [];
         final paginationData = _asMap(data['data'])?['pagination'];
 
-        final List<AppointmentModel> appointments = (appointmentListData as List)
-            .whereType<Map>()
-            .map((appointmentJson) =>
-                AppointmentModel.fromJson(_normalizeAppointment(appointmentJson)))
-            .toList();
+        final List<AppointmentModel> appointments =
+            (appointmentListData as List)
+                .whereType<Map>()
+                .map((appointmentJson) => AppointmentModel.fromJson(
+                    _normalizeAppointment(appointmentJson)))
+                .toList();
 
         final pagination = _parsePagination(paginationData);
 
@@ -52,11 +54,12 @@ class AppointmentsRepository {
         final appointmentListData = container?['appointments'] ?? [];
         final paginationData = container?['pagination'];
 
-        final List<AppointmentModel> appointments = (appointmentListData as List)
-            .whereType<Map>()
-            .map((appointmentJson) =>
-                AppointmentModel.fromJson(_normalizeAppointment(appointmentJson)))
-            .toList();
+        final List<AppointmentModel> appointments =
+            (appointmentListData as List)
+                .whereType<Map>()
+                .map((appointmentJson) => AppointmentModel.fromJson(
+                    _normalizeAppointment(appointmentJson)))
+                .toList();
 
         final pagination = _parsePagination(paginationData);
 
@@ -324,9 +327,7 @@ class AppointmentsRepository {
       final s = (service ?? const <String, dynamic>{})
           .map((k, v) => MapEntry(k.toString(), v));
       return {
-        'name': _extractLocalizedName(s['name']) ??
-            s['name']?.toString() ??
-            '',
+        'name': _extractLocalizedName(s['name']) ?? s['name']?.toString() ?? '',
         'provider': s['provider']?.toString() ?? '',
         'providerType': s['providerType']?.toString() ?? '',
       };
@@ -334,7 +335,8 @@ class AppointmentsRepository {
 
     map['provider'] = normalizeProvider(_asMap(map['provider']));
     map['patient'] = normalizePatient(_asMap(map['patient']));
-    map['service'] = normalizeService(_asMap(map['service']) ?? _asMap(map['service_offering']));
+    map['service'] = normalizeService(
+        _asMap(map['service']) ?? _asMap(map['service_offering']));
     return map;
   }
 

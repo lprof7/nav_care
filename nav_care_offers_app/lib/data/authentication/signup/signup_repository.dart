@@ -35,6 +35,8 @@ class SignupRepository {
           user = authResponse.user;
           token = authResponse.token;
           await _tokenStore.setUserToken(authResponse.token);
+          await _tokenStore.setIsDoctor(false);
+          await _tokenStore.clearDoctorToken();
           await _doctorStore.setDoctor(authResponse.user.toJson());
         } catch (_) {
           // Swallow parsing errors and fall back to message only

@@ -1,14 +1,17 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nav_care_offers_app/core/config/app_config.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/data/service_offerings/models/service_offering.dart';
 import 'package:nav_care_offers_app/data/service_offerings/service_offerings_repository.dart';
+import 'package:nav_care_offers_app/presentation/features/authentication/auth_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/view/service_offering_detail_page.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/view/service_offering_form_page.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/viewmodel/service_offerings_cubit.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/molecules/become_doctor_required_card.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/service_offering_card.dart';
 
 class MyServiceOfferingsPage extends StatefulWidget {
@@ -21,12 +24,43 @@ class MyServiceOfferingsPage extends StatefulWidget {
 class _MyServiceOfferingsPageState extends State<MyServiceOfferingsPage> {
   @override
   Widget build(BuildContext context) {
+    final authState = context.watch<AuthCubit>().state;
+    if (authState.status != AuthStatus.authenticated) {
+      return const SizedBox.shrink();
+    }
+
+    if (!authState.isDoctor) {
+      return _DoctorRequiredView(
+        onBecomeDoctor: () => context.go('/become-doctor'),
+      );
+    }
+
     return BlocProvider(
       create: (_) => ServiceOfferingsCubit(
         sl<ServiceOfferingsRepository>(),
         useHospitalToken: false,
       )..loadOfferings(),
       child: const _MyServiceOfferingsView(),
+    );
+  }
+}
+
+class _DoctorRequiredView extends StatelessWidget {
+  final VoidCallback onBecomeDoctor;
+
+  const _DoctorRequiredView({required this.onBecomeDoctor});
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: BecomeDoctorRequiredCard(
+            onBecomeDoctor: onBecomeDoctor,
+          ),
+        ),
+      ),
     );
   }
 }

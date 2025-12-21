@@ -44,25 +44,6 @@ class TestApp extends StatelessWidget {
                 'identifier': 'john@example.com',
                 'password': 'Password123!',
               });
-
-              result.fold(
-                onFailure: (failure) {
-                  debugPrint('Test Failed: ${failure.message}');
-                },
-                onSuccess: (outcome) {
-                  switch (outcome.resolution) {
-                    case SigninResolution.doctorAuthenticated:
-                      debugPrint('Doctor login succeeded:');
-                      debugPrint('Doctor ID: ${outcome.doctor?.id}');
-                      debugPrint('Doctor Name: ${outcome.doctor?.user.name}');
-                      break;
-                    case SigninResolution.requiresDoctorProfile:
-                      debugPrint(
-                          'User needs to complete doctor profile: ${outcome.user.name}');
-                      break;
-                  }
-                },
-              );
             },
             child: const Text('Test'),
           ),

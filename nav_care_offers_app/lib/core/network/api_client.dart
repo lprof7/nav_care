@@ -15,14 +15,18 @@ class ApiClient {
       {Map<String, dynamic>? query,
       required FromJson<T> parser,
       Map<String, String>? headers,
-      bool useHospitalToken = false}) async {
+      bool useHospitalToken = false,
+      bool useDoctorToken = false}) async {
     try {
       final res = await _dio.get(path,
           queryParameters: query,
-          options: Options(
-              headers: headers, extra: {'useHospitalToken': useHospitalToken}));
+          options: Options(headers: headers, extra: {
+            'useHospitalToken': useHospitalToken,
+            'useDoctorToken': useDoctorToken,
+          }));
       return Result.success(parser(res.data));
     } on DioException catch (e) {
+      print("error details: ${e.message} ${e.response}}");
       return Result.failure(_mapDio(e));
     }
   }
@@ -31,13 +35,17 @@ class ApiClient {
       {Object? body,
       required FromJson<T> parser,
       Map<String, String>? headers,
-      bool useHospitalToken = false}) async {
+      bool useHospitalToken = false,
+      bool useDoctorToken = false}) async {
     try {
       final res = await _dio.post(path,
           data: body,
           options: Options(
             headers: headers,
-            extra: {'useHospitalToken': useHospitalToken},
+            extra: {
+              'useHospitalToken': useHospitalToken,
+              'useDoctorToken': useDoctorToken,
+            },
           ));
       return Result.success(parser(res.data));
     } on DioException catch (e) {
@@ -50,13 +58,17 @@ class ApiClient {
       {Object? body,
       required FromJson<T> parser,
       Map<String, String>? headers,
-      bool useHospitalToken = false}) async {
+      bool useHospitalToken = false,
+      bool useDoctorToken = false}) async {
     try {
       final res = await _dio.put(path,
           data: body,
           options: Options(
             headers: headers,
-            extra: {'useHospitalToken': useHospitalToken},
+            extra: {
+              'useHospitalToken': useHospitalToken,
+              'useDoctorToken': useDoctorToken,
+            },
           ));
       return Result.success(parser(res.data));
     } on DioException catch (e) {
@@ -68,13 +80,17 @@ class ApiClient {
       {Object? body,
       required FromJson<T> parser,
       Map<String, String>? headers,
-      bool useHospitalToken = false}) async {
+      bool useHospitalToken = false,
+      bool useDoctorToken = false}) async {
     try {
       final res = await _dio.patch(path,
           data: body,
           options: Options(
             headers: headers,
-            extra: {'useHospitalToken': useHospitalToken},
+            extra: {
+              'useHospitalToken': useHospitalToken,
+              'useDoctorToken': useDoctorToken,
+            },
           ));
       return Result.success(parser(res.data));
     } on DioException catch (e) {
@@ -86,13 +102,17 @@ class ApiClient {
       {Object? body,
       required FromJson<T> parser,
       Map<String, String>? headers,
-      bool useHospitalToken = false}) async {
+      bool useHospitalToken = false,
+      bool useDoctorToken = false}) async {
     try {
       final res = await _dio.delete(path,
           data: body,
           options: Options(
             headers: headers,
-            extra: {'useHospitalToken': useHospitalToken},
+            extra: {
+              'useHospitalToken': useHospitalToken,
+              'useDoctorToken': useDoctorToken,
+            },
           ));
 
       return Result.success(parser(res.data));

@@ -54,7 +54,10 @@ class BecomeDoctorCubit extends Cubit<BecomeDoctorState> {
         ),
       ),
       onSuccess: (doctor) async {
-        await _authCubit.setAuthenticatedUser(doctor.user);
+        await _authCubit.setAuthenticatedUser(
+          doctor.user,
+          isDoctorOverride: true,
+        );
         emit(
           state.copyWith(
             isSubmitting: false,

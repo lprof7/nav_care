@@ -21,29 +21,60 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> checkAuthStatus() async {
     final doctor = await _doctorStore.getDoctor();
-    final token = await _tokenStore.getUserToken();
+    final storedIsDoctor = await _tokenStore.getIsDoctor();
+    bool isDoctor = storedIsDoctor ?? false;
+    String? token = isDoctor
+        ? await _tokenStore.getDoctorToken()
+        : await _tokenStore.getUserToken();
+    if ((token == null || token.isEmpty) && storedIsDoctor == null) {
+      final fallbackDoctorToken = await _tokenStore.getDoctorToken();
+      if (fallbackDoctorToken != null && fallbackDoctorToken.isNotEmpty) {
+        isDoctor = true;
+        token = fallbackDoctorToken;
+        await _tokenStore.setIsDoctor(true);
+      }
+    }
     if (doctor == null || token == null || token.isEmpty) {
-      emit(state.copyWith(status: AuthStatus.unauthenticated, user: null));
+      emit(state.copyWith(
+        status: AuthStatus.unauthenticated,
+        user: null,
+        isDoctor: false,
+      ));
       return;
     }
 
     try {
       final user = User.fromJson(doctor);
-      emit(state.copyWith(status: AuthStatus.authenticated, user: user));
+      emit(state.copyWith(
+        status: AuthStatus.authenticated,
+        user: user,
+        isDoctor: isDoctor,
+      ));
     } catch (_) {
-      emit(state.copyWith(status: AuthStatus.unauthenticated, user: null));
+      emit(state.copyWith(
+        status: AuthStatus.unauthenticated,
+        user: null,
+        isDoctor: false,
+      ));
     }
   }
 
-  Future<void> login(User user) async {
+  Future<void> login(User user, {required bool isDoctor}) async {
     await _doctorStore.setDoctor(user.toJson());
-    emit(state.copyWith(status: AuthStatus.authenticated, user: user));
+    emit(state.copyWith(
+      status: AuthStatus.authenticated,
+      user: user,
+      isDoctor: isDoctor,
+    ));
   }
 
   /// Hits a protected endpoint to ensure the stored token is still valid.
   /// On 401 or invalid token payload, clears persisted session.
   Future<void> verifyTokenValidity() async {
-    final token = await _tokenStore.getUserToken();
+    final isDoctor = await _tokenStore.getIsDoctor() ?? false;
+    final token = isDoctor
+        ? await _tokenStore.getDoctorToken()
+        : await _tokenStore.getUserToken();
     final storedDoctor = await _doctorStore.getDoctor();
     if (token == null || token.isEmpty || storedDoctor == null) {
       await logout();
@@ -51,11 +82,14 @@ class AuthCubit extends Cubit<AuthState> {
     }
 
     final response = await _apiClient.get<Map<String, dynamic>>(
-      _apiClient.apiConfig.doctorAppointments,
+      isDoctor
+          ? _apiClient.apiConfig.doctorAppointments
+          : _apiClient.apiConfig.userProfile,
       headers: {'Authorization': 'Bearer $token'},
       parser: (json) => json is Map
           ? Map<String, dynamic>.from(json as Map)
           : <String, dynamic>{},
+      useDoctorToken: isDoctor,
     );
 
     await response.fold(
@@ -76,6 +110,7 @@ class AuthCubit extends Cubit<AuthState> {
               state.copyWith(
                 status: AuthStatus.authenticated,
                 user: User.fromJson(storedDoctor),
+                isDoctor: isDoctor,
               ),
             );
           } catch (_) {
@@ -86,18 +121,29 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  Future<void> setAuthenticatedUser(User user) async {
+  Future<void> setAuthenticatedUser(User user,
+      {bool? isDoctorOverride}) async {
     await _doctorStore.setDoctor(user.toJson());
-    emit(state.copyWith(status: AuthStatus.authenticated, user: user));
+    emit(state.copyWith(
+      status: AuthStatus.authenticated,
+      user: user,
+      isDoctor: isDoctorOverride ?? state.isDoctor,
+    ));
   }
 
   Future<void> logout() async {
     await Future.wait([
       _doctorStore.clearDoctor(),
       _tokenStore.clearUserToken(),
+      _tokenStore.clearDoctorToken(),
       _tokenStore.clearHospitalToken(),
+      _tokenStore.clearIsDoctor(),
     ]);
-    emit(state.copyWith(status: AuthStatus.unauthenticated, user: null));
+    emit(state.copyWith(
+      status: AuthStatus.unauthenticated,
+      user: null,
+      isDoctor: false,
+    ));
   }
 
   bool _isInvalidTokenPayload(Map<String, dynamic> data) {

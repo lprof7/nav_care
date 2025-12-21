@@ -1,11 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/data/appointments/models/appointment_model.dart';
 import 'package:nav_care_offers_app/presentation/features/appointments/viewmodel/appointments_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/appointments/viewmodel/appointments_state.dart';
+import 'package:nav_care_offers_app/presentation/features/authentication/auth_cubit.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/molecules/appointment_card.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/molecules/become_doctor_required_card.dart';
 import 'package:intl/intl.dart';
 
 class AppointmentsPage extends StatelessWidget {
@@ -13,9 +16,40 @@ class AppointmentsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authState = context.watch<AuthCubit>().state;
+    if (authState.status != AuthStatus.authenticated) {
+      return const SizedBox.shrink();
+    }
+
+    if (!authState.isDoctor) {
+      return _DoctorRequiredView(
+        onBecomeDoctor: () => context.go('/become-doctor'),
+      );
+    }
+
     return BlocProvider(
       create: (_) => sl<AppointmentsCubit>()..getMyDoctorAppointments(),
       child: const _AppointmentsListView(),
+    );
+  }
+}
+
+class _DoctorRequiredView extends StatelessWidget {
+  final VoidCallback onBecomeDoctor;
+
+  const _DoctorRequiredView({required this.onBecomeDoctor});
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: BecomeDoctorRequiredCard(
+            onBecomeDoctor: onBecomeDoctor,
+          ),
+        ),
+      ),
     );
   }
 }

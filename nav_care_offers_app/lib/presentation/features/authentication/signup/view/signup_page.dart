@@ -87,10 +87,12 @@ class _SignupView extends StatelessWidget {
                         );
                         final user = state.result.user;
                         if (user != null) {
-                          context.read<AuthCubit>().setAuthenticatedUser(user);
-                          context.go(AppRoute.becomeDoctor.path, extra: user);
+                          context
+                              .read<AuthCubit>()
+                              .setAuthenticatedUser(user, isDoctorOverride: false);
+                          context.go(AppRoute.home.path);
                         } else {
-                          context.go(AppRoute.becomeDoctor.path);
+                          context.go(AppRoute.home.path);
                         }
                       } else if (state is SignupFailure) {
                         ScaffoldMessenger.of(context).showSnackBar(

@@ -6,30 +6,32 @@ import 'package:nav_care_offers_app/data/authentication/models.dart';
 import 'services/signin_service.dart';
 
 enum SigninResolution {
-  doctorAuthenticated,
-  requiresDoctorProfile,
+  authenticated,
 }
 
 class SigninOutcome {
   final SigninResolution resolution;
   final User user;
   final Doctor? doctor;
+  final bool isDoctor;
 
   const SigninOutcome._(
     this.resolution, {
     required this.user,
     this.doctor,
+    required this.isDoctor,
   });
 
-  factory SigninOutcome.doctorAuthenticated(Doctor doctor) => SigninOutcome._(
-        SigninResolution.doctorAuthenticated,
-        user: doctor.user,
-        doctor: doctor,
-      );
-
-  factory SigninOutcome.requiresDoctorProfile(User user) => SigninOutcome._(
-        SigninResolution.requiresDoctorProfile,
+  factory SigninOutcome.authenticated({
+    required User user,
+    Doctor? doctor,
+    required bool isDoctor,
+  }) =>
+      SigninOutcome._(
+        SigninResolution.authenticated,
         user: user,
+        doctor: doctor,
+        isDoctor: isDoctor,
       );
 }
 
@@ -45,49 +47,62 @@ class SigninRepository {
   );
 
   Future<Result<SigninOutcome>> signin(Map<String, dynamic> body) async {
-    final userLogin = await _signinService.loginUser(body);
-    if (!userLogin.isSuccess || userLogin.data == null) {
-      final failure = userLogin.error ?? const Failure.unknown();
-      if (failure.type == FailureType.unauthorized) {
-        return Result.failure(
-          const Failure.unauthorized(message: 'signin_account_not_found'),
-        );
-      }
+    final loginCheck = await _signinService.loginCheck(body);
+    if (!loginCheck.isSuccess || loginCheck.data == null) {
+      final failure = loginCheck.error ?? const Failure.unknown();
       return Result.failure(failure);
     }
 
     try {
-      final userPayload = _extractPayload(userLogin.data!);
-      final userAuth = AuthResponse.fromJson(userPayload);
-
-      final doctorLogin = await _signinService.loginDoctor(body);
-      if (!doctorLogin.isSuccess || doctorLogin.data == null) {
-        final failure = doctorLogin.error ?? const Failure.unknown();
-        if (failure.type == FailureType.unauthorized) {
-          await _tokenStore.setUserToken(userAuth.token);
-          final placeholder = Doctor(
-            id: userAuth.user.id,
-            user: userAuth.user,
-          );
-          await _doctorStore.setDoctor(placeholder.toJson());
-          return Result.success(
-            SigninOutcome.requiresDoctorProfile(userAuth.user),
-          );
-        }
-        return Result.failure(failure);
+      final payload = loginCheck.data!;
+      if (payload['success'] != true) {
+        final message = _extractMessage(payload['message']) ??
+            'signin_account_not_found';
+        return Result.failure(
+          Failure.unauthorized(message: message),
+        );
       }
 
-      final doctorPayload = _extractPayload(doctorLogin.data!);
-      final doctorAuth = AuthResponse.fromJson(doctorPayload);
-      await _tokenStore.setUserToken(doctorAuth.token);
-      final doctor = doctorAuth.doctor ??
-          Doctor(
-            id: doctorAuth.user.id,
-            user: doctorAuth.user,
-          );
-      await _doctorStore.setDoctor(doctor.toJson());
+      final data = _extractPayload(payload);
+      final isDoctor = data['isDoctor'] == true;
+      final token = data['token']?.toString();
+      if (token == null || token.isEmpty) {
+        return Result.failure(
+          const Failure.server(message: 'Missing authentication token'),
+        );
+      }
 
-      return Result.success(SigninOutcome.doctorAuthenticated(doctor));
+      final userJson = data['user'];
+      if (userJson is! Map<String, dynamic>) {
+        return Result.failure(
+          const Failure.server(message: 'Missing user data'),
+        );
+      }
+      final user = User.fromJson(userJson);
+
+      Doctor? doctor;
+      final doctorJson = data['doctor'];
+      if (doctorJson is Map<String, dynamic>) {
+        doctor = Doctor.fromJson(doctorJson);
+      }
+
+      if (isDoctor) {
+        await _tokenStore.setDoctorToken(token);
+        await _tokenStore.clearUserToken();
+      } else {
+        await _tokenStore.setUserToken(token);
+        await _tokenStore.clearDoctorToken();
+      }
+      await _tokenStore.setIsDoctor(isDoctor);
+      await _doctorStore.setDoctor(user.toJson());
+
+      return Result.success(
+        SigninOutcome.authenticated(
+          user: user,
+          doctor: doctor,
+          isDoctor: isDoctor,
+        ),
+      );
     } on FormatException catch (error) {
       return Result.failure(
         Failure.server(message: error.message),
@@ -105,5 +120,22 @@ class SigninRepository {
       throw const FormatException('Malformed login response');
     }
     return payload;
+  }
+
+  String? _extractMessage(dynamic message) {
+    if (message is String) return message;
+    if (message is Map) {
+      final english = message['en'];
+      if (english != null) return english.toString();
+      final values = message.values;
+      if (values is Iterable) {
+        for (final value in values) {
+          if (value != null) {
+            return value.toString();
+          }
+        }
+      }
+    }
+    return null;
   }
 }

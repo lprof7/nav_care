@@ -407,6 +407,11 @@
     "description": "يرجى تسجيل الدخول أو إنشاء حساب للمتابعة.",
     "create_account": "إنشاء حساب"
   },
+  "doctor_required": {
+    "title": "هذه الميزة للأطباء فقط",
+    "description": "فقط الأطباء يمكنهم الوصول إلى هذا القسم. أكمل ملفك كطبيب للمتابعة.",
+    "cta": "كن طبيبًا"
+  },
   "shell.drawer_faq": "الأسئلة الشائعة",
   "shell.drawer_contact": "تواصل",
   "shell.drawer_settings": "الإعدادات",

@@ -12,7 +12,7 @@ class UserRemoteService {
   final TokenStore _tokenStore;
 
   Future<Result<Map<String, dynamic>>> getProfile() async {
-    final token = await _tokenStore.getUserToken();
+    final token = await _resolveToken();
     if (token == null || token.isEmpty) {
       return Result.failure(const Failure.unauthorized());
     }
@@ -25,7 +25,7 @@ class UserRemoteService {
   }
 
   Future<Result<Map<String, dynamic>>> updateProfile(Object payload) async {
-    final token = await _tokenStore.getUserToken();
+    final token = await _resolveToken();
     if (token == null || token.isEmpty) {
       return Result.failure(const Failure.unauthorized());
     }
@@ -42,7 +42,7 @@ class UserRemoteService {
     required String currentPassword,
     required String newPassword,
   }) async {
-    final token = await _tokenStore.getUserToken();
+    final token = await _resolveToken();
     if (token == null || token.isEmpty) {
       return Result.failure(const Failure.unauthorized());
     }
@@ -66,6 +66,17 @@ class UserRemoteService {
       body: {'email': email},
       parser: (json) => json as Map<String, dynamic>,
     );
+  }
+
+  Future<String?> _resolveToken() async {
+    final isDoctor = await _tokenStore.getIsDoctor() ?? false;
+    if (isDoctor) {
+      final doctorToken = await _tokenStore.getDoctorToken();
+      if (doctorToken != null && doctorToken.isNotEmpty) {
+        return doctorToken;
+      }
+    }
+    return _tokenStore.getUserToken();
   }
 
   Map<String, String> _authHeaders(String token) => {'Authorization': 'Bearer $token'};

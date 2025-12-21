@@ -19,11 +19,13 @@ class RemoteServiceOfferingsService implements ServiceOfferingsService {
     final query = <String, dynamic>{};
     if (page != null) query['page'] = page;
     if (limit != null) query['limit'] = limit;
+    final useDoctorToken = !useHospitalToken;
     return _apiClient.get(
       _apiClient.apiConfig.myServiceOfferings,
       query: query.isEmpty ? null : query,
       parser: _parseMap,
       useHospitalToken: useHospitalToken,
+      useDoctorToken: useDoctorToken,
     );
   }
 
@@ -32,10 +34,12 @@ class RemoteServiceOfferingsService implements ServiceOfferingsService {
     String offeringId, {
     bool useHospitalToken = true,
   }) async {
+    final useDoctorToken = !useHospitalToken;
     return _apiClient.get(
       _apiClient.apiConfig.serviceOfferingById(offeringId),
       parser: _parseMap,
       useHospitalToken: useHospitalToken,
+      useDoctorToken: useDoctorToken,
     );
   }
 
@@ -44,6 +48,7 @@ class RemoteServiceOfferingsService implements ServiceOfferingsService {
     ServiceOfferingPayload payload, {
     bool useHospitalToken = true,
   }) async {
+    final useDoctorToken = !useHospitalToken;
     final formData = FormData.fromMap(payload.toJson());
     if (payload.images != null) {
       for (final image in payload.images!) {
@@ -59,6 +64,7 @@ class RemoteServiceOfferingsService implements ServiceOfferingsService {
       body: formData,
       parser: _parseMap,
       useHospitalToken: useHospitalToken,
+      useDoctorToken: useDoctorToken,
     );
   }
 
@@ -67,12 +73,14 @@ class RemoteServiceOfferingsService implements ServiceOfferingsService {
     String offeringId,
     ServiceOfferingPayload payload,
     {bool useHospitalToken = true}) {
+    final useDoctorToken = !useHospitalToken;
     final formData = FormData.fromMap(payload.toJson());
     return _apiClient.patch(
       _apiClient.apiConfig.serviceOfferingById(offeringId),
       body: formData,
       parser: _parseMap,
       useHospitalToken: useHospitalToken,
+      useDoctorToken: useDoctorToken,
     );
   }
 
@@ -81,10 +89,12 @@ class RemoteServiceOfferingsService implements ServiceOfferingsService {
     String offeringId, {
     bool useHospitalToken = true,
   }) {
+    final useDoctorToken = !useHospitalToken;
     return _apiClient.delete(
       _apiClient.apiConfig.serviceOfferingById(offeringId),
       parser: _parseMap,
       useHospitalToken: useHospitalToken,
+      useDoctorToken: useDoctorToken,
     );
   }
 

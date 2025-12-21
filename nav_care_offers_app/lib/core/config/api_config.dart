@@ -4,11 +4,12 @@ class ApiConfig {
 
   // Translation
   String get translateText =>
-      'https://api.naviguihfood.com/api/backend-services/translate-text';
+      'https://api.nav-food.com/api/backend-services/translate-text';
 
   // Auth
   String get login => '$baseUrl/api/doctors/login';
   String get userLogin => '$baseUrl/api/users/auth/login';
+  String get loginCheck => '$baseUrl/api/doctors/login/check';
   String get register => '$baseUrl/api/users/auth/register';
   String get passwordResetCode => '$baseUrl/api/users/auth/password/reset-code';
   String get passwordVerifyCode =>
@@ -20,7 +21,7 @@ class ApiConfig {
   String get doctors => '$baseUrl/api/doctors';
   String doctorById(String id) => '$baseUrl/api/doctors/$id';
   String get doctorServices => '$baseUrl/api/doctors/me/services';
-  String get doctorAppointments => '$baseUrl/api/doctors/me/appointments';
+  String get doctorAppointments => '$baseUrl/api/appointments';
   String get hospitalAppointments => '$baseUrl/api/appointments';
   String appointmentById(String id) => '$baseUrl/api/appointments/$id';
   String get myServiceOfferings => '$baseUrl/api/service-offerings/me';
@@ -51,4 +52,7 @@ class ApiConfig {
 
   // Feedback
   String get sendFeedback => '$baseUrl/api/feedback';
+
+  // Users
+  String get userProfile => '$baseUrl/api/users/me';
 }

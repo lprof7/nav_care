@@ -18,7 +18,7 @@ class FeedbackRemoteService {
     required String comment,
     MultipartFile? screenshot,
   }) async {
-    final token = await _tokenStore.getUserToken();
+    final token = await _resolveToken();
     if (token == null || token.isEmpty) {
       return Result.failure(const Failure.unauthorized());
     }
@@ -36,5 +36,16 @@ class FeedbackRemoteService {
       headers: {'Authorization': 'Bearer $token'},
       parser: (json) => json as Map<String, dynamic>,
     );
+  }
+
+  Future<String?> _resolveToken() async {
+    final isDoctor = await _tokenStore.getIsDoctor() ?? false;
+    if (isDoctor) {
+      final doctorToken = await _tokenStore.getDoctorToken();
+      if (doctorToken != null && doctorToken.isNotEmpty) {
+        return doctorToken;
+      }
+    }
+    return _tokenStore.getUserToken();
   }
 }

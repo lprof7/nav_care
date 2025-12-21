@@ -410,6 +410,11 @@
         "description": "Please sign in or create an account to continue.",
         "create_account": "Create Account"
     },
+    "doctor_required": {
+        "title": "Doctor access required",
+        "description": "Only doctors can access this section. Complete your doctor profile to continue.",
+        "cta": "Become a doctor"
+    },
     "shell.drawer_faq": "FAQ",
     "shell.drawer_contact": "Contact",
     "shell.drawer_settings": "Settings",

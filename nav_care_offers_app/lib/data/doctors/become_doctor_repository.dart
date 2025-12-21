@@ -77,7 +77,9 @@ class BecomeDoctorRepository {
             bioEn: normalizedBio,
           );
       user ??= doctor.user;
-      await _tokenStore.setUserToken(token);
+      await _tokenStore.setDoctorToken(token);
+      await _tokenStore.setIsDoctor(true);
+      await _tokenStore.clearUserToken();
       await _doctorStore.setDoctor(doctor.toJson());
       return Result.success(doctor);
     } catch (_) {
