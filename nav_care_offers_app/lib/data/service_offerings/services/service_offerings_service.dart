@@ -29,8 +29,5 @@ abstract class ServiceOfferingsService {
     bool useHospitalToken = true,
   });
 
-  Future<Result<Map<String, dynamic>>> fetchServicesCatalog({
-    int? page,
-    int? limit,
-  });
+  
 }

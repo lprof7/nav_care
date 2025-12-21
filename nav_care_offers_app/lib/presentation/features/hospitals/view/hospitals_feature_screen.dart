@@ -73,10 +73,7 @@ class _HospitalsListView extends StatelessWidget {
                     );
                   }
                   if (state is HospitalListSuccess) {
-                    final hospitals = state.hospitals
-                        .where((hospital) =>
-                            hospital.facilityType == FacilityType.hospital)
-                        .toList();
+                    final hospitals = List<Hospital>.from(state.hospitals);
                     if (hospitals.isEmpty) {
                       return _EmptyView(
                         messageKey: 'hospitals.list.empty',

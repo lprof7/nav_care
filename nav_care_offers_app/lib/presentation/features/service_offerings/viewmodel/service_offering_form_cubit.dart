@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nav_care_offers_app/core/responses/failure.dart';
 import 'package:nav_care_offers_app/core/translation/translation_service.dart';
+import 'package:nav_care_offers_app/data/services/doctor_services_repository.dart';
 import 'package:nav_care_offers_app/data/service_offerings/models/service_offering.dart';
 import 'package:nav_care_offers_app/data/service_offerings/models/service_offering_payload.dart';
 import 'package:nav_care_offers_app/data/service_offerings/service_offerings_repository.dart';
@@ -12,10 +13,12 @@ enum ServiceOfferingFormMode { create, edit }
 class ServiceOfferingFormCubit extends Cubit<ServiceOfferingFormState> {
   ServiceOfferingFormCubit(
     this._repository, {
+    required DoctorServicesRepository servicesRepository,
     required TranslationService translationService,
     ServiceOffering? initial,
     this.useHospitalToken = true,
   })  : _translationService = translationService,
+        _servicesRepository = servicesRepository,
         super(ServiceOfferingFormState(
           mode: initial == null
               ? ServiceOfferingFormMode.create
@@ -26,6 +29,7 @@ class ServiceOfferingFormCubit extends Cubit<ServiceOfferingFormState> {
 
   final ServiceOfferingsRepository _repository;
   final TranslationService _translationService;
+  final DoctorServicesRepository _servicesRepository;
   final bool useHospitalToken;
 
   static List<ServiceCategory> _initialCatalog(ServiceOffering offering) {
@@ -35,7 +39,8 @@ class ServiceOfferingFormCubit extends Cubit<ServiceOfferingFormState> {
   Future<void> loadCatalog() async {
     if (state.isCatalogLoading) return;
     emit(state.copyWith(isCatalogLoading: true, clearFailure: true));
-    final result = await _repository.fetchServicesCatalog();
+    final result =
+        await _servicesRepository.fetchServicesCatalog(useHospitalToken: useHospitalToken);
     result.fold(
       onFailure: (failure) => emit(state.copyWith(
         isCatalogLoading: false,

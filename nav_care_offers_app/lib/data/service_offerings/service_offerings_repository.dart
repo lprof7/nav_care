@@ -12,11 +12,9 @@ class ServiceOfferingsRepository {
 
   List<ServiceOffering> _cache = const [];
   Pagination? _lastPagination;
-  List<ServiceCategory> _catalogCache = const [];
 
   List<ServiceOffering> get offerings => List.unmodifiable(_cache);
   Pagination? get pagination => _lastPagination;
-  List<ServiceCategory> get catalog => List.unmodifiable(_catalogCache);
 
   ServiceOffering? findById(String id) {
     try {
@@ -142,34 +140,6 @@ class ServiceOfferingsRepository {
     }
   }
 
-  Future<Result<List<ServiceCategory>>> fetchServicesCatalog() async {
-    final response = await _service.fetchServicesCatalog();
-    if (!response.isSuccess || response.data == null) {
-      return Result.failure(response.error ?? const Failure.unknown());
-    }
-
-    try {
-      final data = _extractDataMap(response.data!);
-      final rawServices = data['services'] ?? data['data'];
-      if (rawServices is! List) {
-        return Result.failure(
-          const Failure.server(
-              message: 'service_offerings.errors.parse_catalog'),
-        );
-      }
-
-      final services = rawServices
-          .whereType<Map<String, dynamic>>()
-          .map(ServiceCategory.fromJson)
-          .toList();
-      _catalogCache = services;
-      return Result.success(services);
-    } catch (_) {
-      return Result.failure(
-        const Failure.server(message: 'service_offerings.errors.parse_catalog'),
-      );
-    }
-  }
 
   ServiceOfferingsResult _parseOfferingsResponse(Map<String, dynamic> json) {
     final data = _extractDataMap(json);
@@ -233,4 +203,5 @@ class ServiceOfferingsRepository {
     }
     return list;
   }
+
 }

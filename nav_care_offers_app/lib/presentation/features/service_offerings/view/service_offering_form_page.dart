@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
+import 'package:nav_care_offers_app/data/services/doctor_services_repository.dart';
 import 'package:nav_care_offers_app/data/service_offerings/models/service_offering.dart';
 import 'package:nav_care_offers_app/data/service_offerings/service_offerings_repository.dart';
+import 'package:nav_care_offers_app/presentation/features/service_offerings/view/service_catalog_picker_page.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/viewmodel/service_offering_form_cubit.dart';
 
 class ServiceOfferingFormPage extends StatelessWidget {
@@ -24,6 +26,7 @@ class ServiceOfferingFormPage extends StatelessWidget {
     return BlocProvider(
       create: (_) => ServiceOfferingFormCubit(
         sl<ServiceOfferingsRepository>(),
+        servicesRepository: sl<DoctorServicesRepository>(),
         translationService: sl(),
         initial: initial,
         useHospitalToken: useHospitalToken,
@@ -59,6 +62,7 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
   late final TextEditingController _descriptionArController;
   late final TextEditingController _descriptionSpController;
   String? _selectedServiceId;
+  ServiceCategory? _selectedService;
   late final TextEditingController _nameEnController;
   final List<XFile> _selectedImages = [];
   final ImagePicker _picker = ImagePicker();
@@ -84,6 +88,7 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
     _nameEnController =
         TextEditingController(text: initial?.nameEn ?? initial?.service.nameEn ?? '');
     _selectedServiceId = initial?.service.id;
+    _selectedService = initial?.service;
   }
 
   @override
@@ -129,10 +134,11 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
       builder: (context, state) {
         final theme = Theme.of(context);
         final services = state.catalog;
-        final selectedServiceExists = services
-            .any((service) => service.id == _selectedServiceId);
-        if (!selectedServiceExists && services.isNotEmpty) {
-          _selectedServiceId ??= services.first.id;
+        final selectedServiceExists =
+            services.any((service) => service.id == _selectedServiceId);
+        if (_selectedService == null && selectedServiceExists) {
+          _selectedService = services
+              .firstWhere((service) => service.id == _selectedServiceId);
         }
 
         return Scaffold(
@@ -153,32 +159,9 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                         style: theme.textTheme.bodyMedium,
                       ),
                       const SizedBox(height: 16),
-                      DropdownButtonFormField<String>(
-                        value: selectedServiceExists ? _selectedServiceId : null,
-                        decoration: InputDecoration(
-                          labelText:
-                              _requiredLabel('service_offerings.form.service'.tr()),
-                        ),
-                        items: services
-                            .map(
-                              (service) => DropdownMenuItem<String>(
-                                value: service.id,
-                            child: Text(service.localizedName(
-                                context.locale.languageCode)),
-                          ),
-                        )
-                        .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedServiceId = value;
-                          });
-                        },
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'field_required'.tr();
-                          }
-                          return null;
-                        },
+                      _ServiceSelectionButton(
+                        selectedService: _selectedService,
+                        onTap: () => _openServicePicker(context),
                       ),
                       const SizedBox(height: 16),
                       Row(
@@ -206,22 +189,12 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                             ),
                           ),
                           const SizedBox(width: 12),
-                          IconButton(
-                            onPressed: state.isCatalogLoading
-                                ? null
-                                : () => context
-                                    .read<ServiceOfferingFormCubit>()
-                                    .loadCatalog(),
-                            icon: state.isCatalogLoading
-                                ? const SizedBox(
-                                    height: 18,
-                                    width: 18,
-                                    child: CircularProgressIndicator(strokeWidth: 2),
-                                  )
-                                : const Icon(Icons.refresh_rounded),
-                            tooltip: 'service_offerings.form.reload_services'
-                                .tr(),
-                          ),
+                          if (state.isCatalogLoading)
+                            const SizedBox(
+                              height: 18,
+                              width: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
                         ],
                       ),
                       const SizedBox(height: 16),
@@ -353,6 +326,25 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
         );
   }
 
+  Future<void> _openServicePicker(BuildContext context) async {
+    final useHospitalToken =
+        context.read<ServiceOfferingFormCubit>().useHospitalToken;
+    final result = await Navigator.of(context).push<ServiceCategory>(
+      MaterialPageRoute(
+        builder: (_) => ServiceCatalogPickerPage(
+          initial: _selectedService,
+          useHospitalToken: useHospitalToken,
+        ),
+      ),
+    );
+    if (result != null) {
+      setState(() {
+        _selectedService = result;
+        _selectedServiceId = result.id;
+      });
+    }
+  }
+
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -384,5 +376,67 @@ class _MultilineField extends StatelessWidget {
         alignLabelWithHint: true,
       ),
     );
+  }
+}
+
+class _ServiceSelectionButton extends StatelessWidget {
+  const _ServiceSelectionButton({
+    required this.selectedService,
+    required this.onTap,
+  });
+
+  final ServiceCategory? selectedService;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final locale = context.locale.languageCode;
+    final label = selectedService?.localizedName(locale);
+    final hasSelection = label != null && label.isNotEmpty;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          _requiredLabelText(context),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+          ),
+        ),
+        const SizedBox(height: 8),
+        OutlinedButton(
+          onPressed: onTap,
+          style: OutlinedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.medical_services_outlined),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  hasSelection
+                      ? label!
+                      : 'service_offerings.form.select_service'.tr(),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: hasSelection ? FontWeight.w600 : FontWeight.w500,
+                  ),
+                ),
+              ),
+              const Icon(Icons.chevron_right),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _requiredLabelText(BuildContext context) {
+    final text = 'service_offerings.form.service'.tr();
+    return '$text *';
   }
 }

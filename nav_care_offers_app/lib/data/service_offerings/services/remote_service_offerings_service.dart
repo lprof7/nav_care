@@ -98,21 +98,6 @@ class RemoteServiceOfferingsService implements ServiceOfferingsService {
     );
   }
 
-  @override
-  Future<Result<Map<String, dynamic>>> fetchServicesCatalog({
-    int? page,
-    int? limit,
-  }) {
-    final query = <String, dynamic>{};
-    if (page != null) query['page'] = page;
-    if (limit != null) query['limit'] = limit;
-    return _apiClient.get(
-      _apiClient.apiConfig.servicesCatalog,
-      query: query.isEmpty ? null : query,
-      parser: _parseMap,
-    );
-  }
-
   Map<String, dynamic> _parseMap(dynamic source) {
     if (source is Map<String, dynamic>) return source;
     if (source is Map) {

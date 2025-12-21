@@ -37,6 +37,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
   late final TextEditingController _nameController;
   late final TextEditingController _descriptionController;
   late final TextEditingController _addressController;
+  FacilityType _facilityType = FacilityType.hospital;
   final List<TextEditingController> _phoneControllers = [];
   final List<_SocialField> _socialFields = [];
   final List<XFile> _selectedImages = []; // Changed to store XFile
@@ -50,6 +51,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
         TextEditingController(text: widget.initial?.descriptionEn ?? '');
     _addressController =
         TextEditingController(text: widget.initial?.address ?? '');
+    _facilityType = widget.initial?.facilityType ?? FacilityType.hospital;
     _initPhoneControllers(
       source: widget.initial?.phones ?? const [],
       target: _phoneControllers,
@@ -137,6 +139,33 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                         : null,
                   ),
                   const SizedBox(height: 20),
+                  if (!isEditing) ...[
+                    DropdownButtonFormField<FacilityType>(
+                      value: _facilityType,
+                      decoration: InputDecoration(
+                        labelText:
+                            _requiredLabel('hospitals.form.facility_type.label'.tr()),
+                      ),
+                      items: [
+                        FacilityType.hospital,
+                        FacilityType.clinic,
+                      ]
+                          .map(
+                            (type) => DropdownMenuItem<FacilityType>(
+                              value: type,
+                              child: Text(type
+                                  .translationKey('hospitals.facility_type')
+                                  .tr()),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {
+                        if (value == null) return;
+                        setState(() => _facilityType = value);
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                  ],
                   TextFormField(
                     controller: _addressController,
                     decoration: InputDecoration(
@@ -437,6 +466,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
   void _submit(BuildContext context) {
     if (!_formKey.currentState!.validate()) return;
     final cubit = context.read<HospitalFormCubit>();
+    final isEditing = widget.initial != null;
 
     final phones = _phoneControllers
         .map((controller) => controller.text.trim())
@@ -459,6 +489,9 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
       return;
     }
 
+    final facilityType = isEditing
+        ? (widget.initial?.facilityType ?? _facilityType)
+        : _facilityType;
     final payload = HospitalPayload(
       id: widget.initial?.id,
       name: _nameController.text.trim(),
@@ -466,7 +499,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
       address: _addressController.text.trim(), // Added address
       phones: phones,
       // Coordinates will be set to 0,0 in HospitalPayload
-      // FacilityType will be set to Hospital in HospitalPayload
+      facilityType: facilityType,
       images: _selectedImages, // Pass XFile list directly
       socialMedia: socialLinks,
     );
