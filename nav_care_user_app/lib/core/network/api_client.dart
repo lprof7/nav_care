@@ -47,6 +47,7 @@ class ApiClient {
       );
       return Result.success(parser(res.data));
     } on DioException catch (e) {
+      print("DioException: ${e.message}");
       return Result.failure(_mapDio(e));
     }
   }

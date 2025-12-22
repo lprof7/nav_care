@@ -8,10 +8,18 @@ class RemoteSigninService implements SigninService {
 
   @override
   Future<Result<Map<String, dynamic>>> signin(Map<String, dynamic> body) async {
+    print("request all information: $body API: ${_api.apiConfig.login} ");
     return await _api.post(
       _api.apiConfig.login,
       body: body,
-      parser: (json) => json as Map<String, dynamic>,
+      parser: (json) {
+        print(json);
+        return json as Map<String, dynamic>;
+      },
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
     );
   }
 }
