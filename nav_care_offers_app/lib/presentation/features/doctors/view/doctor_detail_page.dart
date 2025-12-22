@@ -83,7 +83,9 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
           _localInvitation = invitation;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم ارسال طلب انضمام')),
+          SnackBar(
+            content: Text('hospitals.detail.invitation_request_sent'.tr()),
+          ),
         );
       },
     );
@@ -115,7 +117,9 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
           _localInvitation = updated;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم الغاء الدعوة')),
+          SnackBar(
+            content: Text('hospitals.detail.invitation_cancel_success'.tr()),
+          ),
         );
       },
     );
@@ -239,10 +243,11 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                                             ),
                                           ],
                                         )
-                                      : Text(canSendInvitation
+                                          : Text(canSendInvitation
                                           ? 'hospitals.detail.invitation_send'
                                               .tr()
-                                          : 'تم ارسال طلب انضمام'),
+                                          : 'hospitals.detail.invitation_request_sent'
+                                              .tr()),
                                 ),
                               ),
                             if (widget.hospitalId != null &&
@@ -257,19 +262,22 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                                       ? Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
-                                          children: const [
-                                            SizedBox(
+                                          children: [
+                                            const SizedBox(
                                               height: 16,
                                               width: 16,
                                               child: CircularProgressIndicator(
                                                 strokeWidth: 2,
                                               ),
                                             ),
-                                            SizedBox(width: 8),
-                                            Text('الغاء الدعوة'),
+                                            const SizedBox(width: 8),
+                                            Text('hospitals.detail.invitation_cancel'.tr()),
                                           ],
                                         )
-                                      : const Text('الغاء الدعوة'),
+                                      : Text(
+                                          'hospitals.detail.invitation_cancel'
+                                              .tr(),
+                                        ),
                                 ),
                               ),
                             _Section(

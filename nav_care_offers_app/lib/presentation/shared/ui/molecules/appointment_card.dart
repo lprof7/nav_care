@@ -205,19 +205,18 @@ class _StatusChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final chipColor = _statusColor(theme, status);
-    final label = 'appointments.status.$status'.tr();
+    final label = _statusLabel(context, status);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: chipColor.background,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: chipColor.foreground.withOpacity(0.2)),
+        color: chipColor.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
         label,
         style: theme.textTheme.labelMedium?.copyWith(
-          color: chipColor.foreground,
+          color: chipColor,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -376,35 +375,29 @@ class _ContactDetail extends StatelessWidget {
   }
 }
 
-class _StatusColors {
-  const _StatusColors(this.background, this.foreground);
-
-  final Color background;
-  final Color foreground;
-}
-
-_StatusColors _statusColor(ThemeData theme, String status) {
+Color _statusColor(ThemeData theme, String status) {
   final colorScheme = theme.colorScheme;
   switch (status) {
     case 'confirmed':
-      return _StatusColors(
-        colorScheme.primary.withOpacity(0.1),
-        colorScheme.primary,
-      );
+      return Colors.green.shade700;
     case 'completed':
-      return _StatusColors(
-        colorScheme.tertiaryContainer,
-        colorScheme.tertiary,
-      );
+      return Colors.teal.shade700;
     case 'cancelled':
-      return _StatusColors(
-        colorScheme.errorContainer,
-        colorScheme.error,
-      );
+      return colorScheme.error;
     default:
-      return _StatusColors(
-        colorScheme.secondaryContainer,
-        colorScheme.secondary,
-      );
+      return colorScheme.primary;
   }
+}
+
+String _statusLabel(BuildContext context, String status) {
+  final key = 'appointment_status.$status';
+  final translated = key.tr();
+  if (translated != key) return translated;
+  const fallback = {
+    'pending': 'Pending',
+    'confirmed': 'Confirmed',
+    'completed': 'Completed',
+    'cancelled': 'Cancelled',
+  };
+  return fallback[status] ?? status;
 }

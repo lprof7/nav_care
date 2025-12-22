@@ -534,7 +534,9 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
           _cancelledIds.add(invitation.id);
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم الغاء الدعوة')),
+          SnackBar(
+            content: Text('hospitals.detail.invitation_cancel_success'.tr()),
+          ),
         );
         widget.onReload();
       },
@@ -675,9 +677,10 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
           children: [
             Text('clinics.detail.invitations_empty'.tr()),
             const SizedBox(height: 8),
-            TextButton(
+            OutlinedButton.icon(
               onPressed: widget.onInvite,
-              child: Text('clinics.detail.invite_doctor'.tr()),
+              icon: const Icon(Icons.person_add_alt_1_rounded),
+              label: Text('clinics.detail.invite_doctor'.tr()),
             ),
           ],
         ),

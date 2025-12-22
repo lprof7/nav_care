@@ -35,7 +35,8 @@ import 'package:nav_care_offers_app/presentation/shared/ui/molecules/hospital_de
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_app_bar.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_destination.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_nav_bar.dart';
-import 'hospital_detail_page.dart' show HospitalDetailsSummaryView, HospitalDetailPage;
+import 'hospital_detail_page.dart'
+    show HospitalDetailsSummaryView, HospitalDetailPage;
 
 /// Hospital app shell with bottom navigation (no drawer).
 /// Tabs: Clinics, Doctors (with invitations), Service offerings, Appointments, Profile.
@@ -143,6 +144,22 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
 
     return [
       NavShellDestination(
+        label: 'hospitals.detail.tabs.offerings'.tr(),
+        icon: Icons.medical_services_rounded,
+        content: OfferingsTabContent(
+          offerings: detailState.offerings,
+          baseUrl: baseUrl,
+          status: detailState.status,
+          onReload: () => shellContext
+              .read<HospitalDetailCubit>()
+              .loadDetails(refresh: true),
+          onManage: () => _openServiceOfferings(shellContext, hospital),
+          onCreate: () => _openOfferingCreation(shellContext, hospital.id),
+          onOpenDetail: (offering) =>
+              _openOfferingDetail(shellContext, hospital.id, offering),
+        ),
+      ),
+      NavShellDestination(
         label: 'hospitals.detail.tabs.clinics'.tr(),
         icon: Icons.local_hospital_rounded,
         content: ClinicsTabContent(
@@ -173,22 +190,6 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
         ),
       ),
       NavShellDestination(
-        label: 'hospitals.detail.tabs.offerings'.tr(),
-        icon: Icons.medical_services_rounded,
-        content: OfferingsTabContent(
-          offerings: detailState.offerings,
-          baseUrl: baseUrl,
-          status: detailState.status,
-          onReload: () => shellContext
-              .read<HospitalDetailCubit>()
-              .loadDetails(refresh: true),
-          onManage: () => _openServiceOfferings(shellContext, hospital),
-          onCreate: () => _openOfferingCreation(shellContext, hospital.id),
-          onOpenDetail: (offering) =>
-              _openOfferingDetail(shellContext, hospital.id, offering),
-        ),
-      ),
-      NavShellDestination(
         label: 'shell.nav_appointments'.tr(),
         icon: Icons.calendar_today_rounded,
         content: HospitalAppointmentsTab(
@@ -214,7 +215,8 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
               shellContext.read<HospitalReviewsCubit>().refresh(),
           onManageClinics: () => _openManage(shellContext, hospital, 'clinics'),
           onManageDoctors: () => _openManage(shellContext, hospital, 'doctors'),
-          onManageOfferings: () => _openServiceOfferings(shellContext, hospital),
+          onManageOfferings: () =>
+              _openServiceOfferings(shellContext, hospital),
           onEdit: () => _openEdit(shellContext, hospital),
           onDelete: detailState.isDeleting
               ? null
@@ -232,19 +234,19 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
     final hospital = state.hospital;
     final map = <int, Widget>{
       0: ElevatedButton.icon(
+        onPressed: () => _openOfferingCreation(context, hospital.id),
+        icon: const Icon(Icons.add_rounded),
+        label: Text('hospitals.actions.add_offering'.tr()),
+      ),
+      1: ElevatedButton.icon(
         onPressed: () => _openCreateClinic(context, hospital),
         icon: const Icon(Icons.add_rounded),
         label: Text('hospitals.actions.add_clinic'.tr()),
       ),
-      1: ElevatedButton.icon(
+      2: ElevatedButton.icon(
         onPressed: () => _openInviteDoctor(context, baseUrl, state),
         icon: const Icon(Icons.person_add_alt_1_rounded),
         label: Text('hospitals.detail.invite_doctor'.tr()),
-      ),
-      2: ElevatedButton.icon(
-        onPressed: () => _openOfferingCreation(context, hospital.id),
-        icon: const Icon(Icons.add_rounded),
-        label: Text('hospitals.actions.add_offering'.tr()),
       ),
     };
 
@@ -573,7 +575,9 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
           _cancelledIds.add(invitation.id);
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم الغاء الدعوة')),
+          SnackBar(
+            content: Text('hospitals.detail.invitation_cancel_success'.tr()),
+          ),
         );
         widget.onReload();
       },
@@ -715,9 +719,10 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
           children: [
             Text('hospitals.detail.invitations_empty'.tr()),
             const SizedBox(height: 8),
-            TextButton(
+            OutlinedButton.icon(
               onPressed: widget.onInvite,
-              child: Text('hospitals.detail.invite_doctor'.tr()),
+              icon: const Icon(Icons.person_add_alt_1_rounded),
+              label: Text('hospitals.detail.invite_doctor'.tr()),
             ),
           ],
         ),
@@ -823,12 +828,20 @@ class OfferingsTabContent extends StatelessWidget {
       );
     }
 
+    final width = MediaQuery.sizeOf(context).width;
+    final crossAxisCount = width >= 900 ? 3 : 2;
+
     return RefreshIndicator(
       onRefresh: () async => onReload(),
-      child: ListView.separated(
+      child: GridView.builder(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         itemCount: offerings.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          mainAxisSpacing: 14,
+          crossAxisSpacing: 14,
+          childAspectRatio: 0.63,
+        ),
         itemBuilder: (context, index) {
           final offering = offerings[index];
           final locale = context.locale.languageCode;

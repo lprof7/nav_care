@@ -44,8 +44,7 @@ class InvitationCard extends StatelessWidget {
     final theme = Theme.of(context);
     final color = _statusColor(context);
     final statusLabel = _statusLabel(context);
-    final canCancel =
-        onCancel != null && status.toLowerCase() == 'pending';
+    final canCancel = onCancel != null && status.toLowerCase() == 'pending';
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -117,21 +116,31 @@ class InvitationCard extends StatelessWidget {
               ),
               if (canCancel) ...[
                 const SizedBox(height: 6),
-                OutlinedButton(
+                ActionChip(
                   onPressed: isCancelling ? null : onCancel,
-                  style: OutlinedButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                  child: isCancelling
-                      ? const SizedBox(
-                          height: 14,
-                          width: 14,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                  label: isCancelling
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(
+                              height: 14,
+                              width: 14,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                            const SizedBox(width: 6),
+                            Text('hospitals.detail.invitation_cancel'.tr()),
+                          ],
                         )
-                      : const Text('الغاء الدعوة'),
+                      : Text('hospitals.detail.invitation_cancel'.tr()),
+                  labelStyle: theme.textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                  backgroundColor: theme.colorScheme.surfaceVariant,
+                  side: BorderSide(
+                    color: theme.colorScheme.outline.withOpacity(0.4),
+                  ),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  visualDensity: VisualDensity.compact,
                 ),
               ],
             ],

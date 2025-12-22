@@ -51,7 +51,9 @@ class _InvitationsTabState extends State<InvitationsTab> {
           _cancelledIds.add(invitation.id);
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم الغاء الدعوة')),
+          SnackBar(
+            content: Text('hospitals.detail.invitation_cancel_success'.tr()),
+          ),
         );
         widget.onReload();
       },
@@ -71,9 +73,10 @@ class _InvitationsTabState extends State<InvitationsTab> {
           children: [
             Text('hospitals.detail.invitations_empty'.tr()),
             const SizedBox(height: 8),
-            TextButton(
+            OutlinedButton.icon(
               onPressed: widget.onReload,
-              child: Text('hospitals.actions.retry'.tr()),
+              icon: const Icon(Icons.refresh_rounded),
+              label: Text('hospitals.actions.retry'.tr()),
             ),
           ],
         ),
@@ -87,7 +90,7 @@ class _InvitationsTabState extends State<InvitationsTab> {
         final inv = widget.invitations[index];
         final doctorName = inv.inviteeDoctor?.displayName.isNotEmpty == true
             ? inv.inviteeDoctor!.displayName
-            : inv.inviteeDoctor?.userId ?? 'ƒ?"';
+            : inv.inviteeDoctor?.userId ?? '?';
         final effectiveStatus =
             _cancelledIds.contains(inv.id) ? 'cancelled' : inv.status;
         return Padding(

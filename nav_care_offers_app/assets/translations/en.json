@@ -239,7 +239,18 @@
             "invitations_title": "Invitations",
             "invitations_empty": "No invitations yet.",
             "invitation_send": "Send invitation",
-            "invitation_sent": "Invitation sent"
+            "invitation_sent": "Invitation sent",
+            "invitation_request_sent": "Invitation request sent",
+            "invitation_cancel": "Cancel invitation",
+            "invitation_cancel_success": "Invitation cancelled"
+        },
+        "invitations": {
+            "status": {
+                "pending": "Pending",
+                "accepted": "Accepted",
+                "rejected": "Rejected",
+                "cancelled": "Cancelled"
+            }
         },
         "form": {
             "create_title": "Add hospital or clinic",

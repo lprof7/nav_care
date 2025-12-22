@@ -233,7 +233,18 @@
       "invitations_title": "الدعوات",
       "invitations_empty": "لا توجد دعوات بعد.",
       "invitation_send": "إرسال دعوة",
-      "invitation_sent": "تم إرسال الدعوة"
+      "invitation_sent": "تم إرسال الدعوة",
+      "invitation_request_sent": "تم إرسال طلب انضمام",
+      "invitation_cancel": "إلغاء الدعوة",
+      "invitation_cancel_success": "تم إلغاء الدعوة"
+    },
+    "invitations": {
+      "status": {
+        "pending": "قيد الانتظار",
+        "accepted": "مقبولة",
+        "rejected": "مرفوضة",
+        "cancelled": "ملغاة"
+      }
     },
     "form": {
       "create_title": "إضافة مستشفى/عيادة",
