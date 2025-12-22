@@ -24,6 +24,7 @@ import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/doctor_grid_card.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/hospital_detail_cards.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/hospital_review_card.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/cards/add_service_offering_card.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/service_offering_card.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/molecules/hospital_detail_components.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/molecules/appointment_card.dart';
@@ -1254,6 +1255,7 @@ class _AppointmentsListSection extends StatelessWidget {
           return AppointmentCard(
             appointment: appointment,
             onTap: () => onAppointmentTap(appointment),
+            onEditStatus: () => onAppointmentTap(appointment),
           );
         },
         separatorBuilder: (ctx, _) => const SizedBox(height: 16),
@@ -1601,30 +1603,44 @@ class _OfferingsTab extends StatelessWidget {
       return const Center(child: CircularProgressIndicator());
     }
     if (offerings.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'hospitals.detail.offerings_empty'.tr(),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: [
-                TextButton(
-                  onPressed: onReload,
-                  child: Text('service_offerings.list.retry'.tr()),
-                ),
-                TextButton(
-                  onPressed: onCreate,
-                  child: Text('service_offerings.list.add'.tr()),
+      return Column(
+        children: [
+          const SizedBox(height: 24),
+          Text(
+            'hospitals.detail.offerings_empty'.tr(),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          TextButton(
+            onPressed: onReload,
+            child: Text('service_offerings.list.retry'.tr()),
+          ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                  sliver: SliverGrid(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 14,
+                      crossAxisSpacing: 14,
+                      childAspectRatio: 0.6,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return AddServiceOfferingCard(onTap: onCreate);
+                      },
+                      childCount: 1,
+                    ),
+                  ),
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       );
     }
     return CustomScrollView(
@@ -1640,7 +1656,10 @@ class _OfferingsTab extends StatelessWidget {
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                final offering = offerings[index];
+                if (index == 0) {
+                  return AddServiceOfferingCard(onTap: onCreate);
+                }
+                final offering = offerings[index - 1];
                 final serviceName = offering.localizedName(locale);
                 final price = offering.price > 0
                     ? 'service_offerings.list.price'.tr(
@@ -1666,7 +1685,7 @@ class _OfferingsTab extends StatelessWidget {
                   onTap: () => onOpenDetail(offering),
                 );
               },
-              childCount: offerings.length,
+              childCount: offerings.length + 1,
             ),
           ),
         ),

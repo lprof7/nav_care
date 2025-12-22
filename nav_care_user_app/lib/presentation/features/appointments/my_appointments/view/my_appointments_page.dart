@@ -258,9 +258,27 @@ class _UserAppointmentsList extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      _StatusPill(
-                        label: statusLabel,
-                        color: statusColor,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          _StatusPill(
+                            label: statusLabel,
+                            color: statusColor,
+                          ),
+                          const SizedBox(height: 6),
+                          TextButton.icon(
+                            onPressed: () => onAppointmentTap(appointment),
+                            icon: const Icon(Icons.edit_rounded, size: 16),
+                            label: Text('appointments.list.change_status'.tr()),
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              minimumSize: const Size(0, 0),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              visualDensity: VisualDensity.compact,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

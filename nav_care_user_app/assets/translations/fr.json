@@ -172,7 +172,8 @@
         "label": "Filtrer par statut",
         "all": "Tous les statuts",
         "empty": "Aucun rendez-vous ne correspond à ce statut."
-      }
+      },
+      "change_status": "Modifier le statut"
     },
     "edit": {
       "title": "Modifier le rendez-vous",

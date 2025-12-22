@@ -189,6 +189,7 @@ class _AppointmentsList extends StatelessWidget {
           return AppointmentCard(
             appointment: appointment,
             onTap: () => onAppointmentTap(appointment),
+            onEditStatus: () => onAppointmentTap(appointment),
           );
         },
         separatorBuilder: (ctx, _) => const SizedBox(height: 20),

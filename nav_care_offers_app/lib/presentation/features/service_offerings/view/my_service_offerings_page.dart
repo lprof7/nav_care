@@ -10,8 +10,8 @@ import 'package:nav_care_offers_app/presentation/features/authentication/auth_cu
 import 'package:nav_care_offers_app/presentation/features/service_offerings/view/service_offering_detail_page.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/view/service_offering_form_page.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/viewmodel/service_offerings_cubit.dart';
-import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/molecules/become_doctor_required_card.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/cards/add_service_offering_card.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/service_offering_card.dart';
 
 class MyServiceOfferingsPage extends StatefulWidget {
@@ -84,7 +84,8 @@ class _MyServiceOfferingsView extends StatelessWidget {
           child: Column(
             children: [
               Expanded(
-                child: BlocBuilder<ServiceOfferingsCubit, ServiceOfferingsState>(
+                child:
+                    BlocBuilder<ServiceOfferingsCubit, ServiceOfferingsState>(
                   builder: (context, state) {
                     if (state.isLoading && state.offerings.isEmpty) {
                       return const Center(child: CircularProgressIndicator());
@@ -100,7 +101,12 @@ class _MyServiceOfferingsView extends StatelessWidget {
                     }
 
                     if (state.isEmpty) {
-                      return _MyOfferingsEmpty(
+                      return _OfferingsGrid(
+                        offerings: const [],
+                        baseUrl: baseUrl,
+                        onCreate: () => _openCreation(context),
+                        onOpenDetail: (offering) =>
+                            _openDetail(context, offering),
                         onReload: () => context
                             .read<ServiceOfferingsCubit>()
                             .loadOfferings(refresh: true),
@@ -109,56 +115,15 @@ class _MyServiceOfferingsView extends StatelessWidget {
 
                     return Stack(
                       children: [
-                        RefreshIndicator(
-                          onRefresh: () => context
+                        _OfferingsGrid(
+                          offerings: state.offerings,
+                          baseUrl: baseUrl,
+                          onCreate: () => _openCreation(context),
+                          onOpenDetail: (offering) =>
+                              _openDetail(context, offering),
+                          onReload: () => context
                               .read<ServiceOfferingsCubit>()
                               .loadOfferings(refresh: true),
-                          child: ListView.separated(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            itemCount: state.offerings.length,
-                            separatorBuilder: (_, __) =>
-                                const SizedBox(height: 16),
-                            itemBuilder: (context, index) {
-                              final offering = state.offerings[index];
-                              final locale = context.locale.languageCode;
-                              final serviceName =
-                                  offering.localizedName(locale);
-                              final price = offering.price > 0
-                                  ? 'service_offerings.list.price'.tr(
-                                      namedArgs: {
-                                        'price':
-                                            offering.price.toStringAsFixed(2)
-                                      },
-                                    )
-                                  : '';
-                              final subtitle = offering.descriptionEn ??
-                                  offering.descriptionAr ??
-                                  offering.descriptionFr ??
-                                  offering.descriptionSp ??
-                                  'service_offerings.detail.no_description'
-                                      .tr();
-                              final rating = offering.provider.rating;
-                              final image = _resolveImage(
-                                offering.images.isNotEmpty
-                                    ? offering.images.first
-                                    : (offering.service.image ??
-                                        offering.provider.cover),
-                                baseUrl,
-                              );
-                              return ServiceOfferingCard(
-                                title: serviceName,
-                                subtitle: subtitle,
-                                badgeLabel: offering.providerType,
-                                priceLabel: price,
-                                imageUrl: image,
-                                baseUrl: baseUrl,
-                                rating: rating,
-                                buttonLabel:
-                                    'hospitals.actions.view_details'.tr(),
-                                onTap: () => _openDetail(context, offering),
-                              );
-                            },
-                          ),
                         ),
                         if (state.isLoading)
                           Positioned(
@@ -172,15 +137,6 @@ class _MyServiceOfferingsView extends StatelessWidget {
                       ],
                     );
                   },
-                ),
-              ),
-              const SizedBox(height: 16),
-              SafeArea(
-                top: false,
-                child: AppButton(
-                  text: 'service_offerings.list.add'.tr(),
-                  icon: const Icon(Icons.add_rounded, color: Colors.white),
-                  onPressed: () => _openCreation(context),
                 ),
               ),
             ],
@@ -224,48 +180,76 @@ class _MyServiceOfferingsView extends StatelessWidget {
       }
     });
   }
-
-  String? _resolveImage(String? path, String baseUrl) {
-    if (path == null || path.isEmpty) return null;
-    if (path.startsWith('http')) return path;
-    try {
-      return Uri.parse(baseUrl).resolve(path).toString();
-    } catch (_) {
-      return path;
-    }
-  }
 }
 
-class _MyOfferingsEmpty extends StatelessWidget {
-  const _MyOfferingsEmpty({required this.onReload});
-
+class _OfferingsGrid extends StatelessWidget {
+  final List<ServiceOffering> offerings;
+  final String baseUrl;
+  final VoidCallback onCreate;
+  final void Function(ServiceOffering) onOpenDetail;
   final VoidCallback onReload;
+
+  const _OfferingsGrid({
+    required this.offerings,
+    required this.baseUrl,
+    required this.onCreate,
+    required this.onOpenDetail,
+    required this.onReload,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.medical_services_outlined,
-              size: 48, color: theme.colorScheme.primary),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Text(
-              'service_offerings.list.empty'.tr(),
-              style: theme.textTheme.titleMedium,
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 12),
-          TextButton.icon(
-            onPressed: onReload,
-            icon: const Icon(Icons.refresh_rounded),
-            label: Text('service_offerings.list.reload'.tr()),
-          ),
-        ],
+    final width = MediaQuery.sizeOf(context).width;
+    final crossAxisCount = width >= 900 ? 3 : 2;
+
+    return RefreshIndicator(
+      onRefresh: () async => onReload(),
+      child: GridView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+        itemCount: offerings.length + 1,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          mainAxisSpacing: 14,
+          crossAxisSpacing: 14,
+          childAspectRatio: 0.55,
+        ),
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return AddServiceOfferingCard(onTap: onCreate);
+          }
+          final offering = offerings[index - 1];
+          final locale = context.locale.languageCode;
+          final serviceName = offering.localizedName(locale);
+          final price = offering.price > 0
+              ? 'service_offerings.list.price'.tr(
+                  namedArgs: {'price': offering.price.toStringAsFixed(2)},
+                )
+              : '';
+          final subtitle = offering.descriptionEn ??
+              offering.descriptionAr ??
+              offering.descriptionFr ??
+              offering.descriptionSp ??
+              'service_offerings.detail.no_description'.tr();
+          final rating = offering.provider.rating;
+          final image = _resolveImage(
+            offering.images.isNotEmpty
+                ? offering.images.first
+                : (offering.service.image ?? offering.provider.cover),
+            baseUrl,
+          );
+          return ServiceOfferingCard(
+            title: serviceName,
+            subtitle: subtitle,
+            badgeLabel: offering.providerType,
+            priceLabel: price,
+            imageUrl: image,
+            baseUrl: baseUrl,
+            rating: rating,
+            buttonLabel: 'hospitals.actions.view_details'.tr(),
+            onTap: () => onOpenDetail(offering),
+          );
+        },
       ),
     );
   }
@@ -293,9 +277,7 @@ class _MyOfferingsError extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Text(
-              message.startsWith('service_offerings.')
-                  ? message.tr()
-                  : message,
+              message.startsWith('service_offerings.') ? message.tr() : message,
               style: theme.textTheme.titleMedium,
               textAlign: TextAlign.center,
             ),
@@ -309,5 +291,15 @@ class _MyOfferingsError extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+String? _resolveImage(String? path, String baseUrl) {
+  if (path == null || path.isEmpty) return null;
+  if (path.startsWith('http')) return path;
+  try {
+    return Uri.parse(baseUrl).resolve(path).toString();
+  } catch (_) {
+    return path;
   }
 }

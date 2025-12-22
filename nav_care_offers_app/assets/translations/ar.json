@@ -158,6 +158,9 @@
     "validation": {
       "invalid_range": "يجب أن يكون وقت النهاية بعد وقت البداية",
       "invalid_dates": "بيانات الموعد غير صالحة"
+    },
+    "list": {
+      "change_status": "????? ??????"
     }
   },
   "hospitals": {

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nav_care_offers_app/data/appointments/models/appointment_model.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/network_image.dart';
 
 class AppointmentCard extends StatelessWidget {
@@ -10,11 +11,13 @@ class AppointmentCard extends StatelessWidget {
     required this.appointment,
     this.onTap,
     this.trailing,
+    this.onEditStatus,
   });
 
   final AppointmentModel appointment;
   final VoidCallback? onTap;
   final Widget? trailing;
+  final VoidCallback? onEditStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +96,7 @@ class AppointmentCard extends StatelessWidget {
                 _ContactRow(
                   phone: appointment.patient.phone,
                   email: appointment.patient.email,
+                  onEditStatus: onEditStatus,
                 ),
               ],
             );
@@ -315,10 +319,12 @@ class _ContactRow extends StatelessWidget {
   const _ContactRow({
     required this.phone,
     required this.email,
+    this.onEditStatus,
   });
 
   final String phone;
   final String email;
+  final VoidCallback? onEditStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -344,6 +350,23 @@ class _ContactRow extends StatelessWidget {
             ),
           ],
         ),
+        if (onEditStatus != null) ...[
+          const SizedBox(height: 16),
+          Center(
+            child: SizedBox(
+              width: 180,
+              child: AppButton(
+                text: 'appointments.list.change_status'.tr(),
+                icon: const Icon(
+                  Icons.edit_rounded,
+                  size: 18,
+                  color: Colors.white,
+                ),
+                onPressed: onEditStatus,
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }

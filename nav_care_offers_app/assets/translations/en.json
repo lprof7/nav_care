@@ -1,705 +1,708 @@
-﻿{
-    "sign_in": "Sign In",
-    "sign_up": "Sign Up",
-    "sign_up_subtitle": "Create an account to get started",
-    "email": "Email",
-    "email_or_phone": "E-mail or Phone Number",
-    "password": "Password",
-    "confirm_password": "Confirm Password",
-    "first_name": "First Name",
-    "last_name": "Last Name",
-    "birth_date_hint": "Select your birth date",
-    "phone_number": "Phone Number",
-    "algerian_phone_error": "Enter a valid Algerian phone number",
-    "upload_profile_picture": "Upload profile picture",
-    "upload_photo_hint": "Tap to add or update your profile photo",
-    "change_photo": "Change photo",
-    "remove_photo": "Remove photo",
-    "passwords_do_not_match": "Passwords do not match",
-    "accept_terms_error": "Please accept the Terms & Privacy Policy",
-    "invalid_email_format": "Please enter a valid e-mail address.",
-    "i_accept": "I accept",
-    "terms_and_policy": "Terms & Privacy Policy",
-    "already_have_account": "Already have an account?",
-    "dont_have_account": "Don't have an account?",
-    "or": "Or",
-    "book_an_appointment": "Book an appointment",
-    "sign_in_subtitle": "Sign in to continue",
-    "remember_me": "Remember me",
-    "forgot_password": "Forgot password?",
-    "reset_password": {
-        "title": "Reset password",
-        "subtitle": "Enter your email to receive a reset code.",
-        "email_hint": "Your email address",
-        "send_code": "Send code",
-        "code_title": "Enter verification code",
-        "code_subtitle": "We sent a 6-digit code to {email}",
-        "code_hint": "6-digit code",
-        "verify": "Next",
-        "timer_title": "Code expires in",
-        "timer_label": "{seconds}s remaining",
-        "timer_expired": "Code expired",
-        "back_to_email": "Back to email",
-        "code_sent": "Reset code sent to your email.",
-        "code_verified": "Code verified. Set your new password.",
-        "password_title": "Set a new password",
-        "password_subtitle": "Create a strong password to secure your account.",
-        "new_password": "New password",
-        "confirm_password": "Confirm password",
-        "submit": "Reset password",
-        "success": "Password reset successfully. Please sign in.",
-        "error": "Unable to process your request. Try again."
+{
+  "sign_in": "Sign In",
+  "sign_up": "Sign Up",
+  "sign_up_subtitle": "Create an account to get started",
+  "email": "Email",
+  "email_or_phone": "E-mail or Phone Number",
+  "password": "Password",
+  "confirm_password": "Confirm Password",
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "birth_date_hint": "Select your birth date",
+  "phone_number": "Phone Number",
+  "algerian_phone_error": "Enter a valid Algerian phone number",
+  "upload_profile_picture": "Upload profile picture",
+  "upload_photo_hint": "Tap to add or update your profile photo",
+  "change_photo": "Change photo",
+  "remove_photo": "Remove photo",
+  "passwords_do_not_match": "Passwords do not match",
+  "accept_terms_error": "Please accept the Terms & Privacy Policy",
+  "invalid_email_format": "Please enter a valid e-mail address.",
+  "i_accept": "I accept",
+  "terms_and_policy": "Terms & Privacy Policy",
+  "already_have_account": "Already have an account?",
+  "dont_have_account": "Don't have an account?",
+  "or": "Or",
+  "book_an_appointment": "Book an appointment",
+  "sign_in_subtitle": "Sign in to continue",
+  "remember_me": "Remember me",
+  "forgot_password": "Forgot password?",
+  "reset_password": {
+    "title": "Reset password",
+    "subtitle": "Enter your email to receive a reset code.",
+    "email_hint": "Your email address",
+    "send_code": "Send code",
+    "code_title": "Enter verification code",
+    "code_subtitle": "We sent a 6-digit code to {email}",
+    "code_hint": "6-digit code",
+    "verify": "Next",
+    "timer_title": "Code expires in",
+    "timer_label": "{seconds}s remaining",
+    "timer_expired": "Code expired",
+    "back_to_email": "Back to email",
+    "code_sent": "Reset code sent to your email.",
+    "code_verified": "Code verified. Set your new password.",
+    "password_title": "Set a new password",
+    "password_subtitle": "Create a strong password to secure your account.",
+    "new_password": "New password",
+    "confirm_password": "Confirm password",
+    "submit": "Reset password",
+    "success": "Password reset successfully. Please sign in.",
+    "error": "Unable to process your request. Try again."
+  },
+  "sign_in_with_google": "Sign in with Google",
+  "sign_in_with_apple": "Sign in with Apple",
+  "sign_up_with_google": "Sign up with Google",
+  "sign_up_with_apple": "Sign up with Apple",
+  "signin_success_message": "Welcome {name}",
+  "signin_error_message": "Error: {message}",
+  "signin_account_not_found": "We couldn't find an account with those credentials.",
+  "signin_doctor_profile_required": "We found your user account, but you still need to complete your doctor profile.",
+  "signup_success_message": "Account created successfully",
+  "signup_error_message": "Error: {message}",
+  "loading": "Loading...",
+  "field_required": "This field is required",
+  "become_doctor_title": "Become a Doctor",
+  "become_doctor_heading": "Complete your doctor profile",
+  "become_doctor_description": "Hi {name}, to continue you need to confirm your professional information.",
+  "become_doctor_default_name": "Doctor",
+  "become_doctor_next_steps": "We'll guide you through the remaining steps shortly.",
+  "become_doctor_back_to_signin": "Back to sign in",
+  "become_doctor_image_label": "Profile image",
+  "become_doctor_image_hint": "Add a clear, professional photo to complete your profile.",
+  "become_doctor_image_cta": "Upload image",
+  "become_doctor_image_required": "Profile image is required.",
+  "become_doctor_bio_label": "Short bio (English)",
+  "become_doctor_bio_hint": "Describe your expertise and what patients can expect.",
+  "become_doctor_submit": "Send request",
+  "become_doctor_submitting": "Submitting...",
+  "become_doctor_success": "Your doctor profile request was sent!",
+  "shell": {
+    "nav_home": "Home",
+    "nav_appointments": "Appointments",
+    "nav_hospitals": "Hospitals",
+    "nav_profile": "Profile",
+    "badge_new": "New",
+    "drawer_settings": "Settings",
+    "drawer_theme": "Theme",
+    "drawer_default_name": "Dr. NavCare",
+    "drawer_default_email": "doctor@navcare.com",
+    "drawer_verify_phone": "Verify phone number",
+    "language": {
+      "en": "English",
+      "ar": "Arabic",
+      "fr": "French"
     },
-    "sign_in_with_google": "Sign in with Google",
-    "sign_in_with_apple": "Sign in with Apple",
-    "sign_up_with_google": "Sign up with Google",
-    "sign_up_with_apple": "Sign up with Apple",
-    "signin_success_message": "Welcome {name}",
-    "signin_error_message": "Error: {message}",
-    "signin_account_not_found": "We couldn't find an account with those credentials.",
-    "signin_doctor_profile_required": "We found your user account, but you still need to complete your doctor profile.",
-    "signup_success_message": "Account created successfully",
-    "signup_error_message": "Error: {message}",
-    "loading": "Loading...",
-    "field_required": "This field is required",
-    "become_doctor_title": "Become a Doctor",
-    "become_doctor_heading": "Complete your doctor profile",
-    "become_doctor_description": "Hi {name}, to continue you need to confirm your professional information.",
-    "become_doctor_default_name": "Doctor",
-    "become_doctor_next_steps": "We'll guide you through the remaining steps shortly.",
-    "become_doctor_back_to_signin": "Back to sign in",
-    "become_doctor_image_label": "Profile image",
-    "become_doctor_image_hint": "Add a clear, professional photo to complete your profile.",
-    "become_doctor_image_cta": "Upload image",
-    "become_doctor_image_required": "Profile image is required.",
-    "become_doctor_bio_label": "Short bio (English)",
-    "become_doctor_bio_hint": "Describe your expertise and what patients can expect.",
-    "become_doctor_submit": "Send request",
-    "become_doctor_submitting": "Submitting...",
-    "become_doctor_success": "Your doctor profile request was sent!",
-    "shell": {
-        "nav_home": "Home",
-        "nav_appointments": "Appointments",
-        "nav_hospitals": "Hospitals",
-        "nav_profile": "Profile",
-        "badge_new": "New",
-        "drawer_settings": "Settings",
-        "drawer_theme": "Theme",
-        "drawer_default_name": "Dr. NavCare",
-        "drawer_default_email": "doctor@navcare.com",
-        "drawer_verify_phone": "Verify phone number",
-        "language": {
-            "en": "English",
-            "ar": "Arabic",
-            "fr": "French"
-        },
     "app_bar": {
-        "menu": "Open menu",
-        "support": "Support",
-        "favorites": "Favorites",
-        "notifications": "Notifications",
-        "exit": "Exit"
+      "menu": "Open menu",
+      "support": "Support",
+      "favorites": "Favorites",
+      "notifications": "Notifications",
+      "exit": "Exit"
     },
     "onboarding": {
-        "hospital_title": "You're signed in as a hospital",
-        "clinic_title": "You're signed in as a clinic",
-        "welcome": "Welcome {name}",
-        "exit_hospital_title": "You're signed out from the hospital",
-        "exit_clinic_title": "You're signed out from the clinic",
-        "exit_message": "See you soon, {name}"
+      "hospital_title": "You're signed in as a hospital",
+      "clinic_title": "You're signed in as a clinic",
+      "welcome": "Welcome {name}",
+      "exit_hospital_title": "You're signed out from the hospital",
+      "exit_clinic_title": "You're signed out from the clinic",
+      "exit_message": "See you soon, {name}"
     },
     "drawer_logout": "Sign out"
-},
-"notifications": {
+  },
+  "notifications": {
     "title": "Notifications",
     "empty_title": "No notifications yet",
     "empty_subtitle": "You're all caught up! When there are new updates, they'll show up here.",
     "refresh": "Refresh"
-},
-"home": {
+  },
+  "home": {
     "welcome_message": "Here's what's happening today",
-        "appointments": {
-            "title": "Upcoming appointments",
-            "subtitle": "Manage today's patient schedule",
-            "empty": "No appointments available yet."
-        },
-        "quick_actions": {
-            "title": "Quick actions",
-            "add_offer": "Add new offer",
-            "manage_calendar": "Manage calendar",
-            "view_reports": "View reports"
-        },
-        "services_manage": {
-            "title": "Manage services",
-            "subtitle": "Review, update, and publish your offerings",
-            "prompt": "Tap the card above to load your services.",
-            "loading": "Loading your services...",
-            "error": "We couldn't load your services",
-            "retry": "Try again",
-            "empty": "You haven't added any services yet.",
-            "list_title": "Your active services",
-            "more": "+{count} more services"
-        }
-    },
     "appointments": {
-        "status": {
-            "pending": "Pending",
-            "confirmed": "Confirmed",
-            "completed": "Completed",
-            "cancelled": "Cancelled"
-        },
-        "edit": {
-            "title": "Update appointment",
-            "start_label": "Start time",
-            "end_label": "End time",
-            "status_label": "Status",
-            "cancel": "Cancel",
-            "submit": "Save changes"
-        },
-        "messages": {
-            "update_success": "Appointment updated successfully",
-            "update_failure": "Unable to update appointment"
-        },
-        "validation": {
-            "invalid_range": "End time must be after start time",
-            "invalid_dates": "Appointment dates are invalid"
-        }
+      "title": "Upcoming appointments",
+      "subtitle": "Manage today's patient schedule",
+      "empty": "No appointments available yet."
     },
-    "hospitals": {
-        "list": {
-            "title": "Hospital network",
-            "subtitle": "Organise your hospitals and clinics in one place",
-            "empty": "You haven't added any facilities yet.",
-            "error_network": "We couldn't reach the server. Check your connection and try again.",
-            "error_timeout": "The server is taking longer than expected. Please try again.",
-            "error_unauthorized": "Your session has expired. Please sign in again.",
-            "error_generic": "We couldn't load your hospitals right now."
-        },
-        "actions": {
-            "add": "Add hospital",
-            "reload": "Reload",
-            "retry": "Try again",
-            "view_details": "View Details",
-            "add_clinic": "Add clinic",
-            "add_offering": "Add offering"
-        },
-        "stats": {
-            "clinics": "{0} clinics",
-            "doctors": "{0} doctors"
-        },
-        "facility_type": {
-            "hospital": "Hospital",
-            "clinic": "Clinic",
-            "unknown": "Facility"
-        },
-        "detail": {
-            "app_bar": "Hospital # {0}",
-            "tabs": {
-                "details": "Details",
-                "clinics": "Clinics",
-                "doctors": "Doctors",
-                "invitations": "Invitations",
-                "offerings": "Service offerings"
-            },
-            "stats": {
-                "clinics": "Clinics",
-                "doctors": "Doctors",
-                "offerings": "Offerings",
-                "rating": "Rating"
-            },
-            "cta": {
-                "view_service": "Manage"
-            },
-            "facility_type": "Facility type",
-            "phone": "Contact phone",
-            "coordinates": "Location coordinates",
-            "manage_clinics": "Manage clinics",
-            "manage_doctors": "Manage doctors",
-            "clinics_title": "Clinics inside this hospital",
-            "doctors_title": "Associated doctors",
-            "edit": "Edit hospital",
-            "delete": "Delete hospital",
-            "deleting": "Deleting...",
-            "delete_confirm_title": "Delete hospital",
-            "delete_confirm_message": "Are you sure you want to remove this hospital? This action cannot be undone.",
-            "delete_cancel": "Cancel",
-            "delete_confirm": "Delete",
-            "delete_success": "Hospital removed successfully.",
-            "not_found": "We couldn't find the requested hospital.",
-            "manage_offerings": "Manage service offerings",
-            "about": "About",
-            "no_description": "No description available.",
-            "overview": "Overview",
-            "contact": "Contact Information",
-            "filters": "Filters",
-            "sorting": "Sorting by",
-            "search_doctors": "Search doctors...",
-            "offerings_subtitle": "Service provided by this hospital",
-            "clinics_empty": "No clinics available for this hospital.",
-            "doctors_empty": "No doctors available for this hospital.",
-            "offerings_empty": "No service offerings available for this hospital.",
-            "invite_doctor": "Invite a doctor",
-            "invite_doctor_title": "Invite a doctor",
-            "invite_doctor_subtitle": "Search and pick a doctor to invite.",
-            "invite_doctor_search": "Search by name or ID",
-            "invite_doctor_empty": "No doctors match your search.",
-            "invite_doctor_reload": "Reload list",
-            "invite_doctor_view_profile": "View profile",
-            "invitations_title": "Invitations",
-            "invitations_empty": "No invitations yet.",
-            "invitation_send": "Send invitation",
-            "invitation_sent": "Invitation sent",
-            "invitation_request_sent": "Invitation request sent",
-            "invitation_cancel": "Cancel invitation",
-            "invitation_cancel_success": "Invitation cancelled"
-        },
-        "invitations": {
-            "status": {
-                "pending": "Pending",
-                "accepted": "Accepted",
-                "rejected": "Rejected",
-                "cancelled": "Cancelled"
-            }
-        },
-        "form": {
-            "create_title": "Add hospital or clinic",
-            "edit_title": "Edit hospital",
-            "name": "Facility name",
-            "description_en": "Description (English)",
-            "facility_type": {
-                "label": "Facility type",
-                "hospital": "Hospital",
-                "clinic": "Clinic",
-                "unknown": "Facility"
-            },
-            "phone_label": "Phone numbers",
-            "phone_hint": "+1234567890",
-            "coordinates": {
-                "label": "Coordinates",
-                "latitude": "Latitude",
-                "longitude": "Longitude"
-            },
-            "images": {
-                "label": "Images",
-                "hint": "https://example.com/hospital.jpg"
-            },
-            "add_image": "Add image",
-            "social": {
-                "label": "Social media",
-                "add": "Add social link",
-                "type_label": "Platform",
-                "link_label": "Link",
-                "link_hint": "https://facebook.com/your-page",
-                "types": {
-                    "facebook": "Facebook",
-                    "instagram": "Instagram",
-                    "youtube": "YouTube",
-                    "x": "X (Twitter)",
-                    "linkedin": "LinkedIn",
-                    "other": "Other links"
-                }
-            },
-            "address": "Address",
-            "add_entry": "Add another",
-            "saving": "Savingâ€¦",
-            "save": "Save hospital",
-            "success_create": "Hospital created successfully.",
-            "success_update": "Hospital updated successfully.",
-            "images_required": "At least one image is required."
-        },
-        "manage": {
-            "title": "{0}",
-            "clinics_title": "Manage clinics",
-            "doctors_title": "Manage doctors",
-            "clinics_description": "Soon you will be able to create, update, and organise your clinics from here.",
-            "doctors_description": "Soon you will be able to manage doctors associated with this hospital.",
-            "placeholder": "We are still building this experience. Stay tuned!"
-        }
+    "quick_actions": {
+      "title": "Quick actions",
+      "add_offer": "Add new offer",
+      "manage_calendar": "Manage calendar",
+      "view_reports": "View reports"
     },
-    "service_offerings": {
-        "list": {
-            "title": "Manage service offerings",
-            "heading": "Your service offerings",
-            "subtitle": "Review and update the offers attached to this hospital.",
-            "price": "Price: {price}",
-            "add": "Add service offering",
-            "empty": "No service offerings yet. Start by adding your first one.",
-            "reload": "Reload",
-            "retry": "Try again"
-        },
-        "detail": {
-            "title": "Service offering",
-            "not_found": "We couldn't find this service offering.",
-            "price": "Price: ",
-            "provider": "Provider",
-            "specialty": "Specialty",
-            "offers": "Included offers",
-            "no_offers": "No offers have been added to this service yet.",
-            "description": "Description",
-            "no_description": "No description available.",
-            "edit": "Edit",
-            "delete_title": "Delete service offering?",
-            "delete_message": "This action cannot be undone. Do you want to delete this service offering?",
-            "price_label": "Price"
-        },
-        "reviews": {
-            "title": "Reviews",
-            "empty": "No reviews yet.",
-            "error": "Unable to load reviews.",
-            "retry": "Try again",
-            "no_comment": "No comment provided.",
-            "anonymous": "Anonymous",
-            "load_more": "Show more",
-            "show_less": "Show less"
-        },
-        "form": {
-            "create_title": "Add service offering",
-            "edit_title": "Edit service offering",
-            "description": "Fill the details to publish this offering.",
-            "service": "Service",
-            "reload_services": "Reload services",
-            "price": "Price",
-            "price_invalid": "Enter a valid price",
-        "offers": "Included offers",
-        "offers_hint": "Comma-separated offers or perks",
-        "name_en": "Name (English)",
-        "name_ar": "Name (Arabic)",
-        "name_fr": "Name (French)",
-        "service_name": "Service name",
-        "description_en": "Description (English)",
-        "description_ar": "Description (Arabic)",
-        "description_fr": "Description (French)",
-        "description_sp": "Description (Spanish)",
-        "service_description": "Service description",
-        "select_service_title": "Select a service",
-        "search_services_hint": "Search services...",
-        "add_service": "Add service",
-        "services_empty": "No services found yet.",
-        "create_service_title": "Add a service",
-        "create_service_subtitle": "Create a new service to use in your offering.",
-        "service_image_label": "Service image",
-        "service_image_add": "Upload image",
-        "create_service_submit": "Create service",
-        "create_service_success": "Service created successfully.",
-        "create_service_error": "Unable to create service.",
-        "load_services_error": "Unable to load services.",
-        "images": {
-            "label": "Images"
-        },
-            "add_image": "Add image",
-            "select_service": "Please select a service.",
-            "create_button": "Create offering",
-            "update_button": "Update offering",
-            "create_success": "Service offering created successfully.",
-            "update_success": "Service offering updated successfully.",
-            "error": "Unable to save the service offering."
-        },
-        "errors": {
-            "parse_list": "Unable to parse service offerings response",
-            "parse_detail": "Unable to load the selected service offering",
-            "parse_submit": "Unable to save the service offering",
-            "parse_catalog": "Unable to load the services catalog"
-        }
-    },
-    "clinics": {
-        "list": {
-            "error_generic": "We couldn't load your clinics right now."
-        },
-        "actions": {
-            "add_offering": "Add offering",
-            "delete": "Delete clinic",
-            "edit": "Edit clinic",
-            "manage": "Manage clinic",
-            "retry": "Try again",
-            "view_details": "View details"
-        },
-        "facility_type": {
-            "hospital": "Hospital",
-            "clinic": "Clinic",
-            "unknown": "Facility"
-        },
-        "detail": {
-            "about": "About",
-            "contact": "Contact Information",
-            "delete": "Delete clinic",
-            "deleting": "Deleting...",
-            "delete_confirm_title": "Delete clinic",
-            "delete_confirm_message": "Are you sure you want to remove this clinic? This action cannot be undone.",
-            "delete_cancel": "Cancel",
-            "delete_confirm": "Delete",
-            "delete_success": "Clinic removed successfully.",
-            "edit": "Edit clinic",
-            "facility_type": "Facility type",
-            "invite_doctor": "Invite a doctor",
-            "no_description": "No description available.",
-            "overview": "Overview",
-            "phone": "Contact phone",
-            "search_doctors": "Search doctors...",
-            "tabs": {
-                "clinics": "Clinics",
-                "doctors": "Doctors",
-                "invitations": "Invitations",
-                "offerings": "Service offerings"
-            },
-            "stats": {
-                "clinics": "Clinics",
-                "doctors": "Doctors",
-                "offerings": "Offerings"
-            },
-            "clinics_empty": "No clinics available for this clinic.",
-            "doctors_empty": "No doctors available for this clinic.",
-            "offerings_empty": "No service offerings available for this clinic.",
-            "invitations_empty": "No invitations yet."
-        },
-        "form": {
-            "create_title": "Add clinic",
-            "edit_title": "Edit clinic",
-            "name": "Clinic name",
-            "description_en": "Description (English)",
-            "facility_type": {
-                "label": "Facility type",
-                "hospital": "Hospital",
-                "clinic": "Clinic",
-                "unknown": "Facility"
-            },
-            "address": "Address",
-            "phone_label": "Phone numbers",
-            "phone_hint": "+1234567890",
-            "add_entry": "Add phone",
-            "images": {
-                "label": "Images"
-            },
-            "add_image": "Add image",
-            "social": {
-                "label": "Social media",
-                "add": "Add social link",
-                "type_label": "Platform",
-                "link_label": "Link",
-                "link_hint": "https://facebook.com/your-page",
-                "types": {
-                    "facebook": "Facebook",
-                    "instagram": "Instagram",
-                    "youtube": "YouTube",
-                    "x": "X (Twitter)",
-                    "linkedin": "LinkedIn",
-                    "other": "Other links"
-                }
-            },
-            "images_required": "Please add at least one image.",
-            "saving": "Saving...",
-            "save": "Save clinic",
-            "success_create": "Clinic created successfully.",
-            "success_update": "Clinic updated successfully."
-        }
-    },
-    "doctor": "Doctor",
-    "logout_success_message": "You have signed out.",
-    "logout_error_message": "Unable to sign out: {message}",
-    "reviews": "reviews",
-    "auth_required": {
-        "title": "Sign in required",
-        "description": "Please sign in or create an account to continue.",
-        "create_account": "Create Account"
-    },
-    "doctor_required": {
-        "title": "Doctor access required",
-        "description": "Only doctors can access this section. Complete your doctor profile to continue.",
-        "cta": "Become a doctor"
-    },
-    "shell.drawer_faq": "FAQ",
-    "shell.drawer_contact": "Contact",
-    "shell.drawer_settings": "Settings",
-    "shell.drawer_about": "About",
-    "shell.drawer_feedback": "Feedback",
-    "shell.drawer_support": "Support",
-    "shell.drawer_placeholder": "{0} coming soon",
-    "city": "City",
-    "state": "State / Province",
-    "country": "Country",
-    "profile.title": "My profile",
-    "profile.edit_profile": "Edit Profile",
-    "profile.address_label": "Address",
-    "profile.first_name": "First Name",
-    "profile.last_name": "Last Name",
-    "profile.update_profile_button": "Update Profile",
-    "profile.update_password_short": "Update Password",
-    "profile.password_current": "Current Password",
-    "profile.password_new": "New Password",
-    "profile.password_confirm_new": "Confirm New Password",
-    "profile.forgot_password": "Forgot password",
-    "profile.reset_password_hint": "Enter your email to receive a reset link.",
-    "profile.send_reset": "Send reset link",
-    "profile.reset_link_sent": "Reset link sent, please check your inbox.",
-    "profile.reset_link_failed": "Unable to send reset link.",
-    "profile.password_update_success": "Password updated successfully.",
-    "profile.password_update_error": "Unable to update password.",
-    "profile.invalid_email": "Please enter a valid e-mail address.",
-    "profile.edit_section": "Edit profile",
-    "profile.name_label": "Full name",
-    "profile.password_label": "New password",
-    "profile.password_helper": "Leave blank to keep your current password",
-    "profile.password_invalid": "Password must have at least 8 characters",
-    "profile.confirm_password_label": "Confirm new password",
-    "profile.confirm_password_required": "Please confirm your new password",
-    "profile.password_mismatch": "Passwords do not match",
-    "profile.password_requirements_title": "Password requirements:",
-    "profile.password_requirement_length": "at least 8 characters",
-    "profile.password_requirement_upper": "at least one uppercase letter",
-    "profile.password_requirement_number": "Password must contain at least one number",
-    "profile.password_requirement_special": "at least one special character",
-    "profile.save_changes": "Save changes",
-    "profile.updating": "Saving...",
-    "profile.no_changes": "No changes to save.",
-    "profile.update_success": "Profile updated successfully.",
-    "profile.update_error": "Unable to update profile.",
-    "profile.load_error": "Unable to load your profile.",
-    "profile.retry": "Try again",
-    "profile.empty": "Profile data is not available.",
-    "profile.phone": "Phone",
-    "profile.email": "Email",
-    "profile.verified": "Verified account",
-    "profile.not_verified": "Not verified",
-    "profile.member_since_unknown": "Member since -",
-    "profile.drawer_status_loading": "Loading profile...",
-    "profile.drawer_status_error": "Profile data failed to load.",
-    "profile.view_profile": "View profile",
-    "services": {
-        "detail": {
-            "description": "Description",
-            "read_more": "Read more"
-        }
-    },
-    "about": {
-        "title": "About Us",
-        "hero": {
-            "title": "Welcome to NavCare",
-            "subtitle": "Connecting patients and healthcare providers worldwide with secure booking, messaging, and payments."
-        },
-        "about_us": {
-            "title": "About NavCare",
-            "body": "NavCare is a web and mobile platform built to connect patients with healthcare providers across the globe. With appointment booking, integrated messaging, and secure payment options, it offers a simple and safe way to access medical services. More than a platform, it is a vision for streamlined international care that will evolve into a multi-service hub with digital health solutions, personalized support, and smooth experiences at every step."
-        },
-        "story": {
-            "title": "Our Story",
-            "body": "Founded in 2024, NavMarket was created to overcome the gaps we saw in existing marketplaces. We set out to build a space that is secure, efficient, and rich in features that elevate every userâ€™s experience."
-        },
-        "priorities": {
-            "title": "Our Priorities",
-            "body": "Quality, reliability, and security guide how we design and deliver every solution.",
-            "quality": {
-                "title": "Quality",
-                "body": "Quality is a standard built into every service. We deliver top-tier products through rigorous controls at each stage, ensuring reliability, efficiency, and a perfect fit for our clientsâ€™ needs."
-            },
-            "reliability": {
-                "title": "Reliability",
-                "body": "Reliability is at the heart of our work. We craft robust, stable, and high-performing products that meet expectations over time through disciplined processes and continuous monitoring."
-            },
-            "security": {
-                "title": "Security",
-                "body": "Security is a top priority. We safeguard data and financial transactions with advanced protocols, constantly updating our defenses so clients operate with confidence and peace of mind."
-            }
-        },
-        "company": {
-            "title": "Our Company",
-            "body": "KIG (Koudri Innovations Group) is a dynamic, innovative extension of our organization, already specialized across three domains. As a new subsidiary, we stay close to trends and technological advances, blending established expertise with an agile, customer-centric mindset to deliver cutting-edge software, technology, and digital experiences. Our dedication to innovation and excellence positions us to tackle tomorrowâ€™s challenges while creating lasting value for clients and partners."
-        },
-        "offerings": {
-            "title": "What We Offer",
-            "body": "A platform designed to host and highlight the services people look for every day.",
-            "diverse_listings": {
-                "title": "Diverse Listings",
-                "body": "From real estate to cars, services, and daily essentials, we gather a wide range of listings to meet every need."
-            },
-            "user_experience": {
-                "title": "User-Friendly Experience",
-                "body": "An intuitive design and easy-to-use interface make buying and selling straightforward and stress-free."
-            },
-            "subscriptions": {
-                "title": "Subscription Plans",
-                "body": "Flexible subscription plans unlock extra benefits and promotional opportunities."
-            }
-        },
-        "values": {
-            "title": "Our Values",
-            "body": "Community, customer focus, and innovation shape how we build NavCare.",
-            "community": {
-                "title": "Community",
-                "body": "Beyond transactions, our marketplace fosters a vibrant community where support and growth come together."
-            },
-            "customer_first": {
-                "title": "Customer First",
-                "body": "Users sit at the center of every decision, ensuring their needs and satisfaction always come first."
-            },
-            "innovation": {
-                "title": "Innovation",
-                "body": "We continuously improve to deliver modern features that keep the experience fresh and forward-looking."
-            }
-        },
-        "cta": {
-            "title": "Building the future of connected care",
-            "body": "As NavCare grows into a multi-service hub, we remain committed to secure consultations, personalized support, and seamless experiences for every user."
-        }
-    },
-    "contact": {
-        "title": "Contact Us",
-        "heading": "Let's talk",
-        "subtitle": "Questions, comments, or suggestions? Simply fill in the form and we'll be in touch shortly.",
-        "first_name": "First Name",
-        "last_name": "Last Name",
-        "email": "E-mail",
-        "phone": "Phone Number",
-        "message": "Your Message*",
-        "message_hint": "Type your message here",
-        "remaining": "{count} characters remaining",
-        "send": "Send Message",
-        "submit_placeholder": "Message sending will be configured later."
-    },
-    "feedback": {
-        "auth_required": "Please sign in to send feedback.",
-        "comment_required": "Please add a note before sending your feedback.",
-        "submit_error": "Unable to send feedback: {message}",
-        "submit_success": "Thanks! Your feedback was sent.",
-        "hint": "Share your thoughts or issues here"
-    },
-    "faq.title": "Help & FAQs",
-    "faq.subtitle": "Quick answers about booking, accounts, and getting the best out of Nav Care.",
-    "faq.tags.general": "About the app",
-    "faq.tags.appointments": "Appointments",
-    "faq.tags.accounts": "Account",
-    "faq.tags.app_settings": "App settings",
-    "faq.tags.search": "Search",
-    "faq.tags.support": "Troubleshooting",
-    "faq.questions.about_app.question": "What is Nav Care and how can it help me?",
-    "faq.questions.about_app.answer": "Nav Care lets you explore hospitals, doctors, and service offerings, see details like prices and locations, and manage all your appointments from one place.",
-    "faq.questions.account_needed.question": "Do I need an account to use the app?",
-    "faq.questions.account_needed.answer": "You can browse freely, but signing in is required to book, reschedule, or cancel appointments and to sync your profile details across devices.",
-    "faq.questions.book_appointment.question": "How do I book an appointment?",
-    "faq.questions.book_appointment.answer": "Open any service offering from Home or Search, tap \"Make an appointment\", pick the start and end time that suits you, then confirm. If you are not signed in yet, the app will ask you to log in first.",
-    "faq.questions.manage_appointment.question": "How do I edit, reschedule, or cancel a booking?",
-    "faq.questions.manage_appointment.answer": "Go to the Appointments tab, select the appointment card, then adjust the start/end time or change its status to cancelled. The list refreshes automatically when the update succeeds.",
-    "faq.questions.search_services.question": "What is the best way to find the right doctor or service?",
-    "faq.questions.search_services.answer": "Use the Search tab to type a doctor, hospital, or service name. Apply the available filters (location, rating, price, or language when provided) to narrow results, then open a result to view details and book.",
-    "faq.questions.profile_updates.question": "Where can I update my profile or phone number?",
-    "faq.questions.profile_updates.answer": "Open the Profile tab and tap \"Edit profile\" to change your name, phone, address, or profile photo. Swipe down to refresh if you need to pull the latest data after saving.",
-    "faq.questions.language_switch.question": "Can I switch the app language?",
-    "faq.questions.language_switch.answer": "Yes. Open the side drawer, choose Arabic, English, or French from the language selector, and the interface updates instantly without restarting the app.",
-    "faq.questions.password_reset.question": "I forgot my password. How do I reset it?",
-    "faq.questions.password_reset.answer": "Use the \"Forgot password\" option on the sign-in screen to request a reset. Follow the on-screen steps to set a new password with your email or phone number.",
-    "faq.questions.data_sync.question": "The app is not loading data. What should I try?",
-    "faq.questions.data_sync.answer": "Check your internet connection, then pull to refresh on Home, Search, or Appointments. If the issue persists, sign out and back in to refresh your session before trying again.",
-    "appointment_status": {
-        "pending": "Pending",
-        "confirmed": "Confirmed",
-        "completed": "Completed",
-        "cancelled": "Cancelled"
-    },
-    "network_error": {
-        "title": "No internet connection",
-        "subtitle": "Check your Wi-Fi or mobile data, then try again.",
-        "retry": "Try again"
-    },
-    "server_error": {
-        "title": "Server unreachable",
-        "subtitle": "We could not reach our servers. Please retry."
+    "services_manage": {
+      "title": "Manage services",
+      "subtitle": "Review, update, and publish your offerings",
+      "prompt": "Tap the card above to load your services.",
+      "loading": "Loading your services...",
+      "error": "We couldn't load your services",
+      "retry": "Try again",
+      "empty": "You haven't added any services yet.",
+      "list_title": "Your active services",
+      "more": "+{count} more services"
     }
+  },
+  "appointments": {
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "edit": {
+      "title": "Update appointment",
+      "start_label": "Start time",
+      "end_label": "End time",
+      "status_label": "Status",
+      "cancel": "Cancel",
+      "submit": "Save changes"
+    },
+    "messages": {
+      "update_success": "Appointment updated successfully",
+      "update_failure": "Unable to update appointment"
+    },
+    "validation": {
+      "invalid_range": "End time must be after start time",
+      "invalid_dates": "Appointment dates are invalid"
+    },
+    "list": {
+      "change_status": "Change status"
+    }
+  },
+  "hospitals": {
+    "list": {
+      "title": "Hospital network",
+      "subtitle": "Organise your hospitals and clinics in one place",
+      "empty": "You haven't added any facilities yet.",
+      "error_network": "We couldn't reach the server. Check your connection and try again.",
+      "error_timeout": "The server is taking longer than expected. Please try again.",
+      "error_unauthorized": "Your session has expired. Please sign in again.",
+      "error_generic": "We couldn't load your hospitals right now."
+    },
+    "actions": {
+      "add": "Add hospital",
+      "reload": "Reload",
+      "retry": "Try again",
+      "view_details": "View Details",
+      "add_clinic": "Add clinic",
+      "add_offering": "Add offering"
+    },
+    "stats": {
+      "clinics": "{0} clinics",
+      "doctors": "{0} doctors"
+    },
+    "facility_type": {
+      "hospital": "Hospital",
+      "clinic": "Clinic",
+      "unknown": "Facility"
+    },
+    "detail": {
+      "app_bar": "Hospital # {0}",
+      "tabs": {
+        "details": "Details",
+        "clinics": "Clinics",
+        "doctors": "Doctors",
+        "invitations": "Invitations",
+        "offerings": "Service offerings"
+      },
+      "stats": {
+        "clinics": "Clinics",
+        "doctors": "Doctors",
+        "offerings": "Offerings",
+        "rating": "Rating"
+      },
+      "cta": {
+        "view_service": "Manage"
+      },
+      "facility_type": "Facility type",
+      "phone": "Contact phone",
+      "coordinates": "Location coordinates",
+      "manage_clinics": "Manage clinics",
+      "manage_doctors": "Manage doctors",
+      "clinics_title": "Clinics inside this hospital",
+      "doctors_title": "Associated doctors",
+      "edit": "Edit hospital",
+      "delete": "Delete hospital",
+      "deleting": "Deleting...",
+      "delete_confirm_title": "Delete hospital",
+      "delete_confirm_message": "Are you sure you want to remove this hospital? This action cannot be undone.",
+      "delete_cancel": "Cancel",
+      "delete_confirm": "Delete",
+      "delete_success": "Hospital removed successfully.",
+      "not_found": "We couldn't find the requested hospital.",
+      "manage_offerings": "Manage service offerings",
+      "about": "About",
+      "no_description": "No description available.",
+      "overview": "Overview",
+      "contact": "Contact Information",
+      "filters": "Filters",
+      "sorting": "Sorting by",
+      "search_doctors": "Search doctors...",
+      "offerings_subtitle": "Service provided by this hospital",
+      "clinics_empty": "No clinics available for this hospital.",
+      "doctors_empty": "No doctors available for this hospital.",
+      "offerings_empty": "No service offerings available for this hospital.",
+      "invite_doctor": "Invite a doctor",
+      "invite_doctor_title": "Invite a doctor",
+      "invite_doctor_subtitle": "Search and pick a doctor to invite.",
+      "invite_doctor_search": "Search by name or ID",
+      "invite_doctor_empty": "No doctors match your search.",
+      "invite_doctor_reload": "Reload list",
+      "invite_doctor_view_profile": "View profile",
+      "invitations_title": "Invitations",
+      "invitations_empty": "No invitations yet.",
+      "invitation_send": "Send invitation",
+      "invitation_sent": "Invitation sent",
+      "invitation_request_sent": "Invitation request sent",
+      "invitation_cancel": "Cancel invitation",
+      "invitation_cancel_success": "Invitation cancelled"
+    },
+    "invitations": {
+      "status": {
+        "pending": "Pending",
+        "accepted": "Accepted",
+        "rejected": "Rejected",
+        "cancelled": "Cancelled"
+      }
+    },
+    "form": {
+      "create_title": "Add hospital or clinic",
+      "edit_title": "Edit hospital",
+      "name": "Facility name",
+      "description_en": "Description (English)",
+      "facility_type": {
+        "label": "Facility type",
+        "hospital": "Hospital",
+        "clinic": "Clinic",
+        "unknown": "Facility"
+      },
+      "phone_label": "Phone numbers",
+      "phone_hint": "+1234567890",
+      "coordinates": {
+        "label": "Coordinates",
+        "latitude": "Latitude",
+        "longitude": "Longitude"
+      },
+      "images": {
+        "label": "Images",
+        "hint": "https://example.com/hospital.jpg"
+      },
+      "add_image": "Add image",
+      "social": {
+        "label": "Social media",
+        "add": "Add social link",
+        "type_label": "Platform",
+        "link_label": "Link",
+        "link_hint": "https://facebook.com/your-page",
+        "types": {
+          "facebook": "Facebook",
+          "instagram": "Instagram",
+          "youtube": "YouTube",
+          "x": "X (Twitter)",
+          "linkedin": "LinkedIn",
+          "other": "Other links"
+        }
+      },
+      "address": "Address",
+      "add_entry": "Add another",
+      "saving": "Savingâ€¦",
+      "save": "Save hospital",
+      "success_create": "Hospital created successfully.",
+      "success_update": "Hospital updated successfully.",
+      "images_required": "At least one image is required."
+    },
+    "manage": {
+      "title": "{0}",
+      "clinics_title": "Manage clinics",
+      "doctors_title": "Manage doctors",
+      "clinics_description": "Soon you will be able to create, update, and organise your clinics from here.",
+      "doctors_description": "Soon you will be able to manage doctors associated with this hospital.",
+      "placeholder": "We are still building this experience. Stay tuned!"
+    }
+  },
+  "service_offerings": {
+    "list": {
+      "title": "Manage service offerings",
+      "heading": "Your service offerings",
+      "subtitle": "Review and update the offers attached to this hospital.",
+      "price": "Price: {price}",
+      "add": "Add service offering",
+      "empty": "No service offerings yet. Start by adding your first one.",
+      "reload": "Reload",
+      "retry": "Try again"
+    },
+    "detail": {
+      "title": "Service offering",
+      "not_found": "We couldn't find this service offering.",
+      "price": "Price: ",
+      "provider": "Provider",
+      "specialty": "Specialty",
+      "offers": "Included offers",
+      "no_offers": "No offers have been added to this service yet.",
+      "description": "Description",
+      "no_description": "No description available.",
+      "edit": "Edit",
+      "delete_title": "Delete service offering?",
+      "delete_message": "This action cannot be undone. Do you want to delete this service offering?",
+      "price_label": "Price"
+    },
+    "reviews": {
+      "title": "Reviews",
+      "empty": "No reviews yet.",
+      "error": "Unable to load reviews.",
+      "retry": "Try again",
+      "no_comment": "No comment provided.",
+      "anonymous": "Anonymous",
+      "load_more": "Show more",
+      "show_less": "Show less"
+    },
+    "form": {
+      "create_title": "Add service offering",
+      "edit_title": "Edit service offering",
+      "description": "Fill the details to publish this offering.",
+      "service": "Service",
+      "reload_services": "Reload services",
+      "price": "Price",
+      "price_invalid": "Enter a valid price",
+      "offers": "Included offers",
+      "offers_hint": "Comma-separated offers or perks",
+      "name_en": "Name (English)",
+      "name_ar": "Name (Arabic)",
+      "name_fr": "Name (French)",
+      "service_name": "Service name",
+      "description_en": "Description (English)",
+      "description_ar": "Description (Arabic)",
+      "description_fr": "Description (French)",
+      "description_sp": "Description (Spanish)",
+      "service_description": "Service description",
+      "select_service_title": "Select a service",
+      "search_services_hint": "Search services...",
+      "add_service": "Add service",
+      "services_empty": "No services found yet.",
+      "create_service_title": "Add a service",
+      "create_service_subtitle": "Create a new service to use in your offering.",
+      "service_image_label": "Service image",
+      "service_image_add": "Upload image",
+      "create_service_submit": "Create service",
+      "create_service_success": "Service created successfully.",
+      "create_service_error": "Unable to create service.",
+      "load_services_error": "Unable to load services.",
+      "images": {
+        "label": "Images"
+      },
+      "add_image": "Add image",
+      "select_service": "Please select a service.",
+      "create_button": "Create offering",
+      "update_button": "Update offering",
+      "create_success": "Service offering created successfully.",
+      "update_success": "Service offering updated successfully.",
+      "error": "Unable to save the service offering."
+    },
+    "errors": {
+      "parse_list": "Unable to parse service offerings response",
+      "parse_detail": "Unable to load the selected service offering",
+      "parse_submit": "Unable to save the service offering",
+      "parse_catalog": "Unable to load the services catalog"
+    }
+  },
+  "clinics": {
+    "list": {
+      "error_generic": "We couldn't load your clinics right now."
+    },
+    "actions": {
+      "add_offering": "Add offering",
+      "delete": "Delete clinic",
+      "edit": "Edit clinic",
+      "manage": "Manage clinic",
+      "retry": "Try again",
+      "view_details": "View details"
+    },
+    "facility_type": {
+      "hospital": "Hospital",
+      "clinic": "Clinic",
+      "unknown": "Facility"
+    },
+    "detail": {
+      "about": "About",
+      "contact": "Contact Information",
+      "delete": "Delete clinic",
+      "deleting": "Deleting...",
+      "delete_confirm_title": "Delete clinic",
+      "delete_confirm_message": "Are you sure you want to remove this clinic? This action cannot be undone.",
+      "delete_cancel": "Cancel",
+      "delete_confirm": "Delete",
+      "delete_success": "Clinic removed successfully.",
+      "edit": "Edit clinic",
+      "facility_type": "Facility type",
+      "invite_doctor": "Invite a doctor",
+      "no_description": "No description available.",
+      "overview": "Overview",
+      "phone": "Contact phone",
+      "search_doctors": "Search doctors...",
+      "tabs": {
+        "clinics": "Clinics",
+        "doctors": "Doctors",
+        "invitations": "Invitations",
+        "offerings": "Service offerings"
+      },
+      "stats": {
+        "clinics": "Clinics",
+        "doctors": "Doctors",
+        "offerings": "Offerings"
+      },
+      "clinics_empty": "No clinics available for this clinic.",
+      "doctors_empty": "No doctors available for this clinic.",
+      "offerings_empty": "No service offerings available for this clinic.",
+      "invitations_empty": "No invitations yet."
+    },
+    "form": {
+      "create_title": "Add clinic",
+      "edit_title": "Edit clinic",
+      "name": "Clinic name",
+      "description_en": "Description (English)",
+      "facility_type": {
+        "label": "Facility type",
+        "hospital": "Hospital",
+        "clinic": "Clinic",
+        "unknown": "Facility"
+      },
+      "address": "Address",
+      "phone_label": "Phone numbers",
+      "phone_hint": "+1234567890",
+      "add_entry": "Add phone",
+      "images": {
+        "label": "Images"
+      },
+      "add_image": "Add image",
+      "social": {
+        "label": "Social media",
+        "add": "Add social link",
+        "type_label": "Platform",
+        "link_label": "Link",
+        "link_hint": "https://facebook.com/your-page",
+        "types": {
+          "facebook": "Facebook",
+          "instagram": "Instagram",
+          "youtube": "YouTube",
+          "x": "X (Twitter)",
+          "linkedin": "LinkedIn",
+          "other": "Other links"
+        }
+      },
+      "images_required": "Please add at least one image.",
+      "saving": "Saving...",
+      "save": "Save clinic",
+      "success_create": "Clinic created successfully.",
+      "success_update": "Clinic updated successfully."
+    }
+  },
+  "doctor": "Doctor",
+  "logout_success_message": "You have signed out.",
+  "logout_error_message": "Unable to sign out: {message}",
+  "reviews": "reviews",
+  "auth_required": {
+    "title": "Sign in required",
+    "description": "Please sign in or create an account to continue.",
+    "create_account": "Create Account"
+  },
+  "doctor_required": {
+    "title": "Doctor access required",
+    "description": "Only doctors can access this section. Complete your doctor profile to continue.",
+    "cta": "Become a doctor"
+  },
+  "shell.drawer_faq": "FAQ",
+  "shell.drawer_contact": "Contact",
+  "shell.drawer_settings": "Settings",
+  "shell.drawer_about": "About",
+  "shell.drawer_feedback": "Feedback",
+  "shell.drawer_support": "Support",
+  "shell.drawer_placeholder": "{0} coming soon",
+  "city": "City",
+  "state": "State / Province",
+  "country": "Country",
+  "profile.title": "My profile",
+  "profile.edit_profile": "Edit Profile",
+  "profile.address_label": "Address",
+  "profile.first_name": "First Name",
+  "profile.last_name": "Last Name",
+  "profile.update_profile_button": "Update Profile",
+  "profile.update_password_short": "Update Password",
+  "profile.password_current": "Current Password",
+  "profile.password_new": "New Password",
+  "profile.password_confirm_new": "Confirm New Password",
+  "profile.forgot_password": "Forgot password",
+  "profile.reset_password_hint": "Enter your email to receive a reset link.",
+  "profile.send_reset": "Send reset link",
+  "profile.reset_link_sent": "Reset link sent, please check your inbox.",
+  "profile.reset_link_failed": "Unable to send reset link.",
+  "profile.password_update_success": "Password updated successfully.",
+  "profile.password_update_error": "Unable to update password.",
+  "profile.invalid_email": "Please enter a valid e-mail address.",
+  "profile.edit_section": "Edit profile",
+  "profile.name_label": "Full name",
+  "profile.password_label": "New password",
+  "profile.password_helper": "Leave blank to keep your current password",
+  "profile.password_invalid": "Password must have at least 8 characters",
+  "profile.confirm_password_label": "Confirm new password",
+  "profile.confirm_password_required": "Please confirm your new password",
+  "profile.password_mismatch": "Passwords do not match",
+  "profile.password_requirements_title": "Password requirements:",
+  "profile.password_requirement_length": "at least 8 characters",
+  "profile.password_requirement_upper": "at least one uppercase letter",
+  "profile.password_requirement_number": "Password must contain at least one number",
+  "profile.password_requirement_special": "at least one special character",
+  "profile.save_changes": "Save changes",
+  "profile.updating": "Saving...",
+  "profile.no_changes": "No changes to save.",
+  "profile.update_success": "Profile updated successfully.",
+  "profile.update_error": "Unable to update profile.",
+  "profile.load_error": "Unable to load your profile.",
+  "profile.retry": "Try again",
+  "profile.empty": "Profile data is not available.",
+  "profile.phone": "Phone",
+  "profile.email": "Email",
+  "profile.verified": "Verified account",
+  "profile.not_verified": "Not verified",
+  "profile.member_since_unknown": "Member since -",
+  "profile.drawer_status_loading": "Loading profile...",
+  "profile.drawer_status_error": "Profile data failed to load.",
+  "profile.view_profile": "View profile",
+  "services": {
+    "detail": {
+      "description": "Description",
+      "read_more": "Read more"
+    }
+  },
+  "about": {
+    "title": "About Us",
+    "hero": {
+      "title": "Welcome to NavCare",
+      "subtitle": "Connecting patients and healthcare providers worldwide with secure booking, messaging, and payments."
+    },
+    "about_us": {
+      "title": "About NavCare",
+      "body": "NavCare is a web and mobile platform built to connect patients with healthcare providers across the globe. With appointment booking, integrated messaging, and secure payment options, it offers a simple and safe way to access medical services. More than a platform, it is a vision for streamlined international care that will evolve into a multi-service hub with digital health solutions, personalized support, and smooth experiences at every step."
+    },
+    "story": {
+      "title": "Our Story",
+      "body": "Founded in 2024, NavMarket was created to overcome the gaps we saw in existing marketplaces. We set out to build a space that is secure, efficient, and rich in features that elevate every userâ€™s experience."
+    },
+    "priorities": {
+      "title": "Our Priorities",
+      "body": "Quality, reliability, and security guide how we design and deliver every solution.",
+      "quality": {
+        "title": "Quality",
+        "body": "Quality is a standard built into every service. We deliver top-tier products through rigorous controls at each stage, ensuring reliability, efficiency, and a perfect fit for our clientsâ€™ needs."
+      },
+      "reliability": {
+        "title": "Reliability",
+        "body": "Reliability is at the heart of our work. We craft robust, stable, and high-performing products that meet expectations over time through disciplined processes and continuous monitoring."
+      },
+      "security": {
+        "title": "Security",
+        "body": "Security is a top priority. We safeguard data and financial transactions with advanced protocols, constantly updating our defenses so clients operate with confidence and peace of mind."
+      }
+    },
+    "company": {
+      "title": "Our Company",
+      "body": "KIG (Koudri Innovations Group) is a dynamic, innovative extension of our organization, already specialized across three domains. As a new subsidiary, we stay close to trends and technological advances, blending established expertise with an agile, customer-centric mindset to deliver cutting-edge software, technology, and digital experiences. Our dedication to innovation and excellence positions us to tackle tomorrowâ€™s challenges while creating lasting value for clients and partners."
+    },
+    "offerings": {
+      "title": "What We Offer",
+      "body": "A platform designed to host and highlight the services people look for every day.",
+      "diverse_listings": {
+        "title": "Diverse Listings",
+        "body": "From real estate to cars, services, and daily essentials, we gather a wide range of listings to meet every need."
+      },
+      "user_experience": {
+        "title": "User-Friendly Experience",
+        "body": "An intuitive design and easy-to-use interface make buying and selling straightforward and stress-free."
+      },
+      "subscriptions": {
+        "title": "Subscription Plans",
+        "body": "Flexible subscription plans unlock extra benefits and promotional opportunities."
+      }
+    },
+    "values": {
+      "title": "Our Values",
+      "body": "Community, customer focus, and innovation shape how we build NavCare.",
+      "community": {
+        "title": "Community",
+        "body": "Beyond transactions, our marketplace fosters a vibrant community where support and growth come together."
+      },
+      "customer_first": {
+        "title": "Customer First",
+        "body": "Users sit at the center of every decision, ensuring their needs and satisfaction always come first."
+      },
+      "innovation": {
+        "title": "Innovation",
+        "body": "We continuously improve to deliver modern features that keep the experience fresh and forward-looking."
+      }
+    },
+    "cta": {
+      "title": "Building the future of connected care",
+      "body": "As NavCare grows into a multi-service hub, we remain committed to secure consultations, personalized support, and seamless experiences for every user."
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "heading": "Let's talk",
+    "subtitle": "Questions, comments, or suggestions? Simply fill in the form and we'll be in touch shortly.",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "email": "E-mail",
+    "phone": "Phone Number",
+    "message": "Your Message*",
+    "message_hint": "Type your message here",
+    "remaining": "{count} characters remaining",
+    "send": "Send Message",
+    "submit_placeholder": "Message sending will be configured later."
+  },
+  "feedback": {
+    "auth_required": "Please sign in to send feedback.",
+    "comment_required": "Please add a note before sending your feedback.",
+    "submit_error": "Unable to send feedback: {message}",
+    "submit_success": "Thanks! Your feedback was sent.",
+    "hint": "Share your thoughts or issues here"
+  },
+  "faq.title": "Help & FAQs",
+  "faq.subtitle": "Quick answers about booking, accounts, and getting the best out of Nav Care.",
+  "faq.tags.general": "About the app",
+  "faq.tags.appointments": "Appointments",
+  "faq.tags.accounts": "Account",
+  "faq.tags.app_settings": "App settings",
+  "faq.tags.search": "Search",
+  "faq.tags.support": "Troubleshooting",
+  "faq.questions.about_app.question": "What is Nav Care and how can it help me?",
+  "faq.questions.about_app.answer": "Nav Care lets you explore hospitals, doctors, and service offerings, see details like prices and locations, and manage all your appointments from one place.",
+  "faq.questions.account_needed.question": "Do I need an account to use the app?",
+  "faq.questions.account_needed.answer": "You can browse freely, but signing in is required to book, reschedule, or cancel appointments and to sync your profile details across devices.",
+  "faq.questions.book_appointment.question": "How do I book an appointment?",
+  "faq.questions.book_appointment.answer": "Open any service offering from Home or Search, tap \"Make an appointment\", pick the start and end time that suits you, then confirm. If you are not signed in yet, the app will ask you to log in first.",
+  "faq.questions.manage_appointment.question": "How do I edit, reschedule, or cancel a booking?",
+  "faq.questions.manage_appointment.answer": "Go to the Appointments tab, select the appointment card, then adjust the start/end time or change its status to cancelled. The list refreshes automatically when the update succeeds.",
+  "faq.questions.search_services.question": "What is the best way to find the right doctor or service?",
+  "faq.questions.search_services.answer": "Use the Search tab to type a doctor, hospital, or service name. Apply the available filters (location, rating, price, or language when provided) to narrow results, then open a result to view details and book.",
+  "faq.questions.profile_updates.question": "Where can I update my profile or phone number?",
+  "faq.questions.profile_updates.answer": "Open the Profile tab and tap \"Edit profile\" to change your name, phone, address, or profile photo. Swipe down to refresh if you need to pull the latest data after saving.",
+  "faq.questions.language_switch.question": "Can I switch the app language?",
+  "faq.questions.language_switch.answer": "Yes. Open the side drawer, choose Arabic, English, or French from the language selector, and the interface updates instantly without restarting the app.",
+  "faq.questions.password_reset.question": "I forgot my password. How do I reset it?",
+  "faq.questions.password_reset.answer": "Use the \"Forgot password\" option on the sign-in screen to request a reset. Follow the on-screen steps to set a new password with your email or phone number.",
+  "faq.questions.data_sync.question": "The app is not loading data. What should I try?",
+  "faq.questions.data_sync.answer": "Check your internet connection, then pull to refresh on Home, Search, or Appointments. If the issue persists, sign out and back in to refresh your session before trying again.",
+  "appointment_status": {
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "network_error": {
+    "title": "No internet connection",
+    "subtitle": "Check your Wi-Fi or mobile data, then try again.",
+    "retry": "Try again"
+  },
+  "server_error": {
+    "title": "Server unreachable",
+    "subtitle": "We could not reach our servers. Please retry."
+  }
 }

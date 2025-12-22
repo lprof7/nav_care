@@ -28,6 +28,8 @@ import 'package:nav_care_offers_app/presentation/shared/ui/cards/doctor_grid_car
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/hospital_detail_cards.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/invitation_card.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/hospital_review_card.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/cards/add_service_offering_card.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/cards/invite_doctor_card.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/service_offering_card.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/molecules/appointment_card.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/molecules/hospital_card.dart';
@@ -236,16 +238,6 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
       String baseUrl) {
     final hospital = state.hospital;
     final map = <int, Widget>{
-      0: ElevatedButton.icon(
-        onPressed: () => _openInviteDoctor(context, baseUrl, state),
-        icon: const Icon(Icons.person_add_alt_1_rounded),
-        label: Text('clinics.detail.invite_doctor'.tr()),
-      ),
-      1: ElevatedButton.icon(
-        onPressed: () => _openOfferingCreation(context, hospital.id),
-        icon: const Icon(Icons.add_rounded),
-        label: Text('clinics.actions.add_offering'.tr()),
-      ),
     };
 
     return map[index] != null
@@ -657,15 +649,28 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
           child: RefreshIndicator(
             onRefresh: () async => widget.onReload(),
             child: filtered.isEmpty
-                ? ListView(
+                ? Column(
                     children: [
-                      const SizedBox(height: 80),
-                      Center(child: Text('clinics.detail.doctors_empty'.tr())),
+                      const SizedBox(height: 24),
+                      Text('clinics.detail.doctors_empty'.tr()),
                       const SizedBox(height: 12),
-                      Center(
-                        child: TextButton(
-                          onPressed: widget.onInvite,
-                          child: Text('clinics.detail.invite_doctor'.tr()),
+                      Expanded(
+                        child: GridView.builder(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 14,
+                            crossAxisSpacing: 14,
+                            childAspectRatio: 0.64,
+                          ),
+                          itemCount: 1,
+                          itemBuilder: (context, index) {
+                            return InviteDoctorCard(
+                              label: 'clinics.detail.invite_doctor'.tr(),
+                              onTap: widget.onInvite,
+                            );
+                          },
                         ),
                       ),
                     ],
@@ -679,9 +684,15 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
                       crossAxisSpacing: 14,
                       childAspectRatio: 0.64,
                     ),
-                    itemCount: filtered.length,
+                    itemCount: filtered.length + 1,
                     itemBuilder: (context, index) {
-                      final doctor = filtered[index];
+                      if (index == 0) {
+                        return InviteDoctorCard(
+                          label: 'clinics.detail.invite_doctor'.tr(),
+                          onTap: widget.onInvite,
+                        );
+                      }
+                      final doctor = filtered[index - 1];
                       return DoctorGridCard(
                         title: doctor.displayName,
                         subtitle: doctor.specialty ?? 'doctor'.tr(),
@@ -795,41 +806,55 @@ class OfferingsTabContent extends StatelessWidget {
     }
 
     if (offerings.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('clinics.detail.offerings_empty'.tr()),
-            const SizedBox(height: 10),
-            Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 8,
-              children: [
-                TextButton.icon(
-                  onPressed: onReload,
-                  icon: const Icon(Icons.refresh_rounded),
-                  label: Text('clinics.actions.retry'.tr()),
-                ),
-                TextButton.icon(
-                  onPressed: onCreate,
-                  icon: const Icon(Icons.add_rounded),
-                  label: Text('clinics.actions.add_offering'.tr()),
-                ),
-              ],
+      return Column(
+        children: [
+          const SizedBox(height: 24),
+          Text('clinics.detail.offerings_empty'.tr()),
+          const SizedBox(height: 10),
+          TextButton.icon(
+            onPressed: onReload,
+            icon: const Icon(Icons.refresh_rounded),
+            label: Text('clinics.actions.retry'.tr()),
+          ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: GridView.builder(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+              itemCount: 1,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: MediaQuery.sizeOf(context).width >= 900 ? 3 : 2,
+                mainAxisSpacing: 14,
+                crossAxisSpacing: 14,
+                childAspectRatio: 0.72,
+              ),
+              itemBuilder: (context, index) {
+                return AddServiceOfferingCard(onTap: onCreate);
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       );
     }
 
+    final width = MediaQuery.sizeOf(context).width;
+    final crossAxisCount = width >= 900 ? 3 : 2;
+
     return RefreshIndicator(
       onRefresh: () async => onReload(),
-      child: ListView.separated(
+      child: GridView.builder(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-        itemCount: offerings.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        itemCount: offerings.length + 1,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          mainAxisSpacing: 14,
+          crossAxisSpacing: 14,
+          childAspectRatio: 0.72,
+        ),
         itemBuilder: (context, index) {
-          final offering = offerings[index];
+          if (index == 0) {
+            return AddServiceOfferingCard(onTap: onCreate);
+          }
+          final offering = offerings[index - 1];
           final locale = context.locale.languageCode;
           final title = offering.localizedName(locale);
           final priceText = offering.price > 0
@@ -971,6 +996,7 @@ class _AppointmentsListSection extends StatelessWidget {
           return AppointmentCard(
             appointment: appointment,
             onTap: () => onAppointmentTap(appointment),
+            onEditStatus: () => onAppointmentTap(appointment),
           );
         },
         separatorBuilder: (ctx, _) => const SizedBox(height: 16),

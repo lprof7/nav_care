@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nav_care_offers_app/data/service_offerings/models/service_offering.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/viewmodel/service_offerings_cubit.dart';
-import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/cards/add_service_offering_card.dart';
 
 class ServiceOfferingsPage extends StatefulWidget {
   const ServiceOfferingsPage({
@@ -32,11 +32,6 @@ class _ServiceOfferingsPageState extends State<ServiceOfferingsPage> {
         title: Text('service_offerings.list.title'.tr()),
       ),
       body: _ServiceOfferingsBody(hospitalId: widget.hospitalId),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openCreation(context, widget.hospitalId),
-        label: Text('service_offerings.list.add'.tr()),
-        icon: const Icon(Icons.add_rounded),
-      ),
     );
   }
 
@@ -96,7 +91,11 @@ class _ServiceOfferingsBody extends StatelessWidget {
                   }
 
                   if (state.isEmpty) {
-                    return _ServiceOfferingsEmpty(
+                    return _OfferingsGrid(
+                      offerings: const [],
+                      onCreate: () => _openCreation(context, hospitalId),
+                      onOpenDetail: (offering) =>
+                          _openDetail(context, hospitalId, offering),
                       onReload: () => context
                           .read<ServiceOfferingsCubit>()
                           .loadOfferings(refresh: true),
@@ -105,24 +104,14 @@ class _ServiceOfferingsBody extends StatelessWidget {
 
                   return Stack(
                     children: [
-                      RefreshIndicator(
-                        onRefresh: () => context
+                      _OfferingsGrid(
+                        offerings: state.offerings,
+                        onCreate: () => _openCreation(context, hospitalId),
+                        onOpenDetail: (offering) =>
+                            _openDetail(context, hospitalId, offering),
+                        onReload: () => context
                             .read<ServiceOfferingsCubit>()
                             .loadOfferings(refresh: true),
-                        child: ListView.separated(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          itemCount: state.offerings.length,
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(height: 16),
-                          itemBuilder: (context, index) {
-                            final offering = state.offerings[index];
-                            return _OfferingCard(
-                              offering: offering,
-                              onTap: () =>
-                                  _openDetail(context, hospitalId, offering),
-                            );
-                          },
-                        ),
                       ),
                       if (state.isLoading)
                         Positioned(
@@ -136,15 +125,6 @@ class _ServiceOfferingsBody extends StatelessWidget {
                     ],
                   );
                 },
-              ),
-            ),
-            const SizedBox(height: 16),
-            SafeArea(
-              top: false,
-              child: AppButton(
-                text: 'service_offerings.list.add'.tr(),
-                icon: const Icon(Icons.add_circle_outline),
-                onPressed: () => _openCreation(context, hospitalId),
               ),
             ),
           ],
@@ -290,36 +270,46 @@ class _OfferingCard extends StatelessWidget {
   }
 }
 
-class _ServiceOfferingsEmpty extends StatelessWidget {
-  const _ServiceOfferingsEmpty({required this.onReload});
-
+class _OfferingsGrid extends StatelessWidget {
+  final List<ServiceOffering> offerings;
+  final VoidCallback onCreate;
+  final void Function(ServiceOffering) onOpenDetail;
   final VoidCallback onReload;
+
+  const _OfferingsGrid({
+    required this.offerings,
+    required this.onCreate,
+    required this.onOpenDetail,
+    required this.onReload,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.medical_services_outlined,
-              size: 48, color: theme.colorScheme.primary),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Text(
-              'service_offerings.list.empty'.tr(),
-              style: theme.textTheme.titleMedium,
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 12),
-          TextButton.icon(
-            onPressed: onReload,
-            icon: const Icon(Icons.refresh_rounded),
-            label: Text('service_offerings.list.reload'.tr()),
-          ),
-        ],
+    final width = MediaQuery.sizeOf(context).width;
+    final crossAxisCount = width >= 900 ? 3 : 2;
+
+    return RefreshIndicator(
+      onRefresh: () async => onReload(),
+      child: GridView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+        itemCount: offerings.length + 1,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          mainAxisSpacing: 14,
+          crossAxisSpacing: 14,
+          childAspectRatio: 0.72,
+        ),
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return AddServiceOfferingCard(onTap: onCreate);
+          }
+          final offering = offerings[index - 1];
+          return _OfferingCard(
+            offering: offering,
+            onTap: () => onOpenDetail(offering),
+          );
+        },
       ),
     );
   }
