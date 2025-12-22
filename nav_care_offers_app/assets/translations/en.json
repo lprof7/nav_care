@@ -678,9 +678,15 @@
     "faq.questions.password_reset.answer": "Use the \"Forgot password\" option on the sign-in screen to request a reset. Follow the on-screen steps to set a new password with your email or phone number.",
     "faq.questions.data_sync.question": "The app is not loading data. What should I try?",
     "faq.questions.data_sync.answer": "Check your internet connection, then pull to refresh on Home, Search, or Appointments. If the issue persists, sign out and back in to refresh your session before trying again.",
+    "appointment_status": {
+        "pending": "Pending",
+        "confirmed": "Confirmed",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+    },
     "network_error": {
         "title": "No internet connection",
-        "subtitle": "Check your Wi‑Fi or mobile data, then try again.",
+        "subtitle": "Check your Wi-Fi or mobile data, then try again.",
         "retry": "Try again"
     },
     "server_error": {
