@@ -86,8 +86,11 @@ class RemoteClinicsService implements ClinicsService {
   @override
   Future<Result<Map<String, dynamic>>> getHospitalClinics(
       String hospitalId) async {
-    final hospitalToken = await _tokenStore.getHospitalToken();
-    if (hospitalToken == null) {
+    var hospitalToken = await _tokenStore.getHospitalToken();
+    if (hospitalToken == null || hospitalToken.isEmpty) {
+      hospitalToken = await _tokenStore.getClinicToken();
+    }
+    if (hospitalToken == null || hospitalToken.isEmpty) {
       return Result.failure(Failure.unauthorized());
     }
 

@@ -34,6 +34,7 @@ import '../../data/hospitals/hospitals_repository.dart';
 import '../../data/hospitals/models/hospital.dart';
 import '../../presentation/features/hospitals/viewmodel/hospital_list_cubit.dart';
 import '../../presentation/features/hospitals/viewmodel/hospital_detail_cubit.dart';
+import '../../presentation/features/clinics/viewmodel/clinic_detail_cubit.dart';
 import '../../presentation/features/hospitals/viewmodel/hospital_form_cubit.dart';
 import '../../presentation/features/hospitals/viewmodel/invite_doctor_cubit.dart';
 import '../../data/clinics/services/clinics_service.dart';
@@ -249,6 +250,17 @@ Future<void> configureDependencies(AppConfig config) async {
           ));
   sl.registerFactoryParam<HospitalDetailCubit, Hospital, void>(
     (hospital, _) => HospitalDetailCubit(
+      sl<HospitalsRepository>(),
+      sl<TokenStore>(),
+      initialHospital: hospital,
+      clinicsRepository: sl<ClinicsRepository>(),
+      doctorsRepository: sl<DoctorsRepository>(),
+      offeringsRepository: sl<ServiceOfferingsRepository>(),
+      invitationsRepository: sl<HospitalInvitationsRepository>(),
+    ),
+  );
+  sl.registerFactoryParam<ClinicDetailCubit, Hospital, void>(
+    (hospital, _) => ClinicDetailCubit(
       sl<HospitalsRepository>(),
       sl<TokenStore>(),
       initialHospital: hospital,

@@ -6,6 +6,7 @@ class SecureTokenStore implements TokenStore {
   static const _authTokenKey = 'auth_token';
   static const _doctorTokenKey = 'doctor_token';
   static const _hospitalTokenKey = 'hospital_token';
+  static const _clinicTokenKey = 'clinic_token';
   static const _isDoctorKey = 'is_doctor';
 
   @override
@@ -51,6 +52,21 @@ class SecureTokenStore implements TokenStore {
   @override
   Future<void> clearHospitalToken() {
     return _storage.delete(key: _hospitalTokenKey);
+  }
+
+  @override
+  Future<String?> getClinicToken() {
+    return _storage.read(key: _clinicTokenKey);
+  }
+
+  @override
+  Future<void> setClinicToken(String token) {
+    return _storage.write(key: _clinicTokenKey, value: token);
+  }
+
+  @override
+  Future<void> clearClinicToken() {
+    return _storage.delete(key: _clinicTokenKey);
   }
 
   @override

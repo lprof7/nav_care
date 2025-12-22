@@ -236,7 +236,7 @@
       "invitation_sent": "تم إرسال الدعوة"
     },
     "form": {
-    "create_title": "إضافة مستشفى/عيادة",
+      "create_title": "إضافة مستشفى/عيادة",
       "edit_title": "تعديل المستشفى",
       "name": "اسم المنشأة",
       "description_en": "الوصف (بالإنجليزية)",
@@ -362,21 +362,73 @@
   },
   "doctor": "طبيب",
   "clinics": {
-    "form": {
-      "success_update": "تم تحديث العيادة بنجاح.",
-      "save": "حفظ العيادة",
-      "phone_label": "أرقام الهاتف",
-      "edit_title": "تعديل العيادة",
-      "phone_hint": "+1234567890",
-      "create_title": "إضافة عيادة",
-      "name": "اسم العيادة",
-      "success_create": "تم إنشاء العيادة بنجاح.",
-      "saving": "جارٍ الحفظ...",
-      "description_en": "الوصف (بالإنجليزية)",
-      "images": {
-        "label": "صور"
+    "list": {
+      "error_generic": "تعذر تحميل العيادات في الوقت الحالي."
+    },
+    "actions": {
+      "add_offering": "إضافة عرض",
+      "delete": "حذف العيادة",
+      "edit": "تعديل العيادة",
+      "manage": "إدارة العيادة",
+      "retry": "إعادة المحاولة",
+      "view_details": "عرض التفاصيل"
+    },
+    "facility_type": {
+      "hospital": "مستشفى",
+      "clinic": "عيادة",
+      "unknown": "منشأة"
+    },
+    "detail": {
+      "about": "عن العيادة",
+      "contact": "بيانات التواصل",
+      "delete": "حذف العيادة",
+      "deleting": "جارٍ الحذف...",
+      "delete_confirm_title": "حذف العيادة",
+      "delete_confirm_message": "هل أنت متأكد من حذف هذه العيادة؟ لا يمكن التراجع عن هذا الإجراء.",
+      "delete_cancel": "إلغاء",
+      "delete_confirm": "حذف",
+      "delete_success": "تم حذف العيادة بنجاح.",
+      "edit": "تعديل العيادة",
+      "facility_type": "نوع المنشأة",
+      "invite_doctor": "دعوة طبيب",
+      "no_description": "لا يوجد وصف متاح.",
+      "overview": "نظرة عامة",
+      "phone": "هاتف التواصل",
+      "search_doctors": "ابحث عن الأطباء...",
+      "tabs": {
+        "clinics": "العيادات",
+        "doctors": "الأطباء",
+        "invitations": "الدعوات",
+        "offerings": "عروض الخدمات"
       },
-      "images_required": "يرجى إضافة صورة واحدة على الأقل.",
+      "stats": {
+        "clinics": "العيادات",
+        "doctors": "الأطباء",
+        "offerings": "العروض"
+      },
+      "clinics_empty": "لا توجد عيادات متاحة لهذه العيادة.",
+      "doctors_empty": "لا يوجد أطباء متاحون لهذه العيادة.",
+      "offerings_empty": "لا توجد عروض خدمات لهذه العيادة.",
+      "invitations_empty": "لا توجد دعوات بعد."
+    },
+    "form": {
+      "create_title": "إضافة عيادة",
+      "edit_title": "تعديل العيادة",
+      "name": "اسم العيادة",
+      "description_en": "الوصف (بالإنجليزية)",
+      "facility_type": {
+        "label": "نوع المنشأة",
+        "hospital": "مستشفى",
+        "clinic": "عيادة",
+        "unknown": "منشأة"
+      },
+      "address": "العنوان",
+      "phone_label": "أرقام الهاتف",
+      "phone_hint": "+1234567890",
+      "add_entry": "إضافة رقم",
+      "images": {
+        "label": "الصور"
+      },
       "add_image": "إضافة صورة",
       "social": {
         "label": "روابط التواصل الاجتماعي",
@@ -393,8 +445,11 @@
           "other": "روابط أخرى"
         }
       },
-      "add_entry": "إضافة رقم",
-      "address": "العنوان"
+      "images_required": "يرجى إضافة صورة واحدة على الأقل.",
+      "saving": "جارٍ الحفظ...",
+      "save": "حفظ العيادة",
+      "success_create": "تم إنشاء العيادة بنجاح.",
+      "success_update": "تم تحديث العيادة بنجاح."
     }
   },
   "service_offerings.form.name_en": "الاسم (بالإنجليزية)",

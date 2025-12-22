@@ -18,10 +18,10 @@ import 'package:nav_care_offers_app/data/reviews/hospital_reviews/models/hospita
 import 'package:nav_care_offers_app/presentation/features/appointments/viewmodel/appointments_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/appointments/viewmodel/appointments_state.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/view/widgets/invite_doctor_sheet.dart';
-import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/hospital_detail_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/hospital_reviews_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/hospital_reviews_state.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/invite_doctor_cubit.dart';
+import 'package:nav_care_offers_app/presentation/features/clinics/viewmodel/clinic_detail_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/shell/viewmodel/nav_shell_cubit.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/doctor_grid_card.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/hospital_detail_cards.dart';
@@ -34,23 +34,23 @@ import 'package:nav_care_offers_app/presentation/shared/ui/molecules/hospital_de
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_app_bar.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_destination.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_nav_bar.dart';
-import 'hospital_detail_page.dart' show HospitalDetailsSummaryView, HospitalDetailPage;
+import 'clinic_detail_page.dart' show ClinicDetailsSummaryView;
 
-/// Hospital app shell with bottom navigation (no drawer).
-/// Tabs: Clinics, Doctors (with invitations), Service offerings, Appointments, Profile.
-class HospitalShellPage extends StatefulWidget {
+/// Clinic app shell with bottom navigation (no drawer).
+/// Tabs: Doctors (with invitations), Service offerings, Appointments, Profile.
+class ClinicShellPage extends StatefulWidget {
   final Hospital hospital;
 
-  const HospitalShellPage({
+  const ClinicShellPage({
     super.key,
     required this.hospital,
   });
 
   @override
-  State<HospitalShellPage> createState() => _HospitalShellPageState();
+  State<ClinicShellPage> createState() => _ClinicShellPageState();
 }
 
-class _HospitalShellPageState extends State<HospitalShellPage> {
+class _ClinicShellPageState extends State<ClinicShellPage> {
   bool _appointmentsLoaded = false;
 
   @override
@@ -67,24 +67,24 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
         ),
         BlocProvider(
           create: (_) =>
-              sl<HospitalDetailCubit>(param1: widget.hospital)..loadDetails(),
+              sl<ClinicDetailCubit>(param1: widget.hospital)..loadDetails(),
         ),
       ],
-      child: BlocListener<HospitalDetailCubit, HospitalDetailState>(
+      child: BlocListener<ClinicDetailCubit, ClinicDetailState>(
         listenWhen: (prev, curr) =>
-            prev.hospitalToken != curr.hospitalToken ||
+            prev.clinicToken != curr.clinicToken ||
             prev.isFetchingToken != curr.isFetchingToken,
         listener: (context, state) {
           if (!_appointmentsLoaded &&
               !state.isFetchingToken &&
-              (state.hospitalToken?.isNotEmpty ?? false)) {
+              (state.clinicToken?.isNotEmpty ?? false)) {
             _appointmentsLoaded = true;
             context.read<AppointmentsCubit>().getMyHospitalAppointments();
           }
         },
         child: BlocBuilder<NavShellCubit, NavShellState>(
           builder: (context, navState) {
-            final detailState = context.watch<HospitalDetailCubit>().state;
+            final detailState = context.watch<ClinicDetailCubit>().state;
             print("detail state offerings ${detailState.offerings.length}");
             final destinations =
                 _buildDestinations(context, detailState, baseUrl);
@@ -115,13 +115,13 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
   }
 
   Widget _buildBody(
-    HospitalDetailState detailState,
+    ClinicDetailState detailState,
     List<NavShellDestination> destinations,
     int currentIndex,
   ) {
-    if (detailState.status == HospitalDetailStatus.initial ||
-        (detailState.status == HospitalDetailStatus.loading &&
-            detailState.hospitalToken == null &&
+    if (detailState.status == ClinicDetailStatus.initial ||
+        (detailState.status == ClinicDetailStatus.loading &&
+            detailState.clinicToken == null &&
             detailState.clinics.isEmpty &&
             detailState.doctors.isEmpty &&
             detailState.offerings.isEmpty)) {
@@ -135,28 +135,14 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
   }
 
   List<NavShellDestination> _buildDestinations(BuildContext innerContext,
-      HospitalDetailState detailState, String baseUrl) {
+      ClinicDetailState detailState, String baseUrl) {
     final hospital = detailState.hospital;
     final reviewsState = innerContext.watch<HospitalReviewsCubit>().state;
     final shellContext = innerContext;
 
     return [
       NavShellDestination(
-        label: 'hospitals.detail.tabs.clinics'.tr(),
-        icon: Icons.local_hospital_rounded,
-        content: ClinicsTabContent(
-          clinics: detailState.clinics,
-          fallbackClinics: hospital.clinics,
-          baseUrl: baseUrl,
-          status: detailState.status,
-          onReload: () => shellContext
-              .read<HospitalDetailCubit>()
-              .loadDetails(refresh: true),
-          onOpenClinic: (clinic) => _openClinicAsHospital(shellContext, clinic),
-        ),
-      ),
-      NavShellDestination(
-        label: 'hospitals.detail.tabs.doctors'.tr(),
+        label: 'clinics.detail.tabs.doctors'.tr(),
         icon: Icons.people_alt_rounded,
         content: DoctorsAndInvitesTab(
           doctors: detailState.doctors,
@@ -164,23 +150,21 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
           invitations: detailState.invitations,
           baseUrl: baseUrl,
           status: detailState.status,
-          onReload: () => shellContext
-              .read<HospitalDetailCubit>()
-              .loadDetails(refresh: true),
+          onReload: () =>
+              shellContext.read<ClinicDetailCubit>().loadDetails(refresh: true),
           onManage: () => _openManage(shellContext, hospital, 'doctors'),
           onInvite: () => _openInviteDoctor(shellContext, baseUrl, detailState),
         ),
       ),
       NavShellDestination(
-        label: 'hospitals.detail.tabs.offerings'.tr(),
+        label: 'clinics.detail.tabs.offerings'.tr(),
         icon: Icons.medical_services_rounded,
         content: OfferingsTabContent(
           offerings: detailState.offerings,
           baseUrl: baseUrl,
           status: detailState.status,
-          onReload: () => shellContext
-              .read<HospitalDetailCubit>()
-              .loadDetails(refresh: true),
+          onReload: () =>
+              shellContext.read<ClinicDetailCubit>().loadDetails(refresh: true),
           onManage: () => _openServiceOfferings(shellContext, hospital),
           onCreate: () => _openOfferingCreation(shellContext, hospital.id),
           onOpenDetail: (offering) =>
@@ -190,18 +174,15 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
       NavShellDestination(
         label: 'shell.nav_appointments'.tr(),
         icon: Icons.calendar_today_rounded,
-        content: HospitalAppointmentsTab(
+        content: ClinicAppointmentsTab(
           isFetchingToken: detailState.isFetchingToken,
         ),
       ),
       NavShellDestination(
         label: 'shell.nav_profile'.tr(),
         icon: Icons.person_rounded,
-        content: HospitalDetailsSummaryView(
+        content: ClinicDetailsSummaryView(
           hospital: hospital,
-          clinicsCount: detailState.clinics.isNotEmpty
-              ? detailState.clinics.length
-              : hospital.clinics.length,
           doctorsCount: detailState.doctors.isNotEmpty
               ? detailState.doctors.length
               : hospital.doctors.length,
@@ -211,9 +192,9 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
           isReviewsLoadingMore: reviewsState.isLoadingMore,
           onReviewsReload: () =>
               shellContext.read<HospitalReviewsCubit>().refresh(),
-          onManageClinics: () => _openManage(shellContext, hospital, 'clinics'),
           onManageDoctors: () => _openManage(shellContext, hospital, 'doctors'),
-          onManageOfferings: () => _openServiceOfferings(shellContext, hospital),
+          onManageOfferings: () =>
+              _openServiceOfferings(shellContext, hospital),
           onEdit: () => _openEdit(shellContext, hospital),
           onDelete: detailState.isDeleting
               ? null
@@ -226,24 +207,19 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
     ];
   }
 
-  Widget _buildFab(BuildContext context, int index, HospitalDetailState state,
+  Widget _buildFab(BuildContext context, int index, ClinicDetailState state,
       String baseUrl) {
     final hospital = state.hospital;
     final map = <int, Widget>{
       0: ElevatedButton.icon(
-        onPressed: () => _openCreateClinic(context, hospital),
-        icon: const Icon(Icons.add_rounded),
-        label: Text('hospitals.actions.add_clinic'.tr()),
-      ),
-      1: ElevatedButton.icon(
         onPressed: () => _openInviteDoctor(context, baseUrl, state),
         icon: const Icon(Icons.person_add_alt_1_rounded),
-        label: Text('hospitals.detail.invite_doctor'.tr()),
+        label: Text('clinics.detail.invite_doctor'.tr()),
       ),
-      2: ElevatedButton.icon(
+      1: ElevatedButton.icon(
         onPressed: () => _openOfferingCreation(context, hospital.id),
         icon: const Icon(Icons.add_rounded),
-        label: Text('hospitals.actions.add_offering'.tr()),
+        label: Text('clinics.actions.add_offering'.tr()),
       ),
     };
 
@@ -270,9 +246,7 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
     String target,
   ) {
     context.push(
-      target == 'clinics'
-          ? '/hospitals/${hospital.id}/clinics'
-          : '/hospitals/${hospital.id}/doctors',
+      '/clinics/${hospital.id}/doctors',
       extra: {
         'hospital': hospital,
         'target': target,
@@ -282,15 +256,15 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
 
   void _openServiceOfferings(BuildContext context, Hospital hospital) {
     context
-        .push('/hospitals/${hospital.id}/service-offerings', extra: hospital)
+        .push('/clinics/${hospital.id}/service-offerings', extra: hospital)
         .then((_) =>
-            context.read<HospitalDetailCubit>().loadDetails(refresh: true));
+            context.read<ClinicDetailCubit>().loadDetails(refresh: true));
   }
 
   void _openOfferingCreation(BuildContext context, String hospitalId) {
-    final route = '/hospitals/$hospitalId/service-offerings/new';
+    final route = '/clinics/$hospitalId/service-offerings/new';
     context.push(route).then((_) {
-      context.read<HospitalDetailCubit>().loadDetails(refresh: true);
+      context.read<ClinicDetailCubit>().loadDetails(refresh: true);
     });
   }
 
@@ -300,27 +274,16 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
     ServiceOffering offering,
   ) {
     final route =
-        '/hospitals/$hospitalId/service-offerings/${offering.id}/detail';
+        '/clinics/$hospitalId/service-offerings/${offering.id}/detail';
     context.push(route, extra: offering).then((_) {
-      context.read<HospitalDetailCubit>().loadDetails(refresh: true);
+      context.read<ClinicDetailCubit>().loadDetails(refresh: true);
     });
-  }
-
-  void _openCreateClinic(BuildContext context, Hospital hospital) {
-    context.push('/hospitals/${hospital.id}/clinics/new').then((_) {
-      context.read<HospitalDetailCubit>().loadDetails(refresh: true);
-    });
-  }
-
-  void _openClinicAsHospital(BuildContext context, ClinicModel clinic) {
-    final hospital = clinic.toHospital();
-    context.push('/clinics/${hospital.id}/app', extra: hospital);
   }
 
   void _openInviteDoctor(
     BuildContext context,
     String baseUrl,
-    HospitalDetailState state,
+    ClinicDetailState state,
   ) {
     showModalBottomSheet<void>(
       context: context,
@@ -344,7 +307,7 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
   void _openDoctorDetail(
     BuildContext context,
     DoctorModel doctor,
-    HospitalDetailState state,
+    ClinicDetailState state,
   ) {
     context.pushNamed(
       AppRoute.doctorDetail.name,
@@ -360,10 +323,8 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
 
   void _openEdit(BuildContext context, Hospital hospital) {
     final router = GoRouter.of(context);
-    final cubit = context.read<HospitalDetailCubit>();
-    router
-        .push('/hospitals/${hospital.id}/edit', extra: hospital)
-        .then((value) {
+    final cubit = context.read<ClinicDetailCubit>();
+    router.push('/clinics/${hospital.id}/edit', extra: hospital).then((value) {
       if (value == true) {
         context.pop(true);
       } else if (value is Hospital) {
@@ -385,23 +346,23 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           insetPadding:
               const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          title: Text('hospitals.detail.delete_confirm_title'.tr()),
+          title: Text('clinics.detail.delete_confirm_title'.tr()),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('hospitals.detail.delete_confirm_message'.tr()),
+              Text('clinics.detail.delete_confirm_message'.tr()),
               const SizedBox(height: 18),
               FilledButton.icon(
                 onPressed: () => Navigator.of(ctx).pop(true),
                 icon: const Icon(Icons.delete_outline, color: Colors.white),
-                label: Text('hospitals.detail.delete_confirm'.tr()),
+                label: Text('clinics.detail.delete_confirm'.tr()),
               ),
               const SizedBox(height: 10),
               OutlinedButton.icon(
                 onPressed: () => Navigator.of(ctx).pop(false),
                 icon: const Icon(Icons.close_rounded),
-                label: Text('hospitals.detail.delete_cancel'.tr()),
+                label: Text('clinics.detail.delete_cancel'.tr()),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: cancelTextColor,
                 ),
@@ -415,7 +376,7 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
     );
 
     if (confirmed == true && context.mounted) {
-      await context.read<HospitalDetailCubit>().deleteHospital();
+      await context.read<ClinicDetailCubit>().deleteHospital();
     }
   }
 }
@@ -424,7 +385,7 @@ class ClinicsTabContent extends StatelessWidget {
   final List<ClinicModel> clinics;
   final List<HospitalClinic> fallbackClinics;
   final String baseUrl;
-  final HospitalDetailStatus status;
+  final ClinicDetailStatus status;
   final VoidCallback onReload;
   final void Function(ClinicModel clinic) onOpenClinic;
 
@@ -455,7 +416,7 @@ class ClinicsTabContent extends StatelessWidget {
             )
             .toList();
 
-    if (status == HospitalDetailStatus.loading && items.isEmpty) {
+    if (status == ClinicDetailStatus.loading && items.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
@@ -464,12 +425,12 @@ class ClinicsTabContent extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('hospitals.detail.clinics_empty'.tr()),
+            Text('clinics.detail.clinics_empty'.tr()),
             const SizedBox(height: 8),
             TextButton.icon(
               onPressed: onReload,
               icon: const Icon(Icons.refresh_rounded),
-              label: Text('hospitals.actions.retry'.tr()),
+              label: Text('clinics.actions.retry'.tr()),
             ),
           ],
         ),
@@ -490,8 +451,8 @@ class ClinicsTabContent extends StatelessWidget {
           return HospitalCard(
             title: clinic.name,
             subtitle:
-                clinic.description ?? 'hospitals.detail.no_description'.tr(),
-            facilityLabel: 'hospitals.facility_type.clinic'.tr(),
+                clinic.description ?? 'clinics.detail.no_description'.tr(),
+            facilityLabel: 'clinics.facility_type.clinic'.tr(),
             phoneLabel: clinic.phones.join(' | '),
             imageUrl: image,
             onTap: () => onOpenClinic(clinic),
@@ -507,7 +468,7 @@ class DoctorsAndInvitesTab extends StatefulWidget {
   final List<Doctor> fallbackDoctors;
   final List<HospitalInvitation> invitations;
   final String baseUrl;
-  final HospitalDetailStatus status;
+  final ClinicDetailStatus status;
   final VoidCallback onReload;
   final VoidCallback onManage;
   final VoidCallback onInvite;
@@ -553,8 +514,8 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
           controller: _tabController,
           labelColor: Theme.of(context).colorScheme.primary,
           tabs: [
-            Tab(text: 'hospitals.detail.tabs.doctors'.tr()),
-            Tab(text: 'hospitals.detail.tabs.invitations'.tr()),
+            Tab(text: 'clinics.detail.tabs.doctors'.tr()),
+            Tab(text: 'clinics.detail.tabs.invitations'.tr()),
           ],
         ),
         Expanded(
@@ -575,7 +536,7 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
         ? widget.doctors
         : widget.fallbackDoctors.map((d) => d.toDoctorModel()).toList();
 
-    if (widget.status == HospitalDetailStatus.loading && doctors.isEmpty) {
+    if (widget.status == ClinicDetailStatus.loading && doctors.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
@@ -589,7 +550,7 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
             onChanged: (value) => setState(() => _query = value),
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.search_rounded),
-              hintText: 'hospitals.detail.search_doctors'.tr(),
+              hintText: 'clinics.detail.search_doctors'.tr(),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
@@ -605,13 +566,12 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
                 ? ListView(
                     children: [
                       const SizedBox(height: 80),
-                      Center(
-                          child: Text('hospitals.detail.doctors_empty'.tr())),
+                      Center(child: Text('clinics.detail.doctors_empty'.tr())),
                       const SizedBox(height: 12),
                       Center(
                         child: TextButton(
                           onPressed: widget.onInvite,
-                          child: Text('hospitals.detail.invite_doctor'.tr()),
+                          child: Text('clinics.detail.invite_doctor'.tr()),
                         ),
                       ),
                     ],
@@ -635,7 +595,7 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
                             ? _resolveImage(doctor.cover!, widget.baseUrl)
                             : null,
                         rating: doctor.rating,
-                        buttonLabel: 'hospitals.actions.view_details'.tr(),
+                        buttonLabel: 'clinics.actions.view_details'.tr(),
                         onPressed: () => _openDoctor(context, doctor),
                       );
                     },
@@ -647,7 +607,7 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
   }
 
   Widget _buildInvitationsTab() {
-    if (widget.status == HospitalDetailStatus.loading &&
+    if (widget.status == ClinicDetailStatus.loading &&
         widget.invitations.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -657,11 +617,11 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('hospitals.detail.invitations_empty'.tr()),
+            Text('clinics.detail.invitations_empty'.tr()),
             const SizedBox(height: 8),
             TextButton(
               onPressed: widget.onInvite,
-              child: Text('hospitals.detail.invite_doctor'.tr()),
+              child: Text('clinics.detail.invite_doctor'.tr()),
             ),
           ],
         ),
@@ -710,7 +670,7 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
 class OfferingsTabContent extends StatelessWidget {
   final List<ServiceOffering> offerings;
   final String baseUrl;
-  final HospitalDetailStatus status;
+  final ClinicDetailStatus status;
   final VoidCallback onReload;
   final VoidCallback onManage;
   final VoidCallback onCreate;
@@ -729,7 +689,7 @@ class OfferingsTabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (status == HospitalDetailStatus.loading && offerings.isEmpty) {
+    if (status == ClinicDetailStatus.loading && offerings.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
@@ -738,7 +698,7 @@ class OfferingsTabContent extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('hospitals.detail.offerings_empty'.tr()),
+            Text('clinics.detail.offerings_empty'.tr()),
             const SizedBox(height: 10),
             Wrap(
               alignment: WrapAlignment.center,
@@ -747,12 +707,12 @@ class OfferingsTabContent extends StatelessWidget {
                 TextButton.icon(
                   onPressed: onReload,
                   icon: const Icon(Icons.refresh_rounded),
-                  label: Text('hospitals.actions.retry'.tr()),
+                  label: Text('clinics.actions.retry'.tr()),
                 ),
                 TextButton.icon(
                   onPressed: onCreate,
                   icon: const Icon(Icons.add_rounded),
-                  label: Text('hospitals.actions.add_offering'.tr()),
+                  label: Text('clinics.actions.add_offering'.tr()),
                 ),
               ],
             ),
@@ -803,10 +763,10 @@ class OfferingsTabContent extends StatelessWidget {
   }
 }
 
-class HospitalAppointmentsTab extends StatelessWidget {
+class ClinicAppointmentsTab extends StatelessWidget {
   final bool isFetchingToken;
 
-  const HospitalAppointmentsTab({
+  const ClinicAppointmentsTab({
     super.key,
     required this.isFetchingToken,
   });
@@ -963,7 +923,7 @@ class _AppointmentsEmptyView extends StatelessWidget {
           TextButton.icon(
             onPressed: onReload,
             icon: const Icon(Icons.refresh_rounded),
-            label: Text('hospitals.actions.retry'.tr()),
+            label: Text('clinics.actions.retry'.tr()),
           ),
         ],
       ),
@@ -1004,7 +964,7 @@ class _AppointmentsErrorView extends StatelessWidget {
             TextButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh_rounded),
-              label: Text('hospitals.actions.retry'.tr()),
+              label: Text('clinics.actions.retry'.tr()),
             ),
           ],
         ),
@@ -1028,7 +988,7 @@ class HospitalProfileTab extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback? onDelete;
   final bool isDeleting;
-  final HospitalDetailStatus status;
+  final ClinicDetailStatus status;
   final String? errorMessage;
 
   const HospitalProfileTab({
@@ -1063,29 +1023,29 @@ class HospitalProfileTab extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
           sliver: SliverList(
             delegate: SliverChildListDelegate([
-              if (status == HospitalDetailStatus.failure &&
+              if (status == ClinicDetailStatus.failure &&
                   (errorMessage ?? '').isNotEmpty) ...[
                 _ErrorView(
-                  message: errorMessage ?? 'hospitals.list.error_generic'.tr(),
+                  message: errorMessage ?? 'clinics.list.error_generic'.tr(),
                   onRetry: () =>
-                      context.read<HospitalDetailCubit>().loadDetails(),
+                      context.read<ClinicDetailCubit>().loadDetails(),
                 ),
                 const SizedBox(height: 16),
               ],
               HospitalDetailSectionCard(
                 icon: Icons.info_rounded,
-                title: 'hospitals.detail.about'.tr(),
+                title: 'clinics.detail.about'.tr(),
                 child: Text(
                   description?.isNotEmpty == true
                       ? description!
-                      : 'hospitals.detail.no_description'.tr(),
+                      : 'clinics.detail.no_description'.tr(),
                   style: theme.textTheme.bodyMedium,
                 ),
               ),
               const SizedBox(height: 12),
               HospitalDetailSectionCard(
                 icon: Icons.auto_awesome_mosaic_rounded,
-                title: 'hospitals.detail.overview'.tr(),
+                title: 'clinics.detail.overview'.tr(),
                 spacing: 10,
                 child: Wrap(
                   spacing: 10,
@@ -1093,22 +1053,22 @@ class HospitalProfileTab extends StatelessWidget {
                   children: [
                     HospitalStatCard(
                       icon: Icons.local_hospital_rounded,
-                      label: 'hospitals.detail.stats.clinics'.tr(),
+                      label: 'clinics.detail.stats.clinics'.tr(),
                       value: clinicsCount.toString(),
                     ),
                     HospitalStatCard(
                       icon: Icons.people_alt_rounded,
-                      label: 'hospitals.detail.stats.doctors'.tr(),
+                      label: 'clinics.detail.stats.doctors'.tr(),
                       value: doctorsCount.toString(),
                     ),
                     HospitalStatCard(
                       icon: Icons.medical_services_rounded,
-                      label: 'hospitals.detail.stats.offerings'.tr(),
+                      label: 'clinics.detail.stats.offerings'.tr(),
                       value: offeringsCount.toString(),
                     ),
                     HospitalStatCard(
                       icon: Icons.local_phone_rounded,
-                      label: 'hospitals.detail.phone'.tr(),
+                      label: 'clinics.detail.phone'.tr(),
                       value: hospital.phones.join(' | ').isNotEmpty
                           ? hospital.phones.join(' | ')
                           : '--',
@@ -1119,23 +1079,23 @@ class HospitalProfileTab extends StatelessWidget {
               const SizedBox(height: 12),
               HospitalDetailSectionCard(
                 icon: Icons.contact_phone_rounded,
-                title: 'hospitals.detail.contact'.tr(),
+                title: 'clinics.detail.contact'.tr(),
                 spacing: 10,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     HospitalInfoRow(
                       icon: Icons.place_rounded,
-                      title: 'hospitals.form.address'.tr(),
+                      title: 'clinics.form.address'.tr(),
                       value: hospital.address,
-                      placeholderKey: 'hospitals.detail.no_description',
+                      placeholderKey: 'clinics.detail.no_description',
                     ),
                     const SizedBox(height: 10),
                     HospitalInfoRow(
                       icon: Icons.group_rounded,
-                      title: 'hospitals.detail.facility_type'.tr(),
+                      title: 'clinics.detail.facility_type'.tr(),
                       value: hospital.facilityType
-                          .translationKey('hospitals.facility_type')
+                          .translationKey('clinics.facility_type')
                           .tr(),
                     ),
                   ],
@@ -1144,24 +1104,24 @@ class HospitalProfileTab extends StatelessWidget {
               const SizedBox(height: 12),
               HospitalDetailSectionCard(
                 icon: Icons.manage_accounts_rounded,
-                title: 'hospitals.actions.manage'.tr(),
+                title: 'clinics.actions.manage'.tr(),
                 child: Wrap(
                   spacing: 8,
                   children: [
                     OutlinedButton.icon(
                       onPressed: onManageClinics,
                       icon: const Icon(Icons.local_hospital_rounded),
-                      label: Text('hospitals.detail.tabs.clinics'.tr()),
+                      label: Text('clinics.detail.tabs.clinics'.tr()),
                     ),
                     OutlinedButton.icon(
                       onPressed: onManageDoctors,
                       icon: const Icon(Icons.people_alt_rounded),
-                      label: Text('hospitals.detail.tabs.doctors'.tr()),
+                      label: Text('clinics.detail.tabs.doctors'.tr()),
                     ),
                     OutlinedButton.icon(
                       onPressed: onManageOfferings,
                       icon: const Icon(Icons.medical_services_rounded),
-                      label: Text('hospitals.detail.tabs.offerings'.tr()),
+                      label: Text('clinics.detail.tabs.offerings'.tr()),
                     ),
                   ],
                 ),
@@ -1183,7 +1143,7 @@ class HospitalProfileTab extends StatelessWidget {
                     child: FilledButton.icon(
                       onPressed: onEdit,
                       icon: const Icon(Icons.edit_rounded),
-                      label: Text('hospitals.actions.edit'.tr()),
+                      label: Text('clinics.actions.edit'.tr()),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -1192,8 +1152,8 @@ class HospitalProfileTab extends StatelessWidget {
                       onPressed: onDelete,
                       icon: const Icon(Icons.delete_outline_rounded),
                       label: isDeleting
-                          ? Text('hospitals.detail.deleting'.tr())
-                          : Text('hospitals.actions.delete'.tr()),
+                          ? Text('clinics.detail.deleting'.tr())
+                          : Text('clinics.actions.delete'.tr()),
                     ),
                   ),
                 ],
@@ -1225,7 +1185,7 @@ class _ErrorView extends StatelessWidget {
           const SizedBox(height: 8),
           TextButton(
             onPressed: onRetry,
-            child: Text('hospitals.actions.retry'.tr()),
+            child: Text('clinics.actions.retry'.tr()),
           ),
         ],
       ),

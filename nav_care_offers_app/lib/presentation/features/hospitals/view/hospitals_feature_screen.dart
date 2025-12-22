@@ -175,7 +175,10 @@ class _HospitalsListView extends StatelessWidget {
   void _openDetail(BuildContext context, Hospital hospital) {
     final router = GoRouter.of(context);
     final cubit = context.read<HospitalListCubit>();
-    router.push('/hospitals/${hospital.id}/app', extra: hospital).then((value) {
+    final route = hospital.facilityType == FacilityType.clinic
+        ? '/clinics/${hospital.id}/app'
+        : '/hospitals/${hospital.id}/app';
+    router.push(route, extra: hospital).then((value) {
       if (value == true) {
         cubit.fetchHospitals(page: 1, limit: 10); // Refresh all hospitals
       } else if (value == 'deleted') {

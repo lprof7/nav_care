@@ -137,6 +137,7 @@ class AuthCubit extends Cubit<AuthState> {
       _tokenStore.clearUserToken(),
       _tokenStore.clearDoctorToken(),
       _tokenStore.clearHospitalToken(),
+      _tokenStore.clearClinicToken(),
       _tokenStore.clearIsDoctor(),
     ]);
     emit(state.copyWith(

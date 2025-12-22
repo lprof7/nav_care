@@ -32,6 +32,9 @@ class DioClient {
         if (options.extra['useHospitalToken'] == true) {
           token =
               tokenStore == null ? null : await tokenStore!.getHospitalToken();
+          if ((token == null || token.isEmpty) && tokenStore != null) {
+            token = await tokenStore!.getClinicToken();
+          }
         } else if (options.extra['useDoctorToken'] == true) {
           token = tokenStore == null ? null : await tokenStore!.getDoctorToken();
         } else {
@@ -60,6 +63,7 @@ class DioClient {
               if (tokenStore != null) tokenStore!.clearUserToken(),
               if (tokenStore != null) tokenStore!.clearDoctorToken(),
               if (tokenStore != null) tokenStore!.clearHospitalToken(),
+              if (tokenStore != null) tokenStore!.clearClinicToken(),
               if (tokenStore != null) tokenStore!.clearIsDoctor(),
               if (doctorStore != null) doctorStore!.clearDoctor(),
             ]);

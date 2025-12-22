@@ -32,7 +32,10 @@ class RemoteAppointmentsService implements AppointmentsService {
 
   @override
   Future<Result<Map<String, dynamic>>> getMyHospitalAppointments() async {
-    final token = await _tokenStore.getHospitalToken();
+    var token = await _tokenStore.getHospitalToken();
+    if (token == null || token.isEmpty) {
+      token = await _tokenStore.getClinicToken();
+    }
     if (token == null || token.isEmpty) {
       return Result.failure(const Failure.unauthorized());
     }
@@ -50,9 +53,15 @@ class RemoteAppointmentsService implements AppointmentsService {
     required Map<String, dynamic> payload,
     bool useHospitalToken = false,
   }) async {
-    final token = useHospitalToken
-        ? await _tokenStore.getHospitalToken()
-        : await _tokenStore.getDoctorToken();
+    String? token;
+    if (useHospitalToken) {
+      token = await _tokenStore.getHospitalToken();
+      if (token == null || token.isEmpty) {
+        token = await _tokenStore.getClinicToken();
+      }
+    } else {
+      token = await _tokenStore.getDoctorToken();
+    }
     if (token == null || token.isEmpty) {
       return Result.failure(const Failure.unauthorized());
     }

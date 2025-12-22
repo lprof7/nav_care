@@ -14,6 +14,7 @@ import 'package:nav_care_offers_app/presentation/features/shell/view/nav_shell_p
 import 'package:nav_care_offers_app/presentation/features/clinics/clinic_creation/view/clinic_form_page.dart';
 import 'package:nav_care_offers_app/presentation/features/clinics/clinic_creation/viewmodel/clinic_creation_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/clinics/viewmodel/clinics_cubit.dart';
+import 'package:nav_care_offers_app/presentation/features/clinics/view/clinic_shell_page.dart';
 import 'package:nav_care_offers_app/presentation/features/doctors/view/doctor_detail_page.dart';
 import 'package:nav_care_offers_app/presentation/features/doctors/view/doctors_list_page.dart';
 import 'package:nav_care_offers_app/presentation/features/doctors/viewmodel/doctors_cubit.dart';
@@ -63,7 +64,14 @@ enum AppRoute {
   hospitalServiceOfferings('/hospitals/:hospitalId/service-offerings'),
   hospitalServiceOfferingsNew('/hospitals/:hospitalId/service-offerings/new'),
   hospitalServiceOfferingsEdit('/hospitals/:hospitalId/service-offerings/:offeringId/edit'),
-  hospitalServiceOfferingsDetail('/hospitals/:hospitalId/service-offerings/:offeringId/detail');
+  hospitalServiceOfferingsDetail('/hospitals/:hospitalId/service-offerings/:offeringId/detail'),
+  clinicShell('/clinics/:id/app'),
+  clinicEdit('/clinics/:id/edit'),
+  clinicDoctors('/clinics/:clinicId/doctors'),
+  clinicServiceOfferings('/clinics/:clinicId/service-offerings'),
+  clinicServiceOfferingsNew('/clinics/:clinicId/service-offerings/new'),
+  clinicServiceOfferingsEdit('/clinics/:clinicId/service-offerings/:offeringId/edit'),
+  clinicServiceOfferingsDetail('/clinics/:clinicId/service-offerings/:offeringId/detail');
 
   const AppRoute(this.path);
 
@@ -335,6 +343,83 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
           final offering = st.extra;
           return ServiceOfferingDetailPage(
             hospitalId: hospitalId,
+            offeringId: offeringId,
+            initial: offering is ServiceOffering ? offering : null,
+            allowDelete: true,
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoute.clinicShell.path,
+        builder: (ctx, st) {
+          final id = st.pathParameters['id'] ?? '';
+          final passed = st.extra;
+          final clinic = passed is Hospital
+              ? passed
+              : sl<HospitalsRepository>().findById(id);
+          if (clinic == null) {
+            return HospitalDetailPage(hospitalId: id);
+          }
+          return ClinicShellPage(hospital: clinic);
+        },
+      ),
+      GoRoute(
+        path: AppRoute.clinicEdit.path,
+        builder: (ctx, st) {
+          final id = st.pathParameters['id'] ?? '';
+          final passed = st.extra;
+          final clinic = passed is Hospital
+              ? passed
+              : sl<HospitalsRepository>().findById(id);
+          return HospitalFormPage(initial: clinic, isClinicContext: true);
+        },
+      ),
+      GoRoute(
+        path: AppRoute.clinicDoctors.path,
+        builder: (ctx, st) {
+          final clinicId = st.pathParameters['clinicId'] ?? '';
+          return BlocProvider(
+            create: (context) => sl<DoctorsCubit>(),
+            child: DoctorsListPage(hospitalId: clinicId),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoute.clinicServiceOfferings.path,
+        builder: (ctx, st) {
+          final clinicId = st.pathParameters['clinicId'] ?? '';
+          return BlocProvider(
+            create: (context) => sl<ServiceOfferingsCubit>(),
+            child: ServiceOfferingsPage(hospitalId: clinicId),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoute.clinicServiceOfferingsNew.path,
+        builder: (ctx, st) {
+          final clinicId = st.pathParameters['clinicId'] ?? '';
+          return ServiceOfferingFormPage(hospitalId: clinicId);
+        },
+      ),
+      GoRoute(
+        path: AppRoute.clinicServiceOfferingsEdit.path,
+        builder: (ctx, st) {
+          final clinicId = st.pathParameters['clinicId'] ?? '';
+          final offering = st.extra;
+          return ServiceOfferingFormPage(
+            hospitalId: clinicId,
+            initial: offering is ServiceOffering ? offering : null,
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoute.clinicServiceOfferingsDetail.path,
+        builder: (ctx, st) {
+          final clinicId = st.pathParameters['clinicId'] ?? '';
+          final offeringId = st.pathParameters['offeringId'] ?? '';
+          final offering = st.extra;
+          return ServiceOfferingDetailPage(
+            hospitalId: clinicId,
             offeringId: offeringId,
             initial: offering is ServiceOffering ? offering : null,
             allowDelete: true,

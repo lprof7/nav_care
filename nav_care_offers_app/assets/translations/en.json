@@ -382,11 +382,66 @@
         }
     },
     "clinics": {
+        "list": {
+            "error_generic": "We couldn't load your clinics right now."
+        },
+        "actions": {
+            "add_offering": "Add offering",
+            "delete": "Delete clinic",
+            "edit": "Edit clinic",
+            "manage": "Manage clinic",
+            "retry": "Try again",
+            "view_details": "View details"
+        },
+        "facility_type": {
+            "hospital": "Hospital",
+            "clinic": "Clinic",
+            "unknown": "Facility"
+        },
+        "detail": {
+            "about": "About",
+            "contact": "Contact Information",
+            "delete": "Delete clinic",
+            "deleting": "Deleting...",
+            "delete_confirm_title": "Delete clinic",
+            "delete_confirm_message": "Are you sure you want to remove this clinic? This action cannot be undone.",
+            "delete_cancel": "Cancel",
+            "delete_confirm": "Delete",
+            "delete_success": "Clinic removed successfully.",
+            "edit": "Edit clinic",
+            "facility_type": "Facility type",
+            "invite_doctor": "Invite a doctor",
+            "no_description": "No description available.",
+            "overview": "Overview",
+            "phone": "Contact phone",
+            "search_doctors": "Search doctors...",
+            "tabs": {
+                "clinics": "Clinics",
+                "doctors": "Doctors",
+                "invitations": "Invitations",
+                "offerings": "Service offerings"
+            },
+            "stats": {
+                "clinics": "Clinics",
+                "doctors": "Doctors",
+                "offerings": "Offerings"
+            },
+            "clinics_empty": "No clinics available for this clinic.",
+            "doctors_empty": "No doctors available for this clinic.",
+            "offerings_empty": "No service offerings available for this clinic.",
+            "invitations_empty": "No invitations yet."
+        },
         "form": {
             "create_title": "Add clinic",
             "edit_title": "Edit clinic",
             "name": "Clinic name",
             "description_en": "Description (English)",
+            "facility_type": {
+                "label": "Facility type",
+                "hospital": "Hospital",
+                "clinic": "Clinic",
+                "unknown": "Facility"
+            },
             "address": "Address",
             "phone_label": "Phone numbers",
             "phone_hint": "+1234567890",

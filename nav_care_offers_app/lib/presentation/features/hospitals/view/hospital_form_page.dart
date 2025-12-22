@@ -11,22 +11,30 @@ import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart
 
 class HospitalFormPage extends StatelessWidget {
   final Hospital? initial;
+  final bool isClinicContext;
 
-  const HospitalFormPage({super.key, this.initial});
+  const HospitalFormPage({super.key, this.initial, this.isClinicContext = false});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<HospitalFormCubit>(param1: initial),
-      child: _HospitalFormView(initial: initial),
+      child: _HospitalFormView(
+        initial: initial,
+        isClinicContext: isClinicContext,
+      ),
     );
   }
 }
 
 class _HospitalFormView extends StatefulWidget {
   final Hospital? initial;
+  final bool isClinicContext;
 
-  const _HospitalFormView({required this.initial});
+  const _HospitalFormView({
+    required this.initial,
+    required this.isClinicContext,
+  });
 
   @override
   State<_HospitalFormView> createState() => _HospitalFormViewState();
@@ -42,6 +50,8 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
   final List<_SocialField> _socialFields = [];
   final List<XFile> _selectedImages = []; // Changed to store XFile
   final ImagePicker _picker = ImagePicker(); // Image picker instance
+
+  String get _prefix => widget.isClinicContext ? 'clinics' : 'hospitals';
 
   @override
   void initState() {
@@ -92,8 +102,8 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
             SnackBar(
               content: Text(
                 isEditing
-                    ? 'hospitals.form.success_update'.tr()
-                    : 'hospitals.form.success_create'.tr(),
+                    ? '$_prefix.form.success_update'.tr()
+                    : '$_prefix.form.success_create'.tr(),
               ),
             ),
           );
@@ -106,8 +116,8 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
           appBar: AppBar(
             title: Text(
               isEditing
-                  ? 'hospitals.form.edit_title'.tr()
-                  : 'hospitals.form.create_title'.tr(),
+                  ? '$_prefix.form.edit_title'.tr()
+                  : '$_prefix.form.create_title'.tr(),
             ),
           ),
           body: SingleChildScrollView(
@@ -120,7 +130,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                   TextFormField(
                     controller: _nameController,
                     decoration: InputDecoration(
-                      labelText: _requiredLabel('hospitals.form.name'.tr()),
+                      labelText: _requiredLabel('$_prefix.form.name'.tr()),
                     ),
                     validator: (value) => value == null || value.trim().isEmpty
                         ? 'field_required'.tr()
@@ -131,7 +141,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                     controller: _descriptionController,
                     decoration: InputDecoration(
                       labelText:
-                          _requiredLabel('hospitals.form.description_en'.tr()),
+                          _requiredLabel('$_prefix.form.description_en'.tr()),
                     ),
                     maxLines: 4,
                     validator: (value) => value == null || value.trim().isEmpty
@@ -143,8 +153,8 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                     DropdownButtonFormField<FacilityType>(
                       value: _facilityType,
                       decoration: InputDecoration(
-                        labelText:
-                            _requiredLabel('hospitals.form.facility_type.label'.tr()),
+                        labelText: _requiredLabel(
+                            '$_prefix.form.facility_type.label'.tr()),
                       ),
                       items: [
                         FacilityType.hospital,
@@ -154,7 +164,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                             (type) => DropdownMenuItem<FacilityType>(
                               value: type,
                               child: Text(type
-                                  .translationKey('hospitals.facility_type')
+                                  .translationKey('$_prefix.facility_type')
                                   .tr()),
                             ),
                           )
@@ -169,18 +179,18 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                   TextFormField(
                     controller: _addressController,
                     decoration: InputDecoration(
-                      labelText: _requiredLabel('hospitals.form.address'.tr()),
+                      labelText: _requiredLabel('$_prefix.form.address'.tr()),
                     ),
                     validator: (value) => value == null || value.trim().isEmpty
                         ? 'field_required'.tr()
                         : null,
                   ),
                   const SizedBox(height: 20),
-                  _SectionLabel(label: 'hospitals.form.phone_label'.tr()),
+                  _SectionLabel(label: '$_prefix.form.phone_label'.tr()),
                   const SizedBox(height: 8),
                   ..._buildDynamicTextFields(
                     controllers: _phoneControllers,
-                    hint: 'hospitals.form.phone_hint'.tr(),
+                    hint: '$_prefix.form.phone_hint'.tr(),
                     onAdd: _addPhoneField,
                     onRemove: (index) => _removeField(
                       index,
@@ -188,7 +198,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  _SectionLabel(label: 'hospitals.form.images.label'.tr()),
+                  _SectionLabel(label: '$_prefix.form.images.label'.tr()),
                   const SizedBox(height: 8),
                   ..._selectedImages
                       .map((image) => Padding(
@@ -223,10 +233,10 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                   TextButton.icon(
                     onPressed: _pickImage,
                     icon: const Icon(Icons.add_photo_alternate),
-                    label: Text('hospitals.form.add_image'.tr()),
+                    label: Text('$_prefix.form.add_image'.tr()),
                   ),
                   const SizedBox(height: 24),
-                  _SectionLabel(label: 'hospitals.form.social.label'.tr()),
+                  _SectionLabel(label: '$_prefix.form.social.label'.tr()),
                   const SizedBox(height: 8),
                   ..._buildSocialFields(),
                   Align(
@@ -235,7 +245,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                       onPressed:
                           _nextAvailableType() == null ? null : _addSocialField,
                       icon: const Icon(Icons.add),
-                      label: Text('hospitals.form.social.add'.tr()),
+                      label: Text('$_prefix.form.social.add'.tr()),
                     ),
                   ),
                   const SizedBox(height: 32),
@@ -243,8 +253,8 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                     top: false,
                     child: AppButton(
                       text: state.isSubmitting
-                          ? 'hospitals.form.saving'.tr()
-                          : 'hospitals.form.save'.tr(),
+                          ? '$_prefix.form.saving'.tr()
+                          : '$_prefix.form.save'.tr(),
                       icon: state.isSubmitting
                           ? SizedBox(
                               width: 16,
@@ -316,7 +326,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
         child: TextButton.icon(
           onPressed: onAdd,
           icon: const Icon(Icons.add),
-          label: Text('hospitals.form.add_entry'.tr()),
+          label: Text('$_prefix.form.add_entry'.tr()),
         ),
       ),
     );
@@ -354,14 +364,14 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
               child: DropdownButtonFormField<String>(
                 value: field.type,
                 decoration: InputDecoration(
-                  labelText: 'hospitals.form.social.type_label'.tr(),
+                  labelText: '$_prefix.form.social.type_label'.tr(),
                 ),
                 items: availableTypes
                     .map(
                       (type) => DropdownMenuItem<String>(
                         value: type,
                         child: Text(
-                          'hospitals.form.social.types.$type'.tr(),
+                          '$_prefix.form.social.types.$type'.tr(),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -378,8 +388,8 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
               child: TextFormField(
                 controller: field.controller,
                 decoration: InputDecoration(
-                  labelText: 'hospitals.form.social.link_label'.tr(),
-                  hintText: 'hospitals.form.social.link_hint'.tr(),
+                  labelText: '$_prefix.form.social.link_label'.tr(),
+                  hintText: '$_prefix.form.social.link_hint'.tr(),
                 ),
               ),
             ),
@@ -484,7 +494,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
 
     if (_selectedImages.isEmpty && cubit.state.isSubmitting) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('hospitals.form.images_required'.tr())),
+        SnackBar(content: Text('$_prefix.form.images_required'.tr())),
       );
       return;
     }

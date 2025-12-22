@@ -8,6 +8,9 @@ abstract class TokenStore {
   Future<String?> getHospitalToken();
   Future<void> setHospitalToken(String token);
   Future<void> clearHospitalToken();
+  Future<String?> getClinicToken();
+  Future<void> setClinicToken(String token);
+  Future<void> clearClinicToken();
   Future<bool?> getIsDoctor();
   Future<void> setIsDoctor(bool value);
   Future<void> clearIsDoctor();
