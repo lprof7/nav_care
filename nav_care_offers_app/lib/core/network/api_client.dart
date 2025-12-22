@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:nav_care_offers_app/core/config/api_config.dart';
-import 'package:nav_care_offers_app/core/config/api_config.dart';
+import 'package:nav_care_offers_app/core/utils/localized_message.dart';
 import '../responses/result.dart';
 import '../responses/failure.dart';
 
@@ -132,7 +132,7 @@ class ApiClient {
         final sc = e.response?.statusCode;
         final rawMessage =
             e.response?.data is Map ? (e.response?.data['message']) : null;
-        final msg = _pickLocalizedMessage(rawMessage);
+        final msg = resolveLocalizedMessage(rawMessage);
         if (sc == 401) return const Failure.unauthorized();
         if (sc == 422) {
           return Failure.validation(
@@ -150,24 +150,5 @@ class ApiClient {
     }
   }
 
-  String _pickLocalizedMessage(dynamic raw) {
-    if (raw is Map) {
-      final map = raw.map((key, value) => MapEntry(key.toString(), value));
-      final orderedKeys = ['ar', 'fr', 'en', 'sp', 'es'];
-      for (final key in orderedKeys) {
-        final val = map[key];
-        if (val is String && val.trim().isNotEmpty) {
-          return val.trim();
-        }
-      }
-      final firstString = map.values.firstWhere(
-        (v) => v is String && v.trim().isNotEmpty,
-        orElse: () => null,
-      );
-      if (firstString is String) return firstString.trim();
-      return map.toString();
-    }
-    if (raw is String) return raw;
-    return '';
-  }
+  
 }

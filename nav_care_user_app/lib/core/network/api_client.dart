@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:intl/intl.dart';
 import 'package:nav_care_user_app/core/config/api_config.dart';
+import 'package:nav_care_user_app/core/utils/localized_message.dart';
 import '../responses/result.dart';
 import '../responses/failure.dart';
 
@@ -113,25 +113,6 @@ class ApiClient {
   }
 
   Failure _mapDio(DioException e) {
-    String _localizedMessage(dynamic message) {
-      if (message is String) return message;
-      if (message is Map) {
-        final locale = Intl.getCurrentLocale().split('_').first;
-        final valueForLocale = message[locale];
-        if (valueForLocale is String && valueForLocale.isNotEmpty) {
-          return valueForLocale;
-        }
-        final fallback = message['en'];
-        if (fallback is String && fallback.isNotEmpty) {
-          return fallback;
-        }
-        for (final entry in message.values) {
-          if (entry is String && entry.isNotEmpty) return entry;
-        }
-      }
-      return '';
-    }
-
     switch (e.type) {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.receiveTimeout:
@@ -140,7 +121,8 @@ class ApiClient {
       case DioExceptionType.badResponse:
         final sc = e.response?.statusCode;
         final data = e.response?.data;
-        final msg = (data is Map) ? _localizedMessage(data['message']) : '';
+        final msg =
+            (data is Map) ? resolveLocalizedMessage(data['message']) : '';
         if (sc == 401) return const Failure.unauthorized();
         if (sc == 422) {
           return Failure.validation(
