@@ -40,8 +40,8 @@ class ClinicDetailsSummaryView extends StatelessWidget {
     required this.onManageDoctors,
     required this.onManageOfferings,
     required this.onEdit,
-    required this.onDelete,
-    required this.isDeleting,
+    this.onDelete,
+    this.isDeleting = false,
     required this.status,
     this.errorMessage,
   });
@@ -77,9 +77,11 @@ class ClinicDetailsSummaryView extends StatelessWidget {
                       doctorsCount: doctorsCount,
                       offeringsCount: offeringsCount,
                       primaryActionLabel: 'clinics.detail.edit'.tr(),
-                      secondaryActionLabel: isDeleting
-                          ? 'clinics.detail.deleting'.tr()
-                          : 'clinics.detail.delete'.tr(),
+                      secondaryActionLabel: onDelete == null
+                          ? null
+                          : isDeleting
+                              ? 'clinics.detail.deleting'.tr()
+                              : 'clinics.detail.delete'.tr(),
                       onPrimaryTap: onEdit,
                       onSecondaryTap: onDelete,
                       isSaved: false,
@@ -104,8 +106,6 @@ class ClinicDetailsSummaryView extends StatelessWidget {
           onManageDoctors: onManageDoctors,
           onManageOfferings: onManageOfferings,
           onEdit: onEdit,
-          onDelete: onDelete,
-          isDeleting: isDeleting,
           status: status,
           errorMessage: errorMessage,
         ),
@@ -126,8 +126,6 @@ List<Widget> _buildDetailsSlivers({
   required VoidCallback onManageDoctors,
   required VoidCallback onManageOfferings,
   required VoidCallback onEdit,
-  required VoidCallback? onDelete,
-  required bool isDeleting,
   required ClinicDetailStatus status,
   required String? errorMessage,
 }) {
@@ -479,7 +477,7 @@ class _HeroForegroundLayer extends StatelessWidget {
   final int doctorsCount;
   final int offeringsCount;
   final String primaryActionLabel;
-  final String secondaryActionLabel;
+  final String? secondaryActionLabel;
   final VoidCallback? onPrimaryTap;
   final VoidCallback? onSecondaryTap;
   final bool isSaved;
@@ -492,7 +490,7 @@ class _HeroForegroundLayer extends StatelessWidget {
     required this.doctorsCount,
     required this.offeringsCount,
     required this.primaryActionLabel,
-    required this.secondaryActionLabel,
+    this.secondaryActionLabel,
     required this.isSaved,
     this.onPrimaryTap,
     this.onSecondaryTap,

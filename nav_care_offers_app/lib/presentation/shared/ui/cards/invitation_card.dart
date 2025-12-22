@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/network_image.dart';
 
 class InvitationCard extends StatelessWidget {
   final String doctorName;
   final String status;
   final String? invitedBy;
+  final String? imageUrl;
   final VoidCallback? onCancel;
   final bool isCancelling;
 
@@ -13,6 +15,7 @@ class InvitationCard extends StatelessWidget {
     required this.doctorName,
     required this.status,
     this.invitedBy,
+    this.imageUrl,
     this.onCancel,
     this.isCancelling = false,
   });
@@ -45,6 +48,22 @@ class InvitationCard extends StatelessWidget {
     final color = _statusColor(context);
     final statusLabel = _statusLabel(context);
     final canCancel = onCancel != null && status.toLowerCase() == 'pending';
+    final fallbackAvatar = Container(
+      height: 44,
+      width: 44,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.12),
+        shape: BoxShape.circle,
+      ),
+      child: Text(
+        doctorName.isNotEmpty ? doctorName.characters.first : '?',
+        style: theme.textTheme.titleMedium?.copyWith(
+          color: color,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -61,15 +80,17 @@ class InvitationCard extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 22,
-            backgroundColor: color.withOpacity(0.12),
-            child: Text(
-              doctorName.isNotEmpty ? doctorName.characters.first : '?',
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: color,
-                fontWeight: FontWeight.w700,
-              ),
+          NetworkImageWrapper(
+            imageUrl: imageUrl,
+            height: 44,
+            width: 44,
+            borderRadius: BorderRadius.circular(22),
+            fit: BoxFit.cover,
+            fallback: fallbackAvatar,
+            shimmerChild: Container(
+              height: 44,
+              width: 44,
+              color: theme.colorScheme.surfaceContainerHighest,
             ),
           ),
           const SizedBox(width: 12),

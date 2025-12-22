@@ -9,12 +9,14 @@ import 'package:nav_care_offers_app/presentation/shared/ui/cards/invitation_card
 class InvitationsTab extends StatefulWidget {
   final List<HospitalInvitation> invitations;
   final HospitalDetailStatus status;
+  final String baseUrl;
   final VoidCallback onReload;
 
   const InvitationsTab({
     super.key,
     required this.invitations,
     required this.status,
+    required this.baseUrl,
     required this.onReload,
   });
 
@@ -67,45 +69,61 @@ class _InvitationsTabState extends State<InvitationsTab> {
       return const Center(child: CircularProgressIndicator());
     }
     if (widget.invitations.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+      return RefreshIndicator(
+        onRefresh: () async => widget.onReload(),
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+          physics: const AlwaysScrollableScrollPhysics(),
           children: [
-            Text('hospitals.detail.invitations_empty'.tr()),
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: widget.onReload,
-              icon: const Icon(Icons.refresh_rounded),
-              label: Text('hospitals.actions.retry'.tr()),
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('hospitals.detail.invitations_empty'.tr()),
+                  const SizedBox(height: 8),
+                  OutlinedButton.icon(
+                    onPressed: widget.onReload,
+                    icon: const Icon(Icons.refresh_rounded),
+                    label: Text('hospitals.actions.retry'.tr()),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-      itemCount: widget.invitations.length,
-      itemBuilder: (context, index) {
-        final inv = widget.invitations[index];
-        final doctorName = inv.inviteeDoctor?.displayName.isNotEmpty == true
-            ? inv.inviteeDoctor!.displayName
-            : inv.inviteeDoctor?.userId ?? '?';
-        final effectiveStatus =
-            _cancelledIds.contains(inv.id) ? 'cancelled' : inv.status;
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: InvitationCard(
-            doctorName: doctorName,
-            status: effectiveStatus,
-            invitedBy: inv.invitedByName,
-            onCancel: effectiveStatus == 'pending'
-                ? () => _cancelInvitation(context, inv)
-                : null,
-            isCancelling: _cancellingIds.contains(inv.id),
-          ),
-        );
-      },
+    return RefreshIndicator(
+      onRefresh: () async => widget.onReload(),
+      child: ListView.builder(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: widget.invitations.length,
+        itemBuilder: (context, index) {
+          final inv = widget.invitations[index];
+          final doctorName = inv.inviteeDoctor?.displayName.isNotEmpty == true
+              ? inv.inviteeDoctor!.displayName
+              : inv.inviteeDoctor?.userId ?? '?';
+          final imageUrl =
+              inv.inviteeDoctor?.avatarImage(baseUrl: widget.baseUrl);
+          final effectiveStatus =
+              _cancelledIds.contains(inv.id) ? 'cancelled' : inv.status;
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: InvitationCard(
+              doctorName: doctorName,
+              status: effectiveStatus,
+              invitedBy: inv.invitedByName,
+              imageUrl: imageUrl,
+              onCancel: effectiveStatus == 'pending'
+                  ? () => _cancelInvitation(context, inv)
+                  : null,
+              isCancelling: _cancellingIds.contains(inv.id),
+            ),
+          );
+        },
+      ),
     );
   }
 }

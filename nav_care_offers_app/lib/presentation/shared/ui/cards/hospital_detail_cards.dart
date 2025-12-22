@@ -106,7 +106,7 @@ class HospitalOverviewCard extends StatelessWidget {
   final String? imageUrl;
   final List<HospitalOverviewStat> stats;
   final String primaryActionLabel;
-  final String secondaryActionLabel;
+  final String? secondaryActionLabel;
   final VoidCallback? onPrimaryTap;
   final VoidCallback? onSecondaryTap;
   final bool isSaved;
@@ -119,7 +119,7 @@ class HospitalOverviewCard extends StatelessWidget {
     this.rating = 0,
     required this.stats,
     required this.primaryActionLabel,
-    required this.secondaryActionLabel,
+    this.secondaryActionLabel,
     this.imageUrl,
     this.onPrimaryTap,
     this.onSecondaryTap,
@@ -226,15 +226,17 @@ class HospitalOverviewCard extends StatelessWidget {
                   onPressed: onPrimaryTap,
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _SolidActionButton(
-                  label: secondaryActionLabel,
-                  icon: Icons.delete_outline_rounded,
-                  color: theme.colorScheme.error,
-                  onPressed: onSecondaryTap,
+              if (secondaryActionLabel != null) ...[
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _SolidActionButton(
+                    label: secondaryActionLabel!,
+                    icon: Icons.delete_outline_rounded,
+                    color: theme.colorScheme.error,
+                    onPressed: onSecondaryTap,
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ],

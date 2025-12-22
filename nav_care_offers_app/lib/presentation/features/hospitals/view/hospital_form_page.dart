@@ -6,8 +6,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
 import 'package:nav_care_offers_app/data/hospitals/models/hospital_payload.dart';
+import 'package:nav_care_offers_app/data/hospitals/hospitals_repository.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/hospital_form_cubit.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
+import 'package:nav_care_offers_app/presentation/shared/theme/colors.dart';
 
 class HospitalFormPage extends StatelessWidget {
   final Hospital? initial;
@@ -50,6 +52,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
   final List<_SocialField> _socialFields = [];
   final List<XFile> _selectedImages = []; // Changed to store XFile
   final ImagePicker _picker = ImagePicker(); // Image picker instance
+  bool _isDeleting = false;
 
   String get _prefix => widget.isClinicContext ? 'clinics' : 'hospitals';
 
@@ -251,22 +254,51 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                   const SizedBox(height: 32),
                   SafeArea(
                     top: false,
-                    child: AppButton(
-                      text: state.isSubmitting
-                          ? '$_prefix.form.saving'.tr()
-                          : '$_prefix.form.save'.tr(),
-                      icon: state.isSubmitting
-                          ? SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: onPrimary,
-                              ),
-                            )
-                          : const Icon(Icons.check_outlined),
-                      onPressed:
-                          state.isSubmitting ? null : () => _submit(context),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AppButton(
+                          text: state.isSubmitting
+                              ? '$_prefix.form.saving'.tr()
+                              : '$_prefix.form.save'.tr(),
+                          icon: state.isSubmitting
+                              ? SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: onPrimary,
+                                  ),
+                                )
+                              : const Icon(Icons.check_outlined),
+                          onPressed:
+                              state.isSubmitting ? null : () => _submit(context),
+                        ),
+                        if (isEditing) ...[
+                          const SizedBox(height: 12),
+                          AppButton(
+                            text: '$_prefix.detail.delete'.tr(),
+                            color: AppColors.error,
+                            textColor: AppColors.textOnPrimary,
+                            icon: _isDeleting
+                                ? const SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: AppColors.textOnPrimary,
+                                    ),
+                                  )
+                                : const Icon(
+                                    Icons.delete_outline,
+                                    color: AppColors.textOnPrimary,
+                                  ),
+                            onPressed: state.isSubmitting || _isDeleting
+                                ? null
+                                : () => _confirmDelete(context),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                 ],
@@ -515,6 +547,77 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     );
 
     cubit.submit(payload);
+  }
+
+  Future<void> _confirmDelete(BuildContext context) async {
+    if (widget.initial == null || _isDeleting) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) {
+        final theme = Theme.of(ctx);
+        final cancelTextColor =
+            theme.brightness == Brightness.dark ? Colors.white : Colors.black87;
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          title: Text('$_prefix.detail.delete_confirm_title'.tr()),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('$_prefix.detail.delete_confirm_message'.tr()),
+              const SizedBox(height: 18),
+              AppButton(
+                text: '$_prefix.detail.delete_confirm'.tr(),
+                color: theme.colorScheme.error,
+                textColor: theme.colorScheme.onError,
+                icon: const Icon(Icons.delete_outline, color: Colors.white),
+                onPressed: () => Navigator.of(ctx).pop(true),
+              ),
+              const SizedBox(height: 10),
+              AppButton(
+                text: '$_prefix.detail.delete_cancel'.tr(),
+                color: theme.colorScheme.surfaceVariant,
+                textColor: cancelTextColor,
+                icon: Icon(Icons.close_rounded, color: cancelTextColor),
+                onPressed: () => Navigator.of(ctx).pop(false),
+              ),
+            ],
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        );
+      },
+    );
+
+    if (confirmed == true && context.mounted) {
+      await _deleteHospital(context);
+    }
+  }
+
+  Future<void> _deleteHospital(BuildContext context) async {
+    if (widget.initial == null) return;
+    setState(() => _isDeleting = true);
+    final repository = sl<HospitalsRepository>();
+    final result = await repository.deleteHospital(widget.initial!.id);
+
+    if (!mounted) return;
+    setState(() => _isDeleting = false);
+
+    result.fold(
+      onFailure: (failure) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(failure.message)),
+        );
+      },
+      onSuccess: (_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$_prefix.detail.delete_success'.tr())),
+        );
+        context.pop(true);
+      },
+    );
   }
 }
 

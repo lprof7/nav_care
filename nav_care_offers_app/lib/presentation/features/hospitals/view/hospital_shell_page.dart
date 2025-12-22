@@ -24,6 +24,7 @@ import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/ho
 import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/hospital_reviews_state.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/invite_doctor_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/shell/viewmodel/nav_shell_cubit.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/doctor_grid_card.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/hospital_detail_cards.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/invitation_card.dart';
@@ -244,10 +245,6 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
           onManageOfferings: () =>
               _openServiceOfferings(shellContext, hospital),
           onEdit: () => _openEdit(shellContext, hospital),
-          onDelete: detailState.isDeleting
-              ? null
-              : () => _confirmDelete(shellContext, hospital),
-          isDeleting: detailState.isDeleting,
           status: detailState.status,
           errorMessage: detailState.errorMessage,
         ),
@@ -287,7 +284,6 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
     if (_overlay == _ShellOverlay.exit) return;
     setState(() => _overlay = _ShellOverlay.exit);
   }
-
 
   void _openManage(
     BuildContext context,
@@ -390,58 +386,12 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
         .push('/hospitals/${hospital.id}/edit', extra: hospital)
         .then((value) {
       if (value == true) {
-        context.pop(true);
+        context.go(AppRoute.home.path);
       } else if (value is Hospital) {
         cubit.updateHospital(value);
         cubit.loadDetails(refresh: true);
       }
     });
-  }
-
-  Future<void> _confirmDelete(BuildContext context, Hospital hospital) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) {
-        final theme = Theme.of(ctx);
-        final cancelTextColor =
-            theme.brightness == Brightness.dark ? Colors.white : Colors.black87;
-        return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-          insetPadding:
-              const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          title: Text('hospitals.detail.delete_confirm_title'.tr()),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('hospitals.detail.delete_confirm_message'.tr()),
-              const SizedBox(height: 18),
-              FilledButton.icon(
-                onPressed: () => Navigator.of(ctx).pop(true),
-                icon: const Icon(Icons.delete_outline, color: Colors.white),
-                label: Text('hospitals.detail.delete_confirm'.tr()),
-              ),
-              const SizedBox(height: 10),
-              OutlinedButton.icon(
-                onPressed: () => Navigator.of(ctx).pop(false),
-                icon: const Icon(Icons.close_rounded),
-                label: Text('hospitals.detail.delete_cancel'.tr()),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: cancelTextColor,
-                ),
-              ),
-            ],
-          ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-        );
-      },
-    );
-
-    if (confirmed == true && context.mounted) {
-      await context.read<HospitalDetailCubit>().deleteHospital();
-    }
   }
 }
 
@@ -699,11 +649,11 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
                         child: GridView.builder(
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                           gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
+                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 220,
+                            mainAxisExtent: 290,
                             mainAxisSpacing: 14,
                             crossAxisSpacing: 14,
-                            childAspectRatio: 0.64,
                           ),
                           itemCount: 1,
                           itemBuilder: (context, index) {
@@ -719,11 +669,11 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
                 : GridView.builder(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                     gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
+                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 220,
+                      mainAxisExtent: 290,
                       mainAxisSpacing: 14,
                       crossAxisSpacing: 14,
-                      childAspectRatio: 0.64,
                     ),
                     itemCount: filtered.length + 1,
                     itemBuilder: (context, index) {
@@ -759,45 +709,61 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
     }
 
     if (widget.invitations.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+      return RefreshIndicator(
+        onRefresh: () async => widget.onReload(),
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+          physics: const AlwaysScrollableScrollPhysics(),
           children: [
-            Text('hospitals.detail.invitations_empty'.tr()),
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: widget.onInvite,
-              icon: const Icon(Icons.person_add_alt_1_rounded),
-              label: Text('hospitals.detail.invite_doctor'.tr()),
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('hospitals.detail.invitations_empty'.tr()),
+                  const SizedBox(height: 8),
+                  OutlinedButton.icon(
+                    onPressed: widget.onInvite,
+                    icon: const Icon(Icons.person_add_alt_1_rounded),
+                    label: Text('hospitals.detail.invite_doctor'.tr()),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-      itemCount: widget.invitations.length,
-      itemBuilder: (context, index) {
-        final inv = widget.invitations[index];
-        final doctorName = inv.inviteeDoctor?.displayName.isNotEmpty == true
-            ? inv.inviteeDoctor!.displayName
-            : inv.inviteeDoctor?.userId ?? '?';
-        final effectiveStatus =
-            _cancelledIds.contains(inv.id) ? 'cancelled' : inv.status;
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: InvitationCard(
-            doctorName: doctorName,
-            status: effectiveStatus,
-            invitedBy: inv.invitedByName,
-            onCancel: effectiveStatus == 'pending'
-                ? () => _cancelInvitation(context, inv)
-                : null,
-            isCancelling: _cancellingIds.contains(inv.id),
-          ),
-        );
-      },
+    return RefreshIndicator(
+      onRefresh: () async => widget.onReload(),
+      child: ListView.builder(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: widget.invitations.length,
+        itemBuilder: (context, index) {
+          final inv = widget.invitations[index];
+          final doctorName = inv.inviteeDoctor?.displayName.isNotEmpty == true
+              ? inv.inviteeDoctor!.displayName
+              : inv.inviteeDoctor?.userId ?? '?';
+          final imageUrl =
+              inv.inviteeDoctor?.avatarImage(baseUrl: widget.baseUrl);
+          final effectiveStatus =
+              _cancelledIds.contains(inv.id) ? 'cancelled' : inv.status;
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: InvitationCard(
+              doctorName: doctorName,
+              status: effectiveStatus,
+              invitedBy: inv.invitedByName,
+              imageUrl: imageUrl,
+              onCancel: effectiveStatus == 'pending'
+                  ? () => _cancelInvitation(context, inv)
+                  : null,
+              isCancelling: _cancellingIds.contains(inv.id),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -1305,26 +1271,15 @@ class HospitalProfileTab extends StatelessWidget {
                     context.read<HospitalReviewsCubit>().loadMore(),
               ),
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: FilledButton.icon(
-                      onPressed: onEdit,
-                      icon: const Icon(Icons.edit_rounded),
-                      label: Text('hospitals.actions.edit'.tr()),
-                    ),
+              Center(
+                child: SizedBox(
+                  width: 220,
+                  child: AppButton(
+                    text: 'hospitals.actions.edit'.tr(),
+                    icon: const Icon(Icons.edit_rounded),
+                    onPressed: onEdit,
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: onDelete,
-                      icon: const Icon(Icons.delete_outline_rounded),
-                      label: isDeleting
-                          ? Text('hospitals.detail.deleting'.tr())
-                          : Text('hospitals.actions.delete'.tr()),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ]),
           ),
