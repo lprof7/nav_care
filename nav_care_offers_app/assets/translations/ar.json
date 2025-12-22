@@ -122,13 +122,17 @@
       "menu": "فتح القائمة",
       "support": "الدعم",
       "favorites": "المفضلة",
-      "notifications": "الإشعارات"
+      "notifications": "الإشعارات",
+      "exit": "????"
     },
     "onboarding": {
       "hospital_title": "أنت مسجّل الدخول كمستشفى",
       "clinic_title": "أنت مسجّل الدخول كعيادة",
       "welcome": "مرحبًا {name}",
-      "continue": "متابعة"
+      "continue": "متابعة",
+      "exit_hospital_title": "تم تسجيل الخروج من المستشفى",
+      "exit_clinic_title": "تم تسجيل الخروج من العيادة",
+      "exit_message": "نراك قريبًا، {name}"
     },
     "drawer_logout": "تسجيل الخروج"
   },

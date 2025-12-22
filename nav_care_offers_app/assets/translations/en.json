@@ -97,13 +97,16 @@
         "menu": "Open menu",
         "support": "Support",
         "favorites": "Favorites",
-        "notifications": "Notifications"
+        "notifications": "Notifications",
+        "exit": "Exit"
     },
     "onboarding": {
         "hospital_title": "You're signed in as a hospital",
         "clinic_title": "You're signed in as a clinic",
         "welcome": "Welcome {name}",
-        "continue": "Continue"
+        "exit_hospital_title": "You're signed out from the hospital",
+        "exit_clinic_title": "You're signed out from the clinic",
+        "exit_message": "See you soon, {name}"
     },
     "drawer_logout": "Sign out"
 },

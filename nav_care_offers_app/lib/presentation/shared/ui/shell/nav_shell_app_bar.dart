@@ -50,7 +50,7 @@ class NavShellAppBar extends StatelessWidget implements PreferredSizeWidget {
               _RoundedIconButton(
                 icon: leadingIcon,
                 tooltip: useBackButton
-                    ? 'shell.drawer_logout'.tr()
+                    ? 'shell.app_bar.exit'.tr()
                     : 'shell.app_bar.menu'.tr(),
                 onPressed: leadingOnPressed,
               ),

@@ -54,7 +54,7 @@ class ClinicShellPage extends StatefulWidget {
 
 class _ClinicShellPageState extends State<ClinicShellPage> {
   bool _appointmentsLoaded = false;
-  bool _showOnboarding = true;
+  _ShellOverlay _overlay = _ShellOverlay.entry;
 
   @override
   Widget build(BuildContext context) {
@@ -97,32 +97,41 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
             return Scaffold(
               appBar: NavShellAppBar(
                 useBackButton: true,
-                onBackTap: () => context.go(AppRoute.home.path),
+                onBackTap: () => _showExit(context),
                 notificationCount: 0,
                 onNotificationsTap: () => context.push('/notifications'),
               ),
-              body: _showOnboarding
+              body: _overlay == _ShellOverlay.entry
                   ? ShellOnboardingPage(
                       title: 'shell.onboarding.clinic_title'.tr(),
-                      name: displayName,
-                      onContinue: () =>
-                          setState(() => _showOnboarding = false),
+                      subtitle: 'shell.onboarding.welcome'
+                          .tr(namedArgs: {'name': displayName}),
+                      onFinished: () =>
+                          setState(() => _overlay = _ShellOverlay.none),
                     )
-                  : _buildBody(
-                      detailState, destinations, navState.currentIndex),
-              bottomNavigationBar: _showOnboarding
-                  ? null
-                  : NavShellNavBar(
+                  : _overlay == _ShellOverlay.exit
+                      ? ShellOnboardingPage(
+                          title: 'shell.onboarding.exit_clinic_title'.tr(),
+                          subtitle: 'shell.onboarding.exit_message'
+                              .tr(namedArgs: {'name': displayName}),
+                          icon: Icons.logout_rounded,
+                          onFinished: () => context.go(AppRoute.home.path),
+                        )
+                      : _buildBody(
+                          detailState, destinations, navState.currentIndex),
+              bottomNavigationBar: _overlay == _ShellOverlay.none
+                  ? NavShellNavBar(
                       currentIndex: navState.currentIndex,
                       destinations: destinations,
                       onTap: (index) => _onDestinationSelected(context, index),
-                    ),
+                    )
+                  : null,
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.centerFloat,
-              floatingActionButton: _showOnboarding
-                  ? null
-                  : _buildFab(
-                      context, navState.currentIndex, detailState, baseUrl),
+              floatingActionButton: _overlay == _ShellOverlay.none
+                  ? _buildFab(
+                      context, navState.currentIndex, detailState, baseUrl)
+                  : null,
             );
           },
         ),
@@ -254,6 +263,11 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
       if (authCubit.state.status != AuthStatus.authenticated) return;
     }
     context.read<NavShellCubit>().setTab(index);
+  }
+
+  void _showExit(BuildContext context) {
+    if (_overlay == _ShellOverlay.exit) return;
+    setState(() => _overlay = _ShellOverlay.exit);
   }
 
 
@@ -396,6 +410,12 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
       await context.read<ClinicDetailCubit>().deleteHospital();
     }
   }
+}
+
+enum _ShellOverlay {
+  none,
+  entry,
+  exit,
 }
 
 class ClinicsTabContent extends StatelessWidget {
