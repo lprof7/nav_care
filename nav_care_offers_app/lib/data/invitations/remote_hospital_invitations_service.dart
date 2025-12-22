@@ -17,6 +17,35 @@ class RemoteHospitalInvitationsService implements HospitalInvitationsService {
     );
   }
 
+  @override
+  Future<Result<HospitalInvitation>> createInvitation({
+    required String doctorId,
+    required String purpose,
+  }) {
+    return _apiClient.post<HospitalInvitation>(
+      _apiClient.apiConfig.hospitalInvitations,
+      body: {
+        'doctorId': doctorId,
+        'purpose': purpose,
+      },
+      parser: _parseInvitation,
+      useHospitalToken: true,
+    );
+  }
+
+  @override
+  Future<Result<HospitalInvitation>> cancelInvitation({
+    required String invitationId,
+  }) {
+    final path = '${_apiClient.apiConfig.hospitalInvitations}/$invitationId';
+    return _apiClient.patch<HospitalInvitation>(
+      path,
+      body: const {'status': 'cancelled'},
+      parser: _parseUpdatedInvitation,
+      useHospitalToken: true,
+    );
+  }
+
   List<HospitalInvitation> _parseInvitations(dynamic json) {
     if (json is Map<String, dynamic>) {
       final data = json['data'] is Map<String, dynamic> ? json['data'] : json;
@@ -30,5 +59,37 @@ class RemoteHospitalInvitationsService implements HospitalInvitationsService {
       }
     }
     return const [];
+  }
+
+  HospitalInvitation _parseInvitation(dynamic json) {
+    if (json is Map<String, dynamic>) {
+      final data = json['data'] is Map<String, dynamic> ? json['data'] : json;
+      final invitation = data?['invitation'];
+      if (invitation is Map) {
+        return HospitalInvitation.fromJson(
+            invitation.map((key, value) => MapEntry(key.toString(), value)));
+      }
+      if (data is Map) {
+        return HospitalInvitation.fromJson(
+            data.map((key, value) => MapEntry(key.toString(), value)));
+      }
+    }
+    return HospitalInvitation(id: '', status: 'pending');
+  }
+
+  HospitalInvitation _parseUpdatedInvitation(dynamic json) {
+    if (json is Map<String, dynamic>) {
+      final data = json['data'] is Map<String, dynamic> ? json['data'] : json;
+      final invitation = data?['updatedInvitation'];
+      if (invitation is Map) {
+        return HospitalInvitation.fromJson(
+            invitation.map((key, value) => MapEntry(key.toString(), value)));
+      }
+      if (data is Map) {
+        return HospitalInvitation.fromJson(
+            data.map((key, value) => MapEntry(key.toString(), value)));
+      }
+    }
+    return HospitalInvitation(id: '', status: 'cancelled');
   }
 }

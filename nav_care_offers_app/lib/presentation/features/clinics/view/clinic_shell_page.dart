@@ -12,6 +12,7 @@ import 'package:nav_care_offers_app/presentation/features/authentication/auth_cu
 import 'package:nav_care_offers_app/data/clinics/models/clinic_model.dart';
 import 'package:nav_care_offers_app/data/doctors/models/doctor_model.dart';
 import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
+import 'package:nav_care_offers_app/data/invitations/hospital_invitations_repository.dart';
 import 'package:nav_care_offers_app/data/invitations/models/hospital_invitation.dart';
 import 'package:nav_care_offers_app/data/service_offerings/models/service_offering.dart';
 import 'package:nav_care_offers_app/data/reviews/hospital_reviews/models/hospital_review_model.dart';
@@ -493,6 +494,8 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   String _query = '';
+  final Set<String> _cancellingIds = {};
+  final Set<String> _cancelledIds = {};
 
   @override
   void initState() {
@@ -506,13 +509,66 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
     super.dispose();
   }
 
+  Future<void> _cancelInvitation(
+    BuildContext context,
+    HospitalInvitation invitation,
+  ) async {
+    if (_cancellingIds.contains(invitation.id)) return;
+    setState(() => _cancellingIds.add(invitation.id));
+
+    final result = await sl<HospitalInvitationsRepository>()
+        .cancelInvitation(invitationId: invitation.id);
+
+    if (!mounted) return;
+
+    result.fold(
+      onFailure: (failure) {
+        setState(() => _cancellingIds.remove(invitation.id));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(failure.message)),
+        );
+      },
+      onSuccess: (_) {
+        setState(() {
+          _cancellingIds.remove(invitation.id);
+          _cancelledIds.add(invitation.id);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تم الغاء الدعوة')),
+        );
+        widget.onReload();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final indicatorColor = theme.colorScheme.primary;
+    final unselectedColor = isDark
+        ? theme.textTheme.bodyMedium?.color?.withOpacity(0.7)
+        : Colors.grey.shade600;
+
     return Column(
       children: [
         TabBar(
           controller: _tabController,
-          labelColor: Theme.of(context).colorScheme.primary,
+          isScrollable: true,
+          tabAlignment: TabAlignment.center,
+          indicatorSize: TabBarIndicatorSize.tab,
+          dividerColor: Colors.transparent,
+          indicatorPadding: EdgeInsets.zero,
+          labelPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
+          indicator: BoxDecoration(
+            color: indicatorColor,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          labelColor: theme.colorScheme.onPrimary,
+          unselectedLabelColor: unselectedColor,
+          labelStyle: theme.textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
           tabs: [
             Tab(text: 'clinics.detail.tabs.doctors'.tr()),
             Tab(text: 'clinics.detail.tabs.invitations'.tr()),
@@ -636,12 +692,18 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
         final doctorName = inv.inviteeDoctor?.displayName.isNotEmpty == true
             ? inv.inviteeDoctor!.displayName
             : inv.inviteeDoctor?.userId ?? '?';
+        final effectiveStatus =
+            _cancelledIds.contains(inv.id) ? 'cancelled' : inv.status;
         return Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: InvitationCard(
             doctorName: doctorName,
-            status: inv.status,
+            status: effectiveStatus,
             invitedBy: inv.invitedByName,
+            onCancel: effectiveStatus == 'pending'
+                ? () => _cancelInvitation(context, inv)
+                : null,
+            isCancelling: _cancellingIds.contains(inv.id),
           ),
         );
       },

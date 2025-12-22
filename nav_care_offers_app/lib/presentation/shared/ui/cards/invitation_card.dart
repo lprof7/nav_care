@@ -5,12 +5,16 @@ class InvitationCard extends StatelessWidget {
   final String doctorName;
   final String status;
   final String? invitedBy;
+  final VoidCallback? onCancel;
+  final bool isCancelling;
 
   const InvitationCard({
     super.key,
     required this.doctorName,
     required this.status,
     this.invitedBy,
+    this.onCancel,
+    this.isCancelling = false,
   });
 
   Color _statusColor(BuildContext context) {
@@ -40,6 +44,8 @@ class InvitationCard extends StatelessWidget {
     final theme = Theme.of(context);
     final color = _statusColor(context);
     final statusLabel = _statusLabel(context);
+    final canCancel =
+        onCancel != null && status.toLowerCase() == 'pending';
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -95,15 +101,40 @@ class InvitationCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          Chip(
-            label: Text(statusLabel),
-            labelStyle: theme.textTheme.labelMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: color,
-            ),
-            backgroundColor: color.withOpacity(0.12),
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            side: BorderSide(color: color.withOpacity(0.3)),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Chip(
+                label: Text(statusLabel),
+                labelStyle: theme.textTheme.labelMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: color,
+                ),
+                backgroundColor: color.withOpacity(0.12),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                side: BorderSide(color: color.withOpacity(0.3)),
+              ),
+              if (canCancel) ...[
+                const SizedBox(height: 6),
+                OutlinedButton(
+                  onPressed: isCancelling ? null : onCancel,
+                  style: OutlinedButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: isCancelling
+                      ? const SizedBox(
+                          height: 14,
+                          width: 14,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('الغاء الدعوة'),
+                ),
+              ],
+            ],
           ),
         ],
       ),

@@ -10,4 +10,17 @@ class HospitalInvitationsRepository {
   Future<Result<List<HospitalInvitation>>> fetchInvitations() {
     return _service.fetchInvitations();
   }
+
+  Future<Result<HospitalInvitation>> createInvitation({
+    required String doctorId,
+    required String purpose,
+  }) {
+    return _service.createInvitation(doctorId: doctorId, purpose: purpose);
+  }
+
+  Future<Result<HospitalInvitation>> cancelInvitation({
+    required String invitationId,
+  }) {
+    return _service.cancelInvitation(invitationId: invitationId);
+  }
 }

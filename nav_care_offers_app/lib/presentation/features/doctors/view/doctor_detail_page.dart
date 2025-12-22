@@ -5,6 +5,7 @@ import 'package:nav_care_offers_app/core/config/app_config.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/data/doctors/doctors_repository.dart';
 import 'package:nav_care_offers_app/data/doctors/models/doctor_model.dart';
+import 'package:nav_care_offers_app/data/invitations/hospital_invitations_repository.dart';
 import 'package:nav_care_offers_app/data/invitations/models/hospital_invitation.dart';
 import 'package:nav_care_offers_app/data/reviews/doctor_reviews/models/doctor_review_model.dart';
 import 'package:nav_care_offers_app/presentation/features/doctors/viewmodel/doctor_reviews_cubit.dart';
@@ -34,6 +35,10 @@ class DoctorDetailPage extends StatefulWidget {
 
 class _DoctorDetailPageState extends State<DoctorDetailPage> {
   late Future<DoctorModel> _future;
+  bool _isSendingInvitation = false;
+  bool _hasSentInvitation = false;
+  bool _isCancellingInvitation = false;
+  HospitalInvitation? _localInvitation;
 
   @override
   void initState() {
@@ -47,6 +52,72 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
     return result.fold(
       onFailure: (failure) => throw Exception(failure.message),
       onSuccess: (doctor) => doctor,
+    );
+  }
+
+  Future<void> _sendInvitation(
+    BuildContext context,
+    DoctorModel doctor,
+  ) async {
+    if (_isSendingInvitation) return;
+    setState(() => _isSendingInvitation = true);
+
+    final result = await sl<HospitalInvitationsRepository>().createInvitation(
+      doctorId: doctor.id,
+      purpose: 'doctor',
+    );
+
+    if (!mounted) return;
+
+    result.fold(
+      onFailure: (failure) {
+        setState(() => _isSendingInvitation = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(failure.message)),
+        );
+      },
+      onSuccess: (invitation) {
+        setState(() {
+          _isSendingInvitation = false;
+          _hasSentInvitation = true;
+          _localInvitation = invitation;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تم ارسال طلب انضمام')),
+        );
+      },
+    );
+  }
+
+  Future<void> _cancelInvitation(
+    BuildContext context,
+    HospitalInvitation invitation,
+  ) async {
+    if (_isCancellingInvitation) return;
+    setState(() => _isCancellingInvitation = true);
+
+    final result = await sl<HospitalInvitationsRepository>()
+        .cancelInvitation(invitationId: invitation.id);
+
+    if (!mounted) return;
+
+    result.fold(
+      onFailure: (failure) {
+        setState(() => _isCancellingInvitation = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(failure.message)),
+        );
+      },
+      onSuccess: (updated) {
+        setState(() {
+          _isCancellingInvitation = false;
+          _hasSentInvitation = false;
+          _localInvitation = updated;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تم الغاء الدعوة')),
+        );
+      },
     );
   }
 
@@ -91,15 +162,24 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                 final cover = avatar ?? doctor.coverImage(baseUrl: baseUrl);
                 final isMember = (widget.hospitalDoctors ?? [])
                     .any((d) => d.id == doctor.id || d.userId == doctor.userId);
-                HospitalInvitation? invitation;
-                for (final inv in widget.invitations ?? []) {
-                  if (inv.inviteeDoctor?.id == doctor.id) {
-                    invitation = inv;
-                    break;
+                HospitalInvitation? invitation = _localInvitation;
+                if (invitation == null) {
+                  for (final inv in widget.invitations ?? []) {
+                    if (inv.inviteeDoctor?.id == doctor.id) {
+                      invitation = inv;
+                      break;
+                    }
                   }
                 }
-                final bool canSendInvitation = !isMember &&
-                    (invitation == null || invitation.status == 'rejected');
+                final bool hasInvitationAlready = _hasSentInvitation ||
+                    (invitation != null &&
+                        invitation.status != 'rejected' &&
+                        invitation.status != 'cancelled');
+                final bool canSendInvitation =
+                    !isMember && !_isSendingInvitation && !hasInvitationAlready;
+                final bool canCancelInvitation = invitation != null &&
+                    invitation.status == 'pending' &&
+                    !_isCancellingInvitation;
 
                 return CustomScrollView(
                   slivers: [
@@ -136,22 +216,60 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                                 padding: const EdgeInsets.only(bottom: 12),
                                 child: FilledButton(
                                   onPressed: canSendInvitation
-                                      ? () {
-                                          ScaffoldMessenger.of(innerContext)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'hospitals.detail.invitation_send'
-                                                    .tr(),
+                                      ? () =>
+                                          _sendInvitation(innerContext, doctor)
+                                      : null,
+                                  child: _isSendingInvitation
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            const SizedBox(
+                                              height: 16,
+                                              width: 16,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                color: Colors.white,
                                               ),
                                             ),
-                                          );
-                                        }
-                                      : null,
-                                  child: Text(canSendInvitation
-                                      ? 'hospitals.detail.invitation_send'.tr()
-                                      : 'hospitals.detail.invitation_sent'
-                                          .tr()),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              'hospitals.detail.invitation_send'
+                                                  .tr(),
+                                            ),
+                                          ],
+                                        )
+                                      : Text(canSendInvitation
+                                          ? 'hospitals.detail.invitation_send'
+                                              .tr()
+                                          : 'تم ارسال طلب انضمام'),
+                                ),
+                              ),
+                            if (widget.hospitalId != null &&
+                                !isMember &&
+                                canCancelInvitation)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: OutlinedButton(
+                                  onPressed: () => _cancelInvitation(
+                                      innerContext, invitation!),
+                                  child: _isCancellingInvitation
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: const [
+                                            SizedBox(
+                                              height: 16,
+                                              width: 16,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                              ),
+                                            ),
+                                            SizedBox(width: 8),
+                                            Text('الغاء الدعوة'),
+                                          ],
+                                        )
+                                      : const Text('الغاء الدعوة'),
                                 ),
                               ),
                             _Section(
