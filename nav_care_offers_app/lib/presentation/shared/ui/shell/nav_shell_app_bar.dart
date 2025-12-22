@@ -30,7 +30,8 @@ class NavShellAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final leadingIcon = useBackButton ? Icons.arrow_back_ios_new_rounded : Icons.menu_rounded;
+    final leadingIcon =
+        useBackButton ? Icons.logout_rounded : Icons.menu_rounded;
     final leadingOnPressed = useBackButton
         ? (onBackTap ?? () => Navigator.of(context).maybePop())
         : (onMenuTap ?? () => Scaffold.of(context).openDrawer());
@@ -48,8 +49,9 @@ class NavShellAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               _RoundedIconButton(
                 icon: leadingIcon,
-                // Avoid missing localization keys for back tooltip.
-                tooltip: useBackButton ? null : 'shell.app_bar.menu'.tr(),
+                tooltip: useBackButton
+                    ? 'shell.drawer_logout'.tr()
+                    : 'shell.app_bar.menu'.tr(),
                 onPressed: leadingOnPressed,
               ),
               const SizedBox(width: 8),

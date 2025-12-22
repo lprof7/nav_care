@@ -99,6 +99,12 @@
         "favorites": "Favorites",
         "notifications": "Notifications"
     },
+    "onboarding": {
+        "hospital_title": "You're signed in as a hospital",
+        "clinic_title": "You're signed in as a clinic",
+        "welcome": "Welcome {name}",
+        "continue": "Continue"
+    },
     "drawer_logout": "Sign out"
 },
 "notifications": {

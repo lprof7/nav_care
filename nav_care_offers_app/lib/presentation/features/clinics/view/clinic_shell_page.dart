@@ -35,6 +35,7 @@ import 'package:nav_care_offers_app/presentation/shared/ui/molecules/hospital_de
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_app_bar.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_destination.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_nav_bar.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/shell/shell_onboarding_page.dart';
 import 'clinic_detail_page.dart' show ClinicDetailsSummaryView;
 
 /// Clinic app shell with bottom navigation (no drawer).
@@ -53,6 +54,7 @@ class ClinicShellPage extends StatefulWidget {
 
 class _ClinicShellPageState extends State<ClinicShellPage> {
   bool _appointmentsLoaded = false;
+  bool _showOnboarding = true;
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +91,8 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
             print("detail state offerings ${detailState.offerings.length}");
             final destinations =
                 _buildDestinations(context, detailState, baseUrl);
+            final displayName =
+                detailState.hospital.displayName ?? detailState.hospital.name;
 
             return Scaffold(
               appBar: NavShellAppBar(
@@ -97,17 +101,28 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
                 notificationCount: 0,
                 onNotificationsTap: () => context.push('/notifications'),
               ),
-              body:
-                  _buildBody(detailState, destinations, navState.currentIndex),
-              bottomNavigationBar: NavShellNavBar(
-                currentIndex: navState.currentIndex,
-                destinations: destinations,
-                onTap: (index) => _onDestinationSelected(context, index),
-              ),
+              body: _showOnboarding
+                  ? ShellOnboardingPage(
+                      title: 'shell.onboarding.clinic_title'.tr(),
+                      name: displayName,
+                      onContinue: () =>
+                          setState(() => _showOnboarding = false),
+                    )
+                  : _buildBody(
+                      detailState, destinations, navState.currentIndex),
+              bottomNavigationBar: _showOnboarding
+                  ? null
+                  : NavShellNavBar(
+                      currentIndex: navState.currentIndex,
+                      destinations: destinations,
+                      onTap: (index) => _onDestinationSelected(context, index),
+                    ),
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.centerFloat,
-              floatingActionButton: _buildFab(
-                  context, navState.currentIndex, detailState, baseUrl),
+              floatingActionButton: _showOnboarding
+                  ? null
+                  : _buildFab(
+                      context, navState.currentIndex, detailState, baseUrl),
             );
           },
         ),
@@ -240,6 +255,7 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
     }
     context.read<NavShellCubit>().setTab(index);
   }
+
 
   void _openManage(
     BuildContext context,

@@ -124,6 +124,12 @@
       "favorites": "المفضلة",
       "notifications": "الإشعارات"
     },
+    "onboarding": {
+      "hospital_title": "أنت مسجّل الدخول كمستشفى",
+      "clinic_title": "أنت مسجّل الدخول كعيادة",
+      "welcome": "مرحبًا {name}",
+      "continue": "متابعة"
+    },
     "drawer_logout": "تسجيل الخروج"
   },
   "appointments": {
