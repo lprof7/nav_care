@@ -106,6 +106,20 @@ class _ShellOnboardingPageState extends State<ShellOnboardingPage>
                   ),
                 ),
               ),
+              const SizedBox(height: 16),
+              FadeTransition(
+                opacity: _fade,
+                child: SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.4,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

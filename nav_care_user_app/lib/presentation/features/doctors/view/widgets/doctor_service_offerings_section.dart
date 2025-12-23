@@ -76,9 +76,11 @@ class _DoctorServiceOfferingsSectionState
             ),
           );
         }
+        const double rang = 40;
         final crossAxisCount = responsiveGridColumns(
           MediaQuery.sizeOf(context).width,
           crossAxisSpacing: 12,
+          rang: rang,
         );
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

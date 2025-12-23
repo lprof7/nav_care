@@ -810,6 +810,10 @@ class OfferingsTabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double rang = 40;
+    final width = MediaQuery.sizeOf(context).width;
+    final aspectRatio = 0.65 + width * 0.0003;
+    //(0.65 + ((width - 360) / 1200) * 0.12).clamp(0.65, 0.66);
     if (status == HospitalDetailStatus.loading && offerings.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -831,11 +835,10 @@ class OfferingsTabContent extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
               itemCount: 1,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount:
-                    responsiveGridColumns(MediaQuery.sizeOf(context).width),
+                crossAxisCount: responsiveGridColumns(width, rang: rang),
                 mainAxisSpacing: 14,
                 crossAxisSpacing: 14,
-                childAspectRatio: 0.63,
+                childAspectRatio: aspectRatio,
               ),
               itemBuilder: (context, index) {
                 return AddServiceOfferingCard(onTap: onCreate);
@@ -846,8 +849,10 @@ class OfferingsTabContent extends StatelessWidget {
       );
     }
 
-    final crossAxisCount =
-        responsiveGridColumns(MediaQuery.sizeOf(context).width);
+    final crossAxisCount = responsiveGridColumns(
+      width,
+      rang: rang,
+    );
 
     return RefreshIndicator(
       onRefresh: () async => onReload(),
@@ -858,7 +863,7 @@ class OfferingsTabContent extends StatelessWidget {
           crossAxisCount: crossAxisCount,
           mainAxisSpacing: 14,
           crossAxisSpacing: 14,
-          childAspectRatio: 0.80,
+          childAspectRatio: aspectRatio,
         ),
         itemBuilder: (context, index) {
           if (index == 0) {

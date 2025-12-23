@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
+import 'package:nav_care_user_app/core/utils/responsive_grid.dart';
 import 'package:nav_care_user_app/data/service_offerings/models/service_offering_model.dart';
 import 'package:nav_care_user_app/data/services/models/service_model.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/view/service_offering_detail_page.dart';
@@ -142,6 +143,7 @@ class _OfferingsList extends StatelessWidget {
     final theme = Theme.of(context);
     final baseUrl = sl<AppConfig>().api.baseUrl;
     final locale = context.locale.languageCode;
+    const double rang = 40;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,8 +158,12 @@ class _OfferingsList extends StatelessWidget {
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: responsiveGridColumns(
+              MediaQuery.sizeOf(context).width,
+              crossAxisSpacing: 12,
+              rang: rang,
+            ),
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
             childAspectRatio: 0.6,

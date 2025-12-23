@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nav_care_offers_app/core/config/app_config.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
+import 'package:nav_care_offers_app/core/utils/responsive_grid.dart';
 import 'package:nav_care_offers_app/data/service_offerings/models/service_offering.dart';
 import 'package:nav_care_offers_app/data/service_offerings/service_offerings_repository.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/auth_cubit.dart';
@@ -199,8 +200,14 @@ class _OfferingsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double rang = 40;
     final width = MediaQuery.sizeOf(context).width;
-    final crossAxisCount = width >= 900 ? 3 : 2;
+    final aspectRatio =
+        (0.65 + ((width - 360) / 1200) * 0.12).clamp(0.65, 0.8);
+    final crossAxisCount = responsiveGridColumns(
+      width,
+      rang: rang,
+    );
 
     return RefreshIndicator(
       onRefresh: () async => onReload(),
@@ -212,7 +219,7 @@ class _OfferingsGrid extends StatelessWidget {
           crossAxisCount: crossAxisCount,
           mainAxisSpacing: 14,
           crossAxisSpacing: 14,
-          childAspectRatio: 0.70,
+          childAspectRatio: aspectRatio,
         ),
         itemBuilder: (context, index) {
           if (index == 0) {

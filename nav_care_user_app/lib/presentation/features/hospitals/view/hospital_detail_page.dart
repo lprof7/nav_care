@@ -1127,8 +1127,11 @@ class _OfferingsTab extends StatelessWidget {
         ),
       );
     }
-    final crossAxisCount =
-        responsiveGridColumns(MediaQuery.sizeOf(context).width);
+    const double rang = 40;
+    final crossAxisCount = responsiveGridColumns(
+      MediaQuery.sizeOf(context).width,
+      rang: rang,
+    );
     return CustomScrollView(
       slivers: [
         SliverPadding(
