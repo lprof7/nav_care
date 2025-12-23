@@ -70,7 +70,7 @@ class RecentDoctorsSection extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 SizedBox(
-                  height: 280,
+                  height: 290,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: state.doctors.length,

@@ -109,17 +109,18 @@ class DoctorGridCard extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 14),
+            const SizedBox(height: 7),
 
-            // السطر السفلي: التقييم على اليسار + زر زيارة البروفايل على اليمين
+            if (rating != null && rating! > 0)
+              _RatingBadge(rating: rating)
+            else
+              const SizedBox(
+                height: 20,
+              ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
               child: Row(
                 children: [
-                  if (rating != null && rating! > 0)
-                    _RatingBadge(rating: rating)
-                  else
-                    const SizedBox.shrink(),
                   if (showButton) ...[
                     const SizedBox(
                       width: 12,
@@ -179,6 +180,7 @@ class _RatingBadge extends StatelessWidget {
 
     return Row(
       mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Icon(
           Icons.star_rounded,
