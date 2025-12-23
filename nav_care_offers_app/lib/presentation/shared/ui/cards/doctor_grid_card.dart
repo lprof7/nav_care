@@ -93,7 +93,7 @@ class DoctorGridCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SizedBox(
-                height: 36,
+                height: 25,
                 child: Text(
                   subtitle,
                   maxLines: 2,
@@ -106,7 +106,6 @@ class DoctorGridCard extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 7),
             if (rating != null && rating! > 0)
               _RatingBadge(rating: rating)
             else
