@@ -87,17 +87,20 @@ class _SocialCompleteProfileView extends StatelessWidget {
                               .setAuthenticatedUser(user);
                         }
                         context.go('/home');
-                      } else if (state is SignupFailure) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'signup_error_message'.tr(
-                                namedArgs: {'message': state.message},
+                          } else if (state is SignupFailure) {
+                            final resolvedMessage = state.message.startsWith('signup_')
+                                ? state.message.tr()
+                                : state.message;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'signup_error_message'.tr(
+                                    namedArgs: {'message': resolvedMessage},
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        );
-                      }
+                            );
+                          }
                     },
                     child: _SocialCompleteProfileForm(account: account),
                   ),

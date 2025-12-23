@@ -345,11 +345,8 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
     final router = GoRouter.of(context);
     final cubit = context.read<ClinicDetailCubit>();
     router.push('/clinics/${hospital.id}/edit', extra: hospital).then((value) {
-      if (value == true) {
+      if (value == true || value is Hospital) {
         context.go(AppRoute.home.path);
-      } else if (value is Hospital) {
-        cubit.updateHospital(value);
-        cubit.loadDetails(refresh: true);
       }
     });
   }

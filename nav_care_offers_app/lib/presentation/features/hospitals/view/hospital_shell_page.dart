@@ -385,11 +385,8 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
     router
         .push('/hospitals/${hospital.id}/edit', extra: hospital)
         .then((value) {
-      if (value == true) {
+      if (value == true || value is Hospital) {
         context.go(AppRoute.home.path);
-      } else if (value is Hospital) {
-        cubit.updateHospital(value);
-        cubit.loadDetails(refresh: true);
       }
     });
   }

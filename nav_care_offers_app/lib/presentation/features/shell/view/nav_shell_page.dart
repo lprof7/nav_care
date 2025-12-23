@@ -18,6 +18,8 @@ import 'package:nav_care_offers_app/presentation/features/authentication/logout/
 import 'package:nav_care_offers_app/presentation/features/authentication/auth_cubit.dart';
 import 'package:nav_care_offers_app/presentation/shared/theme/theme_mode_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/feedback/viewmodel/feedback_cubit.dart';
+import 'package:nav_care_offers_app/presentation/features/invitations/viewmodel/doctor_invitations_cubit.dart';
+import 'package:nav_care_offers_app/core/routing/app_router.dart';
 import 'package:feedback/feedback.dart';
 
 import '../viewmodel/nav_shell_cubit.dart';
@@ -37,6 +39,7 @@ class NavShellPage extends StatelessWidget {
             ..listenToAuth(),
         ),
         BlocProvider(create: (_) => sl<FeedbackCubit>()),
+        BlocProvider(create: (_) => sl<DoctorInvitationsCubit>()),
       ],
       child: MultiBlocListener(
         listeners: [
@@ -80,6 +83,19 @@ class NavShellPage extends StatelessWidget {
               context.go('/signin');
             },
           ),
+          BlocListener<AuthCubit, AuthState>(
+            listenWhen: (prev, curr) =>
+                prev.status != curr.status || prev.isDoctor != curr.isDoctor,
+            listener: (context, state) {
+              final invitationsCubit =
+                  context.read<DoctorInvitationsCubit>();
+              if (state.status == AuthStatus.authenticated && state.isDoctor) {
+                invitationsCubit.load();
+              } else {
+                invitationsCubit.reset();
+              }
+            },
+          ),
         ],
         child: BlocBuilder<NavShellCubit, NavShellState>(
           builder: (context, state) {
@@ -94,6 +110,8 @@ class NavShellPage extends StatelessWidget {
                     : null;
             final authState = context.watch<AuthCubit>().state;
             final isAuthenticated = authState.status == AuthStatus.authenticated;
+            final invitationsState =
+                context.watch<DoctorInvitationsCubit>().state;
             final sessionUser = authState.user;
             final appConfig = sl<AppConfig>();
             final avatarPath = profile?.avatarUrl(appConfig.api.baseUrl) ?? sessionUser?.profilePicture;
@@ -101,6 +119,15 @@ class NavShellPage extends StatelessWidget {
             final userEmail = profile?.email ?? sessionUser?.email;
             final userPhone = profile?.phone ?? sessionUser?.phone;
             final themeMode = context.watch<ThemeModeCubit>().state;
+            if (isAuthenticated &&
+                authState.isDoctor &&
+                invitationsState.status == DoctorInvitationsStatus.initial) {
+              context.read<DoctorInvitationsCubit>().load();
+            }
+            final pendingInvitations = invitationsState.pendingCount;
+            final invitationsBadge = pendingInvitations > 0
+                ? pendingInvitations.toString()
+                : null;
 
             return Scaffold(
               appBar: const NavShellAppBar(
@@ -143,6 +170,10 @@ class NavShellPage extends StatelessWidget {
                 onSupportTap: () => context.push('/contact'),
                 themeMode: themeMode,
                 onThemeToggle: () => context.read<ThemeModeCubit>().toggle(),
+                onInvitationsTap: authState.isDoctor
+                    ? () => context.push(AppRoute.doctorInvitations.path)
+                    : null,
+                invitationsBadge: invitationsBadge,
               ),
               body: IndexedStack(
                 index: state.currentIndex,

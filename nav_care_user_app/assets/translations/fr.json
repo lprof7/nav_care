@@ -547,5 +547,6 @@
       "submit_success": "Avis ajouté avec succès."
     }
   },
-  "shell.drawer_theme": "Thème"
+  "shell.drawer_theme": "Thème",
+  "signup_image_too_large": "L'image est trop grande. Veuillez choisir une image plus petite."
 }

@@ -76,6 +76,9 @@ class RemoteHospitalsService implements HospitalsService {
         MultipartFile.fromBytes(bytes, filename: image.name),
       ));
     }
+    print("we are here");
+    print(formData.fields);
+    print("link : ${_config.hospitals}");
     //TODO: add deleteItems to the payload
     return _apiClient.patch(
       _config.hospitals,

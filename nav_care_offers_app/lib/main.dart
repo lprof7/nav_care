@@ -28,7 +28,6 @@ void main() async {
         Locale('fr'),
       ],
       path: 'assets/translations',
-      startLocale: Locale('en'),
       fallbackLocale: const Locale('ar'),
       child: MyApp(initialRoute: initialRoute),
     ),

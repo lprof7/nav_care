@@ -29,7 +29,13 @@ class SignupCubit extends Cubit<SignupState> {
 
     final result = await _signupRepository.signup(request);
     result.fold(
-      onFailure: (failure) => emit(SignupFailure(failure.message)),
+      onFailure: (failure) => emit(
+        SignupFailure(
+          failure.statusCode == 413
+              ? 'signup_image_too_large'
+              : failure.message,
+        ),
+      ),
       onSuccess: (data) => emit(SignupSuccess(data)),
     );
   }

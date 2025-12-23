@@ -709,5 +709,18 @@
     "empty_title": "لا توجد إشعارات بعد",
     "empty_subtitle": "أنت على اطلاع بكل شيء! ستظهر التحديثات الجديدة هنا.",
     "refresh": "تحديث"
-  }
+  },
+  "shell.drawer_invitations": "الدعوات",
+  "doctor_invitations": {
+    "title": "الدعوات",
+    "empty": "لا توجد دعوات بعد.",
+    "retry": "حاول مرة أخرى",
+    "accept": "قبول",
+    "decline": "رفض",
+    "accept_success": "تم قبول الدعوة.",
+    "decline_success": "تم رفض الدعوة.",
+    "error_generic": "تعذر تحميل الدعوات.",
+    "invited_by": "تمت الدعوة بواسطة {name}"
+  },
+  "signup_image_too_large": "??? ?????? ???? ???? ???? ?????? ???? ????."
 }

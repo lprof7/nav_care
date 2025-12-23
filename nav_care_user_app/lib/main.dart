@@ -35,7 +35,6 @@ void main() async {
         Locale('fr'),
       ],
       path: 'assets/translations',
-      startLocale: Locale('ar'),
       fallbackLocale: const Locale('ar'),
       child: BlocProvider<NetworkCubit>(
         create: (context) => sl<NetworkCubit>(),

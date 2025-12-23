@@ -94,6 +94,9 @@ class ApiClient {
           ));
       return Result.success(parser(res.data));
     } on DioException catch (e) {
+      print("error: $e");
+      print("response: ${e.response}");
+      print("data: ${e.response?.data}");
       return Result.failure(_mapDio(e));
     }
   }
@@ -149,6 +152,4 @@ class ApiClient {
         return const Failure.unknown();
     }
   }
-
-  
 }

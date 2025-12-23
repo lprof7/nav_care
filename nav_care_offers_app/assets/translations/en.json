@@ -116,6 +116,17 @@
     "empty_subtitle": "You're all caught up! When there are new updates, they'll show up here.",
     "refresh": "Refresh"
   },
+  "doctor_invitations": {
+    "title": "Invitations",
+    "empty": "No invitations yet.",
+    "retry": "Try again",
+    "accept": "Accept",
+    "decline": "Decline",
+    "accept_success": "Invitation accepted.",
+    "decline_success": "Invitation declined.",
+    "error_generic": "Unable to load invitations.",
+    "invited_by": "Invited by {name}"
+  },
   "home": {
     "welcome_message": "Here's what's happening today",
     "appointments": {
@@ -514,6 +525,7 @@
   "shell.drawer_settings": "Settings",
   "shell.drawer_about": "About",
   "shell.drawer_feedback": "Feedback",
+  "shell.drawer_invitations": "Invitations",
   "shell.drawer_support": "Support",
   "shell.drawer_placeholder": "{0} coming soon",
   "city": "City",
@@ -704,5 +716,6 @@
   "server_error": {
     "title": "Server unreachable",
     "subtitle": "We could not reach our servers. Please retry."
-  }
+  },
+  "signup_image_too_large": "Image is too large. Please choose a smaller image."
 }

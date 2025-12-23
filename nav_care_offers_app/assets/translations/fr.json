@@ -160,5 +160,18 @@
     }
   },
   "doctor": "Médecin",
-  "reviews": "Avis"
+  "reviews": "Avis",
+  "shell.drawer_invitations": "Invitations",
+  "doctor_invitations": {
+    "title": "Invitations",
+    "empty": "Aucune invitation pour le moment.",
+    "retry": "R?essayer",
+    "accept": "Accepter",
+    "decline": "Refuser",
+    "accept_success": "Invitation accept?e.",
+    "decline_success": "Invitation refus?e.",
+    "error_generic": "Impossible de charger les invitations.",
+    "invited_by": "Invit? par {name}"
+  },
+  "signup_image_too_large": "L'image est trop grande. Veuillez choisir une image plus petite."
 }

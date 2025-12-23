@@ -36,6 +36,8 @@ class NavShellDrawer extends StatelessWidget {
   final VoidCallback? onSupportTap;
   final ThemeMode themeMode;
   final VoidCallback onThemeToggle;
+  final VoidCallback? onInvitationsTap;
+  final String? invitationsBadge;
 
   const NavShellDrawer({
     super.key,
@@ -68,6 +70,8 @@ class NavShellDrawer extends StatelessWidget {
     this.onSupportTap,
     required this.themeMode,
     required this.onThemeToggle,
+    this.onInvitationsTap,
+    this.invitationsBadge,
   });
 
   @override
@@ -77,6 +81,13 @@ class NavShellDrawer extends StatelessWidget {
 
     final List<dynamic> allDrawerItems = [
       ...destinations,
+      if (onInvitationsTap != null)
+        _DrawerAction(
+          icon: PhosphorIconsBold.envelopeOpen,
+          label: 'shell.drawer_invitations'.tr(),
+          onTap: onInvitationsTap,
+          badgeLabel: invitationsBadge,
+        ),
       _DrawerAction(
         icon: PhosphorIconsBold.question,
         label: 'shell.drawer_faq'.tr(),
@@ -206,6 +217,7 @@ class NavShellDrawer extends StatelessWidget {
                     return _DrawerActionTile(
                       icon: item.icon,
                       label: item.label,
+                      badgeLabel: item.badgeLabel,
                       onTap: () {
                         Navigator.of(context).pop();
                         item.onTap?.call();
@@ -624,11 +636,13 @@ class _BadgeChip extends StatelessWidget {
 class _DrawerActionTile extends StatelessWidget {
   final IconData icon;
   final String label;
+  final String? badgeLabel;
   final VoidCallback? onTap;
 
   const _DrawerActionTile({
     required this.icon,
     required this.label,
+    this.badgeLabel,
     this.onTap,
   });
 
@@ -641,6 +655,7 @@ class _DrawerActionTile extends StatelessWidget {
         label,
         style: theme.textTheme.bodyMedium,
       ),
+      trailing: badgeLabel == null ? null : _BadgeChip(label: badgeLabel!),
       onTap: onTap,
     );
   }
@@ -649,11 +664,13 @@ class _DrawerActionTile extends StatelessWidget {
 class _DrawerAction {
   final IconData icon;
   final String label;
+  final String? badgeLabel;
   final VoidCallback? onTap;
 
   const _DrawerAction({
     required this.icon,
     required this.label,
+    this.badgeLabel,
     this.onTap,
   });
 }

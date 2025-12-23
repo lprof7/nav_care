@@ -70,6 +70,9 @@ import '../../presentation/features/doctors/viewmodel/doctor_reviews_cubit.dart'
 import '../../data/invitations/hospital_invitations_repository.dart';
 import '../../data/invitations/hospital_invitations_service.dart';
 import '../../data/invitations/remote_hospital_invitations_service.dart';
+import '../../data/invitations/doctor_invitations_repository.dart';
+import '../../data/invitations/doctor_invitations_service.dart';
+import '../../data/invitations/remote_doctor_invitations_service.dart';
 import '../../data/users/user_remote_service.dart';
 import '../../data/users/user_repository.dart';
 import '../../presentation/features/profile/viewmodel/user_profile_cubit.dart';
@@ -80,6 +83,7 @@ import '../../data/faq/faq_service.dart';
 import '../../data/faq/remote_faq_service.dart';
 import '../../data/faq/faq_repository.dart';
 import '../../presentation/features/faq/viewmodel/faq_cubit.dart';
+import '../../presentation/features/invitations/viewmodel/doctor_invitations_cubit.dart';
 
 final sl = GetIt.instance;
 Future<void> configureDependencies(AppConfig config) async {
@@ -205,6 +209,12 @@ Future<void> configureDependencies(AppConfig config) async {
       () => RemoteHospitalInvitationsService(sl<ApiClient>()));
   sl.registerLazySingleton<HospitalInvitationsRepository>(
       () => HospitalInvitationsRepository(sl<HospitalInvitationsService>()));
+  sl.registerLazySingleton<DoctorInvitationsService>(
+      () => RemoteDoctorInvitationsService(sl<ApiClient>()));
+  sl.registerLazySingleton<DoctorInvitationsRepository>(
+      () => DoctorInvitationsRepository(sl<DoctorInvitationsService>()));
+  sl.registerFactory<DoctorInvitationsCubit>(
+      () => DoctorInvitationsCubit(sl<DoctorInvitationsRepository>()));
 
   // Clinics
   sl.registerLazySingleton<ClinicsService>(

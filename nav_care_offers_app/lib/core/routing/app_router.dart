@@ -23,6 +23,7 @@ import 'package:nav_care_offers_app/presentation/features/service_offerings/view
 import 'package:nav_care_offers_app/presentation/features/service_offerings/view/service_offering_detail_page.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/viewmodel/service_offerings_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/notifications/view/notifications_page.dart';
+import 'package:nav_care_offers_app/presentation/features/invitations/view/doctor_invitations_page.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/reset_password/view/reset_password_code_page.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/reset_password/view/reset_password_email_page.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/reset_password/view/reset_password_new_password_page.dart';
@@ -71,7 +72,8 @@ enum AppRoute {
   clinicServiceOfferings('/clinics/:clinicId/service-offerings'),
   clinicServiceOfferingsNew('/clinics/:clinicId/service-offerings/new'),
   clinicServiceOfferingsEdit('/clinics/:clinicId/service-offerings/:offeringId/edit'),
-  clinicServiceOfferingsDetail('/clinics/:clinicId/service-offerings/:offeringId/detail');
+  clinicServiceOfferingsDetail('/clinics/:clinicId/service-offerings/:offeringId/detail'),
+  doctorInvitations('/doctor/invitations');
 
   const AppRoute(this.path);
 
@@ -425,6 +427,10 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
             allowDelete: true,
           );
         },
+      ),
+      GoRoute(
+        path: AppRoute.doctorInvitations.path,
+        builder: (ctx, st) => const DoctorInvitationsPage(),
       ),
     ],
   );

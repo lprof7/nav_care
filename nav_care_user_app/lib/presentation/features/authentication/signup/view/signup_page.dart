@@ -101,11 +101,14 @@ class _SignupView extends StatelessWidget {
                               context.go('/home');
                             }
                           } else if (state is SignupFailure) {
+                            final resolvedMessage = state.message.startsWith('signup_')
+                                ? state.message.tr()
+                                : state.message;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
                                   'signup_error_message'.tr(
-                                    namedArgs: {'message': state.message},
+                                    namedArgs: {'message': resolvedMessage},
                                   ),
                                 ),
                               ),
@@ -169,6 +172,7 @@ class _SignupFormState extends State<_SignupForm> {
   final _stateController = TextEditingController();
   final _countryController = TextEditingController();
   final _imagePicker = ImagePicker();
+  String? _selectedCountry;
 
   bool _minLength = false;
   bool _hasUpper = false;
@@ -450,11 +454,31 @@ class _SignupFormState extends State<_SignupForm> {
             ],
           ),
           const SizedBox(height: 16),
-          AppTextField(
-            hintText: 'country'.tr(),
-            controller: _countryController,
-            textCapitalization: TextCapitalization.words,
-            validator: _requiredValidator,
+          DropdownButtonFormField<String>(
+            value: _selectedCountry,
+            decoration: InputDecoration(
+              hintText: 'country'.tr(),
+            ),
+            isExpanded: true,
+            items: _countries
+                .map(
+                  (country) => DropdownMenuItem<String>(
+                    value: country,
+                    child: Text(
+                      country,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) {
+              setState(() {
+                _selectedCountry = value;
+                _countryController.text = value ?? '';
+              });
+            },
+            validator: (value) =>
+                value == null || value.trim().isEmpty ? 'field_required'.tr() : null,
           ),
           const SizedBox(height: 16),
           PasswordField(
@@ -750,6 +774,68 @@ class _SignupFormState extends State<_SignupForm> {
     return null;
   }
 }
+
+const List<String> _countries = [
+  'Algeria',
+  'Argentina',
+  'Australia',
+  'Austria',
+  'Bahrain',
+  'Bangladesh',
+  'Belgium',
+  'Brazil',
+  'Canada',
+  'Chile',
+  'China',
+  'Colombia',
+  'Cote dIvoire',
+  'Czech Republic',
+  'Denmark',
+  'Egypt',
+  'Finland',
+  'France',
+  'Germany',
+  'Ghana',
+  'Greece',
+  'Hungary',
+  'India',
+  'Indonesia',
+  'Ireland',
+  'Italy',
+  'Japan',
+  'Jordan',
+  'Kenya',
+  'Kuwait',
+  'Lebanon',
+  'Malaysia',
+  'Mexico',
+  'Morocco',
+  'Netherlands',
+  'New Zealand',
+  'Nigeria',
+  'Norway',
+  'Oman',
+  'Pakistan',
+  'Philippines',
+  'Poland',
+  'Portugal',
+  'Qatar',
+  'Romania',
+  'Saudi Arabia',
+  'Singapore',
+  'South Africa',
+  'South Korea',
+  'Spain',
+  'Sweden',
+  'Switzerland',
+  'Tunisia',
+  'Turkey',
+  'Ukraine',
+  'United Arab Emirates',
+  'United Kingdom',
+  'United States',
+  'Vietnam',
+];
 
 class _PasswordRequirements extends StatelessWidget {
   const _PasswordRequirements({

@@ -577,5 +577,6 @@
       "empty": "No reviews available for this service offering."
     }
   },
-  "shell.drawer_theme": "Theme"
+  "shell.drawer_theme": "Theme",
+  "signup_image_too_large": "Image is too large. Please choose a smaller image."
 }
