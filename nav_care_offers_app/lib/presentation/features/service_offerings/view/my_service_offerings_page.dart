@@ -212,7 +212,7 @@ class _OfferingsGrid extends StatelessWidget {
           crossAxisCount: crossAxisCount,
           mainAxisSpacing: 14,
           crossAxisSpacing: 14,
-          childAspectRatio: 0.55,
+          childAspectRatio: 0.70,
         ),
         itemBuilder: (context, index) {
           if (index == 0) {

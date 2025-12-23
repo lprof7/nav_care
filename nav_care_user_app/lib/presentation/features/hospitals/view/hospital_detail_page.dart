@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
+import 'package:nav_care_user_app/core/utils/responsive_grid.dart';
 import 'package:nav_care_user_app/data/clinics/models/clinic_model.dart';
 import 'package:nav_care_user_app/data/doctors/models/doctor_model.dart';
 import 'package:nav_care_user_app/data/hospitals/models/hospital_model.dart';
@@ -1126,6 +1127,8 @@ class _OfferingsTab extends StatelessWidget {
         ),
       );
     }
+    final crossAxisCount =
+        responsiveGridColumns(MediaQuery.sizeOf(context).width);
     return CustomScrollView(
       slivers: [
         SliverPadding(
@@ -1135,8 +1138,8 @@ class _OfferingsTab extends StatelessWidget {
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
           sliver: SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
               mainAxisSpacing: 14,
               crossAxisSpacing: 14,
               childAspectRatio: 0.66,

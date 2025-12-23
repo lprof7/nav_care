@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
+import 'package:nav_care_user_app/core/utils/responsive_grid.dart';
 import 'package:nav_care_user_app/data/service_offerings/models/service_offering_model.dart';
 import 'package:nav_care_user_app/data/service_offerings/service_offerings_repository.dart';
 import 'package:nav_care_user_app/data/search/models/search_models.dart';
@@ -75,6 +76,10 @@ class _DoctorServiceOfferingsSectionState
             ),
           );
         }
+        final crossAxisCount = responsiveGridColumns(
+          MediaQuery.sizeOf(context).width,
+          crossAxisSpacing: 12,
+        );
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Column(
@@ -91,8 +96,8 @@ class _DoctorServiceOfferingsSectionState
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
                   childAspectRatio: 0.55,

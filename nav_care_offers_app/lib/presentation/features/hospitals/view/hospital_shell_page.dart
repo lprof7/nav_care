@@ -7,6 +7,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:nav_care_offers_app/core/config/app_config.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/core/routing/app_router.dart';
+import 'package:nav_care_offers_app/core/utils/responsive_grid.dart';
 import 'package:nav_care_offers_app/data/appointments/models/appointment_model.dart';
 import 'package:nav_care_offers_app/data/authentication/models.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/auth_cubit.dart';
@@ -830,7 +831,8 @@ class OfferingsTabContent extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
               itemCount: 1,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: MediaQuery.sizeOf(context).width >= 900 ? 3 : 2,
+                crossAxisCount:
+                    responsiveGridColumns(MediaQuery.sizeOf(context).width),
                 mainAxisSpacing: 14,
                 crossAxisSpacing: 14,
                 childAspectRatio: 0.63,
@@ -844,8 +846,8 @@ class OfferingsTabContent extends StatelessWidget {
       );
     }
 
-    final width = MediaQuery.sizeOf(context).width;
-    final crossAxisCount = width >= 900 ? 3 : 2;
+    final crossAxisCount =
+        responsiveGridColumns(MediaQuery.sizeOf(context).width);
 
     return RefreshIndicator(
       onRefresh: () async => onReload(),
@@ -856,7 +858,7 @@ class OfferingsTabContent extends StatelessWidget {
           crossAxisCount: crossAxisCount,
           mainAxisSpacing: 14,
           crossAxisSpacing: 14,
-          childAspectRatio: 0.63,
+          childAspectRatio: 0.80,
         ),
         itemBuilder: (context, index) {
           if (index == 0) {
