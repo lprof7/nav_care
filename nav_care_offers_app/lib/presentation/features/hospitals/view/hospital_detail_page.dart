@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nav_care_offers_app/core/config/app_config.dart';
@@ -576,21 +577,21 @@ class _DetailsTab extends StatelessWidget {
                   spacing: 10,
                   runSpacing: 10,
                   children: [
-                    HospitalStatCard(
-                      icon: Icons.local_hospital_rounded,
-                      label: 'hospitals.detail.stats.clinics'.tr(),
-                      value: clinicsCount.toString(),
-                    ),
+                  HospitalStatCard(
+                    icon: PhosphorIconsBold.buildings,
+                    label: 'hospitals.detail.stats.clinics'.tr(),
+                    value: clinicsCount.toString(),
+                  ),
                     HospitalStatCard(
                       icon: Icons.people_alt_rounded,
                       label: 'hospitals.detail.stats.doctors'.tr(),
                       value: doctorsCount.toString(),
                     ),
-                    HospitalStatCard(
-                      icon: Icons.medical_services_rounded,
-                      label: 'hospitals.detail.stats.offerings'.tr(),
-                      value: offeringsCount.toString(),
-                    ),
+                  HospitalStatCard(
+                    icon: PhosphorIconsBold.stethoscope,
+                    label: 'hospitals.detail.stats.offerings'.tr(),
+                    value: offeringsCount.toString(),
+                  ),
                     HospitalStatCard(
                       icon: Icons.local_phone_rounded,
                       label: 'hospitals.detail.phone'.tr(),
@@ -938,7 +939,7 @@ List<Widget> _buildDetailsSlivers({
               runSpacing: 10,
               children: [
                 HospitalStatCard(
-                  icon: Icons.local_hospital_rounded,
+                  icon: PhosphorIconsBold.buildings,
                   label: 'hospitals.detail.stats.clinics'.tr(),
                   value: clinicsCount.toString(),
                 ),
@@ -948,7 +949,7 @@ List<Widget> _buildDetailsSlivers({
                   value: doctorsCount.toString(),
                 ),
                 HospitalStatCard(
-                  icon: Icons.medical_services_rounded,
+                  icon: PhosphorIconsBold.stethoscope,
                   label: 'hospitals.detail.stats.offerings'.tr(),
                   value: offeringsCount.toString(),
                 ),
@@ -1731,7 +1732,7 @@ class _HeroImageLayer extends StatelessWidget {
         fallback: Container(
           color: theme.colorScheme.surfaceVariant,
           alignment: Alignment.center,
-          child: const Icon(Icons.local_hospital_rounded, size: 48),
+          child: const Icon(PhosphorIconsBold.buildings, size: 48),
         ),
         shimmerChild: Container(color: theme.colorScheme.surfaceVariant),
       );
@@ -1739,7 +1740,7 @@ class _HeroImageLayer extends StatelessWidget {
     return Container(
       color: theme.colorScheme.surfaceVariant,
       alignment: Alignment.center,
-      child: const Icon(Icons.local_hospital_rounded, size: 48),
+      child: const Icon(PhosphorIconsBold.buildings, size: 48),
     );
   }
 }

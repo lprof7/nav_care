@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
 import 'package:nav_care_offers_app/data/reviews/hospital_reviews/models/hospital_review_model.dart';
 import 'package:nav_care_offers_app/presentation/features/clinics/viewmodel/clinic_detail_cubit.dart';
@@ -171,7 +172,7 @@ List<Widget> _buildDetailsSlivers({
                   value: doctorsCount.toString(),
                 ),
                 HospitalStatCard(
-                  icon: Icons.medical_services_rounded,
+                  icon: PhosphorIconsBold.stethoscope,
                   label: 'clinics.detail.stats.offerings'.tr(),
                   value: offeringsCount.toString(),
                 ),
@@ -224,7 +225,7 @@ List<Widget> _buildDetailsSlivers({
                 ),
                 OutlinedButton.icon(
                   onPressed: onManageOfferings,
-                  icon: const Icon(Icons.medical_services_rounded),
+                  icon: const Icon(PhosphorIconsBold.stethoscope),
                   label: Text('clinics.detail.tabs.offerings'.tr()),
                 ),
               ],

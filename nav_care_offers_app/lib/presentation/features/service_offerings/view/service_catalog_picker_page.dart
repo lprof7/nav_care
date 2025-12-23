@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/core/translation/translation_service.dart';
 import 'package:nav_care_offers_app/data/services/doctor_services_repository.dart';
@@ -235,7 +236,7 @@ class _EmptyServicesView extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.medical_services_outlined,
+              PhosphorIconsBold.stethoscope,
               size: 48,
               color: theme.colorScheme.primary,
             ),

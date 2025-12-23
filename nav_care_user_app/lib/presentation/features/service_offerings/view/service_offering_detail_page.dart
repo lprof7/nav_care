@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
@@ -382,13 +383,13 @@ class _TopPreview extends StatelessWidget {
                           width: double.infinity,
                           height: double.infinity,
                           errorBuilder: (_, __, ___) => Icon(
-                            Icons.medical_services_rounded,
+                            PhosphorIconsBold.stethoscope,
                             size: 48,
                             color: colorScheme.primary,
                           ),
                         )
                       : Icon(
-                          Icons.medical_services_rounded,
+                          PhosphorIconsBold.stethoscope,
                           size: 48,
                           color: colorScheme.primary,
                         ),

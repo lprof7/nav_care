@@ -7,6 +7,7 @@ import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/hospital_list_cubit.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/molecules/hospital_card.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class HospitalsFeatureScreen extends StatelessWidget {
   const HospitalsFeatureScreen({super.key});
@@ -238,7 +239,7 @@ class _EmptyView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            Icons.local_hospital_outlined,
+            PhosphorIconsBold.buildings,
             size: 48,
             color: theme.colorScheme.primary,
           ),

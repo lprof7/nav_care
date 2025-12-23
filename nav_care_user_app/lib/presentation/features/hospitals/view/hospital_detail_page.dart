@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/data/clinics/models/clinic_model.dart';
@@ -352,14 +353,14 @@ class _HeroImageLayer extends StatelessWidget {
         errorBuilder: (_, __, ___) => Container(
           color: theme.colorScheme.surfaceVariant,
           alignment: Alignment.center,
-          child: const Icon(Icons.local_hospital_rounded, size: 48),
+          child: const Icon(PhosphorIconsBold.buildings, size: 48),
         ),
       );
     }
     return Container(
       color: theme.colorScheme.surfaceVariant,
       alignment: Alignment.center,
-      child: const Icon(Icons.local_hospital_rounded, size: 48),
+      child: const Icon(PhosphorIconsBold.buildings, size: 48),
     );
   }
 }
@@ -618,21 +619,21 @@ class _DetailsTab extends StatelessWidget {
                   spacing: 10,
                   runSpacing: 10,
                   children: [
-                    HospitalStatCard(
-                      icon: Icons.local_hospital_rounded,
-                      label: 'hospitals.detail.stats.clinics'.tr(),
-                      value: clinicsCount.toString(),
-                    ),
+                HospitalStatCard(
+                  icon: PhosphorIconsBold.buildings,
+                  label: 'hospitals.detail.stats.clinics'.tr(),
+                  value: clinicsCount.toString(),
+                ),
                     HospitalStatCard(
                       icon: Icons.people_alt_rounded,
                       label: 'hospitals.detail.stats.doctors'.tr(),
                       value: doctorsCount.toString(),
                     ),
-                    HospitalStatCard(
-                      icon: Icons.medical_services_rounded,
-                      label: 'hospitals.detail.stats.offerings'.tr(),
-                      value: offeringsCount.toString(),
-                    ),
+                HospitalStatCard(
+                  icon: PhosphorIconsBold.stethoscope,
+                  label: 'hospitals.detail.stats.offerings'.tr(),
+                  value: offeringsCount.toString(),
+                ),
                     HospitalStatCard(
                       icon: Icons.star_rounded,
                       label: 'hospitals.detail.stats.rating'.tr(),

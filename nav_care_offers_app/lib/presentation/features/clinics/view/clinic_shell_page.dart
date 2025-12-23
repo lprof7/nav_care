@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:nav_care_offers_app/core/config/app_config.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/core/routing/app_router.dart';
@@ -186,7 +187,7 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
       ),
       NavShellDestination(
         label: 'clinics.detail.tabs.offerings'.tr(),
-        icon: Icons.medical_services_rounded,
+        icon: PhosphorIconsBold.stethoscope,
         content: OfferingsTabContent(
           offerings: detailState.offerings,
           baseUrl: baseUrl,
@@ -1143,21 +1144,21 @@ class HospitalProfileTab extends StatelessWidget {
                   spacing: 10,
                   runSpacing: 10,
                   children: [
-                    HospitalStatCard(
-                      icon: Icons.local_hospital_rounded,
-                      label: 'clinics.detail.stats.clinics'.tr(),
-                      value: clinicsCount.toString(),
-                    ),
+                HospitalStatCard(
+                  icon: PhosphorIconsBold.buildings,
+                  label: 'clinics.detail.stats.clinics'.tr(),
+                  value: clinicsCount.toString(),
+                ),
                     HospitalStatCard(
                       icon: Icons.people_alt_rounded,
                       label: 'clinics.detail.stats.doctors'.tr(),
                       value: doctorsCount.toString(),
                     ),
-                    HospitalStatCard(
-                      icon: Icons.medical_services_rounded,
-                      label: 'clinics.detail.stats.offerings'.tr(),
-                      value: offeringsCount.toString(),
-                    ),
+                HospitalStatCard(
+                  icon: PhosphorIconsBold.stethoscope,
+                  label: 'clinics.detail.stats.offerings'.tr(),
+                  value: offeringsCount.toString(),
+                ),
                     HospitalStatCard(
                       icon: Icons.local_phone_rounded,
                       label: 'clinics.detail.phone'.tr(),
@@ -1202,19 +1203,19 @@ class HospitalProfileTab extends StatelessWidget {
                   children: [
                     OutlinedButton.icon(
                       onPressed: onManageClinics,
-                      icon: const Icon(Icons.local_hospital_rounded),
+                      icon: const Icon(PhosphorIconsBold.buildings),
                       label: Text('clinics.detail.tabs.clinics'.tr()),
                     ),
-                    OutlinedButton.icon(
-                      onPressed: onManageDoctors,
-                      icon: const Icon(Icons.people_alt_rounded),
-                      label: Text('clinics.detail.tabs.doctors'.tr()),
-                    ),
-                    OutlinedButton.icon(
-                      onPressed: onManageOfferings,
-                      icon: const Icon(Icons.medical_services_rounded),
-                      label: Text('clinics.detail.tabs.offerings'.tr()),
-                    ),
+                OutlinedButton.icon(
+                  onPressed: onManageDoctors,
+                  icon: const Icon(Icons.people_alt_rounded),
+                  label: Text('clinics.detail.tabs.doctors'.tr()),
+                ),
+                OutlinedButton.icon(
+                  onPressed: onManageOfferings,
+                  icon: const Icon(PhosphorIconsBold.stethoscope),
+                  label: Text('clinics.detail.tabs.offerings'.tr()),
+                ),
                   ],
                 ),
               ),

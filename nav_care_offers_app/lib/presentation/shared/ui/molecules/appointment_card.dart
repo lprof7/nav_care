@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:nav_care_offers_app/data/appointments/models/appointment_model.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/network_image.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class AppointmentCard extends StatelessWidget {
   const AppointmentCard({
@@ -258,7 +259,7 @@ class _InfoWrap extends StatelessWidget {
           label: priceLabel,
         ),
         _InfoPill(
-          icon: Icons.medical_services_outlined,
+          icon: PhosphorIconsBold.stethoscope,
           label: serviceName,
         ),
         _InfoPill(

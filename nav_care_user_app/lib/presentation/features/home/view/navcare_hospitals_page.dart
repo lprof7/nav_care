@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
@@ -324,7 +325,7 @@ class _HospitalListTile extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
-                              Icons.local_hospital_rounded,
+                              PhosphorIconsBold.buildings,
                               size: 16,
                               color: Theme.of(context).colorScheme.primary,
                             ),
@@ -419,7 +420,7 @@ class _HospitalCoverImage extends StatelessWidget {
     final theme = Theme.of(context);
 
     Widget placeholder(
-        {IconData icon = Icons.medical_services_rounded, double size = 48}) {
+        {IconData icon = PhosphorIconsBold.stethoscope, double size = 48}) {
       return Container(
         color: theme.colorScheme.surfaceVariant,
         alignment: Alignment.center,
@@ -438,7 +439,7 @@ class _HospitalCoverImage extends StatelessWidget {
         fit: BoxFit.cover,
         loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress == null) return child;
-          return placeholder(icon: Icons.local_hospital_rounded, size: 40);
+          return placeholder(icon: PhosphorIconsBold.buildings, size: 40);
         },
         errorBuilder: (context, error, stackTrace) =>
             placeholder(icon: Icons.image_not_supported_rounded, size: 36),

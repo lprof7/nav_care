@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:nav_care_offers_app/presentation/shared/theme/colors.dart';
 
 class BecomeDoctorRequiredCard extends StatelessWidget {
@@ -45,7 +46,7 @@ class BecomeDoctorRequiredCard extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                Icons.medical_services_rounded,
+                PhosphorIconsBold.stethoscope,
                 color: colorScheme.primary,
                 size: 28,
               ),

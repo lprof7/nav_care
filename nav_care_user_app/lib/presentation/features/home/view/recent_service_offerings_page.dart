@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nav_care_user_app/presentation/features/home/sections/recent_service_offerings/viewmodel/recent_service_offerings_cubit.dart';
@@ -309,7 +310,7 @@ class _OfferingCoverImage extends StatelessWidget {
       return Container(
         color: Theme.of(context).colorScheme.surfaceVariant,
         alignment: Alignment.center,
-        child: const Icon(Icons.medical_services_rounded, size: 42),
+        child: const Icon(PhosphorIconsBold.stethoscope, size: 42),
       );
     }
     if (path!.startsWith('http')) {

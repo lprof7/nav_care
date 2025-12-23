@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/network_image.dart';
 
@@ -88,7 +89,7 @@ class DoctorInvitationCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
-                    Icons.local_hospital_rounded,
+                    PhosphorIconsBold.buildings,
                     color: theme.colorScheme.primary,
                   ),
                 ),

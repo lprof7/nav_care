@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/network_image.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class HospitalCard extends StatelessWidget {
   final String title;
@@ -107,7 +108,7 @@ class HospitalCard extends StatelessWidget {
         color: theme.colorScheme.surfaceContainerHighest,
         alignment: Alignment.center,
         child: Icon(
-          Icons.local_hospital_outlined,
+          PhosphorIconsBold.buildings,
           size: 48,
           color: theme.colorScheme.primary,
         ),
