@@ -19,7 +19,7 @@ class SigninRepository {
       onSuccess: (data) {
         final authResponse = AuthResponse.fromJson(data['data']);
         _tokenStore.setToken(authResponse.token);
-        _userStore.saveUser(authResponse.user); // Save user to UserStore
+        _userStore.saveUser(authResponse.user);
         return Result.success(authResponse.user);
       },
     );
