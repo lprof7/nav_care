@@ -11,6 +11,7 @@ import 'package:nav_care_offers_app/presentation/features/clinics/clinic_creatio
 import 'package:nav_care_offers_app/presentation/features/clinics/clinic_creation/viewmodel/clinic_creation_state.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_offers_app/presentation/shared/theme/spacing.dart';
+import 'package:nav_care_offers_app/presentation/shared/utils/hospitals_refresh_bus.dart';
 
 class ClinicFormPage extends StatelessWidget {
   final String hospitalId;
@@ -100,6 +101,9 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
               ),
             ),
           );
+          if (!isEditing) {
+            HospitalsRefreshBus.notify();
+          }
           context.pop(state.clinic);
         } else if (state is ClinicCreationFailure) {
           ScaffoldMessenger.of(context).showSnackBar(

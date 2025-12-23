@@ -1,7 +1,7 @@
 {
   "sign_in": "تسجيل الدخول",
   "sign_up": "إنشاء حساب",
-  "sign_up_subtitle": "أنشئ حسابك للبدء",
+  "sign_up_subtitle": "أنشئ حسابًا للبدء",
   "email": "البريد الإلكتروني",
   "email_or_phone": "البريد الإلكتروني أو رقم الهاتف",
   "password": "كلمة المرور",
@@ -10,20 +10,20 @@
   "last_name": "الاسم الأخير",
   "birth_date_hint": "اختر تاريخ ميلادك",
   "phone_number": "رقم الهاتف",
-  "algerian_phone_error": "يرجى إدخال رقم هاتف جزائري صالح",
+  "algerian_phone_error": "أدخل رقم هاتف جزائري صالح",
   "upload_profile_picture": "تحميل صورة الملف الشخصي",
-  "upload_photo_hint": "اضغط لإضافة أو تحديث صورتك",
+  "upload_photo_hint": "اضغط لإضافة أو تحديث صورتك الشخصية",
   "change_photo": "تغيير الصورة",
   "remove_photo": "إزالة الصورة",
   "passwords_do_not_match": "كلمتا المرور غير متطابقتين",
   "accept_terms_error": "يرجى قبول الشروط وسياسة الخصوصية",
-  "invalid_email_format": "يرجى إدخال بريد إلكتروني صالح.",
+  "invalid_email_format": "يرجى إدخال عنوان بريد إلكتروني صالح.",
   "i_accept": "أوافق",
   "terms_and_policy": "الشروط وسياسة الخصوصية",
   "already_have_account": "لديك حساب بالفعل؟",
   "dont_have_account": "ليس لديك حساب؟",
   "or": "أو",
-  "book_an_appointment": "احجز موعدًا",
+  "book_an_appointment": "حجز موعد",
   "sign_in_subtitle": "سجّل الدخول للمتابعة",
   "remember_me": "تذكرني",
   "forgot_password": "هل نسيت كلمة المرور؟",
@@ -37,18 +37,18 @@
     "code_hint": "رمز من 6 أرقام",
     "verify": "التالي",
     "timer_title": "تنتهي صلاحية الرمز خلال",
-    "timer_label": "متبقي {seconds}s",
+    "timer_label": "متبقي {seconds}ث",
     "timer_expired": "انتهت صلاحية الرمز",
     "back_to_email": "العودة إلى البريد الإلكتروني",
     "code_sent": "تم إرسال رمز إعادة التعيين إلى بريدك الإلكتروني.",
-    "code_verified": "تم التحقق من الرمز. عيّن كلمة مرور جديدة.",
+    "code_verified": "تم التحقق من الرمز. عيّن كلمة المرور الجديدة.",
     "password_title": "تعيين كلمة مرور جديدة",
     "password_subtitle": "أنشئ كلمة مرور قوية لتأمين حسابك.",
     "new_password": "كلمة المرور الجديدة",
     "confirm_password": "تأكيد كلمة المرور",
     "submit": "إعادة تعيين كلمة المرور",
     "success": "تمت إعادة تعيين كلمة المرور بنجاح. يرجى تسجيل الدخول.",
-    "error": "تعذر معالجة طلبك. حاول مرة أخرى."
+    "error": "تعذّر معالجة طلبك. حاول مرة أخرى."
   },
   "sign_in_with_google": "تسجيل الدخول باستخدام Google",
   "sign_in_with_apple": "تسجيل الدخول باستخدام Apple",
@@ -56,52 +56,27 @@
   "sign_up_with_apple": "إنشاء حساب باستخدام Apple",
   "signin_success_message": "مرحبًا {name}",
   "signin_error_message": "خطأ: {message}",
-  "signin_account_not_found": "لا يوجد حساب مطابق لهذه البيانات.",
-  "signin_doctor_profile_required": "تم العثور على حسابك، لكن يجب استكمال ملفك كطبيب قبل المتابعة.",
+  "signin_account_not_found": "لم نعثر على حساب بهذه البيانات.",
+  "signin_doctor_profile_required": "تم العثور على حسابك، لكن لا يزال عليك إكمال ملفك كطبيب.",
   "signup_success_message": "تم إنشاء الحساب بنجاح",
   "signup_error_message": "خطأ: {message}",
   "loading": "جارٍ التحميل...",
   "field_required": "هذا الحقل مطلوب",
   "become_doctor_title": "كن طبيبًا",
   "become_doctor_heading": "أكمل ملفك كطبيب",
-  "become_doctor_description": "مرحبًا {name}، للمتابعة نحتاج إلى تأكيد معلوماتك المهنية.",
+  "become_doctor_description": "مرحبًا {name}، للمتابعة يجب تأكيد معلوماتك المهنية.",
   "become_doctor_default_name": "طبيب",
-  "become_doctor_next_steps": "سنرشدك قريبًا إلى الخطوات المتبقية.",
+  "become_doctor_next_steps": "سنرشدك قريبًا عبر الخطوات المتبقية.",
   "become_doctor_back_to_signin": "العودة إلى تسجيل الدخول",
-  "become_doctor_image_label": "صورة الملف",
-  "become_doctor_image_hint": "أضف صورة واضحة ومهنية لإكمال ملفك.",
-  "become_doctor_image_cta": "رفع صورة",
-  "become_doctor_image_required": "الصورة مطلوبة.",
+  "become_doctor_image_label": "صورة الملف الشخصي",
+  "become_doctor_image_hint": "أضف صورة واضحة واحترافية لإكمال ملفك الشخصي.",
+  "become_doctor_image_cta": "تحميل صورة",
+  "become_doctor_image_required": "صورة الملف الشخصي مطلوبة.",
   "become_doctor_bio_label": "نبذة قصيرة (بالإنجليزية)",
-  "become_doctor_bio_hint": "عرّف بنفسك وخبرتك وما الذي سيجده المرضى.",
+  "become_doctor_bio_hint": "صف خبرتك وما الذي يمكن للمرضى توقعه.",
   "become_doctor_submit": "إرسال الطلب",
-  "become_doctor_submitting": "جاري الإرسال...",
-  "become_doctor_success": "تم إرسال طلبك كطبيب بنجاح!",
-  "home": {
-    "welcome_message": "إليك ما يحدث اليوم",
-    "appointments": {
-      "title": "المواعيد القادمة",
-      "subtitle": "قم بإدارة جدول مرضى اليوم",
-      "empty": "لا توجد مواعيد حالياً."
-    },
-    "quick_actions": {
-      "title": "إجراءات سريعة",
-      "add_offer": "إضافة عرض جديد",
-      "manage_calendar": "إدارة التقويم",
-      "view_reports": "عرض التقارير"
-    },
-    "services_manage": {
-      "title": "إدارة الخدمات",
-      "subtitle": "راجع عروضك وحدّثها وانشر الجديد",
-      "prompt": "اضغط على البطاقة في الأعلى لجلب خدماتك.",
-      "loading": "جارٍ تحميل خدماتك...",
-      "error": "تعذّر تحميل الخدمات",
-      "retry": "إعادة المحاولة",
-      "empty": "لم تقم بإضافة خدمات بعد.",
-      "list_title": "خدماتك النشطة",
-      "more": "+{count} خدمات أخرى"
-    }
-  },
+  "become_doctor_submitting": "جارٍ الإرسال...",
+  "become_doctor_success": "تم إرسال طلب ملفك كطبيب!",
   "shell": {
     "nav_home": "الرئيسية",
     "nav_appointments": "المواعيد",
@@ -110,7 +85,7 @@
     "badge_new": "جديد",
     "drawer_settings": "الإعدادات",
     "drawer_theme": "المظهر",
-    "drawer_default_name": "د. ناف كير",
+    "drawer_default_name": "د. NavCare",
     "drawer_default_email": "doctor@navcare.com",
     "drawer_verify_phone": "تأكيد رقم الهاتف",
     "language": {
@@ -123,18 +98,59 @@
       "support": "الدعم",
       "favorites": "المفضلة",
       "notifications": "الإشعارات",
-      "exit": "????"
+      "exit": "خروج"
     },
     "onboarding": {
       "hospital_title": "أنت مسجّل الدخول كمستشفى",
       "clinic_title": "أنت مسجّل الدخول كعيادة",
       "welcome": "مرحبًا {name}",
-      "continue": "متابعة",
       "exit_hospital_title": "تم تسجيل الخروج من المستشفى",
       "exit_clinic_title": "تم تسجيل الخروج من العيادة",
       "exit_message": "نراك قريبًا، {name}"
     },
     "drawer_logout": "تسجيل الخروج"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "empty_title": "لا توجد إشعارات بعد",
+    "empty_subtitle": "أنت على اطلاع بكل شيء! عندما تكون هناك تحديثات جديدة ستظهر هنا.",
+    "refresh": "تحديث"
+  },
+  "doctor_invitations": {
+    "title": "الدعوات",
+    "empty": "لا توجد دعوات بعد.",
+    "retry": "حاول مرة أخرى",
+    "accept": "قبول",
+    "decline": "رفض",
+    "accept_success": "تم قبول الدعوة.",
+    "decline_success": "تم رفض الدعوة.",
+    "error_generic": "تعذر تحميل الدعوات.",
+    "invited_by": "تمت الدعوة بواسطة {name}"
+  },
+  "home": {
+    "welcome_message": "إليك ما يحدث اليوم",
+    "appointments": {
+      "title": "المواعيد القادمة",
+      "subtitle": "أدر جدول مرضى اليوم",
+      "empty": "لا توجد مواعيد متاحة بعد."
+    },
+    "quick_actions": {
+      "title": "إجراءات سريعة",
+      "add_offer": "إضافة عرض جديد",
+      "manage_calendar": "إدارة التقويم",
+      "view_reports": "عرض التقارير"
+    },
+    "services_manage": {
+      "title": "إدارة الخدمات",
+      "subtitle": "راجع عروضك وحدّثها وانشرها",
+      "prompt": "اضغط على البطاقة أعلاه لتحميل خدماتك.",
+      "loading": "جارٍ تحميل خدماتك...",
+      "error": "تعذر تحميل خدماتك",
+      "retry": "حاول مرة أخرى",
+      "empty": "لم تقم بإضافة أي خدمات بعد.",
+      "list_title": "خدماتك النشطة",
+      "more": "+{count} خدمات أخرى"
+    }
   },
   "appointments": {
     "status": {
@@ -157,21 +173,21 @@
     },
     "validation": {
       "invalid_range": "يجب أن يكون وقت النهاية بعد وقت البداية",
-      "invalid_dates": "بيانات الموعد غير صالحة"
+      "invalid_dates": "تواريخ الموعد غير صالحة"
     },
     "list": {
-      "change_status": "????? ??????"
+      "change_status": "تغيير الحالة"
     }
   },
   "hospitals": {
     "list": {
       "title": "شبكة المستشفيات",
       "subtitle": "نظّم مستشفياتك وعياداتك في مكان واحد",
-      "empty": "لم تقم بإضافة أي منشأة بعد.",
-      "error_network": "تعذر الاتصال بالخادم. تأكد من الاتصال بالإنترنت ثم حاول مرة أخرى.",
-      "error_timeout": "الخادم يستغرق وقتًا أطول من المتوقع. حاول مجددًا.",
-      "error_unauthorized": "انتهت صلاحية الجلسة. يرجى تسجيل الدخول من جديد.",
-      "error_generic": "تعذر تحميل قائمة المستشفيات حالياً."
+      "empty": "لم تقم بإضافة أي منشآت بعد.",
+      "error_network": "تعذر الوصول إلى الخادم. تحقق من اتصالك وحاول مرة أخرى.",
+      "error_timeout": "الخادم يستغرق وقتًا أطول من المتوقع. يرجى المحاولة مرة أخرى.",
+      "error_unauthorized": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مجددًا.",
+      "error_generic": "تعذر تحميل مستشفياتك الآن."
     },
     "actions": {
       "add": "إضافة مستشفى",
@@ -197,7 +213,7 @@
         "clinics": "العيادات",
         "doctors": "الأطباء",
         "invitations": "الدعوات",
-        "offerings": "العروض"
+        "offerings": "عروض الخدمات"
       },
       "stats": {
         "clinics": "العيادات",
@@ -210,32 +226,32 @@
       },
       "facility_type": "نوع المنشأة",
       "phone": "هاتف التواصل",
-      "coordinates": "الإحداثيات",
+      "coordinates": "إحداثيات الموقع",
       "manage_clinics": "إدارة العيادات",
       "manage_doctors": "إدارة الأطباء",
-      "clinics_title": "العيادات داخل المستشفى",
+      "clinics_title": "العيادات داخل هذا المستشفى",
       "doctors_title": "الأطباء المرتبطون",
       "edit": "تعديل المستشفى",
       "delete": "حذف المستشفى",
       "deleting": "جارٍ الحذف...",
       "delete_confirm_title": "حذف المستشفى",
-      "delete_confirm_message": "هل أنت متأكد من حذف هذا المستشفى؟ لا يمكن التراجع عن هذه العملية.",
+      "delete_confirm_message": "هل أنت متأكد أنك تريد إزالة هذا المستشفى؟ لا يمكن التراجع عن هذا الإجراء.",
       "delete_cancel": "إلغاء",
       "delete_confirm": "حذف",
-      "delete_success": "تم حذف المستشفى بنجاح.",
+      "delete_success": "تمت إزالة المستشفى بنجاح.",
       "not_found": "تعذر العثور على المستشفى المطلوب.",
       "manage_offerings": "إدارة عروض الخدمات",
-      "about": "عن المستشفى",
+      "about": "حول",
       "no_description": "لا يوجد وصف متاح.",
       "overview": "نظرة عامة",
-      "contact": "بيانات التواصل",
+      "contact": "معلومات التواصل",
       "filters": "فلاتر",
-      "sorting": "ترتيب حسب",
+      "sorting": "الترتيب حسب",
       "search_doctors": "ابحث عن الأطباء...",
-      "offerings_subtitle": "خدمة مقدمة من هذا المستشفى",
+      "offerings_subtitle": "الخدمة المقدمة من هذا المستشفى",
       "clinics_empty": "لا توجد عيادات متاحة لهذا المستشفى.",
       "doctors_empty": "لا يوجد أطباء متاحون لهذا المستشفى.",
-      "offerings_empty": "لا توجد عروض خدمات لهذا المستشفى.",
+      "offerings_empty": "لا توجد عروض خدمات متاحة لهذا المستشفى.",
       "invite_doctor": "دعوة طبيب",
       "invite_doctor_title": "دعوة طبيب",
       "invite_doctor_subtitle": "ابحث واختر طبيبًا لدعوته.",
@@ -245,9 +261,9 @@
       "invite_doctor_view_profile": "عرض الملف الشخصي",
       "invitations_title": "الدعوات",
       "invitations_empty": "لا توجد دعوات بعد.",
-      "invitation_send": "إرسال دعوة",
+      "invitation_send": "إرسال الدعوة",
       "invitation_sent": "تم إرسال الدعوة",
-      "invitation_request_sent": "تم إرسال طلب انضمام",
+      "invitation_request_sent": "تم إرسال طلب الدعوة",
       "invitation_cancel": "إلغاء الدعوة",
       "invitation_cancel_success": "تم إلغاء الدعوة"
     },
@@ -260,7 +276,7 @@
       }
     },
     "form": {
-      "create_title": "إضافة مستشفى/عيادة",
+      "create_title": "إضافة مستشفى أو عيادة",
       "edit_title": "تعديل المستشفى",
       "name": "اسم المنشأة",
       "description_en": "الوصف (بالإنجليزية)",
@@ -283,8 +299,8 @@
       },
       "add_image": "إضافة صورة",
       "social": {
-        "label": "روابط التواصل الاجتماعي",
-        "add": "إضافة رابط",
+        "label": "وسائل التواصل الاجتماعي",
+        "add": "إضافة رابط اجتماعي",
         "type_label": "المنصة",
         "link_label": "الرابط",
         "link_hint": "https://facebook.com/your-page",
@@ -292,109 +308,122 @@
           "facebook": "فيسبوك",
           "instagram": "إنستغرام",
           "youtube": "يوتيوب",
-          "x": "إكس (تويتر)",
+          "x": "X (تويتر)",
           "linkedin": "لينكدإن",
           "other": "روابط أخرى"
         }
       },
       "address": "العنوان",
-      "add_entry": "إضافة حقل جديد",
+      "add_entry": "إضافة حقل آخر",
       "saving": "جارٍ الحفظ...",
       "save": "حفظ المستشفى",
       "success_create": "تم إنشاء المستشفى بنجاح.",
       "success_update": "تم تحديث المستشفى بنجاح.",
-      "images_required": "صورة واحدة على الأقل مطلوبة."
+      "images_required": "يلزم إضافة صورة واحدة على الأقل."
     },
     "manage": {
       "title": "{0}",
       "clinics_title": "إدارة العيادات",
       "doctors_title": "إدارة الأطباء",
-      "clinics_description": "قريبًا ستتمكن من إنشاء العيادات وإدارتها من هنا.",
-      "no_clinics_message": "لا توجد عيادات مسجلة لهذا المستشفى.",
+      "clinics_description": "قريبًا ستتمكن من إنشاء عياداتك وتحديثها وتنظيمها من هنا.",
       "doctors_description": "قريبًا ستتمكن من إدارة الأطباء المرتبطين بهذا المستشفى.",
-      "placeholder": "نقوم حاليًا ببناء هذه الشاشة. ترقبونا!"
+      "placeholder": "ما زلنا نبني هذه التجربة. ترقبوا المزيد!"
     }
   },
   "service_offerings": {
     "list": {
-      "title": "عروض الخدمات",
-      "heading": "خدماتك المتاحة",
-      "subtitle": "إدارة الخدمات والأسعار والعروض من مكان واحد.",
+      "title": "إدارة عروض الخدمات",
+      "heading": "عروض خدماتك",
+      "subtitle": "راجع وحدث العروض المرتبطة بهذا المستشفى.",
       "price": "السعر: {price}",
-      "add": "إضافة خدمة جديدة",
-      "empty": "لا توجد خدمات مضافة بعد. ابدأ بإضافة خدمة جديدة.",
+      "add": "إضافة عرض خدمة",
+      "empty": "لا توجد عروض خدمات بعد. ابدأ بإضافة أول عرض لك.",
       "reload": "إعادة التحميل",
-      "retry": "إعادة المحاولة"
+      "retry": "حاول مرة أخرى"
     },
     "detail": {
-      "title": "تفاصيل الخدمة",
-      "not_found": "تعذر العثور على هذه الخدمة.",
-      "price": "السعر:",
+      "title": "عرض خدمة",
+      "not_found": "تعذر العثور على عرض الخدمة هذا.",
+      "price": "السعر: ",
       "provider": "المزوّد",
       "specialty": "التخصص",
-      "offers": "العروض المتاحة",
-      "no_offers": "لا توجد عروض متاحة.",
+      "offers": "العروض المضمنة",
+      "no_offers": "لم تتم إضافة أي عروض لهذه الخدمة بعد.",
       "description": "الوصف",
-      "no_description": "لا يوجد وصف.",
+      "no_description": "لا يوجد وصف متاح.",
       "edit": "تعديل",
       "delete_title": "حذف عرض الخدمة؟",
       "delete_message": "لا يمكن التراجع عن هذا الإجراء. هل تريد حذف عرض الخدمة هذا؟",
       "price_label": "السعر"
     },
+    "reviews": {
+      "title": "المراجعات",
+      "empty": "لا توجد مراجعات بعد.",
+      "error": "تعذر تحميل المراجعات.",
+      "retry": "حاول مرة أخرى",
+      "no_comment": "لا توجد ملاحظة.",
+      "anonymous": "مجهول",
+      "load_more": "عرض المزيد",
+      "show_less": "عرض أقل"
+    },
     "form": {
       "create_title": "إضافة عرض خدمة",
-      "edit_title": "تعديل عرض خدمة",
-      "description": "املأ البيانات لنشر هذا العرض.",
+      "edit_title": "تعديل عرض الخدمة",
+      "description": "املأ التفاصيل لنشر هذا العرض.",
       "service": "الخدمة",
-      "reload_services": "تحديث الخدمات",
+      "reload_services": "إعادة تحميل الخدمات",
       "price": "السعر",
       "price_invalid": "أدخل سعرًا صالحًا",
       "offers": "العروض المضمنة",
-      "offers_hint": "العروض أو المزايا مفصولة بفواصل",
+      "offers_hint": "عروض أو مزايا مفصولة بفواصل",
       "name_en": "الاسم (بالإنجليزية)",
+      "name_ar": "الاسم (بالعربية)",
+      "name_fr": "الاسم (بالفرنسية)",
+      "service_name": "اسم الخدمة",
       "description_en": "الوصف (بالإنجليزية)",
       "description_ar": "الوصف (بالعربية)",
       "description_fr": "الوصف (بالفرنسية)",
-      "description_sp": "الوصف (بالإسبانية)",
+      "service_description": "وصف الخدمة",
+      "select_service_title": "اختر خدمة",
+      "search_services_hint": "ابحث عن الخدمات...",
+      "add_service": "إضافة خدمة",
+      "services_empty": "لا توجد خدمات بعد.",
+      "create_service_title": "إضافة خدمة",
+      "create_service_subtitle": "أنشئ خدمة جديدة لاستخدامها في عرضك.",
+      "service_image_label": "صورة الخدمة",
+      "service_image_add": "تحميل صورة",
+      "create_service_submit": "إنشاء الخدمة",
+      "create_service_success": "تم إنشاء الخدمة بنجاح.",
+      "create_service_error": "تعذر إنشاء الخدمة.",
+      "load_services_error": "تعذر تحميل الخدمات.",
       "images": {
         "label": "الصور"
       },
       "add_image": "إضافة صورة",
       "select_service": "يرجى اختيار خدمة.",
-      "create_button": "إنشاء عرض",
+      "create_button": "إنشاء العرض",
       "update_button": "تحديث العرض",
       "create_success": "تم إنشاء عرض الخدمة بنجاح.",
       "update_success": "تم تحديث عرض الخدمة بنجاح.",
       "error": "تعذر حفظ عرض الخدمة."
     },
     "errors": {
-      "parse_list": "تعذر قراءة قائمة عروض الخدمات.",
-      "parse_detail": "تعذر قراءة تفاصيل هذه الخدمة.",
-      "parse_submit": "تعذر معالجة بيانات الخدمة.",
-      "parse_catalog": "تعذر قراءة كتالوج الخدمات."
-    },
-    "reviews": {
-      "title": "المراجعات",
-      "empty": "لا توجد مراجعات بعد.",
-      "error": "تعذر تحميل المراجعات.",
-      "retry": "إعادة المحاولة",
-      "no_comment": "لا توجد ملاحظة.",
-      "anonymous": "مجهول",
-      "load_more": "عرض المزيد",
-      "show_less": "عرض أقل"
+      "parse_list": "تعذر تحليل استجابة عروض الخدمات",
+      "parse_detail": "تعذر تحميل عرض الخدمة المحدد",
+      "parse_submit": "تعذر حفظ عرض الخدمة",
+      "parse_catalog": "تعذر تحميل كتالوج الخدمات"
     }
   },
-  "doctor": "طبيب",
   "clinics": {
     "list": {
-      "error_generic": "تعذر تحميل العيادات في الوقت الحالي."
+      "error_generic": "تعذر تحميل عياداتك الآن."
     },
     "actions": {
       "add_offering": "إضافة عرض",
       "delete": "حذف العيادة",
       "edit": "تعديل العيادة",
       "manage": "إدارة العيادة",
-      "retry": "إعادة المحاولة",
+      "retry": "حاول مرة أخرى",
       "view_details": "عرض التفاصيل"
     },
     "facility_type": {
@@ -403,15 +432,15 @@
       "unknown": "منشأة"
     },
     "detail": {
-      "about": "عن العيادة",
-      "contact": "بيانات التواصل",
+      "about": "حول",
+      "contact": "معلومات التواصل",
       "delete": "حذف العيادة",
       "deleting": "جارٍ الحذف...",
       "delete_confirm_title": "حذف العيادة",
-      "delete_confirm_message": "هل أنت متأكد من حذف هذه العيادة؟ لا يمكن التراجع عن هذا الإجراء.",
+      "delete_confirm_message": "هل أنت متأكد أنك تريد إزالة هذه العيادة؟ لا يمكن التراجع عن هذا الإجراء.",
       "delete_cancel": "إلغاء",
       "delete_confirm": "حذف",
-      "delete_success": "تم حذف العيادة بنجاح.",
+      "delete_success": "تمت إزالة العيادة بنجاح.",
       "edit": "تعديل العيادة",
       "facility_type": "نوع المنشأة",
       "invite_doctor": "دعوة طبيب",
@@ -432,7 +461,7 @@
       },
       "clinics_empty": "لا توجد عيادات متاحة لهذه العيادة.",
       "doctors_empty": "لا يوجد أطباء متاحون لهذه العيادة.",
-      "offerings_empty": "لا توجد عروض خدمات لهذه العيادة.",
+      "offerings_empty": "لا توجد عروض خدمات متاحة لهذه العيادة.",
       "invitations_empty": "لا توجد دعوات بعد."
     },
     "form": {
@@ -455,8 +484,8 @@
       },
       "add_image": "إضافة صورة",
       "social": {
-        "label": "روابط التواصل الاجتماعي",
-        "add": "إضافة رابط",
+        "label": "وسائل التواصل الاجتماعي",
+        "add": "إضافة رابط اجتماعي",
         "type_label": "المنصة",
         "link_label": "الرابط",
         "link_hint": "https://facebook.com/your-page",
@@ -464,7 +493,7 @@
           "facebook": "فيسبوك",
           "instagram": "إنستغرام",
           "youtube": "يوتيوب",
-          "x": "إكس (تويتر)",
+          "x": "X (تويتر)",
           "linkedin": "لينكدإن",
           "other": "روابط أخرى"
         }
@@ -476,34 +505,17 @@
       "success_update": "تم تحديث العيادة بنجاح."
     }
   },
-  "service_offerings.form.name_en": "الاسم (بالإنجليزية)",
-  "service_offerings.form.name_ar": "الاسم (بالعربية)",
-  "service_offerings.form.name_fr": "الاسم (بالفرنسية)",
-  "service_offerings.form.service_name": "اسم الخدمة",
-  "service_offerings.form.select_service_title": "اختر خدمة",
-  "service_offerings.form.search_services_hint": "ابحث عن خدمة...",
-  "service_offerings.form.add_service": "إضافة خدمة",
-  "service_offerings.form.services_empty": "لا توجد خدمات بعد.",
-  "service_offerings.form.create_service_title": "إضافة خدمة",
-  "service_offerings.form.create_service_subtitle": "أنشئ خدمة جديدة لاستخدامها في العرض.",
-  "service_offerings.form.service_image_label": "صورة الخدمة",
-  "service_offerings.form.service_image_add": "رفع صورة",
-  "service_offerings.form.create_service_submit": "إنشاء الخدمة",
-  "service_offerings.form.create_service_success": "تم إنشاء الخدمة بنجاح.",
-  "service_offerings.form.create_service_error": "تعذر إنشاء الخدمة.",
-  "service_offerings.form.load_services_error": "تعذر تحميل الخدمات.",
-  "service_offerings.form.service_description": "وصف الخدمة",
-  "service_offerings.form.images.label": "الصور",
-  "service_offerings.form.add_image": "إضافة صورة",
-  "logout_success_message": "تم تسجيل الخروج.",
+  "doctor": "طبيب",
+  "logout_success_message": "لقد تم تسجيل خروجك.",
   "logout_error_message": "تعذر تسجيل الخروج: {message}",
+  "reviews": "المراجعات",
   "auth_required": {
     "title": "تسجيل الدخول مطلوب",
     "description": "يرجى تسجيل الدخول أو إنشاء حساب للمتابعة.",
     "create_account": "إنشاء حساب"
   },
   "doctor_required": {
-    "title": "هذه الميزة للأطباء فقط",
+    "title": "مطلوب صلاحية طبيب",
     "description": "فقط الأطباء يمكنهم الوصول إلى هذا القسم. أكمل ملفك كطبيب للمتابعة.",
     "cta": "كن طبيبًا"
   },
@@ -512,59 +524,59 @@
   "shell.drawer_settings": "الإعدادات",
   "shell.drawer_about": "حول",
   "shell.drawer_feedback": "ملاحظات",
+  "shell.drawer_invitations": "الدعوات",
   "shell.drawer_support": "الدعم",
   "shell.drawer_placeholder": "{0} قريبًا",
   "city": "المدينة",
   "state": "الولاية / المقاطعة",
   "country": "البلد",
   "profile.title": "ملفي الشخصي",
-  "profile.edit_profile": "تعديل الملف",
+  "profile.edit_profile": "تعديل الملف الشخصي",
   "profile.address_label": "العنوان",
   "profile.first_name": "الاسم الأول",
-  "profile.last_name": "اسم العائلة",
-  "profile.update_profile_button": "تحديث الملف",
+  "profile.last_name": "الاسم الأخير",
+  "profile.update_profile_button": "تحديث الملف الشخصي",
   "profile.update_password_short": "تحديث كلمة المرور",
   "profile.password_current": "كلمة المرور الحالية",
   "profile.password_new": "كلمة المرور الجديدة",
   "profile.password_confirm_new": "تأكيد كلمة المرور الجديدة",
-  "profile.forgot_password": "نسيت كلمة المرور",
+  "profile.forgot_password": "هل نسيت كلمة المرور؟",
   "profile.reset_password_hint": "أدخل بريدك الإلكتروني لتلقي رابط إعادة التعيين.",
-  "profile.send_reset": "إرسال الرابط",
-  "profile.reset_link_sent": "تم إرسال الرابط، تحقق من بريدك.",
-  "profile.reset_link_failed": "تعذر إرسال الرابط.",
-  "profile.password_update_success": "تم تحديث كلمة المرور.",
+  "profile.send_reset": "إرسال رابط إعادة التعيين",
+  "profile.reset_link_sent": "تم إرسال رابط إعادة التعيين، يرجى التحقق من صندوق الوارد.",
+  "profile.reset_link_failed": "تعذر إرسال رابط إعادة التعيين.",
+  "profile.password_update_success": "تم تحديث كلمة المرور بنجاح.",
   "profile.password_update_error": "تعذر تحديث كلمة المرور.",
-  "profile.invalid_email": "يرجى إدخال بريد إلكتروني صالح.",
-  "profile.edit_section": "تعديل الملف",
+  "profile.invalid_email": "يرجى إدخال عنوان بريد إلكتروني صالح.",
+  "profile.edit_section": "تعديل الملف الشخصي",
   "profile.name_label": "الاسم الكامل",
   "profile.password_label": "كلمة المرور الجديدة",
-  "profile.password_helper": "اتركه فارغًا للاحتفاظ بكلمة المرور الحالية",
+  "profile.password_helper": "اتركه فارغًا للاحتفاظ بكلمة مرورك الحالية",
   "profile.password_invalid": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل",
   "profile.confirm_password_label": "تأكيد كلمة المرور الجديدة",
   "profile.confirm_password_required": "يرجى تأكيد كلمة المرور الجديدة",
   "profile.password_mismatch": "كلمتا المرور غير متطابقتين",
   "profile.password_requirements_title": "متطلبات كلمة المرور:",
-  "profile.password_requirement_length": "ثمانية أحرف على الأقل",
+  "profile.password_requirement_length": "8 أحرف على الأقل",
   "profile.password_requirement_upper": "حرف كبير واحد على الأقل",
-  "profile.password_requirement_number": "رقم واحد على الأقل",
+  "profile.password_requirement_number": "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل",
   "profile.password_requirement_special": "رمز خاص واحد على الأقل",
   "profile.save_changes": "حفظ التغييرات",
   "profile.updating": "جارٍ الحفظ...",
   "profile.no_changes": "لا توجد تغييرات للحفظ.",
-  "profile.update_success": "تم تحديث الملف بنجاح.",
-  "profile.update_error": "تعذر تحديث الملف.",
-  "profile.load_error": "تعذر تحميل الملف الشخصي.",
-  "profile.retry": "أعد المحاولة",
-  "profile.empty": "بيانات الملف غير متاحة.",
+  "profile.update_success": "تم تحديث الملف الشخصي بنجاح.",
+  "profile.update_error": "تعذر تحديث الملف الشخصي.",
+  "profile.load_error": "تعذر تحميل ملفك الشخصي.",
+  "profile.retry": "حاول مرة أخرى",
+  "profile.empty": "بيانات الملف الشخصي غير متاحة.",
   "profile.phone": "الهاتف",
   "profile.email": "البريد الإلكتروني",
-  "profile.verified": "حساب موثق",
-  "profile.not_verified": "غير موثق",
+  "profile.verified": "حساب موثّق",
+  "profile.not_verified": "غير موثّق",
   "profile.member_since_unknown": "عضو منذ -",
-  "profile.drawer_status_loading": "جارٍ تحميل الملف...",
-  "profile.drawer_status_error": "فشل تحميل الملف.",
-  "profile.view_profile": "عرض الملف",
-  "reviews": "المراجعات",
+  "profile.drawer_status_loading": "جارٍ تحميل الملف الشخصي...",
+  "profile.drawer_status_error": "فشل تحميل بيانات الملف الشخصي.",
+  "profile.view_profile": "عرض الملف الشخصي",
   "services": {
     "detail": {
       "description": "الوصف",
@@ -575,15 +587,15 @@
     "title": "من نحن",
     "hero": {
       "title": "مرحبًا بك في NavCare",
-      "subtitle": "ربط المرضى بمقدّمي الرعاية الصحية حول العالم مع حجز آمن، ومراسلة، ومدفوعات."
+      "subtitle": "ربط المرضى بمقدّمي الرعاية الصحية حول العالم مع حجز آمن ومراسلة ومدفوعات."
     },
     "about_us": {
       "title": "عن NavCare",
-      "body": "NavCare هي منصة ويب وتطبيق جوال تم إنشاؤها لربط المرضى بمقدّمي الرعاية الصحية حول العالم. مع حجز المواعيد، والمراسلة المدمجة، وخيارات الدفع الآمن، توفر طريقة بسيطة وآمنة للوصول إلى الخدمات الطبية. أكثر من مجرد منصة، إنها رؤية لرعاية دولية سلسة ستتطور إلى مركز متعدّد الخدمات مع حلول صحية رقمية، ودعم مخصص، وتجارب سلسة في كل خطوة."
+      "body": "NavCare هي منصة ويب وتطبيق جوّال تم إنشاؤها لربط المرضى بمقدّمي الرعاية الصحية حول العالم. مع حجز المواعيد، والمراسلة المدمجة، وخيارات الدفع الآمن، توفر طريقة بسيطة وآمنة للوصول إلى الخدمات الطبية. أكثر من مجرد منصة، إنها رؤية لرعاية دولية سلسة ستتطور إلى مركز متعدد الخدمات مع حلول صحة رقمية، ودعم مخصص، وتجارب سلسة في كل خطوة."
     },
     "story": {
       "title": "قصتنا",
-      "body": "تأسست NavMarket في عام 2024 لسد الفجوات التي رأيناها في الأسواق الحالية. انطلقنا لبناء مساحة آمنة وفعّالة وغنية بالميزات التي ترتقي بتجربة كل مستخدم."
+      "body": "تأسست NavMarket في عام 2024 للتغلب على الفجوات التي رأيناها في الأسواق الحالية. انطلقنا لبناء مساحة آمنة وفعّالة وغنية بالميزات التي ترتقي بتجربة كل مستخدم."
     },
     "priorities": {
       "title": "أولوياتنا",
@@ -593,8 +605,8 @@
         "body": "الجودة معيار مدمج في كل خدمة. نقدم منتجات عالية المستوى عبر ضوابط صارمة في كل مرحلة، لضمان الموثوقية والكفاءة والتوافق التام مع احتياجات عملائنا."
       },
       "reliability": {
-        "title": "الاعتمادية",
-        "body": "الاعتمادية في قلب عملنا. نصمم منتجات قوية ومستقرة وعالية الأداء تلبي التوقعات مع مرور الوقت من خلال عمليات منضبطة ومراقبة مستمرة."
+        "title": "الموثوقية",
+        "body": "الموثوقية في قلب عملنا. نصنع منتجات قوية ومستقرة وعالية الأداء تلبي التوقعات مع مرور الوقت من خلال عمليات منضبطة ومراقبة مستمرة."
       },
       "security": {
         "title": "الأمان",
@@ -603,18 +615,18 @@
     },
     "company": {
       "title": "شركتنا",
-      "body": "KIG (Koudri Innovations Group) هي امتداد ديناميكي ومبتكر لمؤسستنا، متخصصة بالفعل في ثلاثة مجالات. وبوصفنا شركة فرعية جديدة، نظل قريبين من الاتجاهات والتطورات التقنية، ونمزج الخبرة الراسخة بعقلية رشيقة تتمحور حول العميل لنقدم برمجيات وتقنيات وتجارب رقمية متقدمة. التزامنا بالابتكار والتميّز يضعنا في موقع يمكّننا من مواجهة تحديات الغد وخلق قيمة مستدامة للعملاء والشركاء."
+      "body": "KIG (Koudri Innovations Group) هي امتداد ديناميكي ومبتكر لمؤسستنا، متخصصة بالفعل عبر ثلاثة مجالات. وبوصفنا شركة فرعية جديدة، نظل قريبين من الاتجاهات والتطورات التقنية، ونمزج الخبرة الراسخة بعقلية رشيقة تتمحور حول العميل لنقدم برمجيات وتقنيات وتجارب رقمية متقدمة. التزامنا بالابتكار والتميّز يضعنا في موقع يمكّننا من مواجهة تحديات الغد وخلق قيمة مستدامة للعملاء والشركاء."
     },
     "offerings": {
       "title": "ما الذي نقدمه",
-      "body": "منصة مصمّمة لاستضافة وتسليط الضوء على الخدمات التي يبحث عنها الناس يوميًا.",
+      "body": "منصة مصمّمة لاستضافة وإبراز الخدمات التي يبحث عنها الناس يوميًا.",
       "diverse_listings": {
         "title": "قوائم متنوعة",
         "body": "من العقارات إلى السيارات والخدمات والاحتياجات اليومية، نجمع مجموعة واسعة من القوائم لتلبية كل الاحتياجات."
       },
       "user_experience": {
-        "title": "تجربة استخدام مريحة",
-        "body": "تصميم بديهي وواجهة سهلة الاستخدام تجعل البيع والشراء بسيطًا وخاليًا من التوتر."
+        "title": "تجربة سهلة الاستخدام",
+        "body": "تصميم بديهي وواجهة سهلة الاستخدام تجعل البيع والشراء مباشرَين وخاليَين من التوتر."
       },
       "subscriptions": {
         "title": "خطط اشتراك",
@@ -634,20 +646,20 @@
       },
       "innovation": {
         "title": "الابتكار",
-        "body": "نواصل التطوير لنقدّم ميزات حديثة تبقي التجربة متجددة ومتقدمة."
+        "body": "نواصل التحسين لتقديم ميزات حديثة تبقي التجربة متجددة ومتقدمة."
       }
     },
     "cta": {
       "title": "نبني مستقبل الرعاية المتصلة",
-      "body": "مع نمو NavCare إلى مركز متعدّد الخدمات، نظل ملتزمين باستشارات آمنة، ودعم مخصص، وتجارب سلسة لكل مستخدم."
+      "body": "مع نمو NavCare إلى مركز متعدد الخدمات، نظل ملتزمين باستشارات آمنة ودعم مخصص وتجارب سلسة لكل مستخدم."
     }
   },
   "contact": {
     "title": "اتصل بنا",
-    "heading": "لنبدأ الحديث",
+    "heading": "لنتحدث",
     "subtitle": "أسئلة أو تعليقات أو اقتراحات؟ ما عليك سوى ملء النموذج وسنتواصل معك قريبًا.",
     "first_name": "الاسم الأول",
-    "last_name": "اسم العائلة",
+    "last_name": "الاسم الأخير",
     "email": "البريد الإلكتروني",
     "phone": "رقم الهاتف",
     "message": "رسالتك*",
@@ -657,11 +669,11 @@
     "submit_placeholder": "سيتم إعداد إرسال الرسائل لاحقًا."
   },
   "feedback": {
-    "auth_required": "يرجى تسجيل الدخول لإرسال ملاحظات.",
+    "auth_required": "يرجى تسجيل الدخول لإرسال الملاحظات.",
     "comment_required": "يرجى إضافة ملاحظة قبل إرسال ملاحظاتك.",
     "submit_error": "تعذر إرسال الملاحظات: {message}",
-    "submit_success": "شكرًا لك! تم إرسال ملاحظاتك.",
-    "hint": "اكتب ملاحظاتك أو مشاكلك هنا"
+    "submit_success": "شكرًا! تم إرسال ملاحظاتك.",
+    "hint": "شارك أفكارك أو مشاكلك هنا"
   },
   "faq.title": "المساعدة والأسئلة الشائعة",
   "faq.subtitle": "إجابات سريعة حول الحجز والحسابات وكيفية الاستفادة من Nav Care.",
@@ -672,55 +684,37 @@
   "faq.tags.search": "البحث",
   "faq.tags.support": "استكشاف الأخطاء",
   "faq.questions.about_app.question": "ما هو Nav Care وكيف يمكنه مساعدتي؟",
-  "faq.questions.about_app.answer": "يتيح لك Nav Care استكشاف المستشفيات والأطباء وعروض الخدمات، ورؤية تفاصيل مثل الأسعار والمواقع، وإدارة جميع مواعيدك في مكان واحد.",
+  "faq.questions.about_app.answer": "يتيح لك Nav Care استكشاف المستشفيات والأطباء وعروض الخدمات، ورؤية تفاصيل مثل الأسعار والمواقع، وإدارة جميع مواعيدك من مكان واحد.",
   "faq.questions.account_needed.question": "هل أحتاج إلى حساب لاستخدام التطبيق؟",
-  "faq.questions.account_needed.answer": "يمكنك التصفح بحرية، ولكن يتطلب الحجز أو إعادة الجدولة أو إلغاء المواعيد وتزامن بيانات ملفك الشخصي عبر الأجهزة تسجيل الدخول.",
+  "faq.questions.account_needed.answer": "يمكنك التصفح بحرية، لكن تسجيل الدخول مطلوب للحجز أو إعادة الجدولة أو إلغاء المواعيد، ولتزامن بيانات ملفك الشخصي عبر الأجهزة.",
   "faq.questions.book_appointment.question": "كيف أحجز موعدًا؟",
-  "faq.questions.book_appointment.answer": "افتح أي عرض خدمة من الصفحة الرئيسية أو البحث، واضغط على \"حجز موعد\"، ثم اختر وقت البداية والنهاية المناسب لك، ثم أكّد الحجز. إذا لم تكن مسجلًا للدخول، فسيطلب منك التطبيق تسجيل الدخول أولًا.",
+  "faq.questions.book_appointment.answer": "افتح أي عرض خدمة من الرئيسية أو البحث، واضغط على \"حجز موعد\"، واختر وقت البداية والنهاية المناسبين لك، ثم أكّد. إذا لم تكن مسجّلًا للدخول بعد، سيطلب منك التطبيق تسجيل الدخول أولًا.",
   "faq.questions.manage_appointment.question": "كيف أعدّل أو أعيد جدولة أو ألغِي حجزًا؟",
-  "faq.questions.manage_appointment.answer": "اذهب إلى تبويب المواعيد، واختر بطاقة الموعد، ثم عدّل وقت البداية/النهاية أو غيّر الحالة إلى ملغى. يتم تحديث القائمة تلقائيًا عند نجاح التعديل.",
+  "faq.questions.manage_appointment.answer": "اذهب إلى تبويب المواعيد، واختر بطاقة الموعد، ثم عدّل وقت البداية/النهاية أو غيّر الحالة إلى ملغي. يتم تحديث القائمة تلقائيًا عند نجاح التعديل.",
   "faq.questions.search_services.question": "ما أفضل طريقة للعثور على الطبيب أو الخدمة المناسبة؟",
   "faq.questions.search_services.answer": "استخدم تبويب البحث لكتابة اسم طبيب أو مستشفى أو خدمة. طبّق عوامل التصفية المتاحة (الموقع، التقييم، السعر أو اللغة عند توفرها) لتضييق النتائج، ثم افتح النتيجة لعرض التفاصيل والحجز.",
   "faq.questions.profile_updates.question": "أين يمكنني تحديث ملفي الشخصي أو رقم الهاتف؟",
   "faq.questions.profile_updates.answer": "افتح تبويب الملف الشخصي واضغط على \"تعديل الملف الشخصي\" لتغيير الاسم أو الهاتف أو العنوان أو الصورة الشخصية. اسحب للأسفل للتحديث إذا احتجت لجلب أحدث البيانات بعد الحفظ.",
   "faq.questions.language_switch.question": "هل يمكنني تغيير لغة التطبيق؟",
-  "faq.questions.language_switch.answer": "نعم. افتح القائمة الجانبية، واختر العربية أو الإنجليزية أو الفرنسية من محدد اللغة، وسيتم تحديث الواجهة فورًا دون إعادة تشغيل التطبيق.",
+  "faq.questions.language_switch.answer": "نعم. افتح القائمة الجانبية، واختر العربية أو الإنجليزية أو الفرنسية من محدد اللغة، وستتحدث الواجهة فورًا دون إعادة تشغيل التطبيق.",
   "faq.questions.password_reset.question": "نسيت كلمة المرور. كيف يمكنني إعادة تعيينها؟",
-  "faq.questions.password_reset.answer": "استخدم خيار \"نسيت كلمة المرور\" في شاشة تسجيل الدخول لطلب إعادة التعيين. اتبع الخطوات الظاهرة على الشاشة لتعيين كلمة مرور جديدة باستخدام بريدك الإلكتروني أو رقم هاتفك.",
+  "faq.questions.password_reset.answer": "استخدم خيار \"هل نسيت كلمة المرور؟\" في شاشة تسجيل الدخول لطلب إعادة التعيين. اتبع الخطوات الظاهرة على الشاشة لتعيين كلمة مرور جديدة باستخدام بريدك الإلكتروني أو رقم هاتفك.",
   "faq.questions.data_sync.question": "التطبيق لا يحمل البيانات. ماذا أفعل؟",
-  "faq.questions.data_sync.answer": "تحقق من اتصالك بالإنترنت، ثم اسحب للتحديث في الصفحة الرئيسية أو البحث أو المواعيد. إذا استمرت المشكلة، قم بتسجيل الخروج ثم تسجيل الدخول مرة أخرى لتحديث الجلسة قبل المحاولة مجددًا.",
+  "faq.questions.data_sync.answer": "تحقق من اتصالك بالإنترنت، ثم اسحب للتحديث في الرئيسية أو البحث أو المواعيد. إذا استمرت المشكلة، سجّل الخروج ثم سجّل الدخول مجددًا لتحديث الجلسة قبل المحاولة مرة أخرى.",
   "appointment_status": {
     "pending": "قيد الانتظار",
     "confirmed": "مؤكد",
     "completed": "مكتمل",
-    "cancelled": "ملغى"
+    "cancelled": "ملغي"
   },
   "network_error": {
     "title": "لا يوجد اتصال بالإنترنت",
-    "subtitle": "تحقق من الواي فاي أو بيانات الهاتف ثم أعد المحاولة.",
-    "retry": "أعد المحاولة"
+    "subtitle": "تحقق من Wi-Fi أو بيانات الهاتف ثم حاول مرة أخرى.",
+    "retry": "حاول مرة أخرى"
   },
   "server_error": {
     "title": "الخادم غير متاح",
-    "subtitle": "تعذر الوصول إلى خوادمنا. يرجى المحاولة مرة أخرى."
+    "subtitle": "تعذر الوصول إلى خوادمنا. يرجى إعادة المحاولة."
   },
-  "notifications": {
-    "title": "الإشعارات",
-    "empty_title": "لا توجد إشعارات بعد",
-    "empty_subtitle": "أنت على اطلاع بكل شيء! ستظهر التحديثات الجديدة هنا.",
-    "refresh": "تحديث"
-  },
-  "shell.drawer_invitations": "الدعوات",
-  "doctor_invitations": {
-    "title": "الدعوات",
-    "empty": "لا توجد دعوات بعد.",
-    "retry": "حاول مرة أخرى",
-    "accept": "قبول",
-    "decline": "رفض",
-    "accept_success": "تم قبول الدعوة.",
-    "decline_success": "تم رفض الدعوة.",
-    "error_generic": "تعذر تحميل الدعوات.",
-    "invited_by": "تمت الدعوة بواسطة {name}"
-  },
-  "signup_image_too_large": "??? ?????? ???? ???? ???? ?????? ???? ????."
+  "signup_image_too_large": "حجم الصورة كبير جدًا. يرجى اختيار صورة أصغر."
 }

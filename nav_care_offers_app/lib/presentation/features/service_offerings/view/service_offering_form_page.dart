@@ -59,9 +59,6 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
   late final TextEditingController _priceController;
   late final TextEditingController _offersController;
   late final TextEditingController _descriptionEnController;
-  late final TextEditingController _descriptionFrController;
-  late final TextEditingController _descriptionArController;
-  late final TextEditingController _descriptionSpController;
   String? _selectedServiceId;
   ServiceCategory? _selectedService;
   late final TextEditingController _nameEnController;
@@ -80,12 +77,6 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
     );
     _descriptionEnController =
         TextEditingController(text: initial?.descriptionEn ?? '');
-    _descriptionFrController =
-        TextEditingController(text: initial?.descriptionFr ?? '');
-    _descriptionArController =
-        TextEditingController(text: initial?.descriptionAr ?? '');
-    _descriptionSpController =
-        TextEditingController(text: initial?.descriptionSp ?? '');
     _nameEnController =
         TextEditingController(text: initial?.nameEn ?? initial?.service.nameEn ?? '');
     _selectedServiceId = initial?.service.id;
@@ -97,9 +88,6 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
     _priceController.dispose();
     _offersController.dispose();
     _descriptionEnController.dispose();
-    _descriptionFrController.dispose();
-    _descriptionArController.dispose();
-    _descriptionSpController.dispose();
     _nameEnController.dispose();
     super.dispose();
   }
@@ -217,22 +205,7 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                       const SizedBox(height: 16),
                       _MultilineField(
                         controller: _descriptionEnController,
-                        label: 'service_offerings.form.description_en'.tr(),
-                      ),
-                      const SizedBox(height: 12),
-                      _MultilineField(
-                        controller: _descriptionArController,
-                        label: 'service_offerings.form.description_ar'.tr(),
-                      ),
-                      const SizedBox(height: 12),
-                      _MultilineField(
-                        controller: _descriptionFrController,
-                        label: 'service_offerings.form.description_fr'.tr(),
-                      ),
-                      const SizedBox(height: 12),
-                      _MultilineField(
-                        controller: _descriptionSpController,
-                        label: 'service_offerings.form.description_sp'.tr(),
+                        label: 'service_offerings.form.description'.tr(),
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -313,15 +286,6 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
           descriptionEn: _descriptionEnController.text.trim().isEmpty
               ? null
               : _descriptionEnController.text.trim(),
-          descriptionFr: _descriptionFrController.text.trim().isEmpty
-              ? null
-              : _descriptionFrController.text.trim(),
-          descriptionAr: _descriptionArController.text.trim().isEmpty
-              ? null
-              : _descriptionArController.text.trim(),
-          descriptionSp: _descriptionSpController.text.trim().isEmpty
-              ? null
-              : _descriptionSpController.text.trim(),
           nameEn: _nameEnController.text.trim(),
           images: _selectedImages,
         );

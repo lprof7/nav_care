@@ -8,8 +8,10 @@ import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
 import 'package:nav_care_offers_app/data/hospitals/models/hospital_payload.dart';
 import 'package:nav_care_offers_app/data/hospitals/hospitals_repository.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/hospital_form_cubit.dart';
+import 'package:nav_care_offers_app/presentation/shared/utils/hospitals_refresh_bus.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_offers_app/presentation/shared/theme/colors.dart';
+import 'package:nav_care_offers_app/core/routing/app_router.dart';
 
 class HospitalFormPage extends StatelessWidget {
   final Hospital? initial;
@@ -110,6 +112,9 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
               ),
             ),
           );
+          if (!isEditing) {
+            HospitalsRefreshBus.notify();
+          }
           context.pop(true); // Indicate success for refresh
         }
       },
@@ -615,7 +620,8 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('$_prefix.detail.delete_success'.tr())),
         );
-        context.pop(true);
+        HospitalsRefreshBus.notify();
+        context.go(AppRoute.home.path);
       },
     );
   }

@@ -38,7 +38,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      context.read<NetworkCubit>().recheckConnectivity();
+      sl<NetworkCubit>().recheckConnectivity();
     }
   }
 

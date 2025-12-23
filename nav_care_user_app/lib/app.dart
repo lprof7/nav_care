@@ -34,7 +34,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       // Re-check connectivity and show shimmer window instead of stale error
-      context.read<NetworkCubit>().recheckConnectivity();
+      sl<NetworkCubit>().recheckConnectivity();
     }
   }
 

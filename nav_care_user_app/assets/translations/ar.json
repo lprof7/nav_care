@@ -31,14 +31,14 @@
     "code_subtitle": "لقد أرسلنا رمزًا مكوّنًا من 6 أرقام إلى {email}",
     "code_hint": "رمز مكوّن من 6 أرقام",
     "verify": "التالي",
-    "timer_title": "سينتهي صلاحية الرمز خلال",
-    "timer_label": "{seconds}s متبقية",
+    "timer_title": "تنتهي صلاحية الرمز خلال",
+    "timer_label": "متبقي {seconds} ثانية",
     "timer_expired": "انتهت صلاحية الرمز",
     "back_to_email": "الرجوع إلى البريد الإلكتروني",
     "code_sent": "تم إرسال رمز إعادة التعيين إلى بريدك الإلكتروني.",
-    "code_verified": "تم التحقق من الرمز. قم بتعيين كلمة مرور جديدة.",
+    "code_verified": "تم التحقق من الرمز. عيّن كلمة مرورك الجديدة.",
     "password_title": "تعيين كلمة مرور جديدة",
-    "password_subtitle": "أنشئ كلمة مرور قوية لحماية حسابك.",
+    "password_subtitle": "أنشئ كلمة مرور قوية لتأمين حسابك.",
     "new_password": "كلمة المرور الجديدة",
     "confirm_password": "تأكيد كلمة المرور",
     "submit": "إعادة تعيين كلمة المرور",
@@ -48,7 +48,7 @@
   "sign_in_with_google": "تسجيل الدخول باستخدام Google",
   "sign_in_with_apple": "تسجيل الدخول باستخدام Apple",
   "auth_required": {
-    "title": "يتطلب تسجيل الدخول",
+    "title": "تسجيل الدخول مطلوب",
     "description": "يرجى تسجيل الدخول أو إنشاء حساب للمتابعة.",
     "create_account": "إنشاء حساب"
   },
@@ -59,7 +59,7 @@
   "shell.drawer_feedback": "ملاحظات",
   "shell.drawer_support": "الدعم",
   "feedback": {
-    "auth_required": "يرجى تسجيل الدخول لإرسال ملاحظات.",
+    "auth_required": "يرجى تسجيل الدخول لإرسال الملاحظات.",
     "comment_required": "يرجى إضافة ملاحظة قبل إرسال ملاحظاتك.",
     "submit_error": "تعذر إرسال الملاحظات: {message}",
     "submit_success": "شكرًا لك! تم إرسال ملاحظاتك."
@@ -76,7 +76,7 @@
   "passwords_do_not_match": "كلمتا المرور غير متطابقتين",
   "accept_terms_error": "يرجى قبول الشروط وسياسة الخصوصية",
   "field_required": "هذا الحقل مطلوب",
-  "algerian_phone_error": "أدخل رقم هاتف جزائري صالحًا",
+  "algerian_phone_error": "أدخل رقم هاتف جزائري صالح",
   "upload_profile_picture": "رفع صورة الملف الشخصي",
   "upload_photo_hint": "اضغط لإضافة أو تحديث صورتك الشخصية",
   "change_photo": "تغيير الصورة",
@@ -238,7 +238,7 @@
         "all": "كل الحالات",
         "empty": "لا توجد مواعيد تطابق هذه الحالة."
       },
-      "change_status": "????? ??????"
+      "change_status": "تغيير الحالة"
     },
     "status": {
       "pending": "قيد الانتظار",
@@ -578,5 +578,5 @@
     }
   },
   "shell.drawer_theme": "السمة",
-  "signup_image_too_large": "??? ?????? ???? ???? ???? ?????? ???? ????."
+  "signup_image_too_large": "الصورة كبيرة جدًا. يرجى اختيار صورة أصغر."
 }

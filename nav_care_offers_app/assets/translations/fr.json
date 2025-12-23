@@ -1,23 +1,23 @@
 {
   "sign_in": "Se connecter",
   "sign_up": "S’inscrire",
-  "sign_up_subtitle": "Créez un compte pour commencer",
+  "sign_up_subtitle": "Créer un compte pour commencer",
   "email": "E-mail",
   "email_or_phone": "E-mail ou numéro de téléphone",
   "password": "Mot de passe",
   "confirm_password": "Confirmer le mot de passe",
   "first_name": "Prénom",
-  "last_name": "Nom de famille",
+  "last_name": "Nom",
   "birth_date_hint": "Sélectionnez votre date de naissance",
   "phone_number": "Numéro de téléphone",
-  "algerian_phone_error": "Veuillez saisir un numéro de téléphone algérien valide",
+  "algerian_phone_error": "Entrez un numéro de téléphone algérien valide",
   "upload_profile_picture": "Télécharger la photo de profil",
-  "upload_photo_hint": "Touchez pour ajouter ou mettre à jour votre photo",
+  "upload_photo_hint": "Touchez pour ajouter ou mettre à jour votre photo de profil",
   "change_photo": "Changer la photo",
   "remove_photo": "Supprimer la photo",
   "passwords_do_not_match": "Les mots de passe ne correspondent pas",
   "accept_terms_error": "Veuillez accepter les Conditions et la Politique de confidentialité",
-  "invalid_email_format": "Veuillez saisir une adresse e-mail valide.",
+  "invalid_email_format": "Veuillez entrer une adresse e-mail valide.",
   "i_accept": "J’accepte",
   "terms_and_policy": "Conditions et Politique de confidentialité",
   "already_have_account": "Vous avez déjà un compte ?",
@@ -32,7 +32,7 @@
     "subtitle": "Entrez votre e-mail pour recevoir un code de réinitialisation.",
     "email_hint": "Votre adresse e-mail",
     "send_code": "Envoyer le code",
-    "code_title": "Saisissez le code de vérification",
+    "code_title": "Entrer le code de vérification",
     "code_subtitle": "Nous avons envoyé un code à 6 chiffres à {email}",
     "code_hint": "Code à 6 chiffres",
     "verify": "Suivant",
@@ -56,7 +56,7 @@
   "sign_up_with_apple": "S’inscrire avec Apple",
   "signin_success_message": "Bienvenue {name}",
   "signin_error_message": "Erreur : {message}",
-  "signin_account_not_found": "Nous n’avons trouvé aucun compte correspondant à ces identifiants.",
+  "signin_account_not_found": "Nous n’avons pas trouvé de compte avec ces identifiants.",
   "signin_doctor_profile_required": "Votre compte existe, mais vous devez compléter votre profil de médecin.",
   "signup_success_message": "Compte créé avec succès",
   "signup_error_message": "Erreur : {message}",
@@ -66,17 +66,17 @@
   "become_doctor_heading": "Complétez votre profil de médecin",
   "become_doctor_description": "Bonjour {name}, pour continuer vous devez confirmer vos informations professionnelles.",
   "become_doctor_default_name": "Médecin",
-  "become_doctor_next_steps": "Nous vous guiderons très bientôt dans les prochaines étapes.",
+  "become_doctor_next_steps": "Nous vous guiderons bientôt à travers les étapes restantes.",
   "become_doctor_back_to_signin": "Retour à la connexion",
   "become_doctor_image_label": "Image de profil",
   "become_doctor_image_hint": "Ajoutez une photo claire et professionnelle pour compléter votre profil.",
   "become_doctor_image_cta": "Téléverser une image",
-  "become_doctor_image_required": "L’image de profil est obligatoire.",
-  "become_doctor_bio_label": "Courte bio (anglais)",
+  "become_doctor_image_required": "L’image de profil est requise.",
+  "become_doctor_bio_label": "Courte biographie (anglais)",
   "become_doctor_bio_hint": "Décrivez votre expertise et ce que les patients peuvent attendre.",
   "become_doctor_submit": "Envoyer la demande",
   "become_doctor_submitting": "Envoi...",
-  "become_doctor_success": "Votre demande de profil médecin a été envoyée avec succès.",
+  "become_doctor_success": "Votre demande de profil médecin a été envoyée !",
   "shell": {
     "nav_home": "Accueil",
     "nav_appointments": "Rendez-vous",
@@ -87,7 +87,7 @@
     "drawer_theme": "Thème",
     "drawer_default_name": "Dr NavCare",
     "drawer_default_email": "doctor@navcare.com",
-    "drawer_verify_phone": "Vérifier le numéro",
+    "drawer_verify_phone": "Vérifier le numéro de téléphone",
     "language": {
       "en": "Anglais",
       "ar": "Arabe",
@@ -97,21 +97,41 @@
       "menu": "Ouvrir le menu",
       "support": "Support",
       "favorites": "Favoris",
-      "notifications": "Notifications"
+      "notifications": "Notifications",
+      "exit": "Quitter"
+    },
+    "onboarding": {
+      "hospital_title": "Vous êtes connecté en tant qu’hôpital",
+      "clinic_title": "Vous êtes connecté en tant que clinique",
+      "welcome": "Bienvenue {name}",
+      "exit_hospital_title": "Vous êtes déconnecté de l’hôpital",
+      "exit_clinic_title": "Vous êtes déconnecté de la clinique",
+      "exit_message": "À bientôt, {name}"
     },
     "drawer_logout": "Se déconnecter"
   },
   "notifications": {
     "title": "Notifications",
     "empty_title": "Aucune notification pour le moment",
-    "empty_subtitle": "Vous êtes à jour ! Les nouvelles notifications apparaîtront ici.",
+    "empty_subtitle": "Vous êtes à jour ! Les nouvelles mises à jour apparaîtront ici.",
     "refresh": "Actualiser"
+  },
+  "doctor_invitations": {
+    "title": "Invitations",
+    "empty": "Aucune invitation pour le moment.",
+    "retry": "Réessayer",
+    "accept": "Accepter",
+    "decline": "Refuser",
+    "accept_success": "Invitation acceptée.",
+    "decline_success": "Invitation refusée.",
+    "error_generic": "Impossible de charger les invitations.",
+    "invited_by": "Invité par {name}"
   },
   "home": {
     "welcome_message": "Voici ce qui se passe aujourd’hui",
     "appointments": {
       "title": "Rendez-vous à venir",
-      "subtitle": "Gérez l’agenda des patients du jour",
+      "subtitle": "Gérer l’agenda des patients du jour",
       "empty": "Aucun rendez-vous disponible pour le moment."
     },
     "quick_actions": {
@@ -121,13 +141,13 @@
       "view_reports": "Voir les rapports"
     },
     "services_manage": {
-      "title": "Gestion des services",
+      "title": "Gérer les services",
       "subtitle": "Consultez, mettez à jour et publiez vos offres",
       "prompt": "Appuyez sur la carte ci-dessus pour charger vos services.",
       "loading": "Chargement de vos services...",
       "error": "Impossible de charger vos services",
       "retry": "Réessayer",
-      "empty": "Vous n’avez pas encore ajouté de services.",
+      "empty": "Vous n’avez encore ajouté aucun service.",
       "list_title": "Vos services actifs",
       "more": "+{count} services supplémentaires"
     }
@@ -145,33 +165,556 @@
       "end_label": "Heure de fin",
       "status_label": "Statut",
       "cancel": "Annuler",
-      "submit": "Enregistrer"
+      "submit": "Enregistrer les modifications"
     },
     "messages": {
       "update_success": "Rendez-vous mis à jour avec succès",
       "update_failure": "Impossible de mettre à jour le rendez-vous"
     },
     "validation": {
-      "invalid_range": "L’heure de fin doit être postérieure à l’heure de début",
-      "invalid_dates": "Dates de rendez-vous invalides"
+      "invalid_range": "L’heure de fin doit être après l’heure de début",
+      "invalid_dates": "Les dates du rendez-vous sont invalides"
     },
     "list": {
-      "change_status": "Modifier le statut"
+      "change_status": "Changer le statut"
+    }
+  },
+  "hospitals": {
+    "list": {
+      "title": "Réseau hospitalier",
+      "subtitle": "Organisez vos hôpitaux et cliniques en un seul endroit",
+      "empty": "Vous n’avez encore ajouté aucun établissement.",
+      "error_network": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.",
+      "error_timeout": "Le serveur met plus de temps que prévu. Veuillez réessayer.",
+      "error_unauthorized": "Votre session a expiré. Veuillez vous reconnecter.",
+      "error_generic": "Impossible de charger vos hôpitaux pour le moment."
+    },
+    "actions": {
+      "add": "Ajouter un hôpital",
+      "reload": "Recharger",
+      "retry": "Réessayer",
+      "view_details": "Voir les détails",
+      "add_clinic": "Ajouter une clinique",
+      "add_offering": "Ajouter une offre"
+    },
+    "stats": {
+      "clinics": "{0} cliniques",
+      "doctors": "{0} médecins"
+    },
+    "facility_type": {
+      "hospital": "Hôpital",
+      "clinic": "Clinique",
+      "unknown": "Établissement"
+    },
+    "detail": {
+      "app_bar": "Hôpital # {0}",
+      "tabs": {
+        "details": "Détails",
+        "clinics": "Cliniques",
+        "doctors": "Médecins",
+        "invitations": "Invitations",
+        "offerings": "Offres de services"
+      },
+      "stats": {
+        "clinics": "Cliniques",
+        "doctors": "Médecins",
+        "offerings": "Offres",
+        "rating": "Évaluation"
+      },
+      "cta": {
+        "view_service": "Gérer"
+      },
+      "facility_type": "Type d’établissement",
+      "phone": "Téléphone de contact",
+      "coordinates": "Coordonnées géographiques",
+      "manage_clinics": "Gérer les cliniques",
+      "manage_doctors": "Gérer les médecins",
+      "clinics_title": "Cliniques dans cet hôpital",
+      "doctors_title": "Médecins associés",
+      "edit": "Modifier l’hôpital",
+      "delete": "Supprimer l’hôpital",
+      "deleting": "Suppression...",
+      "delete_confirm_title": "Supprimer l’hôpital",
+      "delete_confirm_message": "Êtes-vous sûr de vouloir supprimer cet hôpital ? Cette action est irréversible.",
+      "delete_cancel": "Annuler",
+      "delete_confirm": "Supprimer",
+      "delete_success": "Hôpital supprimé avec succès.",
+      "not_found": "Impossible de trouver l’hôpital demandé.",
+      "manage_offerings": "Gérer les offres de services",
+      "about": "À propos",
+      "no_description": "Aucune description disponible.",
+      "overview": "Aperçu",
+      "contact": "Informations de contact",
+      "filters": "Filtres",
+      "sorting": "Trier par",
+      "search_doctors": "Rechercher des médecins...",
+      "offerings_subtitle": "Service fourni par cet hôpital",
+      "clinics_empty": "Aucune clinique disponible pour cet hôpital.",
+      "doctors_empty": "Aucun médecin disponible pour cet hôpital.",
+      "offerings_empty": "Aucune offre de service disponible pour cet hôpital.",
+      "invite_doctor": "Inviter un médecin",
+      "invite_doctor_title": "Inviter un médecin",
+      "invite_doctor_subtitle": "Recherchez et sélectionnez un médecin à inviter.",
+      "invite_doctor_search": "Rechercher par nom ou ID",
+      "invite_doctor_empty": "Aucun médecin ne correspond à votre recherche.",
+      "invite_doctor_reload": "Recharger la liste",
+      "invite_doctor_view_profile": "Voir le profil",
+      "invitations_title": "Invitations",
+      "invitations_empty": "Aucune invitation pour le moment.",
+      "invitation_send": "Envoyer l’invitation",
+      "invitation_sent": "Invitation envoyée",
+      "invitation_request_sent": "Demande d’invitation envoyée",
+      "invitation_cancel": "Annuler l’invitation",
+      "invitation_cancel_success": "Invitation annulée"
+    },
+    "invitations": {
+      "status": {
+        "pending": "En attente",
+        "accepted": "Acceptée",
+        "rejected": "Rejetée",
+        "cancelled": "Annulée"
+      }
+    },
+    "form": {
+      "create_title": "Ajouter un hôpital ou une clinique",
+      "edit_title": "Modifier l’hôpital",
+      "name": "Nom de l’établissement",
+      "description_en": "Description (anglais)",
+      "facility_type": {
+        "label": "Type d’établissement",
+        "hospital": "Hôpital",
+        "clinic": "Clinique",
+        "unknown": "Établissement"
+      },
+      "phone_label": "Numéros de téléphone",
+      "phone_hint": "+1234567890",
+      "coordinates": {
+        "label": "Coordonnées",
+        "latitude": "Latitude",
+        "longitude": "Longitude"
+      },
+      "images": {
+        "label": "Images",
+        "hint": "https://example.com/hospital.jpg"
+      },
+      "add_image": "Ajouter une image",
+      "social": {
+        "label": "Réseaux sociaux",
+        "add": "Ajouter un lien social",
+        "type_label": "Plateforme",
+        "link_label": "Lien",
+        "link_hint": "https://facebook.com/votre-page",
+        "types": {
+          "facebook": "Facebook",
+          "instagram": "Instagram",
+          "youtube": "YouTube",
+          "x": "X (Twitter)",
+          "linkedin": "LinkedIn",
+          "other": "Autres liens"
+        }
+      },
+      "address": "Adresse",
+      "add_entry": "Ajouter un autre",
+      "saving": "Enregistrement...",
+      "save": "Enregistrer l’hôpital",
+      "success_create": "Hôpital créé avec succès.",
+      "success_update": "Hôpital mis à jour avec succès.",
+      "images_required": "Au moins une image est requise."
+    },
+    "manage": {
+      "title": "{0}",
+      "clinics_title": "Gérer les cliniques",
+      "doctors_title": "Gérer les médecins",
+      "clinics_description": "Vous pourrez bientôt créer, mettre à jour et organiser vos cliniques ici.",
+      "doctors_description": "Vous pourrez bientôt gérer les médecins associés à cet hôpital.",
+      "placeholder": "Cette fonctionnalité est en cours de développement. Restez à l’écoute !"
+    }
+  },
+  "service_offerings": {
+    "list": {
+      "title": "Gérer les offres de services",
+      "heading": "Vos offres de services",
+      "subtitle": "Consultez et mettez à jour les offres liées à cet hôpital.",
+      "price": "Prix : {price}",
+      "add": "Ajouter une offre de service",
+      "empty": "Aucune offre de service pour le moment. Commencez par en ajouter une.",
+      "reload": "Recharger",
+      "retry": "Réessayer"
+    },
+    "detail": {
+      "title": "Offre de service",
+      "not_found": "Impossible de trouver cette offre de service.",
+      "price": "Prix : ",
+      "provider": "Prestataire",
+      "specialty": "Spécialité",
+      "offers": "Offres incluses",
+      "no_offers": "Aucune offre n’a encore été ajoutée à ce service.",
+      "description": "Description",
+      "no_description": "Aucune description disponible.",
+      "edit": "Modifier",
+      "delete_title": "Supprimer l’offre de service ?",
+      "delete_message": "Cette action est irréversible. Voulez-vous supprimer cette offre de service ?",
+      "price_label": "Prix"
+    },
+    "reviews": {
+      "title": "Avis",
+      "empty": "Aucun avis pour le moment.",
+      "error": "Impossible de charger les avis.",
+      "retry": "Réessayer",
+      "no_comment": "Aucun commentaire fourni.",
+      "anonymous": "Anonyme",
+      "load_more": "Afficher plus",
+      "show_less": "Afficher moins"
+    },
+    "form": {
+      "create_title": "Ajouter une offre de service",
+      "edit_title": "Modifier l’offre de service",
+      "description": "Remplissez les détails pour publier cette offre.",
+      "service": "Service",
+      "reload_services": "Recharger les services",
+      "price": "Prix",
+      "price_invalid": "Entrez un prix valide",
+      "offers": "Offres incluses",
+      "offers_hint": "Offres ou avantages séparés par des virgules",
+      "name_en": "Nom (anglais)",
+      "name_ar": "Nom (arabe)",
+      "name_fr": "Nom (français)",
+      "service_name": "Nom du service",
+      "description_en": "Description (anglais)",
+      "description_ar": "Description (arabe)",
+      "description_fr": "Description (français)",
+      "service_description": "Description du service",
+      "select_service_title": "Sélectionner un service",
+      "search_services_hint": "Rechercher des services...",
+      "add_service": "Ajouter un service",
+      "services_empty": "Aucun service trouvé pour le moment.",
+      "create_service_title": "Ajouter un service",
+      "create_service_subtitle": "Créez un nouveau service à utiliser dans votre offre.",
+      "service_image_label": "Image du service",
+      "service_image_add": "Téléverser une image",
+      "create_service_submit": "Créer le service",
+      "create_service_success": "Service créé avec succès.",
+      "create_service_error": "Impossible de créer le service.",
+      "load_services_error": "Impossible de charger les services.",
+      "images": {
+        "label": "Images"
+      },
+      "add_image": "Ajouter une image",
+      "select_service": "Veuillez sélectionner un service.",
+      "create_button": "Créer l’offre",
+      "update_button": "Mettre à jour l’offre",
+      "create_success": "Offre de service créée avec succès.",
+      "update_success": "Offre de service mise à jour avec succès.",
+      "error": "Impossible d’enregistrer l’offre de service."
+    },
+    "errors": {
+      "parse_list": "Impossible d’analyser la réponse des offres de services",
+      "parse_detail": "Impossible de charger l’offre de service sélectionnée",
+      "parse_submit": "Impossible d’enregistrer l’offre de service",
+      "parse_catalog": "Impossible de charger le catalogue des services"
+    }
+  },
+  "clinics": {
+    "list": {
+      "error_generic": "Impossible de charger vos cliniques pour le moment."
+    },
+    "actions": {
+      "add_offering": "Ajouter une offre",
+      "delete": "Supprimer la clinique",
+      "edit": "Modifier la clinique",
+      "manage": "Gérer la clinique",
+      "retry": "Réessayer",
+      "view_details": "Voir les détails"
+    },
+    "facility_type": {
+      "hospital": "Hôpital",
+      "clinic": "Clinique",
+      "unknown": "Établissement"
+    },
+    "detail": {
+      "about": "À propos",
+      "contact": "Informations de contact",
+      "delete": "Supprimer la clinique",
+      "deleting": "Suppression...",
+      "delete_confirm_title": "Supprimer la clinique",
+      "delete_confirm_message": "Êtes-vous sûr de vouloir supprimer cette clinique ? Cette action est irréversible.",
+      "delete_cancel": "Annuler",
+      "delete_confirm": "Supprimer",
+      "delete_success": "Clinique supprimée avec succès.",
+      "edit": "Modifier la clinique",
+      "facility_type": "Type d’établissement",
+      "invite_doctor": "Inviter un médecin",
+      "no_description": "Aucune description disponible.",
+      "overview": "Aperçu",
+      "phone": "Téléphone de contact",
+      "search_doctors": "Rechercher des médecins...",
+      "tabs": {
+        "clinics": "Cliniques",
+        "doctors": "Médecins",
+        "invitations": "Invitations",
+        "offerings": "Offres de services"
+      },
+      "stats": {
+        "clinics": "Cliniques",
+        "doctors": "Médecins",
+        "offerings": "Offres"
+      },
+      "clinics_empty": "Aucune clinique disponible pour cette clinique.",
+      "doctors_empty": "Aucun médecin disponible pour cette clinique.",
+      "offerings_empty": "Aucune offre de service disponible pour cette clinique.",
+      "invitations_empty": "Aucune invitation pour le moment."
+    },
+    "form": {
+      "create_title": "Ajouter une clinique",
+      "edit_title": "Modifier la clinique",
+      "name": "Nom de la clinique",
+      "description_en": "Description (anglais)",
+      "facility_type": {
+        "label": "Type d’établissement",
+        "hospital": "Hôpital",
+        "clinic": "Clinique",
+        "unknown": "Établissement"
+      },
+      "address": "Adresse",
+      "phone_label": "Numéros de téléphone",
+      "phone_hint": "+1234567890",
+      "add_entry": "Ajouter un numéro",
+      "images": {
+        "label": "Images"
+      },
+      "add_image": "Ajouter une image",
+      "social": {
+        "label": "Réseaux sociaux",
+        "add": "Ajouter un lien social",
+        "type_label": "Plateforme",
+        "link_label": "Lien",
+        "link_hint": "https://facebook.com/votre-page",
+        "types": {
+          "facebook": "Facebook",
+          "instagram": "Instagram",
+          "youtube": "YouTube",
+          "x": "X (Twitter)",
+          "linkedin": "LinkedIn",
+          "other": "Autres liens"
+        }
+      },
+      "images_required": "Veuillez ajouter au moins une image.",
+      "saving": "Enregistrement...",
+      "save": "Enregistrer la clinique",
+      "success_create": "Clinique créée avec succès.",
+      "success_update": "Clinique mise à jour avec succès."
     }
   },
   "doctor": "Médecin",
-  "reviews": "Avis",
-  "shell.drawer_invitations": "Invitations",
-  "doctor_invitations": {
-    "title": "Invitations",
-    "empty": "Aucune invitation pour le moment.",
-    "retry": "R?essayer",
-    "accept": "Accepter",
-    "decline": "Refuser",
-    "accept_success": "Invitation accept?e.",
-    "decline_success": "Invitation refus?e.",
-    "error_generic": "Impossible de charger les invitations.",
-    "invited_by": "Invit? par {name}"
+  "logout_success_message": "Vous êtes déconnecté.",
+  "logout_error_message": "Impossible de se déconnecter : {message}",
+  "reviews": "avis",
+  "auth_required": {
+    "title": "Connexion requise",
+    "description": "Veuillez vous connecter ou créer un compte pour continuer.",
+    "create_account": "Créer un compte"
   },
-  "signup_image_too_large": "L'image est trop grande. Veuillez choisir une image plus petite."
+  "doctor_required": {
+    "title": "Accès médecin requis",
+    "description": "Seuls les médecins peuvent accéder à cette section. Complétez votre profil de médecin pour continuer.",
+    "cta": "Devenir médecin"
+  },
+  "shell.drawer_faq": "FAQ",
+  "shell.drawer_contact": "Contact",
+  "shell.drawer_settings": "Paramètres",
+  "shell.drawer_about": "À propos",
+  "shell.drawer_feedback": "Retour",
+  "shell.drawer_invitations": "Invitations",
+  "shell.drawer_support": "Support",
+  "shell.drawer_placeholder": "{0} bientôt disponible",
+  "city": "Ville",
+  "state": "État / Province",
+  "country": "Pays",
+  "profile.title": "Mon profil",
+  "profile.edit_profile": "Modifier le profil",
+  "profile.address_label": "Adresse",
+  "profile.first_name": "Prénom",
+  "profile.last_name": "Nom",
+  "profile.update_profile_button": "Mettre à jour le profil",
+  "profile.update_password_short": "Mettre à jour le mot de passe",
+  "profile.password_current": "Mot de passe actuel",
+  "profile.password_new": "Nouveau mot de passe",
+  "profile.password_confirm_new": "Confirmer le nouveau mot de passe",
+  "profile.forgot_password": "Mot de passe oublié",
+  "profile.reset_password_hint": "Entrez votre e-mail pour recevoir un lien de réinitialisation.",
+  "profile.send_reset": "Envoyer le lien",
+  "profile.reset_link_sent": "Lien de réinitialisation envoyé, veuillez vérifier votre boîte de réception.",
+  "profile.reset_link_failed": "Impossible d’envoyer le lien de réinitialisation.",
+  "profile.password_update_success": "Mot de passe mis à jour avec succès.",
+  "profile.password_update_error": "Impossible de mettre à jour le mot de passe.",
+  "profile.invalid_email": "Veuillez entrer une adresse e-mail valide.",
+  "profile.edit_section": "Modifier le profil",
+  "profile.name_label": "Nom complet",
+  "profile.password_label": "Nouveau mot de passe",
+  "profile.password_helper": "Laissez vide pour conserver votre mot de passe actuel",
+  "profile.password_invalid": "Le mot de passe doit contenir au moins 8 caractères",
+  "profile.confirm_password_label": "Confirmer le nouveau mot de passe",
+  "profile.confirm_password_required": "Veuillez confirmer votre nouveau mot de passe",
+  "profile.password_mismatch": "Les mots de passe ne correspondent pas",
+  "profile.password_requirements_title": "Exigences du mot de passe :",
+  "profile.password_requirement_length": "au moins 8 caractères",
+  "profile.password_requirement_upper": "au moins une lettre majuscule",
+  "profile.password_requirement_number": "au moins un chiffre",
+  "profile.password_requirement_special": "au moins un caractère spécial",
+  "profile.save_changes": "Enregistrer les modifications",
+  "profile.updating": "Enregistrement...",
+  "profile.no_changes": "Aucune modification à enregistrer.",
+  "profile.update_success": "Profil mis à jour avec succès.",
+  "profile.update_error": "Impossible de mettre à jour le profil.",
+  "profile.load_error": "Impossible de charger votre profil.",
+  "profile.retry": "Réessayer",
+  "profile.empty": "Les données du profil ne sont pas disponibles.",
+  "profile.phone": "Téléphone",
+  "profile.email": "E-mail",
+  "profile.verified": "Compte vérifié",
+  "profile.not_verified": "Non vérifié",
+  "profile.member_since_unknown": "Membre depuis -",
+  "profile.drawer_status_loading": "Chargement du profil...",
+  "profile.drawer_status_error": "Échec du chargement des données du profil.",
+  "profile.view_profile": "Voir le profil",
+  "services": {
+    "detail": {
+      "description": "Description",
+      "read_more": "Lire la suite"
+    }
+  },
+  "about": {
+    "title": "À propos de nous",
+    "hero": {
+      "title": "Bienvenue sur NavCare",
+      "subtitle": "Connecter les patients et les professionnels de santé dans le monde entier avec des réservations, messages et paiements sécurisés."
+    },
+    "about_us": {
+      "title": "À propos de NavCare",
+      "body": "NavCare est une plateforme web et mobile conçue pour connecter les patients aux professionnels de santé à travers le monde. Grâce à la prise de rendez-vous, à la messagerie intégrée et aux options de paiement sécurisées, elle offre un moyen simple et sûr d’accéder aux services médicaux. Plus qu’une plateforme, c’est une vision de soins internationaux fluides qui évoluera vers un hub multi-services avec des solutions de santé numérique, un support personnalisé et des expériences fluides à chaque étape."
+    },
+    "story": {
+      "title": "Notre histoire",
+      "body": "Fondée en 2024, NavMarket a été créée pour combler les lacunes observées dans les places de marché existantes. Nous avons entrepris de bâtir un espace sécurisé, efficace et riche en fonctionnalités qui améliore l’expérience de chaque utilisateur."
+    },
+    "priorities": {
+      "title": "Nos priorités",
+      "body": "La qualité, la fiabilité et la sécurité guident la conception et la livraison de chaque solution.",
+      "quality": {
+        "title": "Qualité",
+        "body": "La qualité est une norme intégrée à chaque service. Nous fournissons des produits de haut niveau grâce à des contrôles rigoureux à chaque étape, garantissant fiabilité, efficacité et adéquation parfaite aux besoins de nos clients."
+      },
+      "reliability": {
+        "title": "Fiabilité",
+        "body": "La fiabilité est au cœur de notre travail. Nous concevons des produits robustes, stables et performants qui répondent aux attentes dans le temps grâce à des processus rigoureux et une surveillance continue."
+      },
+      "security": {
+        "title": "Sécurité",
+        "body": "La sécurité est une priorité absolue. Nous protégeons les données et les transactions financières grâce à des protocoles avancés, en mettant continuellement à jour nos défenses afin que nos clients opèrent en toute confiance et tranquillité d’esprit."
+      }
+    },
+    "company": {
+      "title": "Notre entreprise",
+      "body": "KIG (Koudri Innovations Group) est une extension dynamique et innovante de notre organisation, déjà spécialisée dans trois domaines. En tant que nouvelle filiale, nous restons proches des tendances et des avancées technologiques, en combinant une expertise établie avec un esprit agile et centré sur le client pour offrir des logiciels, des technologies et des expériences numériques de pointe. Notre engagement envers l’innovation et l’excellence nous permet de relever les défis de demain tout en créant une valeur durable pour nos clients et partenaires."
+    },
+    "offerings": {
+      "title": "Ce que nous offrons",
+      "body": "Une plateforme conçue pour héberger et mettre en avant les services recherchés au quotidien.",
+      "diverse_listings": {
+        "title": "Annonces variées",
+        "body": "De l’immobilier aux voitures, services et besoins quotidiens, nous rassemblons une large gamme d’annonces pour répondre à tous les besoins."
+      },
+      "user_experience": {
+        "title": "Expérience conviviale",
+        "body": "Un design intuitif et une interface facile à utiliser rendent l’achat et la vente simples et sans stress."
+      },
+      "subscriptions": {
+        "title": "Plans d’abonnement",
+        "body": "Des plans d’abonnement flexibles offrent des avantages supplémentaires et des opportunités promotionnelles."
+      }
+    },
+    "values": {
+      "title": "Nos valeurs",
+      "body": "La communauté, l’orientation client et l’innovation façonnent la manière dont nous construisons NavCare.",
+      "community": {
+        "title": "Communauté",
+        "body": "Au-delà des transactions, notre plateforme favorise une communauté dynamique où soutien et croissance se rencontrent."
+      },
+      "customer_first": {
+        "title": "Le client avant tout",
+        "body": "Les utilisateurs sont au centre de chaque décision, garantissant que leurs besoins et leur satisfaction passent toujours en premier."
+      },
+      "innovation": {
+        "title": "Innovation",
+        "body": "Nous améliorons continuellement nos services afin d’offrir des fonctionnalités modernes et une expérience tournée vers l’avenir."
+      }
+    },
+    "cta": {
+      "title": "Construire l’avenir des soins connectés",
+      "body": "Alors que NavCare évolue vers un hub multi-services, nous restons engagés à fournir des consultations sécurisées, un support personnalisé et des expériences fluides pour chaque utilisateur."
+    }
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "heading": "Discutons",
+    "subtitle": "Questions, commentaires ou suggestions ? Remplissez simplement le formulaire et nous vous contacterons rapidement.",
+    "first_name": "Prénom",
+    "last_name": "Nom",
+    "email": "E-mail",
+    "phone": "Numéro de téléphone",
+    "message": "Votre message*",
+    "message_hint": "Saisissez votre message ici",
+    "remaining": "{count} caractères restants",
+    "send": "Envoyer le message",
+    "submit_placeholder": "L’envoi des messages sera configuré ultérieurement."
+  },
+  "feedback": {
+    "auth_required": "Veuillez vous connecter pour envoyer un avis.",
+    "comment_required": "Veuillez ajouter une note avant d’envoyer votre avis.",
+    "submit_error": "Impossible d’envoyer l’avis : {message}",
+    "submit_success": "Merci ! Votre avis a été envoyé.",
+    "hint": "Partagez vos idées ou problèmes ici"
+  },
+  "faq.title": "Aide & FAQ",
+  "faq.subtitle": "Réponses rapides sur les réservations, les comptes et l’utilisation de Nav Care.",
+  "faq.tags.general": "À propos de l’application",
+  "faq.tags.appointments": "Rendez-vous",
+  "faq.tags.accounts": "Compte",
+  "faq.tags.app_settings": "Paramètres de l’application",
+  "faq.tags.search": "Recherche",
+  "faq.tags.support": "Dépannage",
+  "faq.questions.about_app.question": "Qu’est-ce que Nav Care et comment peut-il m’aider ?",
+  "faq.questions.about_app.answer": "Nav Care vous permet d’explorer les hôpitaux, les médecins et les offres de services, de consulter des détails tels que les prix et les emplacements, et de gérer tous vos rendez-vous depuis un seul endroit.",
+  "faq.questions.account_needed.question": "Ai-je besoin d’un compte pour utiliser l’application ?",
+  "faq.questions.account_needed.answer": "Vous pouvez naviguer librement, mais la connexion est requise pour réserver, reprogrammer ou annuler des rendez-vous et synchroniser les informations de votre profil entre les appareils.",
+  "faq.questions.book_appointment.question": "Comment prendre un rendez-vous ?",
+  "faq.questions.book_appointment.answer": "Ouvrez une offre de service depuis l’accueil ou la recherche, appuyez sur « Prendre un rendez-vous », choisissez l’heure de début et de fin qui vous convient, puis confirmez. Si vous n’êtes pas connecté, l’application vous demandera de vous connecter d’abord.",
+  "faq.questions.manage_appointment.question": "Comment modifier, reprogrammer ou annuler un rendez-vous ?",
+  "faq.questions.manage_appointment.answer": "Allez dans l’onglet Rendez-vous, sélectionnez la carte du rendez-vous, puis ajustez l’heure de début/fin ou changez son statut en annulé. La liste se met à jour automatiquement après une modification réussie.",
+  "faq.questions.search_services.question": "Quelle est la meilleure façon de trouver le bon médecin ou service ?",
+  "faq.questions.search_services.answer": "Utilisez l’onglet Recherche pour saisir le nom d’un médecin, d’un hôpital ou d’un service. Appliquez les filtres disponibles (localisation, évaluation, prix ou langue lorsqu’ils sont proposés) pour affiner les résultats, puis ouvrez un résultat pour voir les détails et réserver.",
+  "faq.questions.profile_updates.question": "Où puis-je mettre à jour mon profil ou mon numéro de téléphone ?",
+  "faq.questions.profile_updates.answer": "Ouvrez l’onglet Profil et appuyez sur « Modifier le profil » pour changer votre nom, téléphone, adresse ou photo de profil. Faites glisser vers le bas pour actualiser si nécessaire après l’enregistrement.",
+  "faq.questions.language_switch.question": "Puis-je changer la langue de l’application ?",
+  "faq.questions.language_switch.answer": "Oui. Ouvrez le menu latéral, choisissez l’arabe, l’anglais ou le français dans le sélecteur de langue, et l’interface se mettra à jour instantanément sans redémarrer l’application.",
+  "faq.questions.password_reset.question": "J’ai oublié mon mot de passe. Comment le réinitialiser ?",
+  "faq.questions.password_reset.answer": "Utilisez l’option « Mot de passe oublié » sur l’écran de connexion pour demander une réinitialisation. Suivez les étapes à l’écran pour définir un nouveau mot de passe avec votre e-mail ou numéro de téléphone.",
+  "faq.questions.data_sync.question": "L’application ne charge pas les données. Que dois-je essayer ?",
+  "faq.questions.data_sync.answer": "Vérifiez votre connexion Internet, puis actualisez l’accueil, la recherche ou les rendez-vous. Si le problème persiste, déconnectez-vous puis reconnectez-vous pour rafraîchir votre session avant de réessayer.",
+  "appointment_status": {
+    "pending": "En attente",
+    "confirmed": "Confirmé",
+    "completed": "Terminé",
+    "cancelled": "Annulé"
+  },
+  "network_error": {
+    "title": "Aucune connexion Internet",
+    "subtitle": "Vérifiez votre Wi-Fi ou vos données mobiles, puis réessayez.",
+    "retry": "Réessayer"
+  },
+  "server_error": {
+    "title": "Serveur inaccessible",
+    "subtitle": "Nous n’avons pas pu joindre nos serveurs. Veuillez réessayer."
+  },
+  "signup_image_too_large": "L’image est trop grande. Veuillez choisir une image plus petite."
 }

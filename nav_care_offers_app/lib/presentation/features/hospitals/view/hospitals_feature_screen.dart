@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/hospital_list_cubit.dart';
+import 'package:nav_care_offers_app/presentation/shared/utils/hospitals_refresh_bus.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/molecules/hospital_card.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -22,8 +25,46 @@ class HospitalsFeatureScreen extends StatelessWidget {
   }
 }
 
-class _HospitalsListView extends StatelessWidget {
+class _HospitalsListView extends StatefulWidget {
   const _HospitalsListView();
+
+  @override
+  State<_HospitalsListView> createState() => _HospitalsListViewState();
+}
+
+class _HospitalsListViewState extends State<_HospitalsListView> {
+  Timer? _refreshTimer;
+  late final VoidCallback _refreshListener;
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshListener = () {
+      if (!HospitalsRefreshBus.consumePending()) {
+        return;
+      }
+      _scheduleRefresh();
+    };
+    HospitalsRefreshBus.notifier.addListener(_refreshListener);
+    if (HospitalsRefreshBus.consumePending()) {
+      _scheduleRefresh();
+    }
+  }
+
+  void _scheduleRefresh() {
+    _refreshTimer?.cancel();
+    _refreshTimer = Timer(const Duration(seconds: 2), () {
+      if (!mounted) return;
+      context.read<HospitalListCubit>().fetchHospitals(page: 1, limit: 10);
+    });
+  }
+
+  @override
+  void dispose() {
+    HospitalsRefreshBus.notifier.removeListener(_refreshListener);
+    _refreshTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

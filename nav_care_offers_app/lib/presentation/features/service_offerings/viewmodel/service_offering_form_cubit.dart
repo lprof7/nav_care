@@ -99,7 +99,7 @@ class ServiceOfferingFormCubit extends Cubit<ServiceOfferingFormState> {
           : descriptionTranslations['ar'] ??
               descriptionTranslations['en'] ??
               descriptionEn,
-      descriptionSp: descriptionSp,
+      descriptionSp: null,
       nameEn: nameTranslations?['en'] ?? nameEn,
       nameFr: nameTranslations == null
           ? null

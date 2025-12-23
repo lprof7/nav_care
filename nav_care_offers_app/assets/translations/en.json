@@ -383,7 +383,6 @@
       "description_en": "Description (English)",
       "description_ar": "Description (Arabic)",
       "description_fr": "Description (French)",
-      "description_sp": "Description (Spanish)",
       "service_description": "Service description",
       "select_service_title": "Select a service",
       "search_services_hint": "Search services...",
