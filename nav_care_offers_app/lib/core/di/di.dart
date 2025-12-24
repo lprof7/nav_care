@@ -139,8 +139,8 @@ Future<void> configureDependencies(AppConfig config) async {
   sl.registerFactory<ResetPasswordCubit>(
       () => ResetPasswordCubit(sl<ResetPasswordRepository>()));
   sl.registerFactory<LogoutCubit>(() => LogoutCubit(sl<AuthCubit>()));
-  sl.registerLazySingleton<UserRemoteService>(
-      () => UserRemoteService(apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
+  sl.registerLazySingleton<UserRemoteService>(() => UserRemoteService(
+      apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
   sl.registerLazySingleton<UserRepository>(
       () => UserRepository(remoteService: sl<UserRemoteService>()));
   sl.registerFactory<UserProfileCubit>(() => UserProfileCubit(
@@ -190,8 +190,8 @@ Future<void> configureDependencies(AppConfig config) async {
             apiClient: sl<ApiClient>(),
             tokenStore: sl<TokenStore>(),
           ));
-  sl.registerLazySingleton<HospitalReviewsRepository>(
-      () => HospitalReviewsRepository(remote: sl<HospitalReviewsRemoteService>()));
+  sl.registerLazySingleton<HospitalReviewsRepository>(() =>
+      HospitalReviewsRepository(remote: sl<HospitalReviewsRemoteService>()));
   sl.registerFactory<HospitalReviewsCubit>(
       () => HospitalReviewsCubit(repository: sl<HospitalReviewsRepository>()));
   sl.registerLazySingleton<DoctorReviewsRemoteService>(
@@ -252,12 +252,11 @@ Future<void> configureDependencies(AppConfig config) async {
         sl<TokenStore>(),
         sl<DoctorStore>(),
       ));
-  sl.registerFactory<BecomeDoctorCubit>(
-      () => BecomeDoctorCubit(
-            sl<BecomeDoctorRepository>(),
-            sl<AuthCubit>(),
-            sl<TranslationService>(),
-          ));
+  sl.registerFactory<BecomeDoctorCubit>(() => BecomeDoctorCubit(
+        sl<BecomeDoctorRepository>(),
+        sl<AuthCubit>(),
+        sl<TranslationService>(),
+      ));
   sl.registerFactoryParam<HospitalDetailCubit, Hospital, void>(
     (hospital, _) => HospitalDetailCubit(
       sl<HospitalsRepository>(),
@@ -289,12 +288,14 @@ Future<void> configureDependencies(AppConfig config) async {
   );
 
   // Feedback
-  sl.registerLazySingleton<FeedbackRemoteService>(
-      () => FeedbackRemoteService(apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
+  sl.registerLazySingleton<FeedbackRemoteService>(() => FeedbackRemoteService(
+      apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
   sl.registerLazySingleton<FeedbackRepository>(
       () => FeedbackRepository(remoteService: sl<FeedbackRemoteService>()));
-  sl.registerFactory<FeedbackCubit>(() => FeedbackCubit(repository: sl<FeedbackRepository>()));
+  sl.registerFactory<FeedbackCubit>(
+      () => FeedbackCubit(repository: sl<FeedbackRepository>()));
   sl.registerLazySingleton<FaqService>(() => RemoteFaqService(sl<ApiClient>()));
-  sl.registerLazySingleton<FaqRepository>(() => FaqRepository(sl<FaqService>()));
+  sl.registerLazySingleton<FaqRepository>(
+      () => FaqRepository(sl<FaqService>()));
   sl.registerFactory<FaqCubit>(() => FaqCubit(sl<FaqRepository>()));
 }

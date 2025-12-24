@@ -91,6 +91,10 @@ class AuthSessionCubit extends Cubit<AuthSessionState> {
     );
   }
 
+  Future<void> logout() async {
+    await _clearAuthState();
+  }
+
   Future<void> _clearAuthState() async {
     await Future.wait([
       _tokenStore.clearToken(),
@@ -103,21 +107,34 @@ class AuthSessionCubit extends Cubit<AuthSessionState> {
     if (data['success'] == false) {
       final message = data['message'];
       final error = data['error'];
-      bool containsInvalid(dynamic value) {
-        if (value is String) {
-          return value.toLowerCase().contains('invalid token');
+      final errorCode = error?.toString().toLowerCase();
+      if (errorCode == 'invalidtoken') return true;
+      if (_messageContainsInvalidToken(message)) return true;
+      if (error is String) {
+        final lower = error.toLowerCase();
+        if (lower.contains('jwt') ||
+            lower.contains('token') ||
+            lower.contains('invalid token')) {
+          return true;
         }
-        if (value is Map) {
-          return value.values.any(containsInvalid);
-        }
-        return false;
       }
+    }
+    return false;
+  }
 
-      if (containsInvalid(message)) return true;
-      if (error is String &&
-          (error.toLowerCase().contains('jwt') ||
-              error.toLowerCase().contains('token'))) {
-        return true;
+  bool _messageContainsInvalidToken(dynamic message) {
+    if (message is String) {
+      final lower = message.toLowerCase();
+      return lower.contains('invalid token') || lower.contains('jwt');
+    }
+    if (message is Map) {
+      for (final value in message.values) {
+        if (value is String) {
+          final lower = value.toLowerCase();
+          if (lower.contains('invalid token') || lower.contains('jwt')) {
+            return true;
+          }
+        }
       }
     }
     return false;

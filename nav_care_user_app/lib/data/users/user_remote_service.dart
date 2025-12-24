@@ -1,4 +1,5 @@
 import 'package:nav_care_user_app/core/network/api_client.dart';
+import 'package:nav_care_user_app/core/network/unauthorized_guard.dart';
 import 'package:nav_care_user_app/core/responses/failure.dart';
 import 'package:nav_care_user_app/core/responses/result.dart';
 import 'package:nav_care_user_app/core/storage/token_store.dart';
@@ -15,6 +16,7 @@ class UserRemoteService {
   Future<Result<Map<String, dynamic>>> getProfile() async {
     final token = await _tokenStore.getToken();
     if (token == null || token.isEmpty) {
+      await handleUnauthorized();
       return Result.failure(const Failure.unauthorized());
     }
 
@@ -30,6 +32,7 @@ class UserRemoteService {
   Future<Result<Map<String, dynamic>>> updateProfile(Object payload) async {
     final token = await _tokenStore.getToken();
     if (token == null || token.isEmpty) {
+      await handleUnauthorized();
       return Result.failure(const Failure.unauthorized());
     }
 
@@ -47,6 +50,7 @@ class UserRemoteService {
       {required String currentPassword, required String newPassword}) async {
     final token = await _tokenStore.getToken();
     if (token == null || token.isEmpty) {
+      await handleUnauthorized();
       return Result.failure(const Failure.unauthorized());
     }
 

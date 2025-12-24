@@ -46,22 +46,31 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         BlocProvider<ThemeModeCubit>(
             create: (_) => ThemeModeCubit(initialMode: ThemeMode.system)),
       ],
-      child: BlocBuilder<ThemeModeCubit, ThemeMode>(
-        builder: (context, themeMode) {
-          return BetterFeedback(
-            child: MaterialApp.router(
-              debugShowCheckedModeBanner: false,
-              title: 'Nav Care',
-              theme: AppTheme.light,
-              darkTheme: AppTheme.dark,
-              themeMode: themeMode,
-              routerConfig: appRouter,
-              localizationsDelegates: context.localizationDelegates,
-              supportedLocales: context.supportedLocales,
-              locale: context.locale,
-            ),
-          );
+      child: BlocListener<AuthSessionCubit, AuthSessionState>(
+        listener: (context, state) {
+          if (state.status == AuthSessionStatus.unauthenticated) {
+            appRouter.go('/signin');
+          } else if (state.status == AuthSessionStatus.authenticated) {
+            appRouter.go('/home');
+          }
         },
+        child: BlocBuilder<ThemeModeCubit, ThemeMode>(
+          builder: (context, themeMode) {
+            return BetterFeedback(
+              child: MaterialApp.router(
+                debugShowCheckedModeBanner: false,
+                title: 'Nav Care',
+                theme: AppTheme.light,
+                darkTheme: AppTheme.dark,
+                themeMode: themeMode,
+                routerConfig: appRouter,
+                localizationsDelegates: context.localizationDelegates,
+                supportedLocales: context.supportedLocales,
+                locale: context.locale,
+              ),
+            );
+          },
+        ),
       ),
     );
   }

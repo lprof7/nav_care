@@ -108,7 +108,7 @@ Future<void> configureDependencies(AppConfig config) async {
     userStore: sl<UserStore>(),
     onUnauthorized: () async {
       if (sl.isRegistered<AuthSessionCubit>()) {
-        sl<AuthSessionCubit>().clearSession();
+        await sl<AuthSessionCubit>().logout();
       }
     },
   ).build();

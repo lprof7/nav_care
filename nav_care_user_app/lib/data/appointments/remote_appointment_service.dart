@@ -52,7 +52,7 @@ class RemoteAppointmentService {
     if (limit != null) query['limit'] = limit;
 
     return _apiClient.get(
-      _apiClient.apiConfig.userAppointments,
+      "http://152.53.118.5:4005/api/appointments",
       query: query.isEmpty ? null : query,
       parser: (json) => json as Map<String, dynamic>,
       headers: {'Authorization': 'Bearer ' + token},
