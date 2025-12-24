@@ -253,19 +253,6 @@ class _DetailViewState extends State<_DetailView> {
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () => Navigator.of(context).maybePop(),
               ),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.edit_outlined),
-                  onPressed: () =>
-                      _openEdit(context, widget.hospitalId, offering),
-                ),
-                if (widget.allowDelete)
-                  IconButton(
-                    icon: const Icon(Icons.delete_outline_rounded),
-                    onPressed:
-                        state.isDeleting ? null : () => _confirmDelete(context),
-                  ),
-              ],
             ),
             body: Column(
               children: [
@@ -323,6 +310,37 @@ class _DetailViewState extends State<_DetailView> {
                               ],
                             );
                           },
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _SolidActionButton(
+                                label: 'service_offerings.detail.edit'.tr(),
+                                icon: Icons.edit_rounded,
+                                color: Theme.of(context).colorScheme.primary,
+                                onPressed: () => _openEdit(
+                                  context,
+                                  widget.hospitalId,
+                                  offering,
+                                ),
+                              ),
+                            ),
+                            if (widget.allowDelete) ...[
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: _SolidActionButton(
+                                  label:
+                                      'service_offerings.detail.delete'.tr(),
+                                  icon: Icons.delete_outline_rounded,
+                                  color: Theme.of(context).colorScheme.error,
+                                  onPressed: state.isDeleting
+                                      ? null
+                                      : () => _confirmDelete(context),
+                                ),
+                              ),
+                            ],
+                          ],
                         ),
                         const SizedBox(height: 22),
                         _ProviderHighlight(
@@ -883,6 +901,36 @@ class _ErrorView extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _SolidActionButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Color color;
+  final VoidCallback? onPressed;
+
+  const _SolidActionButton({
+    required this.label,
+    required this.icon,
+    required this.color,
+    this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      icon: Icon(icon, size: 18),
+      label: Text(label),
     );
   }
 }

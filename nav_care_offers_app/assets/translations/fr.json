@@ -352,6 +352,7 @@
       "description": "Description",
       "no_description": "Aucune description disponible.",
       "edit": "Modifier",
+      "delete": "Supprimer",
       "delete_title": "Supprimer l’offre de service ?",
       "delete_message": "Cette action est irréversible. Voulez-vous supprimer cette offre de service ?",
       "price_label": "Prix"

@@ -219,7 +219,7 @@ class _OfferingsGrid extends StatelessWidget {
           crossAxisCount: crossAxisCount,
           mainAxisSpacing: 14,
           crossAxisSpacing: 14,
-          childAspectRatio: aspectRatio,
+          childAspectRatio: aspectRatio - 0.08,
         ),
         itemBuilder: (context, index) {
           if (index == 0) {
@@ -249,23 +249,17 @@ class _OfferingsGrid extends StatelessWidget {
               ? LargServiceOfferingCard(
                   title: serviceName,
                   subtitle: subtitle,
-                  badgeLabel: offering.providerType,
                   priceLabel: price,
                   imageUrl: image,
                   baseUrl: baseUrl,
-                  rating: rating,
-                  buttonLabel: 'hospitals.actions.view_details'.tr(),
                   onTap: () => onOpenDetail(offering),
                 )
               : ServiceOfferingCard(
                   title: serviceName,
                   subtitle: subtitle,
-                  badgeLabel: offering.providerType,
                   priceLabel: price,
                   imageUrl: image,
                   baseUrl: baseUrl,
-                  rating: rating,
-                  buttonLabel: 'hospitals.actions.view_details'.tr(),
                   onTap: () => onOpenDetail(offering),
                 );
         },

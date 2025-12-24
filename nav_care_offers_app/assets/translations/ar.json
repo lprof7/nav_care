@@ -352,6 +352,7 @@
       "description": "الوصف",
       "no_description": "لا يوجد وصف متاح.",
       "edit": "تعديل",
+      "delete": "حذف",
       "delete_title": "حذف عرض الخدمة؟",
       "delete_message": "لا يمكن التراجع عن هذا الإجراء. هل تريد حذف عرض الخدمة هذا؟",
       "price_label": "السعر"
