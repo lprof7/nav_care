@@ -92,7 +92,10 @@ class _ResetPasswordNewPasswordPageState
                     if (v == null || v.isEmpty) {
                       return 'reset_password.new_password'.tr();
                     }
-                    if (v.length < 8 || !_hasUpper || !_hasNumber || !_hasSpecial) {
+                    if (v.length < 8 ||
+                        !_hasUpper ||
+                        !_hasNumber ||
+                        !_hasSpecial) {
                       return 'profile.password_invalid'.tr();
                     }
                     return null;
@@ -124,9 +127,8 @@ class _ResetPasswordNewPasswordPageState
                 ),
                 const SizedBox(height: 18),
                 AppButton(
-                  text: isLoading
-                      ? 'loading'.tr()
-                      : 'reset_password.submit'.tr(),
+                  text:
+                      isLoading ? 'loading'.tr() : 'reset_password.submit'.tr(),
                   onPressed: isLoading
                       ? null
                       : () {
@@ -166,12 +168,18 @@ class _PasswordField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final borderColor = theme.colorScheme.outlineVariant;
+    final fillColor = theme.colorScheme.surface;
+    final iconColor = theme.colorScheme.primary;
+    final hintColor = theme.colorScheme.onSurfaceVariant;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.primary.withOpacity(0.5)),
+            border: Border.all(color: borderColor),
             borderRadius: BorderRadius.circular(14),
           ),
           child: TextFormField(
@@ -180,17 +188,18 @@ class _PasswordField extends StatelessWidget {
             validator: validator,
             onChanged: onChanged,
             decoration: InputDecoration(
-              prefixIcon: Icon(Icons.lock_outline, color: AppColors.primary),
+              prefixIcon: Icon(Icons.lock_outline, color: iconColor),
               suffixIcon: IconButton(
                 onPressed: onToggleVisibility,
                 icon: Icon(
                   obscureText ? Icons.visibility_off : Icons.visibility,
-                  color: AppColors.primary,
+                  color: iconColor,
                 ),
               ),
               hintText: label,
+              hintStyle: TextStyle(color: hintColor),
               filled: true,
-              fillColor: Colors.white,
+              fillColor: fillColor,
               border: InputBorder.none,
             ),
           ),
@@ -221,8 +230,8 @@ class _PasswordRequirements extends StatelessWidget {
       children: [
         Text(
           'profile.password_requirements_title'.tr(),
-          style: theme.textTheme.titleSmall
-              ?.copyWith(fontWeight: FontWeight.w700),
+          style:
+              theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 8),
         _RequirementRow(

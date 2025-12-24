@@ -70,6 +70,11 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
         final code = _codeController.text.trim();
         final email = state.email;
         final timerText = state.secondsRemaining.toString().padLeft(2, '0');
+        final theme = Theme.of(context);
+        final borderColor = theme.colorScheme.outlineVariant;
+        final focusColor = theme.colorScheme.primary;
+        final fillColor = theme.colorScheme.surface;
+        final hintColor = theme.colorScheme.onSurfaceVariant;
 
         return ResetPasswordLayout(
           title: 'reset_password.code_title'.tr(),
@@ -134,18 +139,19 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                 ],
                 decoration: InputDecoration(
                   hintText: 'reset_password.code_hint'.tr(),
+                  hintStyle: TextStyle(color: hintColor),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide(
-                      color: AppColors.primary.withOpacity(0.5),
+                      color: borderColor,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(color: AppColors.primary),
+                    borderSide: BorderSide(color: focusColor),
                   ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: fillColor,
                 ),
               ),
               const SizedBox(height: 18),

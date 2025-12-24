@@ -315,7 +315,7 @@
       },
       "address": "Address",
       "add_entry": "Add another",
-      "saving": "Savingâ€¦",
+      "saving": "Saving...",
       "save": "Save hospital",
       "success_create": "Hospital created successfully.",
       "success_update": "Hospital updated successfully.",
