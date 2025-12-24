@@ -853,6 +853,7 @@ class OfferingsTabContent extends StatelessWidget {
       width,
       rang: rang,
     );
+    final useLargeCard = width >= 550;
 
     return RefreshIndicator(
       onRefresh: () async => onReload(),
@@ -890,14 +891,23 @@ class OfferingsTabContent extends StatelessWidget {
                     offering.provider.user.profilePicture),
             baseUrl,
           );
-          return ServiceOfferingCard(
-            title: title,
-            subtitle: subtitle,
-            priceLabel: priceText,
-            imageUrl: image,
-            baseUrl: baseUrl,
-            onTap: () => onOpenDetail(offering),
-          );
+          return useLargeCard
+              ? LargServiceOfferingCard(
+                  title: title,
+                  subtitle: subtitle,
+                  priceLabel: priceText,
+                  imageUrl: image,
+                  baseUrl: baseUrl,
+                  onTap: () => onOpenDetail(offering),
+                )
+              : ServiceOfferingCard(
+                  title: title,
+                  subtitle: subtitle,
+                  priceLabel: priceText,
+                  imageUrl: image,
+                  baseUrl: baseUrl,
+                  onTap: () => onOpenDetail(offering),
+                );
         },
       ),
     );

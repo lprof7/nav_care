@@ -236,8 +236,7 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
   Widget _buildFab(BuildContext context, int index, ClinicDetailState state,
       String baseUrl) {
     final hospital = state.hospital;
-    final map = <int, Widget>{
-    };
+    final map = <int, Widget>{};
 
     return map[index] != null
         ? Padding(
@@ -260,7 +259,6 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
     if (_overlay == _ShellOverlay.exit) return;
     setState(() => _overlay = _ShellOverlay.exit);
   }
-
 
   void _openManage(
     BuildContext context,
@@ -355,7 +353,6 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
       }
     });
   }
-
 }
 
 enum _ShellOverlay {
@@ -773,8 +770,7 @@ class OfferingsTabContent extends StatelessWidget {
   Widget build(BuildContext context) {
     const double rang = 40;
     final width = MediaQuery.sizeOf(context).width;
-    final aspectRatio =
-        (0.65 + ((width - 360) / 1200) * 0.12).clamp(0.65, 0.8);
+    final aspectRatio = (0.65 + ((width - 360) / 1200) * 0.12).clamp(0.65, 0.8);
     if (status == ClinicDetailStatus.loading && offerings.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -796,8 +792,7 @@ class OfferingsTabContent extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
               itemCount: 1,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount:
-                    responsiveGridColumns(width, rang: rang),
+                crossAxisCount: responsiveGridColumns(width, rang: rang),
                 mainAxisSpacing: 14,
                 crossAxisSpacing: 14,
                 childAspectRatio: aspectRatio,
@@ -812,6 +807,7 @@ class OfferingsTabContent extends StatelessWidget {
     }
 
     final crossAxisCount = responsiveGridColumns(width, rang: rang);
+    final useLargeCard = width >= 550;
 
     return RefreshIndicator(
       onRefresh: () async => onReload(),
@@ -849,14 +845,23 @@ class OfferingsTabContent extends StatelessWidget {
                     offering.provider.user.profilePicture),
             baseUrl,
           );
-          return ServiceOfferingCard(
-            title: title,
-            subtitle: subtitle,
-            priceLabel: priceText,
-            imageUrl: image,
-            baseUrl: baseUrl,
-            onTap: () => onOpenDetail(offering),
-          );
+          return useLargeCard
+              ? LargServiceOfferingCard(
+                  title: title,
+                  subtitle: subtitle,
+                  priceLabel: priceText,
+                  imageUrl: image,
+                  baseUrl: baseUrl,
+                  onTap: () => onOpenDetail(offering),
+                )
+              : ServiceOfferingCard(
+                  title: title,
+                  subtitle: subtitle,
+                  priceLabel: priceText,
+                  imageUrl: image,
+                  baseUrl: baseUrl,
+                  onTap: () => onOpenDetail(offering),
+                );
         },
       ),
     );
@@ -1152,21 +1157,21 @@ class HospitalProfileTab extends StatelessWidget {
                   spacing: 10,
                   runSpacing: 10,
                   children: [
-                HospitalStatCard(
-                  icon: PhosphorIconsBold.buildings,
-                  label: 'clinics.detail.stats.clinics'.tr(),
-                  value: clinicsCount.toString(),
-                ),
+                    HospitalStatCard(
+                      icon: PhosphorIconsBold.buildings,
+                      label: 'clinics.detail.stats.clinics'.tr(),
+                      value: clinicsCount.toString(),
+                    ),
                     HospitalStatCard(
                       icon: Icons.people_alt_rounded,
                       label: 'clinics.detail.stats.doctors'.tr(),
                       value: doctorsCount.toString(),
                     ),
-                HospitalStatCard(
-                  icon: PhosphorIconsBold.stethoscope,
-                  label: 'clinics.detail.stats.offerings'.tr(),
-                  value: offeringsCount.toString(),
-                ),
+                    HospitalStatCard(
+                      icon: PhosphorIconsBold.stethoscope,
+                      label: 'clinics.detail.stats.offerings'.tr(),
+                      value: offeringsCount.toString(),
+                    ),
                     HospitalStatCard(
                       icon: Icons.local_phone_rounded,
                       label: 'clinics.detail.phone'.tr(),
@@ -1214,16 +1219,16 @@ class HospitalProfileTab extends StatelessWidget {
                       icon: const Icon(PhosphorIconsBold.buildings),
                       label: Text('clinics.detail.tabs.clinics'.tr()),
                     ),
-                OutlinedButton.icon(
-                  onPressed: onManageDoctors,
-                  icon: const Icon(Icons.people_alt_rounded),
-                  label: Text('clinics.detail.tabs.doctors'.tr()),
-                ),
-                OutlinedButton.icon(
-                  onPressed: onManageOfferings,
-                  icon: const Icon(PhosphorIconsBold.stethoscope),
-                  label: Text('clinics.detail.tabs.offerings'.tr()),
-                ),
+                    OutlinedButton.icon(
+                      onPressed: onManageDoctors,
+                      icon: const Icon(Icons.people_alt_rounded),
+                      label: Text('clinics.detail.tabs.doctors'.tr()),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: onManageOfferings,
+                      icon: const Icon(PhosphorIconsBold.stethoscope),
+                      label: Text('clinics.detail.tabs.offerings'.tr()),
+                    ),
                   ],
                 ),
               ),
