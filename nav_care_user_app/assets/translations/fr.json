@@ -74,6 +74,7 @@
   "logout_success_message": "Vous vous êtes déconnecté.",
   "logout_error_message": "Impossible de se déconnecter : {message}",
   "passwords_do_not_match": "Les mots de passe ne correspondent pas",
+  "invalid_email_format": "Veuillez entrer une adresse e-mail valide.",
   "accept_terms_error": "Veuillez accepter les Conditions et la Politique de confidentialité",
   "field_required": "Ce champ est requis",
   "algerian_phone_error": "Entrez un numéro de téléphone algérien valide",

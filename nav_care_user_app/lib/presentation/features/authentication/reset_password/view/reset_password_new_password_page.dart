@@ -166,12 +166,19 @@ class _PasswordField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final outline = theme.colorScheme.outlineVariant
+        .withOpacity(theme.brightness == Brightness.dark ? 0.6 : 0.4);
+    final fillColor = theme.colorScheme.surfaceVariant.withOpacity(
+      theme.brightness == Brightness.dark ? 0.35 : 0.9,
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.primary.withOpacity(0.5)),
+            border: Border.all(color: outline),
             borderRadius: BorderRadius.circular(14),
           ),
           child: TextFormField(
@@ -189,8 +196,11 @@ class _PasswordField extends StatelessWidget {
                 ),
               ),
               hintText: label,
+              hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurface.withOpacity(0.65),
+              ),
               filled: true,
-              fillColor: Colors.white,
+              fillColor: fillColor,
               border: InputBorder.none,
             ),
           ),

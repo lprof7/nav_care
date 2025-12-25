@@ -74,6 +74,7 @@
   "logout_success_message": "You have signed out.",
   "logout_error_message": "Unable to sign out: {message}",
   "passwords_do_not_match": "Passwords do not match",
+  "invalid_email_format": "Please enter a valid e-mail address.",
   "accept_terms_error": "Please accept the Terms & Privacy Policy",
   "field_required": "This field is required",
   "algerian_phone_error": "Enter a valid Algerian phone number",

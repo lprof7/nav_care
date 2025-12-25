@@ -13,13 +13,14 @@ class ResetPasswordRepository {
     _throwOnFailure(result);
   }
 
-  Future<void> verifyResetCode({
+  Future<Result<Map<String, dynamic>>> verifyResetCode({
     required String email,
     required String resetCode,
   }) async {
     final result =
         await _service.verifyResetCode(email: email, resetCode: resetCode);
     _throwOnFailure(result);
+    return result;
   }
 
   Future<void> resetPassword({

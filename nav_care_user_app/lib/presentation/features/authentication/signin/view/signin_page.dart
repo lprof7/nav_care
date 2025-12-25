@@ -1,4 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -183,6 +183,7 @@ class _SigninFormState extends State<SigninForm> {
             hintText: 'email_or_phone'.tr(),
             prefixIcon: const Icon(Icons.mail_outline),
             keyboardType: TextInputType.emailAddress,
+            textDirection: TextDirection.ltr,
             validator: (value) {
               final trimmed = value?.trim() ?? '';
               if (trimmed.isEmpty) return 'profile.invalid_email'.tr();
@@ -196,6 +197,7 @@ class _SigninFormState extends State<SigninForm> {
           PasswordField(
             controller: _passwordController,
             hintText: 'password'.tr(),
+            textDirection: TextDirection.ltr,
             validator: (value) {
               if (value == null || value.length < 8) {
                 return 'profile.password_invalid'.tr();

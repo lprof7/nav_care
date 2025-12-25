@@ -11,6 +11,7 @@ class ResetPasswordState extends Equatable {
     this.resetStatus = ResetRequestStatus.idle,
     this.secondsRemaining = 0,
     this.errorMessage,
+    this.successMessage,
   });
 
   final String email;
@@ -20,6 +21,7 @@ class ResetPasswordState extends Equatable {
   final ResetRequestStatus resetStatus;
   final int secondsRemaining;
   final String? errorMessage;
+  final String? successMessage;
 
   bool get isCodeVerified =>
       verifyCodeStatus == ResetRequestStatus.success && verifiedCode.isNotEmpty;
@@ -33,6 +35,8 @@ class ResetPasswordState extends Equatable {
     int? secondsRemaining,
     String? errorMessage,
     bool clearError = false,
+    String? successMessage,
+    bool clearSuccess = false,
   }) {
     return ResetPasswordState(
       email: email ?? this.email,
@@ -42,6 +46,8 @@ class ResetPasswordState extends Equatable {
       resetStatus: resetStatus ?? this.resetStatus,
       secondsRemaining: secondsRemaining ?? this.secondsRemaining,
       errorMessage: clearError ? null : errorMessage ?? this.errorMessage,
+      successMessage:
+          clearSuccess ? null : successMessage ?? this.successMessage,
     );
   }
 
@@ -54,5 +60,6 @@ class ResetPasswordState extends Equatable {
         resetStatus,
         secondsRemaining,
         errorMessage,
+        successMessage,
       ];
 }

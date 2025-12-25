@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:nav_care_user_app/core/utils/localized_message.dart';
 import 'package:nav_care_user_app/data/authentication/reset_password/reset_password_repository.dart';
 
 import 'reset_password_state.dart';
@@ -21,6 +23,7 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
         resetStatus: ResetRequestStatus.idle,
         verifiedCode: '',
         clearError: true,
+        clearSuccess: true,
       ),
     );
     try {
@@ -37,27 +40,37 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
         state.copyWith(
           sendCodeStatus: ResetRequestStatus.failure,
           errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          clearSuccess: true,
         ),
       );
     }
   }
 
-  Future<void> verifyResetCode(String code) async {
+  Future<void> verifyResetCode(String code, {required String localeTag}) async {
     if (state.email.isEmpty) return;
+    Intl.defaultLocale = localeTag;
     emit(
       state.copyWith(
         verifyCodeStatus: ResetRequestStatus.loading,
         clearError: true,
+        clearSuccess: true,
       ),
     );
     try {
-      await _repository.verifyResetCode(email: state.email, resetCode: code);
+      final result = await _repository.verifyResetCode(
+        email: state.email,
+        resetCode: code,
+      );
+      final response = result.data;
+      final message =
+          response is Map ? resolveLocalizedMessage(response?['message']) : '';
       _timer?.cancel();
       emit(
         state.copyWith(
           verifyCodeStatus: ResetRequestStatus.success,
           verifiedCode: code,
           secondsRemaining: state.secondsRemaining,
+          successMessage: message.isEmpty ? null : message,
         ),
       );
     } catch (e) {
@@ -65,6 +78,7 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
         state.copyWith(
           verifyCodeStatus: ResetRequestStatus.failure,
           errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          clearSuccess: true,
         ),
       );
     }
@@ -76,6 +90,7 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
       state.copyWith(
         resetStatus: ResetRequestStatus.loading,
         clearError: true,
+        clearSuccess: true,
       ),
     );
     try {
@@ -90,6 +105,7 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
         state.copyWith(
           resetStatus: ResetRequestStatus.failure,
           errorMessage: e.toString().replaceFirst('Exception: ', ''),
+          clearSuccess: true,
         ),
       );
     }

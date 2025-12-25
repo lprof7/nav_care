@@ -233,7 +233,10 @@ class _SocialCompleteProfileFormState
       file: _profileImage,
     );
 
-    context.read<SignupCubit>().signup(request);
+    context.read<SignupCubit>().signup(
+          request,
+          localeTag: context.locale.toLanguageTag(),
+        );
   }
 
   String _ensureAlgerianPhone(String input) {
@@ -340,13 +343,14 @@ class _SocialCompleteProfileFormState
           PhoneNumberField(
             controller: _phoneController,
             labelText: 'phone_number'.tr(),
+            languageCode: context.locale.languageCode,
             onChanged: (value) => _completePhoneNumber = value,
-            validator: (value) {
-              final trimmed = value!.trim();
-              if (trimmed.isEmpty) {
+            validator: (phone) {
+              final number = phone?.number.trim() ?? '';
+              if (number.isEmpty) {
                 return 'field_required'.tr();
               }
-              if (!trimmed.startsWith('+213')) {
+              if ((phone?.countryCode ?? '') != '+213') {
                 return 'algerian_phone_error'.tr();
               }
               return null;

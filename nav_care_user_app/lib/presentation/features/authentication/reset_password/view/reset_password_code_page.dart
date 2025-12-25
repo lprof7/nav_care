@@ -49,7 +49,11 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
       listener: (context, state) {
         if (state.verifyCodeStatus == ResetRequestStatus.success) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('reset_password.code_verified'.tr())),
+            SnackBar(
+              content: Text(
+                state.successMessage ?? 'reset_password.code_verified'.tr(),
+              ),
+            ),
           );
           context.push(
             '/reset-password/new-password',
@@ -126,25 +130,43 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall
-                    ?.copyWith(letterSpacing: 8),
+                    ?.copyWith(
+                      letterSpacing: 8,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                   LengthLimitingTextInputFormatter(6),
                 ],
                 decoration: InputDecoration(
                   hintText: 'reset_password.code_hint'.tr(),
+                  hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.65),
+                      ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide(
-                      color: AppColors.primary.withOpacity(0.5),
+                      color: Theme.of(context).colorScheme.outlineVariant,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(color: AppColors.primary),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: Theme.of(context)
+                      .colorScheme
+                      .surfaceVariant
+                      .withOpacity(
+                        Theme.of(context).brightness == Brightness.dark
+                            ? 0.35
+                            : 0.9,
+                      ),
                 ),
               ),
               const SizedBox(height: 18),
@@ -153,9 +175,10 @@ class _ResetPasswordCodePageState extends State<ResetPasswordCodePage> {
                     ? 'loading'.tr()
                     : 'reset_password.verify'.tr(),
                 onPressed: (!isExpired && code.length == 6 && !isLoading)
-                    ? () => context
-                        .read<ResetPasswordCubit>()
-                        .verifyResetCode(code)
+                    ? () => context.read<ResetPasswordCubit>().verifyResetCode(
+                          code,
+                          localeTag: context.locale.toLanguageTag(),
+                        )
                     : null,
               ),
               if (isExpired) ...[

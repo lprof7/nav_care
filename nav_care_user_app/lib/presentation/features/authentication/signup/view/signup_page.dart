@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +20,8 @@ import 'package:nav_care_user_app/presentation/shared/ui/atoms/app_text_field.da
 import 'package:nav_care_user_app/presentation/shared/ui/atoms/social_button.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/molecules/password_field.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/molecules/phone_number_field.dart';
-import 'package:intl/intl.dart';
+import 'package:intl_phone_field/countries.dart';
+import 'package:intl/intl.dart' as intl;
 
 class SignupPage extends StatelessWidget {
   const SignupPage({super.key});
@@ -101,9 +102,10 @@ class _SignupView extends StatelessWidget {
                               context.go('/home');
                             }
                           } else if (state is SignupFailure) {
-                            final resolvedMessage = state.message.startsWith('signup_')
-                                ? state.message.tr()
-                                : state.message;
+                            final resolvedMessage =
+                                state.message.startsWith('signup_')
+                                    ? state.message.tr()
+                                    : state.message;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
@@ -171,8 +173,9 @@ class _SignupFormState extends State<_SignupForm> {
   final _cityController = TextEditingController();
   final _stateController = TextEditingController();
   final _countryController = TextEditingController();
+  final _countrySearchController = TextEditingController();
   final _imagePicker = ImagePicker();
-  String? _selectedCountry;
+  Country? _selectedCountry;
 
   bool _minLength = false;
   bool _hasUpper = false;
@@ -190,6 +193,9 @@ class _SignupFormState extends State<_SignupForm> {
     super.initState();
     _passwordController.addListener(_onPasswordChanged);
     _privacyRecognizer = TapGestureRecognizer()..onTap = _openPrivacyPolicy;
+    _selectedCountry =
+        countries.firstWhere((country) => country.code == 'DZ');
+    _countryController.text = _selectedCountry!.name;
   }
 
   @override
@@ -206,6 +212,7 @@ class _SignupFormState extends State<_SignupForm> {
     _cityController.dispose();
     _stateController.dispose();
     _countryController.dispose();
+    _countrySearchController.dispose();
     _privacyRecognizer.dispose();
     super.dispose();
   }
@@ -234,7 +241,8 @@ class _SignupFormState extends State<_SignupForm> {
       setState(() {
         _selectedBirthDate = picked;
         _birthDateController.text =
-            DateFormat.yMMMMd(context.locale.toLanguageTag()).format(picked);
+            intl.DateFormat.yMMMMd(context.locale.toLanguageTag())
+                .format(picked);
       });
     }
   }
@@ -293,7 +301,10 @@ class _SignupFormState extends State<_SignupForm> {
       file: _profileImage,
     );
 
-    context.read<SignupCubit>().signup(request);
+    context.read<SignupCubit>().signup(
+          request,
+          localeTag: context.locale.toLanguageTag(),
+        );
   }
 
   String _ensureAlgerianPhone(String input) {
@@ -304,6 +315,80 @@ class _SignupFormState extends State<_SignupForm> {
     final trimmed = sanitized.replaceFirst(RegExp(r'^\+?213'), '');
     final withoutLeadingZeros = trimmed.replaceFirst(RegExp(r'^0+'), '');
     return '+213$withoutLeadingZeros';
+  }
+
+  Future<void> _pickCountry() async {
+    final result = await showDialog<Country>(
+      context: context,
+      builder: (dialogContext) {
+        var filtered = countries.toList(growable: false);
+        return StatefulBuilder(
+          builder: (ctx, setState) {
+            return AlertDialog(
+              title: Text('country'.tr()),
+              content: SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: _countrySearchController,
+                      decoration: InputDecoration(
+                        hintText: 'shell.nav_search'.tr(),
+                      ),
+                      onChanged: (value) {
+                        final query = value.trim().toLowerCase();
+                        filtered = query.isEmpty
+                            ? countries.toList(growable: false)
+                            : countries
+                                .where((country) => country
+                                    .localizedName(
+                                        context.locale.languageCode)
+                                    .toLowerCase()
+                                    .contains(query))
+                                .toList(growable: false);
+                        setState(() {});
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    Flexible(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: filtered.length,
+                        itemBuilder: (listCtx, index) {
+                          final country = filtered[index];
+                          return ListTile(
+                            leading: Text(
+                              country.flag,
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                            title: Text(
+                              country.localizedName(
+                                context.locale.languageCode,
+                              ),
+                            ),
+                            trailing: Text('+${country.dialCode}'),
+                            onTap: () => Navigator.of(ctx).pop(country),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    if (result != null) {
+      setState(() {
+        _selectedCountry = result;
+        _countryController.text = result.name;
+      });
+    }
+    _countrySearchController.clear();
   }
 
   Future<void> _openPrivacyPolicy() async {
@@ -383,6 +468,7 @@ class _SignupFormState extends State<_SignupForm> {
             hintText: 'email'.tr(),
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
+            textDirection: TextDirection.ltr,
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
                 return 'field_required'.tr();
@@ -401,6 +487,7 @@ class _SignupFormState extends State<_SignupForm> {
                   hintText: 'birth_date_hint'.tr(),
                   controller: _birthDateController,
                   readOnly: true,
+                  textDirection: TextDirection.ltr,
                   onTap: _selectBirthDate,
                   suffixIcon: const Icon(Icons.calendar_today_outlined),
                 ),
@@ -408,20 +495,24 @@ class _SignupFormState extends State<_SignupForm> {
             ],
           ),
           const SizedBox(height: 16),
-          PhoneNumberField(
-            controller: _phoneController,
-            labelText: 'phone_number'.tr(),
-            onChanged: (value) => _completePhoneNumber = value,
-            validator: (value) {
-              final trimmed = value!.trim();
-              if (trimmed.isEmpty) {
-                return 'field_required'.tr();
-              }
-              if (!trimmed.startsWith('+213')) {
-                return 'algerian_phone_error'.tr();
-              }
-              return null;
-            },
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: PhoneNumberField(
+              controller: _phoneController,
+              labelText: 'phone_number'.tr(),
+              languageCode: context.locale.languageCode,
+              onChanged: (value) => _completePhoneNumber = value,
+              validator: (phone) {
+                final number = phone?.number.trim() ?? '';
+                if (number.isEmpty) {
+                  return 'field_required'.tr();
+                }
+                if ((phone?.countryCode ?? '') != '+213') {
+                  return 'algerian_phone_error'.tr();
+                }
+                return null;
+              },
+            ),
           ),
           const SizedBox(height: 16),
           AppTextField(
@@ -454,36 +545,50 @@ class _SignupFormState extends State<_SignupForm> {
             ],
           ),
           const SizedBox(height: 16),
-          DropdownButtonFormField<String>(
-            value: _selectedCountry,
-            decoration: InputDecoration(
-              hintText: 'country'.tr(),
-            ),
-            isExpanded: true,
-            items: _countries
-                .map(
-                  (country) => DropdownMenuItem<String>(
-                    value: country,
-                    child: Text(
-                      country,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+          FormField<Country>(
+            initialValue: _selectedCountry,
+            validator: (value) => value == null ? 'field_required'.tr() : null,
+            builder: (field) {
+              return InkWell(
+                onTap: () async {
+                  await _pickCountry();
+                  field.didChange(_selectedCountry);
+                },
+                child: InputDecorator(
+                  decoration: InputDecoration(
+                    hintText: 'country'.tr(),
+                    errorText: field.errorText,
                   ),
-                )
-                .toList(),
-            onChanged: (value) {
-              setState(() {
-                _selectedCountry = value;
-                _countryController.text = value ?? '';
-              });
+                  child: Row(
+                    children: [
+                      if (_selectedCountry != null) ...[
+                        Text(
+                          _selectedCountry!.flag,
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                      Expanded(
+                        child: Text(
+                          _selectedCountry?.localizedName(
+                                context.locale.languageCode,
+                              ) ??
+                              'country'.tr(),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const Icon(Icons.arrow_drop_down),
+                    ],
+                  ),
+                ),
+              );
             },
-            validator: (value) =>
-                value == null || value.trim().isEmpty ? 'field_required'.tr() : null,
           ),
           const SizedBox(height: 16),
           PasswordField(
             hintText: 'password'.tr(),
             controller: _passwordController,
+            textDirection: TextDirection.ltr,
             validator: (value) {
               if (value == null || value.isEmpty)
                 return 'profile.password_new'.tr();
@@ -505,6 +610,7 @@ class _SignupFormState extends State<_SignupForm> {
           PasswordField(
             hintText: 'confirm_password'.tr(),
             controller: _confirmPasswordController,
+            textDirection: TextDirection.ltr,
             validator: (value) {
               if (value == null || value.isEmpty)
                 return 'profile.confirm_password_required'.tr();
@@ -775,67 +881,6 @@ class _SignupFormState extends State<_SignupForm> {
   }
 }
 
-const List<String> _countries = [
-  'Algeria',
-  'Argentina',
-  'Australia',
-  'Austria',
-  'Bahrain',
-  'Bangladesh',
-  'Belgium',
-  'Brazil',
-  'Canada',
-  'Chile',
-  'China',
-  'Colombia',
-  'Cote dIvoire',
-  'Czech Republic',
-  'Denmark',
-  'Egypt',
-  'Finland',
-  'France',
-  'Germany',
-  'Ghana',
-  'Greece',
-  'Hungary',
-  'India',
-  'Indonesia',
-  'Ireland',
-  'Italy',
-  'Japan',
-  'Jordan',
-  'Kenya',
-  'Kuwait',
-  'Lebanon',
-  'Malaysia',
-  'Mexico',
-  'Morocco',
-  'Netherlands',
-  'New Zealand',
-  'Nigeria',
-  'Norway',
-  'Oman',
-  'Pakistan',
-  'Philippines',
-  'Poland',
-  'Portugal',
-  'Qatar',
-  'Romania',
-  'Saudi Arabia',
-  'Singapore',
-  'South Africa',
-  'South Korea',
-  'Spain',
-  'Sweden',
-  'Switzerland',
-  'Tunisia',
-  'Turkey',
-  'Ukraine',
-  'United Arab Emirates',
-  'United Kingdom',
-  'United States',
-  'Vietnam',
-];
 
 class _PasswordRequirements extends StatelessWidget {
   const _PasswordRequirements({

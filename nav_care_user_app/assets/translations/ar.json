@@ -74,6 +74,7 @@
   "logout_success_message": "تم تسجيل الخروج.",
   "logout_error_message": "تعذر تسجيل الخروج: {message}",
   "passwords_do_not_match": "كلمتا المرور غير متطابقتين",
+  "invalid_email_format": "يرجى إدخال عنوان بريد إلكتروني صحيح.",
   "accept_terms_error": "يرجى قبول الشروط وسياسة الخصوصية",
   "field_required": "هذا الحقل مطلوب",
   "algerian_phone_error": "أدخل رقم هاتف جزائري صالح",
