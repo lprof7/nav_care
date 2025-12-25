@@ -37,7 +37,8 @@ class UserProfileCubit extends Cubit<UserProfileState> {
 
   Future<void> loadProfile() async {
     if (state.loadStatus == ProfileLoadStatus.loading) return;
-    emit(state.copyWith(loadStatus: ProfileLoadStatus.loading, clearError: true));
+    emit(state.copyWith(
+        loadStatus: ProfileLoadStatus.loading, clearError: true));
     try {
       final profile = await _repository.fetchProfile();
       emit(state.copyWith(
@@ -63,7 +64,8 @@ class UserProfileCubit extends Cubit<UserProfileState> {
     String? country,
     String? imagePath,
   }) async {
-    emit(state.copyWith(updateStatus: ProfileUpdateStatus.updating, clearError: true));
+    emit(state.copyWith(
+        updateStatus: ProfileUpdateStatus.updating, clearError: true));
     try {
       final updated = await _repository.updateProfile(
         name: name,
@@ -106,10 +108,13 @@ class UserProfileCubit extends Cubit<UserProfileState> {
     }
   }
 
-  Future<void> updatePassword({required String currentPassword, required String newPassword}) async {
-    emit(state.copyWith(passwordStatus: PasswordUpdateStatus.updating, clearError: true));
+  Future<void> updatePassword(
+      {required String currentPassword, required String newPassword}) async {
+    emit(state.copyWith(
+        passwordStatus: PasswordUpdateStatus.updating, clearError: true));
     try {
-      await _repository.updatePassword(currentPassword: currentPassword, newPassword: newPassword);
+      await _repository.updatePassword(
+          currentPassword: currentPassword, newPassword: newPassword);
       emit(state.copyWith(passwordStatus: PasswordUpdateStatus.success));
     } catch (e) {
       emit(state.copyWith(
@@ -120,7 +125,8 @@ class UserProfileCubit extends Cubit<UserProfileState> {
   }
 
   Future<void> requestPasswordReset(String email) async {
-    emit(state.copyWith(resetStatus: PasswordResetStatus.sending, clearError: true));
+    emit(state.copyWith(
+        resetStatus: PasswordResetStatus.sending, clearError: true));
     try {
       await _repository.requestPasswordReset(email);
       emit(state.copyWith(resetStatus: PasswordResetStatus.success));

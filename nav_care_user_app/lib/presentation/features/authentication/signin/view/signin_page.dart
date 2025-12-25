@@ -73,11 +73,15 @@ class SigninPage extends StatelessWidget {
                               context.go('/home');
                             } else if (state is SigninFailure) {
                               debugPrint(state.message);
+                              final resolvedMessage =
+                                  state.message.startsWith('signin.')
+                                      ? state.message.tr()
+                                      : state.message;
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
                                     'signin_error_message'.tr(
-                                      namedArgs: {'message': state.message},
+                                      namedArgs: {'message': resolvedMessage},
                                     ),
                                   ),
                                 ),
@@ -179,11 +183,25 @@ class _SigninFormState extends State<SigninForm> {
             hintText: 'email_or_phone'.tr(),
             prefixIcon: const Icon(Icons.mail_outline),
             keyboardType: TextInputType.emailAddress,
+            validator: (value) {
+              final trimmed = value?.trim() ?? '';
+              if (trimmed.isEmpty) return 'profile.invalid_email'.tr();
+              if (!RegExp(r'^[^@]+@[^@]+\.[a-zA-Z]{2,}$').hasMatch(trimmed)) {
+                return 'profile.invalid_email'.tr();
+              }
+              return null;
+            },
           ),
           const SizedBox(height: 16),
           PasswordField(
             controller: _passwordController,
             hintText: 'password'.tr(),
+            validator: (value) {
+              if (value == null || value.length < 8) {
+                return 'profile.password_invalid'.tr();
+              }
+              return null;
+            },
           ),
           const SizedBox(height: 16),
           Row(
@@ -226,6 +244,8 @@ class _SigninFormState extends State<SigninForm> {
                           context.read<SigninCubit>().signin(
                                 _identifierController.text.trim(),
                                 _passwordController.text,
+                                localeTag:
+                                    context.locale.toLanguageTag(),
                               );
                         }
                       },
