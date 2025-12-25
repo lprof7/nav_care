@@ -11,7 +11,7 @@ class DoctorsRemoteService {
     int limit = 10,
   }) {
     return _apiClient.get<Map<String, dynamic>>(
-      '/api/doctors',
+      _apiClient.apiConfig.listDoctors,
       query: {
         'page': page,
         'limit': limit,
@@ -26,7 +26,7 @@ class DoctorsRemoteService {
     int limit = 10,
   }) {
     return _apiClient.get<Map<String, dynamic>>(
-      '/api/doctors/boosted',
+      _apiClient.apiConfig.listBoostedDoctors,
       query: {
         'type': type,
         'page': page,

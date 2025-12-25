@@ -38,6 +38,8 @@ class ApiConfig {
 
   // Hospitals
   String get createHospital => '$baseUrl/api/hospitals';
+  String get listHospitals => '$baseUrl/api/hospitals';
+  String get listBoostedHospitals => '$baseUrl/api/hospitals/boosted';
   String createHospitalPackages(String hospitalId) =>
       '$baseUrl/api/hospitals/$hospitalId/packages';
   String hospitalById(String id) => '$baseUrl/api/hospitals/$id';
@@ -47,6 +49,8 @@ class ApiConfig {
 
   // Doctors
   String doctorById(String id) => '$baseUrl/api/doctors/$id';
+  String get listDoctors => '$baseUrl/api/doctors';
+  String get listBoostedDoctors => '$baseUrl/api/doctors/boosted';
   String get serviceOfferingsByProvider => '$baseUrl/api/service-offerings';
 
   // Feedback

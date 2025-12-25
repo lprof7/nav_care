@@ -21,7 +21,11 @@ class HospitalsRepository {
             ? 20
             : limit;
 
-    return _fetchHospitals(page: page, limit: requestLimit);
+    return _fetchBoostedHospitals(
+      type: 'nav_care',
+      page: page,
+      limit: requestLimit,
+    );
   }
 
   Future<List<HospitalModel>> getNavcareFeaturedHospitals(
@@ -69,7 +73,7 @@ class HospitalsRepository {
             ? 20
             : limit;
     final result = await _remoteService.listBoostedHospitals(
-      type: 'nav_care',
+      type: 'featured',
       page: page,
       limit: requestLimit,
     );
@@ -77,6 +81,38 @@ class HospitalsRepository {
     if (!result.isSuccess || result.data == null) {
       final message = _extractMessage(result.error?.message) ??
           'Failed to load featured hospitals.';
+      throw Exception(message);
+    }
+
+    final payload = result.data!;
+    final data = _asMap(payload['data']) ?? _asMap(payload);
+    final hospitalMaps = _extractHospitalMaps(data);
+    final pagination =
+        _parsePagination(_asMap(payload['pagination']) ?? _asMap(data?['pagination']));
+
+    final hospitals =
+        hospitalMaps.map(HospitalModel.fromJson).toList(growable: false);
+
+    return Paged<HospitalModel>(
+      items: hospitals,
+      meta: pagination,
+    );
+  }
+
+  Future<Paged<HospitalModel>> _fetchBoostedHospitals({
+    required String type,
+    int page = 1,
+    int limit = 10,
+  }) async {
+    final result = await _remoteService.listBoostedHospitals(
+      type: type,
+      page: page,
+      limit: limit,
+    );
+
+    if (!result.isSuccess || result.data == null) {
+      final message = _extractMessage(result.error?.message) ??
+          'Failed to load boosted hospitals.';
       throw Exception(message);
     }
 

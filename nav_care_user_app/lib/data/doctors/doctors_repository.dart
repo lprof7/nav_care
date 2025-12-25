@@ -24,7 +24,11 @@ class DoctorsRepository {
             ? 20
             : limit;
     final result =
-        await remoteService.listDoctors(page: page, limit: requestLimit);
+        await remoteService.listBoostedDoctors(
+          type: 'nav_care',
+          page: page,
+          limit: requestLimit,
+        );
 
     if (!result.isSuccess || result.data == null) {
       final message =

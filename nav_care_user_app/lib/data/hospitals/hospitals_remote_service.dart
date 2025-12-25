@@ -12,7 +12,7 @@ class HospitalsRemoteService {
     int limit = 10,
   }) {
     return _apiClient.get<Map<String, dynamic>>(
-      '/api/hospitals',
+      _apiClient.apiConfig.listHospitals,
       query: {
         'page': page,
         'limit': limit,
@@ -27,7 +27,7 @@ class HospitalsRemoteService {
     int limit = 10,
   }) {
     return _apiClient.get<Map<String, dynamic>>(
-      '/api/hospitals/boosted',
+      _apiClient.apiConfig.listBoostedHospitals,
       query: {
         'type': type,
         'page': page,
@@ -43,5 +43,4 @@ class HospitalsRemoteService {
       parser: (json) => json as Map<String, dynamic>,
     );
   }
-
 }
