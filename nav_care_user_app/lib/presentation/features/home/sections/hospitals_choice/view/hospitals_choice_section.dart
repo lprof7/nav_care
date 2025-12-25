@@ -52,14 +52,13 @@ class _HospitalsChoiceBody extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'assets/error/failure.png', // الصورة عند الفشل
-                    width: 100, // تصغير حجم الصورة
+                    'assets/error/failure.png',
+                    width: 100,
                     height: 100,
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    state.message ??
-                        'common.error_occurred'.tr(), // رسالة خطأ عامة
+                    state.message ?? 'common.error_occurred'.tr(),
                     style: Theme.of(context).textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),

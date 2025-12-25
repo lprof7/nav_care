@@ -33,13 +33,20 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final List<AdsSectionCubit> _adsCubits;
+  static const _adPositions = [
+    'top',
+    'featured',
+    'nav_care',
+    'bottom',
+  ];
 
   @override
   void initState() {
     super.initState();
     _adsCubits = List.generate(
-      4,
-      (_) => sl<AdsSectionCubit>()..loadAdvertisings(),
+      _adPositions.length,
+      (index) =>
+          sl<AdsSectionCubit>(param1: _adPositions[index])..loadAdvertisings(),
     );
   }
 

@@ -10,8 +10,12 @@ part 'ads_section_state.dart';
 
 class AdsSectionCubit extends Cubit<AdsSectionState> {
   final AdvertisingRepository _advertisingRepository;
+  final String position;
 
-  AdsSectionCubit({required AdvertisingRepository advertisingRepository})
+  AdsSectionCubit({
+    required AdvertisingRepository advertisingRepository,
+    required this.position,
+  })
       : _advertisingRepository = advertisingRepository,
         pageController = PageController(initialPage: _computeInitialPage([])),
         super(const AdsSectionState()) {
@@ -33,7 +37,7 @@ class AdsSectionCubit extends Cubit<AdsSectionState> {
   Future<void> loadAdvertisings() async {
     emit(state.copyWith(status: AdsSectionStatus.loading));
     final result =
-        await _advertisingRepository.getAdvertisings(position: 'featured');
+        await _advertisingRepository.getAdvertisings(position: position);
     result.fold(
       onFailure: (failure) => emit(
         state.copyWith(

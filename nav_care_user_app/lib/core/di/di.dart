@@ -132,8 +132,12 @@ Future<void> configureDependencies(AppConfig config) async {
       () => AdvertisingRemoteService(apiClient: sl<ApiClient>()));
   sl.registerLazySingleton<AdvertisingRepository>(() =>
       AdvertisingRepositoryImpl(advertisingService: sl<AdvertisingService>()));
-  sl.registerFactory<AdsSectionCubit>(() =>
-      AdsSectionCubit(advertisingRepository: sl<AdvertisingRepository>()));
+  sl.registerFactoryParam<AdsSectionCubit, String, void>(
+    (position, _) => AdsSectionCubit(
+      advertisingRepository: sl<AdvertisingRepository>(),
+      position: position,
+    ),
+  );
 
   // Hospitals list
   sl.registerLazySingleton<HospitalsRemoteService>(
