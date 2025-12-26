@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -9,6 +10,7 @@ import 'package:nav_care_offers_app/data/service_offerings/models/service_offeri
 import 'package:nav_care_offers_app/data/service_offerings/service_offerings_repository.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/view/service_catalog_picker_page.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/viewmodel/service_offering_form_cubit.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 
 class ServiceOfferingFormPage extends StatelessWidget {
   const ServiceOfferingFormPage({
@@ -77,8 +79,8 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
     );
     _descriptionEnController =
         TextEditingController(text: initial?.descriptionEn ?? '');
-    _nameEnController =
-        TextEditingController(text: initial?.nameEn ?? initial?.service.nameEn ?? '');
+    _nameEnController = TextEditingController(
+        text: initial?.nameEn ?? initial?.service.nameEn ?? '');
     _selectedServiceId = initial?.service.id;
     _selectedService = initial?.service;
   }
@@ -161,11 +163,16 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                               keyboardType:
                                   const TextInputType.numberWithOptions(
                                 decimal: true,
-                          ),
-                          decoration: InputDecoration(
-                            labelText:
-                                _requiredLabel('service_offerings.form.price'.tr()),
-                          ),
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                  RegExp(r'^\d*\.?\d*$'),
+                                ),
+                              ],
+                              decoration: InputDecoration(
+                                labelText: _requiredLabel(
+                                    'service_offerings.form.price'.tr()),
+                              ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'field_required'.tr();
@@ -177,7 +184,6 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                               },
                             ),
                           ),
-                          const SizedBox(width: 12),
                           if (state.isCatalogLoading)
                             const SizedBox(
                               height: 18,
@@ -188,24 +194,27 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
-                        controller: _offersController,
-                        decoration: InputDecoration(
-                          labelText: 'service_offerings.form.offers'.tr(),
-                          hintText: 'service_offerings.form.offers_hint'.tr(),
-                        ),
-                        maxLines: 2,
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
                         controller: _nameEnController,
                         decoration: InputDecoration(
                           labelText: 'service_offerings.form.name_en'.tr(),
                         ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'field_required'.tr();
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 16),
                       _MultilineField(
                         controller: _descriptionEnController,
                         label: 'service_offerings.form.description'.tr(),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'field_required'.tr();
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -228,16 +237,13 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                         label: Text('service_offerings.form.add_image'.tr()),
                       ),
                       const SizedBox(height: 32),
-                      SizedBox(
-                        width: double.infinity,
-                        child: FilledButton(
-                          onPressed: state.isSubmitting
-                              ? null
-                              : () => _submit(context),
-                          child: Text(isEdit
-                              ? 'service_offerings.form.update_button'.tr()
-                              : 'service_offerings.form.create_button'.tr()),
-                        ),
+                      AppButton(
+                        text: isEdit
+                            ? 'service_offerings.form.update_button'.tr()
+                            : 'service_offerings.form.create_button'.tr(),
+                        onPressed: state.isSubmitting
+                            ? null
+                            : () => _submit(context),
                       ),
                     ],
                   ),
@@ -326,16 +332,19 @@ class _MultilineField extends StatelessWidget {
   const _MultilineField({
     required this.controller,
     required this.label,
+    this.validator,
   });
 
   final TextEditingController controller;
   final String label;
+  final FormFieldValidator<String>? validator;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       maxLines: 3,
+      validator: validator,
       decoration: InputDecoration(
         labelText: label,
         alignLabelWithHint: true,
@@ -388,7 +397,8 @@ class _ServiceSelectionButton extends StatelessWidget {
                       ? label!
                       : 'service_offerings.form.select_service'.tr(),
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: hasSelection ? FontWeight.w600 : FontWeight.w500,
+                    fontWeight:
+                        hasSelection ? FontWeight.w600 : FontWeight.w500,
                   ),
                 ),
               ),

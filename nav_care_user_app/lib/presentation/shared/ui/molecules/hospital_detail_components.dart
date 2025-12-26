@@ -334,14 +334,18 @@ class SocialMediaIcon extends StatelessWidget {
     switch (type.toLowerCase()) {
       case 'facebook':
         return FontAwesomeIcons.facebook;
+      case 'x':
+        return FontAwesomeIcons.xTwitter;
       case 'twitter':
-        return FontAwesomeIcons.twitter;
+        return FontAwesomeIcons.xTwitter;
       case 'instagram':
         return FontAwesomeIcons.instagram;
       case 'linkedin':
         return FontAwesomeIcons.linkedin;
       case 'youtube':
         return FontAwesomeIcons.youtube;
+      case 'other':
+        return Icons.link;
       default:
         return Icons.link;
     }

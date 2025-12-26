@@ -108,7 +108,7 @@
   "services.offerings.error": "Unable to load service offerings right now.",
   "services.offerings.empty": "No offerings are available for this service.",
   "services.offerings.retry": "Try again",
-  "services.offerings.price": "From {price}",
+  "services.offerings.price": "From {price} $",
   "services.detail.description": "Description",
   "services.detail.read_more": "Read more",
   "reviews": "reviews",

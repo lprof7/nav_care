@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:nav_care_offers_app/data/authentication/signup/models/signup_request.dart';
 import 'package:nav_care_offers_app/data/authentication/signup/models/signup_result.dart';
 import 'package:nav_care_offers_app/data/authentication/signup/signup_repository.dart';
@@ -24,18 +25,20 @@ class SignupCubit extends Cubit<SignupState> {
 
   SignupCubit(this._signupRepository) : super(SignupInitial());
 
-  Future<void> signup(SignupRequest request) async {
+  Future<void> signup(SignupRequest request, {required String localeTag}) async {
+    Intl.defaultLocale = localeTag;
     emit(SignupLoading());
 
     final result = await _signupRepository.signup(request);
     result.fold(
-      onFailure: (failure) => emit(
-        SignupFailure(
-          failure.statusCode == 413
-              ? 'signup_image_too_large'
-              : failure.message,
-        ),
-      ),
+      onFailure: (failure) {
+        final serverMessage = failure.message;
+        final resolvedMessage = failure.statusCode == 413 &&
+                (serverMessage.isEmpty || serverMessage == 'Server error')
+            ? 'signup_image_too_large'
+            : serverMessage;
+        emit(SignupFailure(resolvedMessage));
+      },
       onSuccess: (data) => emit(SignupSuccess(data)),
     );
   }

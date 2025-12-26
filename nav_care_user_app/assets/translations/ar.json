@@ -108,7 +108,7 @@
   "services.offerings.error": "تعذر تحميل عروض الخدمات حاليًا.",
   "services.offerings.empty": "لا توجد عروض متاحة لهذه الخدمة.",
   "services.offerings.retry": "حاول مرة أخرى",
-  "services.offerings.price": "ابتداءً من {price}",
+  "services.offerings.price": "ابتداءً من {price} $",
   "services.detail.description": "الوصف",
   "services.detail.read_more": "قراءة المزيد",
   "reviews": "تقييمات",

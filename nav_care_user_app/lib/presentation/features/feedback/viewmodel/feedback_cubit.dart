@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:nav_care_user_app/data/feedback/feedback_repository.dart';
 
 import 'feedback_state.dart';
@@ -14,8 +15,10 @@ class FeedbackCubit extends Cubit<FeedbackState> {
 
   Future<bool> submit({
     required String comment,
+    required String localeTag,
     Uint8List? screenshot,
   }) async {
+    Intl.defaultLocale = localeTag;
     emit(state.copyWith(
       status: FeedbackStatus.submitting,
       errorMessage: null,

@@ -1,4 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -64,11 +64,13 @@ class SigninPage extends StatelessWidget {
                           context.go('/home');
                         } else if (state is SigninFailure) {
                           debugPrint(state.message);
-                          final message = state.message.startsWith('signin_')
-                              ? state.message.tr()
-                              : 'signin_error_message'.tr(
-                                  namedArgs: {'message': state.message},
-                                );
+                          final message =
+                              (state.message.startsWith('signin.') ||
+                                      state.message.startsWith('signin_'))
+                                  ? state.message.tr()
+                                  : 'signin_error_message'.tr(
+                                      namedArgs: {'message': state.message},
+                                    );
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(message),
@@ -147,11 +149,27 @@ class _SigninFormState extends State<SigninForm> {
             hintText: 'email_or_phone'.tr(),
             prefixIcon: const Icon(Icons.mail_outline),
             keyboardType: TextInputType.emailAddress,
+            textDirection: TextDirection.ltr,
+            validator: (value) {
+              final trimmed = value?.trim() ?? '';
+              if (trimmed.isEmpty) return 'profile.invalid_email'.tr();
+              if (!RegExp(r'^[^@]+@[^@]+\.[a-zA-Z]{2,}$').hasMatch(trimmed)) {
+                return 'profile.invalid_email'.tr();
+              }
+              return null;
+            },
           ),
           const SizedBox(height: 16),
           PasswordField(
             controller: _passwordController,
             hintText: 'password'.tr(),
+            textDirection: TextDirection.ltr,
+            validator: (value) {
+              if (value == null || value.length < 8) {
+                return 'profile.password_invalid'.tr();
+              }
+              return null;
+            },
           ),
           const SizedBox(height: 16),
           Row(
@@ -194,6 +212,7 @@ class _SigninFormState extends State<SigninForm> {
                           context.read<SigninCubit>().signin(
                                 _identifierController.text.trim(),
                                 _passwordController.text,
+                                localeTag: context.locale.toLanguageTag(),
                               );
                         }
                       },

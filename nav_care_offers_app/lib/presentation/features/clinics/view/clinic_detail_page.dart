@@ -212,26 +212,6 @@ List<Widget> _buildDetailsSlivers({
             ),
           ),
           const SizedBox(height: 12),
-          HospitalDetailSectionCard(
-            icon: Icons.manage_accounts_rounded,
-            title: 'clinics.actions.manage'.tr(),
-            child: Wrap(
-              spacing: 8,
-              children: [
-                OutlinedButton.icon(
-                  onPressed: onManageDoctors,
-                  icon: const Icon(Icons.people_alt_rounded),
-                  label: Text('clinics.detail.tabs.doctors'.tr()),
-                ),
-                OutlinedButton.icon(
-                  onPressed: onManageOfferings,
-                  icon: const Icon(PhosphorIconsBold.stethoscope),
-                  label: Text('clinics.detail.tabs.offerings'.tr()),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
           _ClinicReviewsSection(
             reviews: reviewsState.reviews,
             status: reviewsState.status,

@@ -19,6 +19,7 @@ import 'package:nav_care_offers_app/data/invitations/models/hospital_invitation.
 import 'package:nav_care_offers_app/data/service_offerings/models/service_offering.dart';
 import 'package:nav_care_offers_app/data/reviews/hospital_reviews/models/hospital_review_model.dart';
 import 'package:nav_care_offers_app/presentation/features/appointments/viewmodel/appointments_cubit.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_offers_app/presentation/features/appointments/viewmodel/appointments_state.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/view/widgets/invite_doctor_sheet.dart';
 import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/hospital_reviews_cubit.dart';
@@ -172,21 +173,6 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
 
     return [
       NavShellDestination(
-        label: 'clinics.detail.tabs.doctors'.tr(),
-        icon: Icons.people_alt_rounded,
-        content: DoctorsAndInvitesTab(
-          doctors: detailState.doctors,
-          fallbackDoctors: hospital.doctors,
-          invitations: detailState.invitations,
-          baseUrl: baseUrl,
-          status: detailState.status,
-          onReload: () =>
-              shellContext.read<ClinicDetailCubit>().loadDetails(refresh: true),
-          onManage: () => _openManage(shellContext, hospital, 'doctors'),
-          onInvite: () => _openInviteDoctor(shellContext, baseUrl, detailState),
-        ),
-      ),
-      NavShellDestination(
         label: 'clinics.detail.tabs.offerings'.tr(),
         icon: PhosphorIconsBold.stethoscope,
         content: OfferingsTabContent(
@@ -199,6 +185,21 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
           onCreate: () => _openOfferingCreation(shellContext, hospital.id),
           onOpenDetail: (offering) =>
               _openOfferingDetail(shellContext, hospital.id, offering),
+        ),
+      ),
+      NavShellDestination(
+        label: 'clinics.detail.tabs.doctors'.tr(),
+        icon: Icons.people_alt_rounded,
+        content: DoctorsAndInvitesTab(
+          doctors: detailState.doctors,
+          fallbackDoctors: hospital.doctors,
+          invitations: detailState.invitations,
+          baseUrl: baseUrl,
+          status: detailState.status,
+          onReload: () =>
+              shellContext.read<ClinicDetailCubit>().loadDetails(refresh: true),
+          onManage: () => _openManage(shellContext, hospital, 'doctors'),
+          onInvite: () => _openInviteDoctor(shellContext, baseUrl, detailState),
         ),
       ),
       NavShellDestination(
@@ -311,7 +312,7 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
       useSafeArea: true,
       builder: (ctx) {
         return BlocProvider(
-          create: (_) => sl<InviteDoctorCubit>()..load(limit: 50),
+          create: (_) => sl<InviteDoctorCubit>()..load(),
           child: InviteDoctorSheet(
             baseUrl: baseUrl,
             onOpenDetail: (doctor) {
@@ -681,10 +682,10 @@ class _DoctorsAndInvitesTabState extends State<DoctorsAndInvitesTab>
                 children: [
                   Text('clinics.detail.invitations_empty'.tr()),
                   const SizedBox(height: 8),
-                  OutlinedButton.icon(
+                  AppButton(
                     onPressed: widget.onInvite,
+                    text: 'clinics.detail.invite_doctor'.tr(),
                     icon: const Icon(Icons.person_add_alt_1_rounded),
-                    label: Text('clinics.detail.invite_doctor'.tr()),
                   ),
                 ],
               ),

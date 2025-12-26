@@ -620,21 +620,21 @@ class _DetailsTab extends StatelessWidget {
                   spacing: 10,
                   runSpacing: 10,
                   children: [
-                HospitalStatCard(
-                  icon: PhosphorIconsBold.buildings,
-                  label: 'hospitals.detail.stats.clinics'.tr(),
-                  value: clinicsCount.toString(),
-                ),
+                    HospitalStatCard(
+                      icon: PhosphorIconsBold.buildings,
+                      label: 'hospitals.detail.stats.clinics'.tr(),
+                      value: clinicsCount.toString(),
+                    ),
                     HospitalStatCard(
                       icon: Icons.people_alt_rounded,
                       label: 'hospitals.detail.stats.doctors'.tr(),
                       value: doctorsCount.toString(),
                     ),
-                HospitalStatCard(
-                  icon: PhosphorIconsBold.stethoscope,
-                  label: 'hospitals.detail.stats.offerings'.tr(),
-                  value: offeringsCount.toString(),
-                ),
+                    HospitalStatCard(
+                      icon: PhosphorIconsBold.stethoscope,
+                      label: 'hospitals.detail.stats.offerings'.tr(),
+                      value: offeringsCount.toString(),
+                    ),
                     HospitalStatCard(
                       icon: Icons.star_rounded,
                       label: 'hospitals.detail.stats.rating'.tr(),
@@ -1039,7 +1039,6 @@ class _DoctorsTabState extends State<_DoctorsTab> {
                 ),
               ),
               const SizedBox(height: 10),
-              _FiltersRow(),
             ]),
           ),
         ),
@@ -1058,7 +1057,7 @@ class _DoctorsTabState extends State<_DoctorsTab> {
                 crossAxisCount: 2,
                 mainAxisSpacing: 14,
                 crossAxisSpacing: 14,
-                childAspectRatio: 0.65,
+                childAspectRatio: 0.62,
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
@@ -1136,7 +1135,7 @@ class _OfferingsTab extends StatelessWidget {
       slivers: [
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
-          sliver: SliverToBoxAdapter(child: _FiltersRow()),
+          sliver: SliverToBoxAdapter(child: SizedBox(height: 10)),
         ),
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),

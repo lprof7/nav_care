@@ -9,6 +9,8 @@ import 'package:nav_care_offers_app/data/services/doctor_services_repository.dar
 import 'package:nav_care_offers_app/data/service_offerings/models/service_catalog_payload.dart';
 import 'package:nav_care_offers_app/data/service_offerings/models/service_offering.dart';
 import 'package:nav_care_offers_app/presentation/features/service_offerings/viewmodel/service_catalog_cubit.dart';
+import 'package:nav_care_offers_app/presentation/shared/theme/colors.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 
 class ServiceCatalogPickerPage extends StatelessWidget {
   const ServiceCatalogPickerPage({
@@ -52,11 +54,28 @@ class _ServiceCatalogPickerView extends StatefulWidget {
 
 class _ServiceCatalogPickerViewState extends State<_ServiceCatalogPickerView> {
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final position = _scrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 120) {
+      context.read<ServiceCatalogCubit>().loadMore();
+    }
   }
 
   @override
@@ -67,13 +86,17 @@ class _ServiceCatalogPickerViewState extends State<_ServiceCatalogPickerView> {
     return Scaffold(
       appBar: AppBar(
         title: Text('service_offerings.form.select_service_title'.tr()),
-        actions: [
-          IconButton(
-            tooltip: 'service_offerings.form.add_service'.tr(),
-            onPressed: () => _openCreateService(context),
-            icon: const Icon(Icons.add_rounded),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: AppButton(
+          text: 'service_offerings.form.add_service'.tr(),
+          icon: const Icon(
+            Icons.add_rounded,
+            color: AppColors.textOnPrimary,
           ),
-        ],
+          onPressed: () => _openCreateService(context),
+        ),
       ),
       body: BlocConsumer<ServiceCatalogCubit, ServiceCatalogState>(
         listener: (context, state) {
@@ -127,8 +150,22 @@ class _ServiceCatalogPickerViewState extends State<_ServiceCatalogPickerView> {
                             onAdd: () => _openCreateService(context),
                           )
                         : ListView.separated(
+                            controller: _scrollController,
                             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                             itemBuilder: (context, index) {
+                              if (index >= filtered.length) {
+                                return const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 12),
+                                  child: Center(
+                                    child: SizedBox(
+                                      height: 18,
+                                      width: 18,
+                                      child: CircularProgressIndicator(
+                                          strokeWidth: 2),
+                                    ),
+                                  ),
+                                );
+                              }
                               final service = filtered[index];
                               final isSelected =
                                   widget.initial?.id == service.id;
@@ -152,17 +189,13 @@ class _ServiceCatalogPickerViewState extends State<_ServiceCatalogPickerView> {
                             },
                             separatorBuilder: (_, __) =>
                                 const SizedBox(height: 8),
-                            itemCount: filtered.length,
+                            itemCount: filtered.length +
+                                (state.isLoadingMore ? 1 : 0),
                           ),
               ),
             ],
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openCreateService(context),
-        icon: const Icon(Icons.add_rounded),
-        label: Text('service_offerings.form.add_service'.tr()),
       ),
     );
   }
@@ -247,10 +280,13 @@ class _EmptyServicesView extends StatelessWidget {
               style: theme.textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
-            OutlinedButton.icon(
+            AppButton(
               onPressed: onAdd,
-              icon: const Icon(Icons.add_rounded),
-              label: Text('service_offerings.form.add_service'.tr()),
+              text: 'service_offerings.form.add_service'.tr(),
+              icon: const Icon(
+                Icons.add_rounded,
+                color: AppColors.textOnPrimary,
+              ),
             ),
           ],
         ),

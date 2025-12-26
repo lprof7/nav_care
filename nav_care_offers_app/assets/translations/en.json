@@ -335,7 +335,7 @@
       "title": "Manage service offerings",
       "heading": "Your service offerings",
       "subtitle": "Review and update the offers attached to this hospital.",
-      "price": "Price: {price}",
+      "price": "Price: {price} $",
       "add": "Add service offering",
       "empty": "No service offerings yet. Start by adding your first one.",
       "reload": "Reload",

@@ -144,9 +144,13 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
                   TextFormField(
                     controller: _descriptionController,
                     decoration: InputDecoration(
-                      labelText: 'clinics.form.description_en'.tr(),
+                      labelText:
+                          _requiredLabel('clinics.form.description_en'.tr()),
                     ),
                     maxLines: 4,
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? 'field_required'.tr()
+                        : null,
                   ),
                   const SizedBox(height: AppSpacing.md),
                   TextFormField(

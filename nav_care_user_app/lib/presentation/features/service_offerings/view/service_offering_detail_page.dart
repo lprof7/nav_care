@@ -239,17 +239,17 @@ class _DetailViewState extends State<_DetailView> {
                                 ?.withOpacity(0.8),
                           ),
                         ),
-                      if (!_isDescriptionExpanded && description.length > 160)
-                        TextButton.icon(
-                          onPressed: () =>
-                              setState(() => _isDescriptionExpanded = true),
-                          icon:
-                              const Icon(Icons.keyboard_arrow_right_rounded),
-                          label: Text('services.detail.read_more'.tr()),
-                          style: TextButton.styleFrom(
-                            foregroundColor: theme.colorScheme.primary,
+                        if (!_isDescriptionExpanded && description.length > 160)
+                          TextButton.icon(
+                            onPressed: () =>
+                                setState(() => _isDescriptionExpanded = true),
+                            icon:
+                                const Icon(Icons.keyboard_arrow_right_rounded),
+                            label: Text('services.detail.read_more'.tr()),
+                            style: TextButton.styleFrom(
+                              foregroundColor: theme.colorScheme.primary,
+                            ),
                           ),
-                        ),
                       ],
                       const SizedBox(height: 24),
                       _ServiceOfferingReviewsSection(
@@ -297,11 +297,11 @@ class _DetailViewState extends State<_DetailView> {
           child: SignInRequiredCard(
             onSignIn: () {
               Navigator.of(sheetContext).pop();
-              rootContext.go('/signin');
+              rootContext.push('/signin');
             },
             onCreateAccount: () {
               Navigator.of(sheetContext).pop();
-              rootContext.go('/signup');
+              rootContext.push('/signup');
             },
             onGoogleSignIn: () {},
           ),
@@ -503,7 +503,6 @@ class _ProviderHighlight extends StatelessWidget {
       ],
     );
   }
-
 }
 
 class _RatingStars extends StatelessWidget {

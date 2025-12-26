@@ -24,7 +24,7 @@ class MyAppointmentsState extends Equatable {
     this.actionStatus = AppointmentActionStatus.idle,
     this.actionError,
     this.actionId = 0,
-    this.filterStatus,
+    this.filterStatus = 'all',
   });
 
   MyAppointmentsState copyWith({
@@ -48,7 +48,7 @@ class MyAppointmentsState extends Equatable {
       actionStatus: actionStatus ?? this.actionStatus,
       actionError: resetActionError ? null : actionError ?? this.actionError,
       actionId: actionId ?? this.actionId,
-      filterStatus: resetFilter ? null : filterStatus ?? this.filterStatus,
+      filterStatus: resetFilter ? 'all' : filterStatus ?? this.filterStatus,
     );
   }
 

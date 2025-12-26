@@ -217,7 +217,8 @@ class _UserAppointmentsList extends StatelessWidget {
             context,
             appointment.status,
           );
-          final typeLabel = appointment.type == 'virtual'
+          print(" appointment.type: ${appointment.type} ");
+          final typeLabel = appointment.type == 'teleconsultation'
               ? 'virtual_appointment'.tr()
               : 'in_person_appointment'.tr();
 
@@ -313,7 +314,8 @@ class _UserAppointmentsList extends StatelessWidget {
                       if (appointment.price != null)
                         Text(
                           NumberFormat.simpleCurrency(
-                            locale: context.locale.toLanguageTag(),
+                            locale: 'en_US',
+                            name: 'USD',
                           ).format(appointment.price),
                           style: Theme.of(context)
                               .textTheme

@@ -216,6 +216,7 @@ class NavShellPage extends StatelessWidget {
       _showFeedbackLoader(context);
       final success = await context.read<FeedbackCubit>().submit(
             comment: comment,
+            localeTag: context.locale.toLanguageTag(),
             screenshot: userFeedback.screenshot,
           );
       if (!context.mounted) return;

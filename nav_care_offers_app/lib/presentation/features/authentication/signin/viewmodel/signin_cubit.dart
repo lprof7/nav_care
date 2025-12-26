@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/data/authentication/signin/signin_repository.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/auth_cubit.dart';
@@ -24,7 +25,12 @@ class SigninCubit extends Cubit<SigninState> {
 
   SigninCubit(this._signinRepository) : super(SigninInitial());
 
-  Future<void> signin(String identifier, String password) async {
+  Future<void> signin(
+    String identifier,
+    String password, {
+    required String localeTag,
+  }) async {
+    Intl.defaultLocale = localeTag;
     emit(SigninLoading());
     final result = await _signinRepository.signin({
       'identifier': identifier,

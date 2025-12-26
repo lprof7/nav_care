@@ -39,15 +39,18 @@ class ServiceOfferingFormCubit extends Cubit<ServiceOfferingFormState> {
   Future<void> loadCatalog() async {
     if (state.isCatalogLoading) return;
     emit(state.copyWith(isCatalogLoading: true, clearFailure: true));
-    final result =
-        await _servicesRepository.fetchServicesCatalog(useHospitalToken: useHospitalToken);
+    final result = await _servicesRepository.fetchServicesCatalog(
+      page: 1,
+      limit: 50,
+      useHospitalToken: useHospitalToken,
+    );
     result.fold(
       onFailure: (failure) => emit(state.copyWith(
         isCatalogLoading: false,
         failure: failure,
       )),
-      onSuccess: (services) {
-        final normalized = List<ServiceCategory>.from(services);
+      onSuccess: (payload) {
+        final normalized = List<ServiceCategory>.from(payload.services);
         final initialService = state.initial?.service;
         if (initialService != null &&
             normalized.every((element) => element.id != initialService.id)) {

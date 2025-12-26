@@ -136,7 +136,11 @@ class ApiClient {
         final rawMessage =
             e.response?.data is Map ? (e.response?.data['message']) : null;
         final msg = resolveLocalizedMessage(rawMessage);
-        if (sc == 401) return const Failure.unauthorized();
+        if (sc == 401) {
+          return Failure.unauthorized(
+            message: msg.isEmpty ? 'Unauthorized' : msg,
+          );
+        }
         if (sc == 422) {
           return Failure.validation(
               message: msg.isEmpty ? 'Validation error' : msg);

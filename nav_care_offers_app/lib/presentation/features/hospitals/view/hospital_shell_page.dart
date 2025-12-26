@@ -351,7 +351,7 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
       useSafeArea: true,
       builder: (ctx) {
         return BlocProvider(
-          create: (_) => sl<InviteDoctorCubit>()..load(limit: 50),
+          create: (_) => sl<InviteDoctorCubit>()..load(),
           child: InviteDoctorSheet(
             baseUrl: baseUrl,
             onOpenDetail: (doctor) {

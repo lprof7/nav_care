@@ -6,9 +6,15 @@ class HospitalDetailShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final baseColor = isDarkMode ? Colors.grey.shade800 : Colors.grey.shade300;
+    final highlightColor =
+        isDarkMode ? Colors.grey.shade700 : Colors.grey.shade100;
+    final surfaceColor = isDarkMode ? Colors.grey.shade900 : Colors.white;
+
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: baseColor,
+      highlightColor: highlightColor,
       child: SingleChildScrollView(
         physics: const NeverScrollableScrollPhysics(),
         child: Column(
@@ -17,7 +23,7 @@ class HospitalDetailShimmer extends StatelessWidget {
             Container(
               height: 240,
               width: double.infinity,
-              color: Colors.white,
+              color: surfaceColor,
             ),
             Transform.translate(
               offset: const Offset(0, -72),
@@ -26,7 +32,7 @@ class HospitalDetailShimmer extends StatelessWidget {
                 child: Container(
                   height: 220,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: surfaceColor,
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),

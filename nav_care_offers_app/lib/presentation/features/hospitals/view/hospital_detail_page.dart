@@ -394,7 +394,7 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
       useSafeArea: true,
       builder: (ctx) {
         return BlocProvider(
-          create: (_) => sl<InviteDoctorCubit>()..load(limit: 50),
+          create: (_) => sl<InviteDoctorCubit>()..load(),
           child: InviteDoctorSheet(
             baseUrl: baseUrl,
             onOpenDetail: (doctor) {

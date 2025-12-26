@@ -12,6 +12,7 @@ import 'package:nav_care_offers_app/presentation/features/doctors/viewmodel/doct
 import 'package:nav_care_offers_app/presentation/features/doctors/viewmodel/doctor_reviews_state.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/cards/doctor_review_card.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/network_image.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 
 class DoctorDetailPage extends StatefulWidget {
   final String doctorId;
@@ -184,6 +185,7 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                 final bool canCancelInvitation = invitation != null &&
                     invitation.status == 'pending' &&
                     !_isCancellingInvitation;
+                final theme = Theme.of(innerContext);
 
                 return CustomScrollView(
                   slivers: [
@@ -218,36 +220,25 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                             if (widget.hospitalId != null && !isMember)
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 12),
-                                child: FilledButton(
+                                child: AppButton(
                                   onPressed: canSendInvitation
                                       ? () =>
                                           _sendInvitation(innerContext, doctor)
                                       : null,
-                                  child: _isSendingInvitation
-                                      ? Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            const SizedBox(
-                                              height: 16,
-                                              width: 16,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Text(
-                                              'hospitals.detail.invitation_send'
-                                                  .tr(),
-                                            ),
-                                          ],
+                                  icon: _isSendingInvitation
+                                      ? const SizedBox(
+                                          height: 16,
+                                          width: 16,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white,
+                                          ),
                                         )
-                                          : Text(canSendInvitation
-                                          ? 'hospitals.detail.invitation_send'
-                                              .tr()
-                                          : 'hospitals.detail.invitation_request_sent'
-                                              .tr()),
+                                      : null,
+                                  text: canSendInvitation
+                                      ? 'hospitals.detail.invitation_send'.tr()
+                                      : 'hospitals.detail.invitation_request_sent'
+                                          .tr(),
                                 ),
                               ),
                             if (widget.hospitalId != null &&
@@ -255,29 +246,23 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                                 canCancelInvitation)
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 12),
-                                child: OutlinedButton(
+                                child: AppButton(
                                   onPressed: () => _cancelInvitation(
                                       innerContext, invitation!),
-                                  child: _isCancellingInvitation
-                                      ? Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            const SizedBox(
-                                              height: 16,
-                                              width: 16,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Text('hospitals.detail.invitation_cancel'.tr()),
-                                          ],
+                                  color: theme.colorScheme.surface,
+                                  textColor: theme.colorScheme.error,
+                                  icon: _isCancellingInvitation
+                                      ? SizedBox(
+                                          height: 16,
+                                          width: 16,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: theme.colorScheme.error,
+                                          ),
                                         )
-                                      : Text(
-                                          'hospitals.detail.invitation_cancel'
-                                              .tr(),
-                                        ),
+                                      : null,
+                                  text:
+                                      'hospitals.detail.invitation_cancel'.tr(),
                                 ),
                               ),
                             _Section(

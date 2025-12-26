@@ -335,7 +335,7 @@
       "title": "Gérer les offres de services",
       "heading": "Vos offres de services",
       "subtitle": "Consultez et mettez à jour les offres liées à cet hôpital.",
-      "price": "Prix : {price}",
+      "price": "Prix : {price} $",
       "add": "Ajouter une offre de service",
       "empty": "Aucune offre de service pour le moment. Commencez par en ajouter une.",
       "reload": "Recharger",

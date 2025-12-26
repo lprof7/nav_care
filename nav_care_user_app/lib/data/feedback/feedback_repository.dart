@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:nav_care_user_app/core/responses/failure.dart';
 import 'package:nav_care_user_app/core/responses/result.dart';
+import 'package:nav_care_user_app/core/utils/localized_message.dart';
 import 'package:nav_care_user_app/core/utils/multipart_helper.dart';
 
 import 'feedback_remote_service.dart';
@@ -30,27 +31,14 @@ class FeedbackRepository {
       return Result.failure(result.error ?? const Failure.unknown());
     }
 
-    final message =
-        _extractMessage(result.data!) ?? 'Feedback submitted successfully';
+    final message = _extractMessage(result.data!) ??
+        'Feedback submitted successfully';
 
     return Result.success(message);
   }
 
   String? _extractMessage(Map<String, dynamic> payload) {
-    final message = payload['message'];
-    if (message is String && message.isNotEmpty) return message;
-    if (message is Map<String, dynamic>) {
-      final localized = [
-        message['ar'],
-        message['fr'],
-        message['en'],
-        message['sp'],
-      ].whereType<String>().firstWhere(
-            (value) => value.isNotEmpty,
-            orElse: () => '',
-          );
-      if (localized.isNotEmpty) return localized;
-    }
-    return null;
+    final resolved = resolveLocalizedMessage(payload['message']);
+    return resolved.isNotEmpty ? resolved : null;
   }
 }

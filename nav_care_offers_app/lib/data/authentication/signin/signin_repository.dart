@@ -2,6 +2,7 @@ import 'package:nav_care_offers_app/core/responses/failure.dart';
 import 'package:nav_care_offers_app/core/responses/result.dart';
 import 'package:nav_care_offers_app/core/storage/doctor_store.dart';
 import 'package:nav_care_offers_app/core/storage/token_store.dart';
+import 'package:nav_care_offers_app/core/utils/localized_message.dart';
 import 'package:nav_care_offers_app/data/authentication/models.dart';
 import 'services/signin_service.dart';
 
@@ -123,19 +124,7 @@ class SigninRepository {
   }
 
   String? _extractMessage(dynamic message) {
-    if (message is String) return message;
-    if (message is Map) {
-      final english = message['en'];
-      if (english != null) return english.toString();
-      final values = message.values;
-      if (values is Iterable) {
-        for (final value in values) {
-          if (value != null) {
-            return value.toString();
-          }
-        }
-      }
-    }
-    return null;
+    final resolved = resolveLocalizedMessage(message);
+    return resolved.isNotEmpty ? resolved : null;
   }
 }

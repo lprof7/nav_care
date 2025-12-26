@@ -7,6 +7,7 @@ import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/in
 class InviteDoctorSheet extends StatelessWidget {
   final String baseUrl;
   final void Function(DoctorModel) onOpenDetail;
+  static const double _loadMoreTrigger = 120;
 
   const InviteDoctorSheet({
     super.key,
@@ -62,7 +63,7 @@ class InviteDoctorSheet extends StatelessWidget {
             Expanded(
               child: BlocBuilder<InviteDoctorCubit, InviteDoctorState>(
                 builder: (context, state) {
-                  if (state.isLoading) {
+                  if (state.isLoading && state.doctors.isEmpty) {
                     return const Center(child: CircularProgressIndicator());
                   }
 
@@ -80,19 +81,42 @@ class InviteDoctorSheet extends StatelessWidget {
                     );
                   }
 
-                  return ListView.separated(
-                    itemCount: doctors.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 10),
-                    itemBuilder: (context, index) {
-                      final doctor = doctors[index];
-                      final image = doctor.avatarImage(baseUrl: baseUrl) ??
-                          doctor.coverImage(baseUrl: baseUrl);
-                      return _DoctorTile(
-                        doctor: doctor,
-                        imageUrl: image,
-                        onOpenDetail: () => onOpenDetail(doctor),
-                      );
+                  return NotificationListener<ScrollNotification>(
+                    onNotification: (notification) {
+                      if (notification.metrics.pixels >=
+                          notification.metrics.maxScrollExtent -
+                              _loadMoreTrigger) {
+                        context.read<InviteDoctorCubit>().loadMore();
+                      }
+                      return false;
                     },
+                    child: ListView.separated(
+                      itemCount: doctors.length +
+                          (state.isLoadingMore ? 1 : 0),
+                      separatorBuilder: (_, __) => const SizedBox(height: 10),
+                      itemBuilder: (context, index) {
+                        if (index >= doctors.length) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            child: Center(
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              ),
+                            ),
+                          );
+                        }
+                        final doctor = doctors[index];
+                        final image = doctor.avatarImage(baseUrl: baseUrl) ??
+                            doctor.coverImage(baseUrl: baseUrl);
+                        return _DoctorTile(
+                          doctor: doctor,
+                          imageUrl: image,
+                          onOpenDetail: () => onOpenDetail(doctor),
+                        );
+                      },
+                    ),
                   );
                 },
               ),

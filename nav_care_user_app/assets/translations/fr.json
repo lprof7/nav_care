@@ -108,7 +108,7 @@
   "services.offerings.error": "Impossible de charger les offres de services pour le moment.",
   "services.offerings.empty": "Aucune offre disponible pour ce service.",
   "services.offerings.retry": "Réessayer",
-  "services.offerings.price": "À partir de {price}",
+  "services.offerings.price": "À partir de {price} $",
   "services.detail.description": "Description",
   "services.detail.read_more": "Lire la suite",
   "reviews": "avis",

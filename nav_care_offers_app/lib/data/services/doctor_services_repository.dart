@@ -68,11 +68,16 @@ class DoctorServicesRepository {
     }
   }
 
-  Future<Result<List<ServiceCategory>>> fetchServicesCatalog({
+  Future<Result<ServiceCatalogResult>> fetchServicesCatalog({
+    int? page,
+    int? limit,
     bool useHospitalToken = true,
   }) async {
-    final response =
-        await _service.fetchServicesCatalog(useHospitalToken: useHospitalToken);
+    final response = await _service.fetchServicesCatalog(
+      page: page,
+      limit: limit,
+      useHospitalToken: useHospitalToken,
+    );
     if (!response.isSuccess || response.data == null) {
       return Result.failure(response.error ?? const Failure.unknown());
     }
@@ -93,8 +98,28 @@ class DoctorServicesRepository {
           .whereType<Map<String, dynamic>>()
           .map(ServiceCategory.fromJson)
           .toList();
-      _catalogCache = services;
-      return Result.success(services);
+      if (page == null || page <= 1) {
+        _catalogCache = services;
+      } else {
+        _catalogCache = [
+          ..._catalogCache,
+          ...services.where(
+            (item) => _catalogCache.indexWhere((c) => c.id == item.id) < 0,
+          ),
+        ];
+      }
+
+      final paginationJson =
+          payload is Map<String, dynamic> ? payload['pagination'] : null;
+      final pagination =
+          paginationJson is Map<String, dynamic> ? _parsePagination(paginationJson) : null;
+
+      return Result.success(
+        ServiceCatalogResult(
+          services: services,
+          pagination: pagination,
+        ),
+      );
     } catch (_) {
       return Result.failure(
         const Failure.server(message: 'service_offerings.errors.parse_catalog'),
@@ -142,6 +167,24 @@ class DoctorServicesResult {
     required this.services,
     this.pagination,
   });
+}
+
+class ServiceCatalogResult {
+  final List<ServiceCategory> services;
+  final Pagination? pagination;
+
+  ServiceCatalogResult({
+    required this.services,
+    this.pagination,
+  });
+}
+
+Pagination _parsePagination(Map<String, dynamic> json) {
+  final normalized = Map<String, dynamic>.from(json);
+  if (normalized['totalPages'] == null && normalized['pages'] != null) {
+    normalized['totalPages'] = normalized['pages'];
+  }
+  return Pagination.fromJson(normalized);
 }
 
 List<ServiceCategory> _upsertService(

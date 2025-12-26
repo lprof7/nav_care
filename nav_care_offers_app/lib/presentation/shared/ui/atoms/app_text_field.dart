@@ -9,6 +9,7 @@ class AppTextField extends StatelessWidget {
   final TextEditingController? controller;
   final FormFieldValidator<String>? validator;
   final TextInputType? keyboardType;
+  final TextDirection? textDirection;
   final TextInputAction? textInputAction;
   final TextCapitalization textCapitalization;
   final bool readOnly;
@@ -25,6 +26,7 @@ class AppTextField extends StatelessWidget {
     this.controller,
     this.validator,
     this.keyboardType,
+    this.textDirection,
     this.textInputAction,
     this.textCapitalization = TextCapitalization.none,
     this.readOnly = false,
@@ -40,6 +42,7 @@ class AppTextField extends StatelessWidget {
       obscureText: obscureText,
       validator: validator,
       keyboardType: keyboardType,
+      textDirection: textDirection,
       textInputAction: textInputAction,
       textCapitalization: textCapitalization,
       readOnly: readOnly,
