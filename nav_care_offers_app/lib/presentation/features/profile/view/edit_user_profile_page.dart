@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl_phone_field/countries.dart';
 import 'package:nav_care_offers_app/core/config/app_config.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/presentation/features/profile/viewmodel/user_profile_cubit.dart';
@@ -35,6 +36,8 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
   late final TextEditingController _cityCtl;
   late final TextEditingController _stateCtl;
   late final TextEditingController _countryCtl;
+  late final TextEditingController _countrySearchController;
+  Country? _selectedCountry;
 
   @override
   void initState() {
@@ -47,7 +50,12 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
     _cityCtl = TextEditingController();
     _stateCtl = TextEditingController();
     _countryCtl = TextEditingController();
+    _countrySearchController = TextEditingController();
+  }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _prefillIfNeeded(context.read<UserProfileCubit>().state);
   }
 
@@ -61,6 +69,7 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
     _cityCtl.dispose();
     _stateCtl.dispose();
     _countryCtl.dispose();
+    _countrySearchController.dispose();
     super.dispose();
   }
 
@@ -107,8 +116,100 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
       _cityCtl.text = profile.city ?? '';
       _stateCtl.text = profile.state ?? '';
       _countryCtl.text = profile.country ?? '';
+      _selectedCountry =
+          _resolveCountry(profile.country, context.locale.languageCode);
       _didPrefill = true;
     });
+  }
+
+  Country? _resolveCountry(String? value, String languageCode) {
+    final candidate = value?.trim();
+    if (candidate == null || candidate.isEmpty) return null;
+    final normalized = candidate.toLowerCase();
+    for (final country in countries) {
+      final localized = country.localizedName(languageCode).toLowerCase();
+      if (country.name.toLowerCase() == normalized ||
+          localized == normalized ||
+          country.code.toLowerCase() == normalized) {
+        return country;
+      }
+    }
+    return null;
+  }
+
+  Future<void> _pickCountry() async {
+    final result = await showDialog<Country>(
+      context: context,
+      builder: (dialogContext) {
+        var filtered = countries.toList(growable: false);
+        return StatefulBuilder(
+          builder: (ctx, setState) {
+            return AlertDialog(
+              title: Text('country'.tr()),
+              content: SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: _countrySearchController,
+                      decoration: InputDecoration(
+                        hintText: 'shell.nav_search'.tr(),
+                      ),
+                      onChanged: (value) {
+                        final query = value.trim().toLowerCase();
+                        filtered = query.isEmpty
+                            ? countries.toList(growable: false)
+                            : countries
+                                .where((country) => country
+                                    .localizedName(
+                                      context.locale.languageCode,
+                                    )
+                                    .toLowerCase()
+                                    .contains(query))
+                                .toList(growable: false);
+                        setState(() {});
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    Flexible(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: filtered.length,
+                        itemBuilder: (listCtx, index) {
+                          final country = filtered[index];
+                          return ListTile(
+                            leading: Text(
+                              country.flag,
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                            title: Text(
+                              country.localizedName(
+                                context.locale.languageCode,
+                              ),
+                            ),
+                            trailing: Text('+${country.dialCode}'),
+                            onTap: () => Navigator.of(ctx).pop(country),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    if (result != null) {
+      setState(() {
+        _selectedCountry = result;
+        _countryCtl.text = result.name;
+      });
+    }
+    _countrySearchController.clear();
   }
 
   void _submit(BuildContext context, bool isUpdating) {
@@ -257,11 +358,18 @@ class _EditUserProfilePageState extends State<EditUserProfilePage> {
                             controller: _stateCtl,
                           ),
                           const SizedBox(height: 12),
-                          _LabeledField(
+                          _CountryPickerField(
                             label: 'country'.tr(),
                             hint: 'country'.tr(),
                             icon: Icons.flag_outlined,
-                            controller: _countryCtl,
+                            flag: _selectedCountry?.flag,
+                            displayText: _selectedCountry?.localizedName(
+                                  context.locale.languageCode,
+                                ) ??
+                                (_countryCtl.text.trim().isNotEmpty
+                                    ? _countryCtl.text.trim()
+                                    : null),
+                            onTap: _pickCountry,
                           ),
                         ],
                       ),
@@ -426,6 +534,77 @@ class _LabeledField extends StatelessWidget {
               hintText: hint,
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 0),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CountryPickerField extends StatelessWidget {
+  const _CountryPickerField({
+    required this.label,
+    required this.hint,
+    required this.icon,
+    required this.onTap,
+    this.flag,
+    this.displayText,
+  });
+
+  final String label;
+  final String hint;
+  final IconData icon;
+  final String? flag;
+  final String? displayText;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textStyle = theme.textTheme.bodyMedium;
+    final placeholderStyle = textStyle?.copyWith(
+      color: AppColors.textSecondary,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: AppColors.textSecondary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 6),
+        InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: onTap,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: AppColors.primary.withOpacity(0.28)),
+              color: theme.cardColor,
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 12),
+            child: Row(
+              children: [
+                Icon(icon, color: AppColors.primary),
+                const SizedBox(width: 10),
+                if (flag != null) ...[
+                  Text(flag!, style: const TextStyle(fontSize: 18)),
+                  const SizedBox(width: 8),
+                ],
+                Expanded(
+                  child: Text(
+                    displayText ?? hint,
+                    style: displayText == null ? placeholderStyle : textStyle,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const Icon(Icons.arrow_drop_down),
+              ],
             ),
           ),
         ),

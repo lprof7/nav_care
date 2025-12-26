@@ -330,7 +330,7 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
         .push('/hospitals/${hospital.id}/edit', extra: hospital)
         .then((value) {
       if (value == true) {
-        context.pop(true);
+        _reload();
       } else if (value is Hospital) {
         cubit.updateHospital(value);
         _reload();
