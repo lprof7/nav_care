@@ -253,7 +253,7 @@ class _SigninFormState extends State<SigninForm> {
             ],
           ),
           const SizedBox(height: 12),
-          Row(
+          /*Row(
             children: [
               Expanded(
                 child: Divider(
@@ -309,7 +309,7 @@ class _SigninFormState extends State<SigninForm> {
               Icons.apple,
               color: AppColors.textOnPrimary,
             ),
-          ),
+          ),*/
         ],
       ),
     );

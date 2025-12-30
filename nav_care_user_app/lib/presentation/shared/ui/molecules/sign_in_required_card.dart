@@ -68,8 +68,7 @@ class SignInRequiredCard extends StatelessWidget {
             'auth_required.description'.tr(),
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.textTheme.bodyMedium?.color
-                  ?.withValues(alpha: 0.8),
+              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
             ),
           ),
           const SizedBox(height: 24),
@@ -102,9 +101,10 @@ class SignInRequiredCard extends StatelessWidget {
               style: theme.textTheme.titleMedium,
             ),
           ),
+          //lprof7
           if (onGoogleSignIn != null) ...[
             const SizedBox(height: 16),
-            Row(
+            /*Row(
               children: [
                 Expanded(child: Divider(color: colorScheme.outlineVariant)),
                 Padding(
@@ -112,8 +112,8 @@ class SignInRequiredCard extends StatelessWidget {
                   child: Text(
                     'or'.tr(),
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color:
-                          theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+                      color: theme.textTheme.bodySmall?.color
+                          ?.withValues(alpha: 0.7),
                     ),
                   ),
                 ),
@@ -121,6 +121,7 @@ class SignInRequiredCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
+            
             OutlinedButton.icon(
               onPressed: onGoogleSignIn,
               icon: Container(
@@ -149,7 +150,7 @@ class SignInRequiredCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-            ),
+            ),*/
           ],
         ],
       ),

@@ -303,7 +303,7 @@ class _DetailViewState extends State<_DetailView> {
               Navigator.of(sheetContext).pop();
               rootContext.push('/signup');
             },
-            onGoogleSignIn: () {},
+            onGoogleSignIn: null,
           ),
         ),
       ),

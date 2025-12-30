@@ -29,6 +29,7 @@ class UserProfilePage extends StatelessWidget {
                 child: SignInRequiredCard(
                   onSignIn: () => context.go('/signin'),
                   onCreateAccount: () => context.go('/signin'),
+                  onGoogleSignIn: null,
                 ),
               ),
             ),

@@ -64,6 +64,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           builder: (context, themeMode) {
             return BetterFeedback(
               child: MaterialApp.router(
+                debugShowCheckedModeBanner: false,
                 title: 'Nav Care',
                 theme: AppTheme.light,
                 darkTheme: AppTheme.dark,

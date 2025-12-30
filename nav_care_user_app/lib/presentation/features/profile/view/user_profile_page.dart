@@ -29,6 +29,7 @@ class UserProfilePage extends StatelessWidget {
                 child: SignInRequiredCard(
                   onSignIn: () => context.go('/signin'),
                   onCreateAccount: () => context.go('/signup'),
+                  onGoogleSignIn: null,
                 ),
               ),
             ),
@@ -54,7 +55,9 @@ class UserProfilePage extends StatelessWidget {
               );
             }
             if (state.profile == null) {
-              return _ProfileEmpty(onReload: () => context.read<UserProfileCubit>().loadProfile());
+              return _ProfileEmpty(
+                  onReload: () =>
+                      context.read<UserProfileCubit>().loadProfile());
             }
 
             final profile = state.profile!;
@@ -105,34 +108,39 @@ class UserProfilePage extends StatelessWidget {
                           label: Text('profile.update_password_short'.tr()),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.primary,
-                            side: const BorderSide(color: AppColors.primary, width: 1.2),
+                            side: const BorderSide(
+                                color: AppColors.primary, width: 1.2),
                             padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14)),
                           ),
                         ),
-                        
                         const SizedBox(height: 12),
                         if (state.updateStatus == ProfileUpdateStatus.failure ||
-                            state.passwordStatus == PasswordUpdateStatus.failure ||
+                            state.passwordStatus ==
+                                PasswordUpdateStatus.failure ||
                             state.resetStatus == PasswordResetStatus.failure)
                           _StatusBanner(
                             message: state.errorMessage ?? '',
                             color: Colors.red.shade100,
                             textColor: Colors.red.shade800,
                           )
-                        else if (state.updateStatus == ProfileUpdateStatus.success)
+                        else if (state.updateStatus ==
+                            ProfileUpdateStatus.success)
                           _StatusBanner(
                             message: 'profile.update_success'.tr(),
                             color: Colors.green.shade100,
                             textColor: Colors.green.shade800,
                           )
-                        else if (state.passwordStatus == PasswordUpdateStatus.success)
+                        else if (state.passwordStatus ==
+                            PasswordUpdateStatus.success)
                           _StatusBanner(
                             message: 'profile.password_update_success'.tr(),
                             color: Colors.green.shade100,
                             textColor: Colors.green.shade800,
                           )
-                        else if (state.resetStatus == PasswordResetStatus.success)
+                        else if (state.resetStatus ==
+                            PasswordResetStatus.success)
                           _StatusBanner(
                             message: 'profile.reset_link_sent'.tr(),
                             color: Colors.green.shade100,
@@ -235,9 +243,11 @@ class _ProfileHeader extends StatelessWidget {
                   child: CircleAvatar(
                     radius: 56,
                     backgroundColor: Colors.white,
-                    backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl!) : null,
+                    backgroundImage:
+                        avatarUrl != null ? NetworkImage(avatarUrl!) : null,
                     child: avatarUrl == null
-                        ? Icon(Icons.person_rounded, size: 56, color: backgroundColor.withOpacity(0.18))
+                        ? Icon(Icons.person_rounded,
+                            size: 56, color: backgroundColor.withOpacity(0.18))
                         : null,
                   ),
                 ),
@@ -252,9 +262,9 @@ class _ProfileHeader extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text(
                   email,
-                  style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white.withOpacity(0.9)),
+                  style: theme.textTheme.bodyMedium
+                      ?.copyWith(color: Colors.white.withOpacity(0.9)),
                 ),
-
               ],
             ),
           ),
@@ -366,7 +376,8 @@ class _InfoRow extends StatelessWidget {
               const SizedBox(height: 6),
               Text(
                 value,
-                style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(fontWeight: FontWeight.w600),
               ),
             ],
           ),
@@ -422,7 +433,8 @@ class _ProfileEmpty extends StatelessWidget {
 }
 
 class _StatusBanner extends StatelessWidget {
-  const _StatusBanner({required this.message, required this.color, required this.textColor});
+  const _StatusBanner(
+      {required this.message, required this.color, required this.textColor});
 
   final String message;
   final Color color;
@@ -432,7 +444,8 @@ class _StatusBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(12)),
+      decoration:
+          BoxDecoration(color: color, borderRadius: BorderRadius.circular(12)),
       child: Text(message, style: TextStyle(color: textColor)),
     );
   }

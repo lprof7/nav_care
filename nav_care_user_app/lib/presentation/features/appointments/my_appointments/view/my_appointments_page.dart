@@ -168,7 +168,7 @@ class _AppointmentsAuthPrompt extends StatelessWidget {
         child: SignInRequiredCard(
           onSignIn: onSignIn,
           onCreateAccount: onSignUp,
-          onGoogleSignIn: () {},
+          onGoogleSignIn: null,
         ),
       ),
     );

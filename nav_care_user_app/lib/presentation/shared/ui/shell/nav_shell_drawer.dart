@@ -577,12 +577,16 @@ class _DrawerHeader extends StatelessWidget {
               Navigator.of(dialogCtx).pop();
               onSignUpTap?.call();
             },
-            onGoogleSignIn: onGoogleSignInTap == null
+            onGoogleSignIn: null,
+
+            /*
+            onGoogleSignInTap == null
                 ? null
                 : () {
                     Navigator.of(dialogCtx).pop();
                     onGoogleSignInTap?.call();
                   },
+                  */
             padding: const EdgeInsets.all(24),
           ),
         );

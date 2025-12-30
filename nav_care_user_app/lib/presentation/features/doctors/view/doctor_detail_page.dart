@@ -42,149 +42,153 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
     return BlocProvider(
       create: (_) =>
           sl<DoctorReviewsCubit>()..loadReviews(doctorId: widget.doctorId),
-      child: Scaffold(
-        body: RefreshIndicator(
-          onRefresh: () async {
-            setState(() {
-              _future = _load();
-            });
-            await _future;
-            context.read<DoctorReviewsCubit>().refresh();
-          },
-          child: FutureBuilder<DoctorModel>(
-            future: _future,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (snapshot.hasError || !snapshot.hasData) {
-                return _ErrorView(
-                  message: 'home.featured_doctors.error'.tr(),
-                  onRetry: () => setState(() {
-                    _future = _load();
-                  }),
-                );
-              }
+      child: Builder(
+        builder: (context) {
+          return Scaffold(
+            body: RefreshIndicator(
+              onRefresh: () async {
+                setState(() {
+                  _future = _load();
+                });
+                await _future;
+                context.read<DoctorReviewsCubit>().refresh();
+              },
+              child: FutureBuilder<DoctorModel>(
+                future: _future,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError || !snapshot.hasData) {
+                    return _ErrorView(
+                      message: 'home.featured_doctors.error'.tr(),
+                      onRetry: () => setState(() {
+                        _future = _load();
+                      }),
+                    );
+                  }
 
-              final doctor = snapshot.data!;
-              final locale = context.locale.languageCode;
-              final bio = doctor.bioForLocale(locale);
-              final baseUrl = sl<AppConfig>().api.baseUrl;
-              final avatar = doctor.avatarImage(baseUrl: baseUrl) ??
-                  doctor.coverImage(baseUrl: baseUrl);
-              final cover = avatar ?? doctor.coverImage(baseUrl: baseUrl);
-              final reviewsState = context.watch<DoctorReviewsCubit>().state;
+                  final doctor = snapshot.data!;
+                  final locale = context.locale.languageCode;
+                  final bio = doctor.bioForLocale(locale);
+                  final baseUrl = sl<AppConfig>().api.baseUrl;
+                  final avatar = doctor.avatarImage(baseUrl: baseUrl) ??
+                      doctor.coverImage(baseUrl: baseUrl);
+                  final cover = avatar ?? doctor.coverImage(baseUrl: baseUrl);
+                  final reviewsState = context.watch<DoctorReviewsCubit>().state;
 
-              return CustomScrollView(
-                slivers: [
-                  SliverAppBar(
-                    pinned: true,
-                    leading: IconButton(
-                      icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                      onPressed: () => Navigator.of(context).maybePop(),
-                    ),
-                    title: Text(doctor.displayName,
-                        maxLines: 1, overflow: TextOverflow.ellipsis),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Column(
-                      children: [
-                        _HeroImage(imageUrl: cover),
-                        _SummaryCard(
-                          doctor: doctor,
-                          avatarUrl: avatar,
+                  return CustomScrollView(
+                    slivers: [
+                      SliverAppBar(
+                        pinned: true,
+                        leading: IconButton(
+                          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                          onPressed: () => Navigator.of(context).maybePop(),
                         ),
-                      ],
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-                    sliver: SliverList(
-                      delegate: SliverChildListDelegate(
-                        [
-                          _Section(
-                            icon: Icons.info_rounded,
-                            title: 'hospitals.detail.about'.tr(),
-                            child: Text(
-                              bio.isNotEmpty
-                                  ? bio
-                                  : 'hospitals.detail.no_description'.tr(),
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          _Section(
-                            icon: Icons.contact_mail_rounded,
-                            title: 'contact.title'.tr(),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _InfoRow(
-                                  icon: Icons.email_rounded,
-                                  label: doctor.email ?? '--',
-                                ),
-                                const SizedBox(height: 8),
-                                _InfoRow(
-                                  icon: Icons.phone_rounded,
-                                  label: doctor.phone ?? '--',
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          _Section(
-                              icon: Icons.rate_review_rounded,
-                              title: 'doctors.reviews.title'.tr(),
-                              child: DoctorReviewsSection(
-                                reviews: reviewsState.reviews,
-                                status: reviewsState.status,
-                                message: reviewsState.message,
-                                hasMore: reviewsState.hasMore,
-                                isLoadingMore: reviewsState.isLoadingMore,
-                                baseUrl: baseUrl,
-                              onTap: (review) {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) => DoctorReviewDetailPage(
-                                      review: review,
-                                    ),
-                                  ),
-                                );
-                              },
-                              onRetry: () => context
-                                  .read<DoctorReviewsCubit>()
-                                  .loadReviews(doctorId: widget.doctorId),
-                              onLoadMore: () =>
-                                  context.read<DoctorReviewsCubit>().loadMore(),
-                              onAddReview: () async {
-                                final result =
-                                    await Navigator.of(context).push<bool>(
-                                  MaterialPageRoute(
-                                    builder: (_) => BlocProvider.value(
-                                      value: context.read<DoctorReviewsCubit>(),
-                                      child: const DoctorAddReviewPage(),
-                                    ),
-                                  ),
-                                );
-                                if (result == true) {
-                                  setState(() {
-                                    _future = _load();
-                                  });
-                                  context.read<DoctorReviewsCubit>().refresh();
-                                }
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          DoctorServiceOfferingsSection(providerId: doctor.id),
-                        ],
+                        title: Text(doctor.displayName,
+                            maxLines: 1, overflow: TextOverflow.ellipsis),
                       ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
+                      SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            _HeroImage(imageUrl: cover),
+                            _SummaryCard(
+                              doctor: doctor,
+                              avatarUrl: avatar,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                        sliver: SliverList(
+                          delegate: SliverChildListDelegate(
+                            [
+                              _Section(
+                                icon: Icons.info_rounded,
+                                title: 'hospitals.detail.about'.tr(),
+                                child: Text(
+                                  bio.isNotEmpty
+                                      ? bio
+                                      : 'hospitals.detail.no_description'.tr(),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              _Section(
+                                icon: Icons.contact_mail_rounded,
+                                title: 'contact.title'.tr(),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _InfoRow(
+                                      icon: Icons.email_rounded,
+                                      label: doctor.email ?? '--',
+                                    ),
+                                    const SizedBox(height: 8),
+                                    _InfoRow(
+                                      icon: Icons.phone_rounded,
+                                      label: doctor.phone ?? '--',
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              _Section(
+                                  icon: Icons.rate_review_rounded,
+                                  title: 'doctors.reviews.title'.tr(),
+                                  child: DoctorReviewsSection(
+                                    reviews: reviewsState.reviews,
+                                    status: reviewsState.status,
+                                    message: reviewsState.message,
+                                    hasMore: reviewsState.hasMore,
+                                    isLoadingMore: reviewsState.isLoadingMore,
+                                    baseUrl: baseUrl,
+                                  onTap: (review) {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) => DoctorReviewDetailPage(
+                                          review: review,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  onRetry: () => context
+                                      .read<DoctorReviewsCubit>()
+                                      .loadReviews(doctorId: widget.doctorId),
+                                  onLoadMore: () =>
+                                      context.read<DoctorReviewsCubit>().loadMore(),
+                                  onAddReview: () async {
+                                    final result =
+                                        await Navigator.of(context).push<bool>(
+                                      MaterialPageRoute(
+                                        builder: (_) => BlocProvider.value(
+                                          value: context.read<DoctorReviewsCubit>(),
+                                          child: const DoctorAddReviewPage(),
+                                        ),
+                                      ),
+                                    );
+                                    if (result == true) {
+                                      setState(() {
+                                        _future = _load();
+                                      });
+                                      context.read<DoctorReviewsCubit>().refresh();
+                                    }
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              DoctorServiceOfferingsSection(providerId: doctor.id),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          );
+        },
       ),
     );
   }

@@ -1,4 +1,4 @@
-package com.example.nav_care_offers_app
+package com.sarlkig.navcare_business
 
 import io.flutter.embedding.android.FlutterActivity
 

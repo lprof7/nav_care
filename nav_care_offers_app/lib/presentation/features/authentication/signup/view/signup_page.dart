@@ -687,7 +687,7 @@ class _SignupFormState extends State<_SignupForm> {
             ],
           ),
           const SizedBox(height: 16),
-          Row(
+          /*Row(
             children: [
               Expanded(child: Divider(color: borderColor)),
               Padding(
@@ -735,7 +735,7 @@ class _SignupFormState extends State<_SignupForm> {
               Icons.apple,
               color: AppColors.textOnPrimary,
             ),
-          ),
+          ),*/
         ],
       ),
     );

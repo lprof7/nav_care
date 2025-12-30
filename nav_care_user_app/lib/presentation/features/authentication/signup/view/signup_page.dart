@@ -193,8 +193,7 @@ class _SignupFormState extends State<_SignupForm> {
     super.initState();
     _passwordController.addListener(_onPasswordChanged);
     _privacyRecognizer = TapGestureRecognizer()..onTap = _openPrivacyPolicy;
-    _selectedCountry =
-        countries.firstWhere((country) => country.code == 'DZ');
+    _selectedCountry = countries.firstWhere((country) => country.code == 'DZ');
     _countryController.text = _selectedCountry!.name;
   }
 
@@ -342,8 +341,7 @@ class _SignupFormState extends State<_SignupForm> {
                             ? countries.toList(growable: false)
                             : countries
                                 .where((country) => country
-                                    .localizedName(
-                                        context.locale.languageCode)
+                                    .localizedName(context.locale.languageCode)
                                     .toLowerCase()
                                     .contains(query))
                                 .toList(growable: false);
@@ -698,7 +696,7 @@ class _SignupFormState extends State<_SignupForm> {
             ],
           ),
           const SizedBox(height: 16),
-          Row(
+          /* Row(
             children: [
               Expanded(child: Divider(color: borderColor)),
               Padding(
@@ -764,7 +762,7 @@ class _SignupFormState extends State<_SignupForm> {
               Icons.apple,
               color: AppColors.textOnPrimary,
             ),
-          ),
+          ),*/
         ],
       ),
     );
@@ -880,7 +878,6 @@ class _SignupFormState extends State<_SignupForm> {
     return null;
   }
 }
-
 
 class _PasswordRequirements extends StatelessWidget {
   const _PasswordRequirements({

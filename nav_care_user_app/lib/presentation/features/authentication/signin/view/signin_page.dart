@@ -97,7 +97,8 @@ class SigninPage extends StatelessWidget {
                                   .setAuthenticatedUser(state.user);
                               context.go('/home');
                             } else if (state is SocialAuthNeedsProfile) {
-                              context.go('/signup/social', extra: state.account);
+                              context.go('/signup/social',
+                                  extra: state.account);
                             } else if (state is SocialAuthFailure) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -246,8 +247,7 @@ class _SigninFormState extends State<SigninForm> {
                           context.read<SigninCubit>().signin(
                                 _identifierController.text.trim(),
                                 _passwordController.text,
-                                localeTag:
-                                    context.locale.toLanguageTag(),
+                                localeTag: context.locale.toLanguageTag(),
                               );
                         }
                       },
@@ -288,7 +288,7 @@ class _SigninFormState extends State<SigninForm> {
             ],
           ),
           const SizedBox(height: 24),
-          Row(
+          /* Row(
             children: [
               Expanded(
                 child: Divider(
@@ -362,7 +362,7 @@ class _SigninFormState extends State<SigninForm> {
               Icons.apple,
               color: AppColors.textOnPrimary,
             ),
-          ),
+          ),*/
         ],
       ),
     );
