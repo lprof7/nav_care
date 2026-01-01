@@ -171,6 +171,7 @@ class NavShellPage extends StatelessWidget {
                 onSupportTap: () => context.push('/contact'),
                 themeMode: themeMode,
                 onThemeToggle: () => context.read<ThemeModeCubit>().toggle(),
+                onMessagesTap: () => context.push(AppRoute.messages.path),
                 onInvitationsTap: authState.isDoctor
                     ? () => context.push(AppRoute.doctorInvitations.path)
                     : null,

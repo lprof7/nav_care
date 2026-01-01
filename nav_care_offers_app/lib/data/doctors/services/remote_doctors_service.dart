@@ -46,6 +46,24 @@ class RemoteDoctorsService implements DoctorsService {
     );
   }
 
+  @override
+  Future<Result<Map<String, dynamic>>> searchDoctorsCollection({
+    required String query,
+    int page = 1,
+    int limit = 20,
+  }) {
+    return _apiClient.get<Map<String, dynamic>>(
+      _apiClient.apiConfig.searchDoctorsCollection,
+      query: {
+        'query': query,
+        'page': page,
+        'limit': limit,
+      },
+      parser: (json) =>
+          json is Map<String, dynamic> ? json : <String, dynamic>{},
+    );
+  }
+
   DoctorModel _parseDoctorDetail(dynamic json) {
     if (json is Map<String, dynamic>) {
       final data = json['data'];

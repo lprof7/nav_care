@@ -38,6 +38,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nav_care_offers_app/presentation/features/faq/view/faq_page.dart';
 import 'package:nav_care_offers_app/presentation/features/contact/view/contact_page.dart';
 import 'package:nav_care_offers_app/presentation/features/about/view/about_page.dart';
+import 'package:nav_care_offers_app/presentation/features/messages/view/messages_page.dart';
+import 'package:nav_care_offers_app/presentation/features/messages/view/doctor_search_page.dart';
+import 'package:nav_care_offers_app/presentation/features/messages/view/chat_page.dart';
 
 enum AppRoute {
   root('/'),
@@ -55,6 +58,9 @@ enum AppRoute {
   contact('/contact'),
   about('/about'),
   notifications('/notifications'),
+  messages('/messages'),
+  messagesSearch('/messages/search'),
+  messagesChat('/messages/chat'),
   hospitalNew('/hospitals/new'),
   hospitalDetail('/hospitals/:id'),
   hospitalEdit('/hospitals/:id/edit'),
@@ -212,6 +218,30 @@ GoRouter createAppRouter({String initialLocation = '/'}) {
       GoRoute(
         path: AppRoute.notifications.path,
         builder: (ctx, st) => const NotificationsPage(),
+      ),
+      GoRoute(
+        path: AppRoute.messages.path,
+        builder: (ctx, st) => const MessagesPage(),
+      ),
+      GoRoute(
+        path: AppRoute.messagesSearch.path,
+        builder: (ctx, st) => const DoctorSearchPage(),
+      ),
+      GoRoute(
+        path: AppRoute.messagesChat.path,
+        builder: (ctx, st) {
+          final extra = st.extra;
+          if (extra is Map) {
+            final map = extra.cast<dynamic, dynamic>();
+            return ChatPage(
+              conversationId: map['conversationId']?.toString(),
+              counterpartUserId: map['counterpartUserId']?.toString(),
+              doctorName: map['name']?.toString(),
+              doctorImageUrl: map['imageUrl']?.toString(),
+            );
+          }
+          return const ChatPage();
+        },
       ),
       GoRoute(
         path: AppRoute.hospitalNew.path,

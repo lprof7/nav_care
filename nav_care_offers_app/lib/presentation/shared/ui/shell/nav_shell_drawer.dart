@@ -38,6 +38,7 @@ class NavShellDrawer extends StatelessWidget {
   final VoidCallback onThemeToggle;
   final VoidCallback? onInvitationsTap;
   final String? invitationsBadge;
+  final VoidCallback? onMessagesTap;
 
   const NavShellDrawer({
     super.key,
@@ -72,6 +73,7 @@ class NavShellDrawer extends StatelessWidget {
     required this.onThemeToggle,
     this.onInvitationsTap,
     this.invitationsBadge,
+    this.onMessagesTap,
   });
 
   @override
@@ -87,6 +89,12 @@ class NavShellDrawer extends StatelessWidget {
           label: 'shell.drawer_invitations'.tr(),
           onTap: onInvitationsTap,
           badgeLabel: invitationsBadge,
+        ),
+      if (onMessagesTap != null)
+        _DrawerAction(
+          icon: PhosphorIconsBold.chatText,
+          label: 'messages.title'.tr(),
+          onTap: onMessagesTap,
         ),
       _DrawerAction(
         icon: PhosphorIconsBold.question,

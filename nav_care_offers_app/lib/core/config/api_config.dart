@@ -20,6 +20,8 @@ class ApiConfig {
   // Doctor services
   String get doctors => '$baseUrl/api/doctors';
   String doctorById(String id) => '$baseUrl/api/doctors/$id';
+  String get searchDoctorsCollection =>
+      '$baseUrl/api/search/collection/doctors';
   String get doctorServices => '$baseUrl/api/doctors/me/services';
   String get doctorInvitations => '$baseUrl/api/doctors/me/invitations';
   String get doctorInvitationsRespond =>
@@ -58,4 +60,9 @@ class ApiConfig {
 
   // Users
   String get userProfile => '$baseUrl/api/users/me';
+
+  // Chat
+  String get listConversations => '$baseUrl/api/chat/conversations';
+  String conversationMessages(String conversationId) =>
+      '$baseUrl/api/chat/conversations/$conversationId/messages';
 }
