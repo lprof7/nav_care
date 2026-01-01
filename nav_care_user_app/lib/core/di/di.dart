@@ -77,6 +77,8 @@ import '../../presentation/features/doctors/viewmodel/doctor_reviews_cubit.dart'
 import '../../data/reviews/service_offering_reviews/service_offering_reviews_remote_service.dart';
 import '../../data/reviews/service_offering_reviews/service_offering_reviews_repository.dart';
 import '../../presentation/features/service_offerings/viewmodel/service_offering_reviews_cubit.dart';
+import '../../presentation/features/messages/viewmodel/doctor_search_cubit.dart';
+import '../../presentation/features/messages/viewmodel/chat_messages_cubit.dart';
 
 import '../../presentation/features/home/sections/ads/viewmodel/ads_section_cubit.dart';
 import '../../data/users/user_remote_service.dart';
@@ -89,6 +91,9 @@ import '../../data/faq/faq_service.dart';
 import '../../data/faq/remote_faq_service.dart';
 import '../../data/faq/faq_repository.dart';
 import '../../presentation/features/faq/viewmodel/faq_cubit.dart';
+import '../../data/chat/chat_remote_service.dart';
+import '../../data/chat/chat_repository.dart';
+import '../../presentation/features/messages/viewmodel/conversations_cubit.dart';
 
 final sl = GetIt.instance;
 Future<void> configureDependencies(AppConfig config) async {
@@ -217,6 +222,8 @@ Future<void> configureDependencies(AppConfig config) async {
       () => HospitalReviewsCubit(repository: sl<HospitalReviewsRepository>()));
   sl.registerFactory<DoctorReviewsCubit>(
       () => DoctorReviewsCubit(repository: sl<DoctorReviewsRepository>()));
+  sl.registerFactory<DoctorSearchCubit>(
+      () => DoctorSearchCubit(repository: sl<DoctorsRepository>()));
   sl.registerLazySingleton<UserRemoteService>(() => UserRemoteService(
       apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
   sl.registerLazySingleton<UserRepository>(
@@ -238,6 +245,16 @@ Future<void> configureDependencies(AppConfig config) async {
   sl.registerLazySingleton<FaqService>(() => RemoteFaqService(sl<ApiClient>()));
   sl.registerLazySingleton<FaqRepository>(() => FaqRepository(sl<FaqService>()));
   sl.registerFactory<FaqCubit>(() => FaqCubit(sl<FaqRepository>()));
+
+  // Chat
+  sl.registerLazySingleton<ChatRemoteService>(() =>
+      ChatRemoteService(apiClient: sl<ApiClient>(), tokenStore: sl<TokenStore>()));
+  sl.registerLazySingleton<ChatRepository>(
+      () => ChatRepository(remoteService: sl<ChatRemoteService>()));
+  sl.registerLazySingleton<ConversationsCubit>(
+      () => ConversationsCubit(repository: sl<ChatRepository>()));
+  sl.registerFactory<ChatMessagesCubit>(
+      () => ChatMessagesCubit(repository: sl<ChatRepository>()));
 
   // Signin
   sl.registerLazySingleton<SigninService>(

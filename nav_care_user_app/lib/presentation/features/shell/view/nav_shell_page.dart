@@ -11,6 +11,7 @@ import 'package:nav_care_user_app/presentation/features/authentication/signin/vi
 import 'package:nav_care_user_app/presentation/features/authentication/logout/viewmodel/logout_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/home/view/home_page.dart';
+import 'package:nav_care_user_app/presentation/features/messages/view/messages_page.dart';
 import 'package:nav_care_user_app/presentation/features/profile/view/user_profile_page.dart';
 import 'package:nav_care_user_app/presentation/features/profile/viewmodel/user_profile_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/profile/viewmodel/user_profile_state.dart';
@@ -271,6 +272,11 @@ class NavShellPage extends StatelessWidget {
         label: 'shell.nav_search'.tr(),
         icon: Icons.search_rounded,
         content: const SearchPage(),
+      ),
+      NavShellDestination(
+        label: 'shell.nav_messages'.tr(),
+        icon: Icons.chat_bubble_outline_rounded,
+        content: const MessagesPage(),
       ),
       NavShellDestination(
         label: 'shell.nav_profile'.tr(),

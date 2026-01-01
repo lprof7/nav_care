@@ -166,6 +166,44 @@ class DoctorsRepository {
     throw Exception('Failed to load doctor.');
   }
 
+  Future<Paged<DoctorModel>> searchDoctorsCollection({
+    required String query,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    final requestLimit = limit < 1
+        ? 1
+        : limit > 50
+            ? 50
+            : limit;
+    final result = await remoteService.searchDoctorsCollection(
+      query: query,
+      page: page,
+      limit: requestLimit,
+    );
+
+    if (!result.isSuccess || result.data == null) {
+      final message =
+          _extractMessage(result.error?.message) ?? 'Failed to search doctors.';
+      throw Exception(message);
+    }
+
+    final payload = result.data!;
+    final data = _asMap(payload['data']) ?? _asMap(payload);
+    final doctorMaps = _extractDoctorMaps(data);
+    final pagination = _parsePagination(
+      _asMap(data?['pagination']) ?? _asMap(payload['pagination']),
+    );
+
+    final doctors =
+        doctorMaps.map(DoctorModel.fromJson).toList(growable: false);
+
+    return Paged<DoctorModel>(
+      items: doctors,
+      meta: pagination,
+    );
+  }
+
   String? _extractMessage(dynamic message) {
     if (message is String && message.isNotEmpty) {
       return message;

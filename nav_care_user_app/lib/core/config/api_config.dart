@@ -52,7 +52,13 @@ class ApiConfig {
   String get listDoctors => '$baseUrl/api/doctors';
   String get listBoostedDoctors => '$baseUrl/api/doctors/boosted';
   String get serviceOfferingsByProvider => '$baseUrl/api/service-offerings';
+  String get searchDoctorsCollection => '$baseUrl/api/search/collection/doctors';
 
   // Feedback
   String get sendFeedback => '$baseUrl/api/feedback';
+
+  // Chat
+  String get listConversations => '$baseUrl/api/chat/conversations';
+  String conversationMessages(String conversationId) =>
+      '$baseUrl/api/chat/conversations/$conversationId/messages';
 }

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nav_care_user_app/core/config/app_config.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
+import 'package:nav_care_user_app/data/chat/chat_repository.dart';
+import 'package:nav_care_user_app/data/chat/models/conversation_model.dart';
 import 'package:nav_care_user_app/data/doctors/doctors_repository.dart';
 import 'package:nav_care_user_app/data/doctors/models/doctor_model.dart';
 import 'package:nav_care_user_app/presentation/features/doctors/view/doctor_add_review_page.dart';
@@ -10,6 +12,8 @@ import 'package:nav_care_user_app/presentation/features/doctors/view/doctor_revi
 import 'package:nav_care_user_app/presentation/features/doctors/view/widgets/doctor_reviews_section.dart';
 import 'package:nav_care_user_app/presentation/features/doctors/viewmodel/doctor_reviews_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/doctors/viewmodel/doctor_reviews_state.dart';
+import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'widgets/doctor_service_offerings_section.dart';
 
 class DoctorDetailPage extends StatefulWidget {
@@ -35,6 +39,69 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
   Future<DoctorModel> _load() async {
     if (widget.initial != null) return widget.initial!;
     return sl<DoctorsRepository>().getDoctorById(widget.doctorId);
+  }
+
+  void _launchUrl(String url) async {
+    final uri = Uri.tryParse(url);
+    if (uri != null && await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  Future<void> _openChatForDoctor(
+    BuildContext context,
+    DoctorModel doctor,
+    String? imageUrl,
+  ) async {
+    final userId = doctor.userId?.trim() ?? '';
+    if (userId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('messages.chat_empty_subtitle'.tr())),
+      );
+      return;
+    }
+
+    final repo = sl<ChatRepository>();
+    try {
+      final conversations = await repo.listConversations();
+      ConversationModel? existing;
+      for (final convo in conversations) {
+        if (convo.counterpart.id == userId) {
+          existing = convo;
+          break;
+        }
+      }
+      if (!context.mounted) return;
+      if (existing != null && existing.id.isNotEmpty) {
+        context.push(
+          '/messages/chat',
+          extra: {
+            'conversationId': existing.id,
+            'name': existing.counterpart.name,
+            'imageUrl': imageUrl,
+          },
+        );
+      } else {
+        context.push(
+          '/messages/chat',
+          extra: {
+            'name': doctor.displayName,
+            'imageUrl': imageUrl,
+            'counterpartUserId': userId,
+          },
+        );
+      }
+    } catch (_) {
+      if (!context.mounted) return;
+      context.push(
+        '/messages/chat',
+        extra: {
+          'name': doctor.displayName,
+          'imageUrl': imageUrl,
+          'counterpartUserId': userId,
+        },
+      );
+    }
   }
 
   @override
@@ -76,6 +143,8 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                       doctor.coverImage(baseUrl: baseUrl);
                   final cover = avatar ?? doctor.coverImage(baseUrl: baseUrl);
                   final reviewsState = context.watch<DoctorReviewsCubit>().state;
+                  final phone = doctor.phone?.trim() ?? '';
+                  final canCall = phone.isNotEmpty;
 
                   return CustomScrollView(
                     slivers: [
@@ -95,6 +164,10 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                             _SummaryCard(
                               doctor: doctor,
                               avatarUrl: avatar,
+                              onMessageTap: () =>
+                                  _openChatForDoctor(context, doctor, avatar),
+                              onCallTap:
+                                  canCall ? () => _launchUrl('tel:$phone') : null,
                             ),
                           ],
                         ),
@@ -243,10 +316,14 @@ class _HeroImage extends StatelessWidget {
 class _SummaryCard extends StatelessWidget {
   final DoctorModel doctor;
   final String? avatarUrl;
+  final VoidCallback? onMessageTap;
+  final VoidCallback? onCallTap;
 
   const _SummaryCard({
     required this.doctor,
     required this.avatarUrl,
+    this.onMessageTap,
+    this.onCallTap,
   });
 
   @override
@@ -324,6 +401,28 @@ class _SummaryCard extends StatelessWidget {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 14),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _ActionButton(
+                            label: 'messages.send_message'.tr(),
+                            icon: Icons.send_rounded,
+                            color: const Color(0xFF2E7CF6),
+                            onPressed: onMessageTap,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _ActionButton(
+                            label: 'hospitals.detail.actions.call'.tr(),
+                            icon: Icons.call_rounded,
+                            color: const Color(0xFF0F3D67),
+                            onPressed: onCallTap,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -379,6 +478,46 @@ class _Section extends StatelessWidget {
           const SizedBox(height: 10),
           child,
         ],
+      ),
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Color color;
+  final VoidCallback? onPressed;
+
+  const _ActionButton({
+    required this.label,
+    required this.icon,
+    required this.color,
+    this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 68,
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          minimumSize: const Size.fromHeight(52),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+        icon: Icon(icon, size: 18),
+        label: Text(
+          label,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }

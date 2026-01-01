@@ -25,6 +25,8 @@ import '../../presentation/features/authentication/signup/view/signup_page.dart'
 import '../../presentation/features/appointments/appointment_creation/view/add_appointment_page.dart';
 import '../../presentation/features/doctors/view/doctor_detail_page.dart';
 import '../../presentation/features/hospitals/view/hospital_detail_page.dart';
+import '../../presentation/features/messages/view/doctor_search_page.dart';
+import '../../presentation/features/messages/view/chat_page.dart';
 import '../../presentation/features/notifications/view/notifications_page.dart';
 import '../di/di.dart';
 
@@ -90,6 +92,39 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/notifications',
       builder: (ctx, st) => const NotificationsPage(),
+    ),
+    GoRoute(
+      path: '/messages/search',
+      builder: (ctx, st) => const DoctorSearchPage(),
+    ),
+    GoRoute(
+      path: '/messages/chat',
+      builder: (ctx, st) {
+        final extra = st.extra;
+        String? name;
+        String? conversationId;
+        String? imageUrl;
+        if (extra is Map) {
+          final map = extra.map((key, value) => MapEntry(key.toString(), value));
+          name = map['name']?.toString();
+          conversationId = map['conversationId']?.toString();
+          imageUrl = map['imageUrl']?.toString();
+          final counterpartUserId = map['counterpartUserId']?.toString();
+          return ChatPage(
+            conversationId: conversationId,
+            counterpartUserId: counterpartUserId,
+            doctorName: name,
+            doctorImageUrl: imageUrl,
+          );
+        } else {
+          name = extra?.toString();
+        }
+        return ChatPage(
+          conversationId: conversationId,
+          doctorName: name,
+          doctorImageUrl: imageUrl,
+        );
+      },
     ),
     GoRoute(
       path: '/doctors/:id',
