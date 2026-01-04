@@ -191,7 +191,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<Widget> get _sections => [
-        const _BecomeDoctorBanner(),
+        //const _BecomeDoctorBanner(),
         _AdsSectionProvider(cubit: _adsCubits[0], index: 0),
         const FeaturedServicesSection(),
         const HospitalsChoiceSection(),
