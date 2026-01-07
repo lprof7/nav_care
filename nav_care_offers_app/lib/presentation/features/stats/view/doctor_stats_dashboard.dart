@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nav_care_offers_app/presentation/features/stats/viewmodel/doctor_stats_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/stats/viewmodel/doctor_stats_state.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'widgets/stats_widgets.dart';
 
@@ -46,7 +47,7 @@ class DoctorStatsDashboard extends StatelessWidget {
               StatsCardData(
                 label: 'stats.services_total'.tr(),
                 value: stats.serviceOfferingsTotal,
-                icon: Icons.medical_services_rounded,
+                icon: PhosphorIconsBold.stethoscope,
                 colors: _palettes[1],
               ),
             ];
@@ -55,13 +56,13 @@ class DoctorStatsDashboard extends StatelessWidget {
                 label: 'stats.status_pending'.tr(),
                 value: stats.appointments.status('pending'),
                 icon: Icons.hourglass_top_rounded,
-                colors: _palettes[2],
+                colors: const [Color(0xFF1E88E5), Color(0xFF64B5F6)],
               ),
               StatsCardData(
                 label: 'stats.status_confirmed'.tr(),
                 value: stats.appointments.status('confirmed'),
                 icon: Icons.check_circle_rounded,
-                colors: _palettes[3],
+                colors: const [Color(0xFF2E7D32), Color(0xFF81C784)],
               ),
               StatsCardData(
                 label: 'stats.status_completed'.tr(),
@@ -73,20 +74,20 @@ class DoctorStatsDashboard extends StatelessWidget {
                 label: 'stats.status_cancelled'.tr(),
                 value: stats.appointments.status('cancelled'),
                 icon: Icons.cancel_rounded,
-                colors: _palettes[5],
+                colors: const [Color(0xFFC62828), Color(0xFFEF5350)],
               ),
             ];
             final byType = [
               StatsCardData(
                 label: 'stats.type_in_person'.tr(),
                 value: stats.appointments.type('inPerson'),
-                icon: Icons.local_hospital_rounded,
+                icon: PhosphorIconsBold.buildings,
                 colors: _palettes[6],
               ),
               StatsCardData(
                 label: 'stats.type_teleconsultation'.tr(),
                 value: stats.appointments.type('teleconsultation'),
-                icon: Icons.video_call_rounded,
+                icon: PhosphorIconsBold.chatText,
                 colors: _palettes[7],
               ),
             ];

@@ -30,9 +30,7 @@ class AppointmentCard extends StatelessWidget {
     final localeTag = context.locale.toLanguageTag();
     final rangeLabel = _formatRange(localeTag, start, end) ??
         '${appointment.startTime} → ${appointment.endTime}';
-    final priceLabel = NumberFormat.simpleCurrency(
-      locale: localeTag,
-    ).format(appointment.price);
+    final priceLabel = "${appointment.price} \$" ;
 
     return InkWell(
       borderRadius: BorderRadius.circular(24),
