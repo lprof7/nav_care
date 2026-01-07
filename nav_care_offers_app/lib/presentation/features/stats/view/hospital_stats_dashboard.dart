@@ -22,7 +22,9 @@ class HospitalStatsDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.locale;
     return BlocBuilder<HospitalStatsCubit, HospitalStatsState>(
+      key: ValueKey('hospital-stats-${locale.languageCode}'),
       builder: (context, state) {
         switch (state.status) {
           case HospitalStatsStatus.loading:

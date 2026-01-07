@@ -55,8 +55,13 @@ class RemoteAppointmentService {
       _apiClient.apiConfig.userAppointments,
       query: query.isEmpty ? null : query,
       parser: (json) {
-        print("getMyAppointments response: $json");
-        return json as Map<String, dynamic>;
+        if (json is Map<String, dynamic>) {
+          return json;
+        }
+        if (json is Map) {
+          return json.map((key, value) => MapEntry(key.toString(), value));
+        }
+        return <String, dynamic>{};
       },
       headers: {'Authorization': 'Bearer ' + token},
     );
