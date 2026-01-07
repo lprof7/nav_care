@@ -1,16 +1,58 @@
-# nav_care_user_app
+﻿# Nav Care User App
 
-A new Flutter project.
+User-facing mobile app to browse hospitals, doctors, and services, book appointments, and communicate with providers.
 
-## Getting Started
+## What it does
+- Browse hospitals, doctors, services, and service offerings
+- Create and view appointments
+- Sign in, sign up, and reset password
+- Chat and notifications
+- Localization (AR/EN/FR)
 
-This project is a starting point for a Flutter application.
+## What it does not do (currently)
+- No internal admin dashboard
+- No separate entrypoints per environment (manual switch)
 
-A few resources to get you started if this is your first Flutter project:
+## Requirements
+- Flutter 3.4.3+
+- Dart SDK >= 3.4.3
+- Android Studio / Xcode depending on platform
+- Firebase configured (project files included)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Run locally (Dev)
+```bash
+flutter pub get
+flutter run
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Useful commands
+```bash
+# Run tests
+flutter test
+
+# Build Android APK
+flutter build apk
+
+# Build iOS
+flutter build ios
+
+# Generate freezed/json_serializable
+
+dart run build_runner build --delete-conflicting-outputs
+```
+
+## Environments and switching
+The environment is loaded in `lib/main.dart`:
+```dart
+await ConfigLoader.load(AppEnv.development);
+```
+- To switch to production: replace `AppEnv.development` with `AppEnv.production`.
+- Env files: `assets/env/.env.development` and `assets/env/.env.production`.
+
+## Documentation structure
+- `docs/overview.md` Architecture overview
+- `docs/structure.md` Project structure
+- `docs/config.md` Config & environments
+- `docs/api.md` API & integrations
+- `docs/storage.md` Local storage
+- `docs/contributing.md` How to add a new feature
