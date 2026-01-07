@@ -89,6 +89,14 @@ import '../../data/chat/chat_repository.dart';
 import '../../presentation/features/messages/viewmodel/conversations_cubit.dart';
 import '../../presentation/features/messages/viewmodel/doctor_search_cubit.dart';
 import '../../presentation/features/messages/viewmodel/chat_messages_cubit.dart';
+import '../../data/stats/services/doctor_stats_service.dart';
+import '../../data/stats/services/remote_doctor_stats_service.dart';
+import '../../data/stats/services/hospital_stats_service.dart';
+import '../../data/stats/services/remote_hospital_stats_service.dart';
+import '../../data/stats/doctor_stats_repository.dart';
+import '../../data/stats/hospital_stats_repository.dart';
+import '../../presentation/features/stats/viewmodel/doctor_stats_cubit.dart';
+import '../../presentation/features/stats/viewmodel/hospital_stats_cubit.dart';
 
 final sl = GetIt.instance;
 Future<void> configureDependencies(AppConfig config) async {
@@ -317,4 +325,18 @@ Future<void> configureDependencies(AppConfig config) async {
       () => DoctorSearchCubit(repository: sl<DoctorsRepository>()));
   sl.registerFactory<ChatMessagesCubit>(
       () => ChatMessagesCubit(repository: sl<ChatRepository>()));
+
+  // Stats
+  sl.registerLazySingleton<DoctorStatsService>(
+      () => RemoteDoctorStatsService(sl<ApiClient>()));
+  sl.registerLazySingleton<HospitalStatsService>(
+      () => RemoteHospitalStatsService(sl<ApiClient>()));
+  sl.registerLazySingleton<DoctorStatsRepository>(
+      () => DoctorStatsRepository(sl<DoctorStatsService>()));
+  sl.registerLazySingleton<HospitalStatsRepository>(
+      () => HospitalStatsRepository(sl<HospitalStatsService>()));
+  sl.registerFactory<DoctorStatsCubit>(
+      () => DoctorStatsCubit(sl<DoctorStatsRepository>()));
+  sl.registerFactory<HospitalStatsCubit>(
+      () => HospitalStatsCubit(sl<HospitalStatsRepository>()));
 }

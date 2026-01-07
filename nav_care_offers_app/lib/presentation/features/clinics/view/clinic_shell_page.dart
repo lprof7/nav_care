@@ -42,6 +42,9 @@ import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_app_b
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_destination.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/nav_shell_nav_bar.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/shell/shell_onboarding_page.dart';
+import 'package:nav_care_offers_app/presentation/shared/theme/theme_mode_cubit.dart';
+import 'package:nav_care_offers_app/presentation/features/stats/view/hospital_stats_dashboard.dart';
+import 'package:nav_care_offers_app/presentation/features/stats/viewmodel/hospital_stats_cubit.dart';
 import 'clinic_detail_page.dart' show ClinicDetailsSummaryView;
 
 /// Clinic app shell with bottom navigation (no drawer).
@@ -60,6 +63,7 @@ class ClinicShellPage extends StatefulWidget {
 
 class _ClinicShellPageState extends State<ClinicShellPage> {
   bool _appointmentsLoaded = false;
+  bool _statsLoaded = false;
   _ShellOverlay _overlay = _ShellOverlay.entry;
 
   @override
@@ -70,6 +74,7 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
       providers: [
         BlocProvider(create: (_) => NavShellCubit()),
         BlocProvider(create: (_) => sl<AppointmentsCubit>()),
+        BlocProvider(create: (_) => sl<HospitalStatsCubit>()),
         BlocProvider(
           create: (_) => sl<HospitalReviewsCubit>()
             ..loadReviews(hospitalId: widget.hospital.id),
@@ -90,6 +95,12 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
             _appointmentsLoaded = true;
             context.read<AppointmentsCubit>().getMyHospitalAppointments();
           }
+          if (!_statsLoaded &&
+              !state.isFetchingToken &&
+              (state.clinicToken?.isNotEmpty ?? false)) {
+            _statsLoaded = true;
+            context.read<HospitalStatsCubit>().load();
+          }
         },
         child: BlocBuilder<NavShellCubit, NavShellState>(
           builder: (context, navState) {
@@ -99,6 +110,7 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
                 _buildDestinations(context, detailState, baseUrl);
             final displayName =
                 detailState.hospital.displayName ?? detailState.hospital.name;
+            final themeMode = context.watch<ThemeModeCubit>().state;
 
             return Scaffold(
               appBar: NavShellAppBar(
@@ -106,6 +118,8 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
                 onBackTap: () => _showExit(context),
                 notificationCount: 0,
                 onNotificationsTap: () => context.push('/notifications'),
+                themeMode: themeMode,
+                onThemeToggle: () => context.read<ThemeModeCubit>().toggle(),
               ),
               body: _overlay == _ShellOverlay.entry
                   ? ShellOnboardingPage(
@@ -172,6 +186,11 @@ class _ClinicShellPageState extends State<ClinicShellPage> {
     final shellContext = innerContext;
 
     return [
+      NavShellDestination(
+        label: 'stats.title'.tr(),
+        icon: Icons.bar_chart_rounded,
+        content: const HospitalStatsDashboard(),
+      ),
       NavShellDestination(
         label: 'clinics.detail.tabs.offerings'.tr(),
         icon: PhosphorIconsBold.stethoscope,

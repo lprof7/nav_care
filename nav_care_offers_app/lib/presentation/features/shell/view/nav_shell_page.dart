@@ -22,6 +22,8 @@ import 'package:nav_care_offers_app/presentation/features/invitations/viewmodel/
 import 'package:nav_care_offers_app/core/routing/app_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:feedback/feedback.dart';
+import 'package:nav_care_offers_app/presentation/features/stats/view/doctor_stats_dashboard.dart';
+import 'package:nav_care_offers_app/presentation/features/stats/viewmodel/doctor_stats_cubit.dart';
 
 import '../viewmodel/nav_shell_cubit.dart';
 
@@ -41,6 +43,7 @@ class NavShellPage extends StatelessWidget {
         ),
         BlocProvider(create: (_) => sl<FeedbackCubit>()),
         BlocProvider(create: (_) => sl<DoctorInvitationsCubit>()),
+        BlocProvider(create: (_) => sl<DoctorStatsCubit>()),
       ],
       child: MultiBlocListener(
         listeners: [
@@ -100,7 +103,8 @@ class NavShellPage extends StatelessWidget {
         ],
         child: BlocBuilder<NavShellCubit, NavShellState>(
           builder: (context, state) {
-            final destinations = _buildDestinations(context);
+            final authState = context.watch<AuthCubit>().state;
+            final destinations = _buildDestinations(context, authState.isDoctor);
             final logoutState = context.watch<LogoutCubit>().state;
             final isLogoutLoading = logoutState is LogoutInProgress;
             final profileState = context.watch<UserProfileCubit>().state;
@@ -109,7 +113,6 @@ class NavShellPage extends StatelessWidget {
                         profileState.updateStatus == ProfileUpdateStatus.success
                     ? profileState.profile
                     : null;
-            final authState = context.watch<AuthCubit>().state;
             final isAuthenticated = authState.status == AuthStatus.authenticated;
             final invitationsState =
                 context.watch<DoctorInvitationsCubit>().state;
@@ -188,8 +191,15 @@ class NavShellPage extends StatelessWidget {
     );
   }
 
-  List<NavShellDestination> _buildDestinations(BuildContext context) {
-    return [
+  List<NavShellDestination> _buildDestinations(
+      BuildContext context, bool isDoctor) {
+    final destinations = <NavShellDestination>[
+      if (isDoctor)
+        NavShellDestination(
+          label: 'stats.title'.tr(),
+          icon: Icons.bar_chart_rounded,
+          content: const DoctorStatsDashboard(),
+        ),
       NavShellDestination(
         label: 'shell.nav_hospitals'.tr(),
         icon: PhosphorIconsBold.buildings,
@@ -211,6 +221,8 @@ class NavShellPage extends StatelessWidget {
         content: const UserProfilePage(),
       ),
     ];
+
+    return destinations;
   }
 
   Future<void> _onDestinationSelected(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 import 'nav_shell_destination.dart';
 
@@ -34,20 +33,57 @@ class NavShellNavBar extends StatelessWidget {
             ),
           ],
         ),
-        child: SalomonBottomBar(
-          currentIndex: currentIndex,
-          onTap: onTap,
-          items: destinations
-              .map(
-                (destination) => SalomonBottomBarItem(
-                  icon: Icon(destination.icon),
-                  title: Text(destination.label),
-                  selectedColor: colorScheme.primary,
-                  unselectedColor:
-                      theme.textTheme.bodyMedium?.color ?? colorScheme.secondary,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(destinations.length, (index) {
+              final destination = destinations[index];
+              final isSelected = index == currentIndex;
+              final textColor = isSelected
+                  ? colorScheme.primary
+                  : theme.textTheme.bodyMedium?.color ??
+                      colorScheme.secondary;
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: Material(
+                  color: isSelected
+                      ? colorScheme.primary.withValues(alpha: 0.12)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(18),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(18),
+                    onTap: () => onTap(index),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 10,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(destination.icon, color: textColor),
+                          const SizedBox(width: 8),
+                          Text(
+                            destination.label,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: textColor,
+                              fontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-              )
-              .toList(),
+              );
+            }),
+          ),
         ),
       ),
     );

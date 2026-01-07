@@ -13,6 +13,8 @@ class NavShellAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int notificationCount;
   final bool useBackButton;
   final VoidCallback? onBackTap;
+  final ThemeMode? themeMode;
+  final VoidCallback? onThemeToggle;
 
   const NavShellAppBar({
     super.key,
@@ -24,6 +26,8 @@ class NavShellAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.notificationCount = 0,
     this.useBackButton = false,
     this.onBackTap,
+    this.themeMode,
+    this.onThemeToggle,
   });
 
   @override
@@ -37,6 +41,8 @@ class NavShellAppBar extends StatelessWidget implements PreferredSizeWidget {
         : (onMenuTap ?? () => Scaffold.of(context).openDrawer());
     final notificationsPressed =
         onNotificationsTap ?? () => GoRouter.of(context).push('/notifications');
+
+    final showThemeToggle = themeMode != null && onThemeToggle != null;
 
     return Material(
       color: colorScheme.surface,
@@ -65,6 +71,16 @@ class NavShellAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ),
               const SizedBox(width: 8),
+              if (showThemeToggle) ...[
+                _RoundedIconButton(
+                  icon: themeMode == ThemeMode.dark
+                      ? Icons.light_mode_rounded
+                      : Icons.dark_mode_rounded,
+                  tooltip: 'shell.drawer_theme'.tr(),
+                  onPressed: onThemeToggle,
+                ),
+                const SizedBox(width: 8),
+              ],
               Stack(
                 clipBehavior: Clip.none,
                 children: [

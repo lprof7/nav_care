@@ -1,4 +1,4 @@
-{
+﻿{
   "sign_in": "Sign In",
   "sign_up": "Sign Up",
   "sign_up_subtitle": "Create an account to get started",
@@ -623,14 +623,14 @@
     },
     "story": {
       "title": "Our Story",
-      "body": "Founded in 2024, NavMarket was created to overcome the gaps we saw in existing marketplaces. We set out to build a space that is secure, efficient, and rich in features that elevate every userâ€™s experience."
+      "body": "Founded in 2024, NavMarket was created to overcome the gaps we saw in existing marketplaces. We set out to build a space that is secure, efficient, and rich in features that elevate every userÃ¢â‚¬â„¢s experience."
     },
     "priorities": {
       "title": "Our Priorities",
       "body": "Quality, reliability, and security guide how we design and deliver every solution.",
       "quality": {
         "title": "Quality",
-        "body": "Quality is a standard built into every service. We deliver top-tier products through rigorous controls at each stage, ensuring reliability, efficiency, and a perfect fit for our clientsâ€™ needs."
+        "body": "Quality is a standard built into every service. We deliver top-tier products through rigorous controls at each stage, ensuring reliability, efficiency, and a perfect fit for our clientsÃ¢â‚¬â„¢ needs."
       },
       "reliability": {
         "title": "Reliability",
@@ -643,7 +643,7 @@
     },
     "company": {
       "title": "Our Company",
-      "body": "KIG (Koudri Innovations Group) is a dynamic, innovative extension of our organization, already specialized across three domains. As a new subsidiary, we stay close to trends and technological advances, blending established expertise with an agile, customer-centric mindset to deliver cutting-edge software, technology, and digital experiences. Our dedication to innovation and excellence positions us to tackle tomorrowâ€™s challenges while creating lasting value for clients and partners."
+      "body": "KIG (Koudri Innovations Group) is a dynamic, innovative extension of our organization, already specialized across three domains. As a new subsidiary, we stay close to trends and technological advances, blending established expertise with an agile, customer-centric mindset to deliver cutting-edge software, technology, and digital experiences. Our dedication to innovation and excellence positions us to tackle tomorrowÃ¢â‚¬â„¢s challenges while creating lasting value for clients and partners."
     },
     "offerings": {
       "title": "What We Offer",
@@ -744,5 +744,23 @@
     "title": "Server unreachable",
     "subtitle": "We could not reach our servers. Please retry."
   },
-  "signup_image_too_large": "Image is too large. Please choose a smaller image."
+  "signup_image_too_large": "Image is too large. Please choose a smaller image.",
+  "stats": {
+    "title": "Stats",
+    "overview": "Overview",
+    "appointments_total": "Total appointments",
+    "services_total": "Total services",
+    "clinics_total": "Total clinics",
+    "doctors_total": "Total doctors",
+    "appointments_by_status": "Appointments by status",
+    "appointments_by_type": "Appointments by type",
+    "status_pending": "Pending",
+    "status_confirmed": "Confirmed",
+    "status_completed": "Completed",
+    "status_cancelled": "Cancelled",
+    "type_in_person": "In-person",
+    "type_teleconsultation": "Teleconsultation",
+    "retry": "Retry",
+    "error_generic": "Unable to load stats"
+  }
 }

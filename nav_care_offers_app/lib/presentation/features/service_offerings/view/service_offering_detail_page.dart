@@ -540,35 +540,25 @@ class _TopPreview extends StatelessWidget {
         child: Stack(
           children: [
             Center(
-              child: Container(
-                height: double.infinity,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: theme.scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: theme.dividerColor),
-                ),
-                alignment: Alignment.center,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: imageUrl != null && imageUrl!.isNotEmpty
-                      ? NetworkImageWrapper(
-                          imageUrl: imageUrl,
-                          fit: BoxFit.fill,
-                          fallback: Icon(
-                            PhosphorIconsBold.stethoscope,
-                            size: 48,
-                            color: colorScheme.primary,
-                          ),
-                          shimmerChild: Container(
-                              color: theme.colorScheme.surfaceVariant),
-                        )
-                      : Icon(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: imageUrl != null && imageUrl!.isNotEmpty
+                    ? NetworkImageWrapper(
+                        imageUrl: imageUrl,
+                        fit: BoxFit.cover,
+                        fallback: Icon(
                           PhosphorIconsBold.stethoscope,
                           size: 48,
                           color: colorScheme.primary,
                         ),
-                ),
+                        shimmerChild: Container(
+                            color: theme.colorScheme.surfaceVariant),
+                      )
+                    : Icon(
+                        PhosphorIconsBold.stethoscope,
+                        size: 48,
+                        color: colorScheme.primary,
+                      ),
               ),
             ),
           ],
