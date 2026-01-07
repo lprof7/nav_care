@@ -704,7 +704,7 @@ class HospitalDetailsSummaryView extends StatelessWidget {
                 child: _HeroBackdropLayer(imageUrl: cover),
               ),
               SizedBox(
-                height: 300,
+                height:280,
                 child: Transform.translate(
                   offset: const Offset(0, -72),
                   child: Padding(
