@@ -16,7 +16,6 @@ class MyAppointmentsCubit extends Cubit<MyAppointmentsState> {
     ));
 
     final result = await _repository.getMyAppointments();
-    print("myyy appointment type: ${result.data?.appointments.first.type}");
     result.fold(
       onSuccess: (list) => emit(state.copyWith(
         status: MyAppointmentsStatus.success,
