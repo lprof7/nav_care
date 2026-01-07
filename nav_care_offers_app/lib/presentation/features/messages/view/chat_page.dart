@@ -120,6 +120,7 @@ class _ChatViewState extends State<_ChatView> {
         );
 
         return Scaffold(
+          backgroundColor: theme.colorScheme.background,
           appBar: AppBar(
             titleSpacing: 0,
             title: InkWell(
@@ -420,6 +421,7 @@ class _ChatEmptyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
+      backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
         title: Text('messages.chat_title'.tr()),
       ),

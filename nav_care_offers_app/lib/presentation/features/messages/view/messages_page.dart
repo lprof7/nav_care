@@ -53,109 +53,148 @@ class _MessagesAuthPrompt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: SignInRequiredCard(
-          onSignIn: onSignIn,
-          onCreateAccount: onSignUp,
-          onGoogleSignIn: null,
+    final theme = Theme.of(context);
+    return Scaffold(
+      backgroundColor: theme.colorScheme.background,
+      appBar: AppBar(
+        title: Text('messages.title'.tr()),
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: SignInRequiredCard(
+            onSignIn: onSignIn,
+            onCreateAccount: onSignUp,
+            onGoogleSignIn: null,
+          ),
         ),
       ),
     );
   }
 }
 
-class _MessagesView extends StatelessWidget {
+class _MessagesView extends StatefulWidget {
   const _MessagesView();
+
+  @override
+  State<_MessagesView> createState() => _MessagesViewState();
+}
+
+class _MessagesViewState extends State<_MessagesView> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final baseUrl = sl<AppConfig>().api.baseUrl;
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'messages.title'.tr(),
-              style: theme.textTheme.headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              readOnly: true,
-              onTap: () => context.push('/messages/search'),
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search_rounded),
-                hintText: 'messages.search_placeholder'.tr(),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
+    final query = _searchController.text.trim().toLowerCase();
+    return Scaffold(
+      backgroundColor: theme.colorScheme.background,
+      appBar: AppBar(
+        title: Text('messages.title'.tr()),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: _searchController,
+                onChanged: (_) => setState(() {}),
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.search_rounded),
+                  hintText: 'messages.search_placeholder'.tr(),
+                  suffixIcon: query.isEmpty
+                      ? null
+                      : IconButton(
+                          icon: const Icon(Icons.close_rounded),
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() {});
+                          },
+                        ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: BlocBuilder<ConversationsCubit, ConversationsState>(
-                builder: (context, state) {
-                  if (state.status == ConversationsStatus.loading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+              const SizedBox(height: 16),
+              Expanded(
+                child: BlocBuilder<ConversationsCubit, ConversationsState>(
+                  builder: (context, state) {
+                    if (state.status == ConversationsStatus.loading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                  if (state.status == ConversationsStatus.failure) {
-                    return _ConversationsError(
-                      message: state.errorMessage,
-                      onRetry: () =>
-                          context.read<ConversationsCubit>().load(),
+                    if (state.status == ConversationsStatus.failure) {
+                      return _ConversationsError(
+                        message: state.errorMessage,
+                        onRetry: () =>
+                            context.read<ConversationsCubit>().load(),
+                      );
+                    }
+
+                    if (state.conversations.isEmpty) {
+                      return _ConversationsEmpty();
+                    }
+
+                    final conversations = _filterConversations(
+                      context,
+                      _sortConversations(state.conversations),
+                      query,
                     );
-                  }
+                    if (conversations.isEmpty) {
+                      return _ConversationsEmpty();
+                    }
+                    return RefreshIndicator(
+                      onRefresh: () =>
+                          context.read<ConversationsCubit>().load(),
+                      child: ListView.separated(
+                        itemCount: conversations.length,
+                        separatorBuilder: (_, __) =>
+                            const SizedBox(height: 10),
+                        itemBuilder: (context, index) {
+                          final convo = conversations[index];
+                          final counterpart = convo.counterpart;
+                          final last = convo.lastMessage;
+                          final imageUrl = _resolveImage(
+                            counterpart.profilePicture,
+                            baseUrl,
+                          );
+                          final lastText =
+                              _buildLastMessagePreview(context, last);
+                          final timeLabel =
+                              _formatTime(context, last?.createdAt);
 
-                  if (state.conversations.isEmpty) {
-                    return _ConversationsEmpty();
-                  }
-
-                  final conversations =
-                      _sortConversations(state.conversations);
-                  return RefreshIndicator(
-                    onRefresh: () =>
-                        context.read<ConversationsCubit>().load(),
-                    child: ListView.separated(
-                      itemCount: conversations.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 10),
-                      itemBuilder: (context, index) {
-                        final convo = conversations[index];
-                        final counterpart = convo.counterpart;
-                        final last = convo.lastMessage;
-                        final imageUrl = _resolveImage(
-                          counterpart.profilePicture,
-                          baseUrl,
-                        );
-                        final lastText = _buildLastMessagePreview(context, last);
-                        final timeLabel = _formatTime(context, last?.createdAt);
-
-                        return _ConversationCard(
-                          name: counterpart.name,
-                          imageUrl: imageUrl,
-                          lastMessage: lastText,
-                          timeLabel: timeLabel,
-                          onTap: () => context.push(
-                            '/messages/chat',
-                            extra: {
-                              'conversationId': convo.id,
-                              'name': counterpart.name,
-                              'imageUrl': counterpart.profilePicture,
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
+                          return _ConversationCard(
+                            name: counterpart.name,
+                            imageUrl: imageUrl,
+                            lastMessage: lastText,
+                            timeLabel: timeLabel,
+                            onTap: () => context.push(
+                              '/messages/chat',
+                              extra: {
+                                'conversationId': convo.id,
+                                'name': counterpart.name,
+                                'imageUrl': counterpart.profilePicture,
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -200,6 +239,19 @@ class _MessagesView extends StatelessWidget {
       return bTime.compareTo(aTime);
     });
     return sorted;
+  }
+
+  List<ConversationModel> _filterConversations(
+    BuildContext context,
+    List<ConversationModel> conversations,
+    String query,
+  ) {
+    if (query.isEmpty) return conversations;
+    return conversations.where((conversation) {
+      final lastText = _buildLastMessagePreview(context, conversation.lastMessage)
+          .toLowerCase();
+      return lastText.contains(query);
+    }).toList(growable: false);
   }
 }
 
