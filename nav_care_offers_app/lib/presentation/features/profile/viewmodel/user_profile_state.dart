@@ -5,6 +5,7 @@ enum ProfileLoadStatus { idle, loading, success, failure }
 enum ProfileUpdateStatus { idle, updating, success, failure }
 enum PasswordUpdateStatus { idle, updating, success, failure }
 enum PasswordResetStatus { idle, sending, success, failure }
+enum ProfileDeleteStatus { idle, deleting, success, failure }
 
 class UserProfileState extends Equatable {
   final UserProfileModel? profile;
@@ -12,6 +13,7 @@ class UserProfileState extends Equatable {
   final ProfileUpdateStatus updateStatus;
   final PasswordUpdateStatus passwordStatus;
   final PasswordResetStatus resetStatus;
+  final ProfileDeleteStatus deleteStatus;
   final String? errorMessage;
 
   const UserProfileState({
@@ -20,6 +22,7 @@ class UserProfileState extends Equatable {
     this.updateStatus = ProfileUpdateStatus.idle,
     this.passwordStatus = PasswordUpdateStatus.idle,
     this.resetStatus = PasswordResetStatus.idle,
+    this.deleteStatus = ProfileDeleteStatus.idle,
     this.errorMessage,
   });
 
@@ -30,6 +33,7 @@ class UserProfileState extends Equatable {
     ProfileUpdateStatus? updateStatus,
     PasswordUpdateStatus? passwordStatus,
     PasswordResetStatus? resetStatus,
+    ProfileDeleteStatus? deleteStatus,
     String? errorMessage,
     bool clearError = false,
   }) {
@@ -39,6 +43,7 @@ class UserProfileState extends Equatable {
       updateStatus: updateStatus ?? this.updateStatus,
       passwordStatus: passwordStatus ?? this.passwordStatus,
       resetStatus: resetStatus ?? this.resetStatus,
+      deleteStatus: deleteStatus ?? this.deleteStatus,
       errorMessage: clearError ? null : errorMessage ?? this.errorMessage,
     );
   }
@@ -50,6 +55,7 @@ class UserProfileState extends Equatable {
         updateStatus,
         passwordStatus,
         resetStatus,
+        deleteStatus,
         errorMessage,
       ];
 }

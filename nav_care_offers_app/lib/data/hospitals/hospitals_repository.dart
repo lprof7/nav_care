@@ -56,7 +56,7 @@ class HospitalsRepository {
       }
 
       final data = response.data;
-      final rawHospital = data?['hospital'] ?? data?['data'] ?? data;
+      final rawHospital = _extractHospitalMap(data ?? const {});
       final hospital = Hospital.fromJson(
           rawHospital is Map<String, dynamic> ? rawHospital : {},
           baseUrl: _service.baseUrl);
@@ -78,7 +78,7 @@ class HospitalsRepository {
       }
 
       final data = response.data;
-      final rawHospital = data?['hospital'] ?? data?['data'] ?? data;
+      final rawHospital = _extractHospitalMap(data ?? const {});
       final hospital = Hospital.fromJson(
           rawHospital is Map<String, dynamic> ? rawHospital : {},
           baseUrl: _service.baseUrl);
@@ -161,6 +161,23 @@ class HospitalsRepository {
       }
     }
     return json;
+  }
+
+  Map<String, dynamic> _extractHospitalMap(Map<String, dynamic> json) {
+    final data = _extractDataMap(json);
+    final hospital = data['hospital'];
+    if (hospital is Map<String, dynamic>) {
+      return hospital;
+    }
+    final nestedData = data['data'];
+    if (nestedData is Map<String, dynamic>) {
+      final nestedHospital = nestedData['hospital'];
+      if (nestedHospital is Map<String, dynamic>) {
+        return nestedHospital;
+      }
+      return nestedData;
+    }
+    return data;
   }
 
   List<Hospital> _upsert(List<Hospital> source, Hospital hospital) {

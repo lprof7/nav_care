@@ -47,7 +47,8 @@ class UserProfilePage extends StatelessWidget {
           listenWhen: (prev, curr) =>
               prev.updateStatus != curr.updateStatus ||
               prev.passwordStatus != curr.passwordStatus ||
-              prev.resetStatus != curr.resetStatus,
+              prev.resetStatus != curr.resetStatus ||
+              prev.deleteStatus != curr.deleteStatus,
           listener: (context, state) {
             final hasSuccess =
                 state.updateStatus == ProfileUpdateStatus.success ||
@@ -58,6 +59,22 @@ class UserProfilePage extends StatelessWidget {
                 if (!context.mounted) return;
                 context.read<UserProfileCubit>().resetStatuses();
               });
+            }
+            if (state.deleteStatus == ProfileDeleteStatus.success) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('profile.delete_account_success'.tr())),
+              );
+              if (context.mounted) {
+                context.go('/signin');
+              }
+              return;
+            }
+            if (state.deleteStatus == ProfileDeleteStatus.failure) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errorMessage ?? 'profile.delete_account_error'.tr()),
+                ),
+              );
             }
           },
           child: BlocBuilder<UserProfileCubit, UserProfileState>(
@@ -139,6 +156,17 @@ class UserProfilePage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 12),
+                          AppButton(
+                            text: 'profile.delete_account'.tr(),
+                            color: AppColors.error,
+                            textColor: AppColors.textOnPrimary,
+                            icon: const Icon(Icons.delete_outline),
+                            onPressed: state.deleteStatus ==
+                                    ProfileDeleteStatus.deleting
+                                ? null
+                                : () => _confirmDeleteAccount(context),
+                          ),
+                          const SizedBox(height: 12),
                           if (state.updateStatus ==
                                   ProfileUpdateStatus.failure ||
                               state.passwordStatus ==
@@ -182,6 +210,67 @@ class UserProfilePage extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> _confirmDeleteAccount(BuildContext context) async {
+  final theme = Theme.of(context);
+  final isDeleting =
+      context.read<UserProfileCubit>().state.deleteStatus ==
+          ProfileDeleteStatus.deleting;
+  final cancelTextColor =
+      theme.brightness == Brightness.dark ? Colors.white : Colors.black87;
+
+  await showDialog<void>(
+    context: context,
+    builder: (ctx) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        title: Text('profile.delete_account_confirm_title'.tr()),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('profile.delete_account_confirm_message'.tr()),
+            const SizedBox(height: 18),
+            AppButton(
+              text: isDeleting
+                  ? 'profile.deleting_account'.tr()
+                  : 'profile.delete_account_confirm'.tr(),
+              color: theme.colorScheme.error,
+              textColor: theme.colorScheme.onError,
+              icon: isDeleting
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Icon(Icons.delete_outline, color: Colors.white),
+              onPressed: isDeleting
+                  ? null
+                  : () {
+                      Navigator.of(ctx).pop();
+                      context.read<UserProfileCubit>().deleteAccount();
+                    },
+            ),
+            const SizedBox(height: 10),
+            AppButton(
+              text: 'profile.delete_account_cancel'.tr(),
+              color: theme.colorScheme.surfaceVariant,
+              textColor: cancelTextColor,
+              icon: Icon(Icons.close_rounded, color: cancelTextColor),
+              onPressed: () => Navigator.of(ctx).pop(),
+            ),
+          ],
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      );
+    },
+  );
 }
 
 class _ProfileHeader extends StatelessWidget {

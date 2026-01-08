@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import 'package:nav_care_offers_app/core/config/app_config.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
@@ -12,6 +13,7 @@ import 'package:nav_care_offers_app/presentation/features/hospitals/viewmodel/ho
 import 'package:nav_care_offers_app/presentation/shared/utils/hospitals_refresh_bus.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_offers_app/presentation/shared/theme/colors.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/network_image.dart';
 import 'package:nav_care_offers_app/core/routing/app_router.dart';
 
 class HospitalFormPage extends StatelessWidget {
@@ -97,6 +99,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
   @override
   Widget build(BuildContext context) {
     final isEditing = widget.initial != null;
+    final baseUrl = sl<AppConfig>().api.baseUrl;
 
     return BlocConsumer<HospitalFormCubit, HospitalFormState>(
       listener: (context, state) {
@@ -116,10 +119,8 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
               ),
             ),
           );
-          if (!isEditing) {
-            HospitalsRefreshBus.notify();
-          }
-          context.pop(true); // Indicate success for refresh
+          HospitalsRefreshBus.notify();
+          context.pop(state.lastSaved);
         }
       },
       builder: (context, state) {
@@ -212,40 +213,25 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                   const SizedBox(height: 24),
                   _SectionLabel(label: '$_prefix.form.images.label'.tr()),
                   const SizedBox(height: 8),
-                  ..._selectedImages
-                      .map((image) => Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0),
-                            child: Row(
-                              children: [
-                                Expanded(child: Text(image.name)),
-                                IconButton(
-                                  icon: const Icon(Icons.remove_circle_outline),
-                                  onPressed: () => _removeSelectedImage(image),
-                                ),
-                              ],
-                            ),
-                          ))
-                      .toList(),
-                  if (_existingImages.isNotEmpty)
-                    ..._existingImages
-                        .map((imageUrl) => Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                      child: Text(imageUrl
-                                          .split('/')
-                                          .last)), // Display file name
-                                  IconButton(
-                                    icon:
-                                        const Icon(Icons.remove_circle_outline),
-                                    onPressed: () =>
-                                        _removeExistingImage(imageUrl),
-                                  ),
-                                ],
-                              ),
-                            ))
-                        .toList(),
+                  Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: [
+                      ..._existingImages.map(
+                        (imageUrl) => _buildNetworkImageTile(
+                          baseUrl: baseUrl,
+                          imageUrl: imageUrl,
+                          onRemove: () => _removeExistingImage(imageUrl),
+                        ),
+                      ),
+                      ..._selectedImages.map(
+                        (image) => _buildLocalImageTile(
+                          image: image,
+                          onRemove: () => _removeSelectedImage(image),
+                        ),
+                      ),
+                    ],
+                  ),
                   TextButton.icon(
                     onPressed: _pickImage,
                     icon: const Icon(Icons.add_photo_alternate),
@@ -542,6 +528,43 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     return trimmed.startsWith('/') ? trimmed.substring(1) : trimmed;
   }
 
+  Widget _buildNetworkImageTile({
+    required String baseUrl,
+    required String imageUrl,
+    required VoidCallback onRemove,
+  }) {
+    final resolved = imageUrl.startsWith('http')
+        ? imageUrl
+        : '$baseUrl/${imageUrl.replaceFirst(RegExp(r'^/+'), '')}';
+    return _ImageTile(
+      child: NetworkImageWrapper(
+        imageUrl: resolved,
+        height: 86,
+        width: 86,
+        fit: BoxFit.cover,
+        shimmerChild: Container(
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        ),
+        fallback: const Icon(Icons.broken_image_outlined),
+      ),
+      onRemove: onRemove,
+    );
+  }
+
+  Widget _buildLocalImageTile({
+    required XFile image,
+    required VoidCallback onRemove,
+  }) {
+    return _ImageTile(
+      child: Image.file(
+        File(image.path),
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined),
+      ),
+      onRemove: onRemove,
+    );
+  }
+
   String _requiredLabel(String text) => '$text *';
 
   void _removeField(int index, List<TextEditingController> controllers) {
@@ -702,3 +725,52 @@ const _socialTypes = [
   'linkedin',
   'other',
 ];
+
+class _ImageTile extends StatelessWidget {
+  final Widget child;
+  final VoidCallback onRemove;
+
+  const _ImageTile({
+    required this.child,
+    required this.onRemove,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return SizedBox(
+      width: 86,
+      height: 86,
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              color: theme.colorScheme.surfaceVariant,
+              child: SizedBox.expand(child: child),
+            ),
+          ),
+          Positioned(
+            right: 4,
+            top: 4,
+            child: InkWell(
+              onTap: onRemove,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surface.withOpacity(0.9),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.delete_outline,
+                  size: 16,
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -68,6 +68,19 @@ class UserRemoteService {
     );
   }
 
+  Future<Result<Map<String, dynamic>>> deleteMe() async {
+    final token = await _resolveToken();
+    if (token == null || token.isEmpty) {
+      return Result.failure(const Failure.unauthorized());
+    }
+
+    return _apiClient.delete<Map<String, dynamic>>(
+      '/api/users/me',
+      parser: (json) => json as Map<String, dynamic>,
+      headers: _authHeaders(token),
+    );
+  }
+
   Future<String?> _resolveToken() async {
     final isDoctor = await _tokenStore.getIsDoctor() ?? false;
     if (isDoctor) {

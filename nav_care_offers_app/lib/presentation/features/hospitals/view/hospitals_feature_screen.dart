@@ -221,7 +221,9 @@ class _HospitalsListViewState extends State<_HospitalsListView> {
         ? '/clinics/${hospital.id}/app'
         : '/hospitals/${hospital.id}/app';
     router.push(route, extra: hospital).then((value) {
-      if (value == true) {
+      if (value is Hospital) {
+        cubit.upsertHospital(value);
+      } else if (value == true) {
         cubit.fetchHospitals(page: 1, limit: 10); // Refresh all hospitals
       } else if (value == 'deleted') {
         cubit.removeHospital(hospital.id);

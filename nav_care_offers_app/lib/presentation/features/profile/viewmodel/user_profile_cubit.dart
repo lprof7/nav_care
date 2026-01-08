@@ -119,11 +119,27 @@ class UserProfileCubit extends Cubit<UserProfileState> {
     }
   }
 
+  Future<void> deleteAccount() async {
+    if (state.deleteStatus == ProfileDeleteStatus.deleting) return;
+    emit(state.copyWith(deleteStatus: ProfileDeleteStatus.deleting, clearError: true));
+    try {
+      await _repository.deleteAccount();
+      await _authCubit.logout();
+      emit(state.copyWith(deleteStatus: ProfileDeleteStatus.success));
+    } catch (e) {
+      emit(state.copyWith(
+        deleteStatus: ProfileDeleteStatus.failure,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+
   void resetStatuses() {
     emit(state.copyWith(
       updateStatus: ProfileUpdateStatus.idle,
       passwordStatus: PasswordUpdateStatus.idle,
       resetStatus: PasswordResetStatus.idle,
+      deleteStatus: ProfileDeleteStatus.idle,
       clearError: true,
     ));
   }
@@ -135,6 +151,7 @@ class UserProfileCubit extends Cubit<UserProfileState> {
       updateStatus: ProfileUpdateStatus.idle,
       passwordStatus: PasswordUpdateStatus.idle,
       resetStatus: PasswordResetStatus.idle,
+      deleteStatus: ProfileDeleteStatus.idle,
       clearError: true,
     ));
   }

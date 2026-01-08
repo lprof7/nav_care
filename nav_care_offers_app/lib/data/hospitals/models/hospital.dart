@@ -42,7 +42,7 @@ class Hospital extends Equatable {
 
   factory Hospital.fromJson(Map<String, dynamic> json,
       {required String baseUrl}) {
-    final id = (json['_id'] ?? json['id'])?.toString();
+    final id = (json['_id'] ?? json['_id'])?.toString();
     final rawName =
         json['name']?.toString() ?? json['display_name']?.toString();
     final descriptionEn = json['description_en']?.toString();

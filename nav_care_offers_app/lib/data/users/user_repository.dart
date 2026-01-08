@@ -90,6 +90,16 @@ class UserRepository {
     }
   }
 
+  Future<String> deleteAccount() async {
+    final result = await _remoteService.deleteMe();
+    if (!result.isSuccess || result.data == null) {
+      final message = _extractMessage(result.error?.message) ?? 'Failed to delete account.';
+      throw Exception(message);
+    }
+    final message = _extractMessage(result.data?['message']) ?? 'Account deleted.';
+    return message;
+  }
+
   String? _extractMessage(dynamic message) {
     if (message is String && message.isNotEmpty) {
       return message;
