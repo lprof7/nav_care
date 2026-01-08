@@ -56,6 +56,9 @@ class RemoteClinicsService implements ClinicsService {
       map['social_media'] =
           jsonEncode(payload.socialMedia.map((e) => e.toJson()).toList());
     }
+    if (payload.deleteItems.isNotEmpty) {
+      map['deleteItems'] = jsonEncode(payload.deleteItems);
+    }
     final formData = FormData.fromMap(map);
 
     for (final image in payload.images) {

@@ -67,6 +67,9 @@ class RemoteHospitalsService implements HospitalsService {
       map['social_media'] =
           jsonEncode(payload.socialMedia.map((e) => e.toJson()).toList());
     }
+    if (payload.deleteItems.isNotEmpty) {
+      map['deleteItems'] = jsonEncode(payload.deleteItems);
+    }
     final formData = FormData.fromMap(map);
 
     for (final image in payload.images) {
@@ -76,10 +79,6 @@ class RemoteHospitalsService implements HospitalsService {
         MultipartFile.fromBytes(bytes, filename: image.name),
       ));
     }
-    print("we are here");
-    print(formData.fields);
-    print("link : ${_config.hospitals}");
-    //TODO: add deleteItems to the payload
     return _apiClient.patch(
       _config.hospitals,
       body: formData,

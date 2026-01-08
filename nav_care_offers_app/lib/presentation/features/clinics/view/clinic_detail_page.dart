@@ -21,6 +21,7 @@ class ClinicDetailsSummaryView extends StatelessWidget {
   final HospitalReviewsState reviewsState;
   final bool isReviewsLoadingMore;
   final VoidCallback onReviewsReload;
+  final Future<void> Function() onRefresh;
   final VoidCallback onManageDoctors;
   final VoidCallback onManageOfferings;
   final VoidCallback onEdit;
@@ -38,6 +39,7 @@ class ClinicDetailsSummaryView extends StatelessWidget {
     required this.reviewsState,
     required this.isReviewsLoadingMore,
     required this.onReviewsReload,
+    required this.onRefresh,
     required this.onManageDoctors,
     required this.onManageOfferings,
     required this.onEdit,
@@ -55,62 +57,66 @@ class ClinicDetailsSummaryView extends StatelessWidget {
         ? _resolveImage(hospital.images.first, baseUrl)
         : null;
 
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 240,
-                width: double.infinity,
-                child: _HeroBackdropLayer(imageUrl: cover),
-              ),
-              SizedBox(
-                height: 300,
-                child: Transform.translate(
-                  offset: const Offset(0, -72),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: _HeroForegroundLayer(
-                      hospital: hospital,
-                      facility: facility,
-                      imageUrl: cover,
-                      doctorsCount: doctorsCount,
-                      offeringsCount: offeringsCount,
-                      primaryActionLabel: 'clinics.detail.edit'.tr(),
-                      secondaryActionLabel: onDelete == null
-                          ? null
-                          : isDeleting
-                              ? 'clinics.detail.deleting'.tr()
-                              : 'clinics.detail.delete'.tr(),
-                      onPrimaryTap: onEdit,
-                      onSecondaryTap: onDelete,
-                      isSaved: false,
-                      onToggleSave: () {},
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 240,
+                  width: double.infinity,
+                  child: _HeroBackdropLayer(imageUrl: cover),
+                ),
+                SizedBox(
+                  height: 300,
+                  child: Transform.translate(
+                    offset: const Offset(0, -72),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: _HeroForegroundLayer(
+                        hospital: hospital,
+                        facility: facility,
+                        imageUrl: cover,
+                        doctorsCount: doctorsCount,
+                        offeringsCount: offeringsCount,
+                        primaryActionLabel: 'clinics.detail.edit'.tr(),
+                        secondaryActionLabel: onDelete == null
+                            ? null
+                            : isDeleting
+                                ? 'clinics.detail.deleting'.tr()
+                                : 'clinics.detail.delete'.tr(),
+                        onPrimaryTap: onEdit,
+                        onSecondaryTap: onDelete,
+                        isSaved: false,
+                        onToggleSave: () {},
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 18),
-            ],
+                const SizedBox(height: 18),
+              ],
+            ),
           ),
-        ),
-        ..._buildDetailsSlivers(
-          context: context,
-          hospital: hospital,
-          doctorsCount: doctorsCount,
-          offeringsCount: offeringsCount,
-          baseUrl: baseUrl,
-          reviewsState: reviewsState,
-          isReviewsLoadingMore: isReviewsLoadingMore,
-          onReviewsReload: onReviewsReload,
-          onManageDoctors: onManageDoctors,
-          onManageOfferings: onManageOfferings,
-          onEdit: onEdit,
-          status: status,
-          errorMessage: errorMessage,
-        ),
-      ],
+          ..._buildDetailsSlivers(
+            context: context,
+            hospital: hospital,
+            doctorsCount: doctorsCount,
+            offeringsCount: offeringsCount,
+            baseUrl: baseUrl,
+            reviewsState: reviewsState,
+            isReviewsLoadingMore: isReviewsLoadingMore,
+            onReviewsReload: onReviewsReload,
+            onManageDoctors: onManageDoctors,
+            onManageOfferings: onManageOfferings,
+            onEdit: onEdit,
+            status: status,
+            errorMessage: errorMessage,
+          ),
+        ],
+      ),
     );
   }
 }

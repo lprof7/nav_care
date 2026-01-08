@@ -261,6 +261,12 @@ class _HospitalShellPageState extends State<HospitalShellPage> {
           isReviewsLoadingMore: reviewsState.isLoadingMore,
           onReviewsReload: () =>
               shellContext.read<HospitalReviewsCubit>().refresh(),
+          onRefresh: () async {
+            await shellContext
+                .read<HospitalDetailCubit>()
+                .loadDetails(refresh: true);
+            await shellContext.read<HospitalReviewsCubit>().refresh();
+          },
           onManageClinics: () => _openManage(shellContext, hospital, 'clinics'),
           onManageDoctors: () => _openManage(shellContext, hospital, 'doctors'),
           onManageOfferings: () =>

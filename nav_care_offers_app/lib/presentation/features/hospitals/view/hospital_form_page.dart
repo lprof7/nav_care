@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nav_care_offers_app/core/config/app_config.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
 import 'package:nav_care_offers_app/data/hospitals/models/hospital_payload.dart';
@@ -53,6 +54,8 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
   final List<TextEditingController> _phoneControllers = [];
   final List<_SocialField> _socialFields = [];
   final List<XFile> _selectedImages = []; // Changed to store XFile
+  final List<String> _existingImages = [];
+  final List<String> _deletedImages = [];
   final ImagePicker _picker = ImagePicker(); // Image picker instance
   bool _isDeleting = false;
 
@@ -74,6 +77,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     _initSocialFields();
     // For existing images, we will not load them into XFile as it's meant for local files.
     // They will be handled by the display logic if widget.initial?.images is not empty.
+    _existingImages.addAll(widget.initial?.images ?? const []);
   }
 
   @override
@@ -222,9 +226,8 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                             ),
                           ))
                       .toList(),
-                  if (widget.initial?.images != null &&
-                      widget.initial!.images.isNotEmpty)
-                    ...widget.initial!.images
+                  if (_existingImages.isNotEmpty)
+                    ..._existingImages
                         .map((imageUrl) => Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: Row(
@@ -233,7 +236,12 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                                       child: Text(imageUrl
                                           .split('/')
                                           .last)), // Display file name
-                                  // No remove button for existing images from API
+                                  IconButton(
+                                    icon:
+                                        const Icon(Icons.remove_circle_outline),
+                                    onPressed: () =>
+                                        _removeExistingImage(imageUrl),
+                                  ),
                                 ],
                               ),
                             ))
@@ -500,6 +508,40 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     });
   }
 
+  void _removeExistingImage(String imageUrl) {
+    setState(() {
+      _existingImages.remove(imageUrl);
+      final deletePath = _toDeletePath(imageUrl);
+      if (deletePath.isNotEmpty && !_deletedImages.contains(deletePath)) {
+        _deletedImages.add(deletePath);
+      }
+    });
+  }
+
+  String _toDeletePath(String imageUrl) {
+    final trimmed = imageUrl.trim();
+    if (trimmed.isEmpty) return trimmed;
+    final baseUrl = sl<AppConfig>().api.baseUrl;
+    final baseUri = Uri.tryParse(baseUrl);
+    final imageUri = Uri.tryParse(trimmed);
+    if (imageUri != null && imageUri.hasScheme) {
+      if (baseUri != null && imageUri.host == baseUri.host) {
+        final path = imageUri.path;
+        return path.startsWith('/') ? path.substring(1) : path;
+      }
+      final path = imageUri.path;
+      return path.startsWith('/') ? path.substring(1) : path;
+    }
+    if (trimmed.startsWith(baseUrl)) {
+      var path = trimmed.substring(baseUrl.length);
+      if (path.startsWith('/')) {
+        path = path.substring(1);
+      }
+      return path;
+    }
+    return trimmed.startsWith('/') ? trimmed.substring(1) : trimmed;
+  }
+
   String _requiredLabel(String text) => '$text *';
 
   void _removeField(int index, List<TextEditingController> controllers) {
@@ -549,6 +591,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
       facilityType: facilityType,
       images: _selectedImages, // Pass XFile list directly
       socialMedia: socialLinks,
+      deleteItems: _deletedImages,
     );
 
     cubit.submit(payload);

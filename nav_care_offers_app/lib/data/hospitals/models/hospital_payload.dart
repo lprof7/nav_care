@@ -14,6 +14,7 @@ class HospitalPayload {
   final FacilityType facilityType; // Add facilityType
   final String? hospitalId;
   final List<SocialMediaLink> socialMedia;
+  final List<String> deleteItems;
 
   HospitalPayload({
     this.id,
@@ -27,6 +28,7 @@ class HospitalPayload {
     this.facilityType = FacilityType.hospital, // Default to hospital
     this.hospitalId,
     this.socialMedia = const [],
+    this.deleteItems = const [],
   });
 
   Map<String, dynamic> toJson() {
@@ -63,6 +65,9 @@ class HospitalPayload {
     if (hospitalId != null && hospitalId!.isNotEmpty) {
       payload['hospitalId'] = hospitalId;
     }
+    if (deleteItems.isNotEmpty) {
+      payload['deleteItems'] = deleteItems;
+    }
 
     return payload;
   }
@@ -79,6 +84,7 @@ class HospitalPayload {
     FacilityType? facilityType,
     String? hospitalId,
     List<SocialMediaLink>? socialMedia,
+    List<String>? deleteItems,
   }) {
     return HospitalPayload(
       id: id ?? this.id,
@@ -92,6 +98,7 @@ class HospitalPayload {
       facilityType: facilityType ?? this.facilityType,
       hospitalId: hospitalId ?? this.hospitalId,
       socialMedia: socialMedia ?? this.socialMedia,
+      deleteItems: deleteItems ?? this.deleteItems,
     );
   }
 }
