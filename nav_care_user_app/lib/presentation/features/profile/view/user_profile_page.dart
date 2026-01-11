@@ -11,6 +11,7 @@ import 'package:nav_care_user_app/presentation/features/profile/viewmodel/user_p
 import 'package:nav_care_user_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/molecules/sign_in_required_card.dart';
 import 'package:nav_care_user_app/presentation/shared/theme/colors.dart';
+import 'package:shimmer/shimmer.dart';
 
 class UserProfilePage extends StatelessWidget {
   const UserProfilePage({super.key});
@@ -243,12 +244,13 @@ class _ProfileHeader extends StatelessWidget {
                   child: CircleAvatar(
                     radius: 56,
                     backgroundColor: Colors.white,
-                    backgroundImage:
-                        avatarUrl != null ? NetworkImage(avatarUrl!) : null,
-                    child: avatarUrl == null
-                        ? Icon(Icons.person_rounded,
-                            size: 56, color: backgroundColor.withOpacity(0.18))
-                        : null,
+                    child: _ShimmerCircleAvatar(
+                      imageUrl: avatarUrl,
+                      size: 112,
+                      backgroundColor: Colors.white,
+                      iconColor: backgroundColor.withOpacity(0.18),
+                      iconSize: 56,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 14),
@@ -269,6 +271,71 @@ class _ProfileHeader extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ShimmerCircleAvatar extends StatelessWidget {
+  final String? imageUrl;
+  final double size;
+  final Color backgroundColor;
+  final Color iconColor;
+  final double iconSize;
+
+  const _ShimmerCircleAvatar({
+    required this.imageUrl,
+    required this.size,
+    required this.backgroundColor,
+    required this.iconColor,
+    required this.iconSize,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final baseColor = theme.brightness == Brightness.dark
+        ? Colors.grey.shade800
+        : Colors.grey.shade300;
+    final highlightColor = theme.brightness == Brightness.dark
+        ? Colors.grey.shade700
+        : Colors.grey.shade100;
+
+    Widget fallback = Container(
+      width: size,
+      height: size,
+      color: backgroundColor,
+      alignment: Alignment.center,
+      child: Icon(
+        Icons.person_rounded,
+        color: iconColor,
+        size: iconSize,
+      ),
+    );
+
+    if (imageUrl == null || imageUrl!.isEmpty) {
+      return ClipOval(child: fallback);
+    }
+
+    return ClipOval(
+      child: Image.network(
+        imageUrl!,
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Shimmer.fromColors(
+            baseColor: baseColor,
+            highlightColor: highlightColor,
+            child: Container(
+              width: size,
+              height: size,
+              color: backgroundColor.withValues(alpha: 0.6),
+            ),
+          );
+        },
+        errorBuilder: (_, __, ___) => fallback,
       ),
     );
   }

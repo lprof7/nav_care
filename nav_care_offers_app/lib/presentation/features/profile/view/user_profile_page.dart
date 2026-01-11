@@ -10,6 +10,7 @@ import 'package:nav_care_offers_app/presentation/features/profile/viewmodel/user
 import 'package:nav_care_offers_app/presentation/features/profile/viewmodel/user_profile_state.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/molecules/sign_in_required_card.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/network_image.dart';
 import 'package:nav_care_offers_app/presentation/shared/theme/colors.dart';
 
 class UserProfilePage extends StatelessWidget {
@@ -357,12 +358,29 @@ class _ProfileHeader extends StatelessWidget {
                   child: CircleAvatar(
                     radius: 56,
                     backgroundColor: Colors.white,
-                    backgroundImage:
-                        avatarUrl != null ? NetworkImage(avatarUrl!) : null,
-                    child: avatarUrl == null
-                        ? Icon(Icons.person_rounded,
-                            size: 56, color: backgroundColor.withOpacity(0.18))
-                        : null,
+                    child: NetworkImageWrapper(
+                      imageUrl: avatarUrl,
+                      height: 112,
+                      width: 112,
+                      fit: BoxFit.cover,
+                      borderRadius: BorderRadius.circular(999),
+                      shimmerChild: Container(
+                        height: 112,
+                        width: 112,
+                        color: Colors.white.withOpacity(0.6),
+                      ),
+                      fallback: Container(
+                        height: 112,
+                        width: 112,
+                        color: Colors.white,
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.person_rounded,
+                          size: 56,
+                          color: backgroundColor.withOpacity(0.18),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 14),

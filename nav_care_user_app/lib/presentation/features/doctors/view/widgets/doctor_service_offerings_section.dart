@@ -102,7 +102,7 @@ class _DoctorServiceOfferingsSectionState
                   crossAxisCount: crossAxisCount,
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
-                  childAspectRatio: 0.74,
+                  childAspectRatio: 0.6,
                 ),
                 itemCount: offerings.length,
                 itemBuilder: (context, index) {
@@ -177,7 +177,7 @@ SearchResultItem _toSearchResult(
     title: serviceName,
     subtitle: offering.provider.name,
     description: offering.provider.specialty,
-    rating: offering.provider.rating,
+    rating: offering.rating,
     price: offering.price,
     imagePath: image,
     secondaryImagePath: avatar,

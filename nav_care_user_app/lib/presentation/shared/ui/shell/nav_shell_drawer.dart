@@ -1,6 +1,7 @@
 ﻿import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../shared/theme/colors.dart';
 import '../molecules/sign_in_required_card.dart';
@@ -331,18 +332,12 @@ class _DrawerHeader extends StatelessWidget {
                       width: 3,
                     ),
                   ),
-                  child: CircleAvatar(
-                    radius: 32,
+                  child: _ShimmerCircleAvatar(
+                    imageUrl: userAvatar,
+                    size: 64,
                     backgroundColor: colorScheme.surface,
-                    backgroundImage:
-                        userAvatar != null ? NetworkImage(userAvatar!) : null,
-                    child: userAvatar == null
-                        ? Icon(
-                            Icons.person_rounded,
-                            color: colorScheme.primary,
-                            size: 32,
-                          )
-                        : null,
+                    iconColor: colorScheme.primary,
+                    iconSize: 32,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -553,6 +548,71 @@ class _DrawerHeader extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _ShimmerCircleAvatar extends StatelessWidget {
+  final String? imageUrl;
+  final double size;
+  final Color backgroundColor;
+  final Color iconColor;
+  final double iconSize;
+
+  const _ShimmerCircleAvatar({
+    required this.imageUrl,
+    required this.size,
+    required this.backgroundColor,
+    required this.iconColor,
+    required this.iconSize,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final baseColor = theme.brightness == Brightness.dark
+        ? Colors.grey.shade800
+        : Colors.grey.shade300;
+    final highlightColor = theme.brightness == Brightness.dark
+        ? Colors.grey.shade700
+        : Colors.grey.shade100;
+
+    Widget fallback = Container(
+      width: size,
+      height: size,
+      color: backgroundColor,
+      alignment: Alignment.center,
+      child: Icon(
+        Icons.person_rounded,
+        color: iconColor,
+        size: iconSize,
+      ),
+    );
+
+    if (imageUrl == null || imageUrl!.isEmpty) {
+      return ClipOval(child: fallback);
+    }
+
+    return ClipOval(
+      child: Image.network(
+        imageUrl!,
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Shimmer.fromColors(
+            baseColor: baseColor,
+            highlightColor: highlightColor,
+            child: Container(
+              width: size,
+              height: size,
+              color: backgroundColor.withValues(alpha: 0.6),
+            ),
+          );
+        },
+        errorBuilder: (_, __, ___) => fallback,
+      ),
     );
   }
 }

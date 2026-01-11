@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../shared/theme/colors.dart';
+import '../network_image.dart';
 import '../molecules/sign_in_required_card.dart';
 import 'nav_shell_destination.dart';
 
@@ -352,18 +353,28 @@ class _DrawerHeader extends StatelessWidget {
                       width: 3,
                     ),
                   ),
-                  child: CircleAvatar(
-                    radius: 32,
-                    backgroundColor: colorScheme.surface,
-                    backgroundImage:
-                        userAvatar != null ? NetworkImage(userAvatar!) : null,
-                    child: userAvatar == null
-                        ? Icon(
-                            Icons.person_rounded,
-                            color: colorScheme.primary,
-                            size: 32,
-                          )
-                        : null,
+                  child: NetworkImageWrapper(
+                    imageUrl: userAvatar,
+                    height: 64,
+                    width: 64,
+                    fit: BoxFit.cover,
+                    borderRadius: BorderRadius.circular(999),
+                    shimmerChild: Container(
+                      height: 64,
+                      width: 64,
+                      color: colorScheme.surface.withValues(alpha: 0.6),
+                    ),
+                    fallback: Container(
+                      height: 64,
+                      width: 64,
+                      color: colorScheme.surface,
+                      alignment: Alignment.center,
+                      child: Icon(
+                        Icons.person_rounded,
+                        color: colorScheme.primary,
+                        size: 32,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),

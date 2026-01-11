@@ -342,7 +342,7 @@ SearchResultItem _toSearchResult(
     title: serviceName,
     subtitle: provider.name,
     description: provider.specialty,
-    rating: provider.rating,
+    rating: offering.rating,
     price: offering.price,
     imagePath: image,
     secondaryImagePath: avatar,
@@ -372,7 +372,7 @@ SearchResultItem _toSearchResult(
           'profilePicture': avatar,
         },
         'specialty': provider.specialty,
-        'rating': provider.rating,
+        'rating': offering.rating,
       },
     },
   );

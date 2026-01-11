@@ -18,7 +18,6 @@ class HospitalReviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final avatarUrl = review.reviewer.avatarUrl(baseUrl);
-    print("avatarUrl: $avatarUrl");
     final date = review.createdAt;
     final locale = context.locale.toLanguageTag();
     final formattedDate = date != null

@@ -107,7 +107,7 @@
   "home.featured_services.error": "Unable to load featured services.",
   "services.offerings.title": "Available service offerings",
   "services.offerings.error": "Unable to load service offerings right now.",
-  "services.offerings.empty": "No offerings are available for this service.",
+  "services.offerings.empty": "No offerings are available.",
   "services.offerings.retry": "Try again",
   "services.offerings.price": "From {price} $",
   "services.detail.description": "Description",

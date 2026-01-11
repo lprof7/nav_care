@@ -13,6 +13,8 @@ class ServiceOfferingModel {
   final String descriptionAr;
   final String descriptionSp;
   final List<String> images;
+  final double? rating;
+  final int reviewsCount;
 
   const ServiceOfferingModel({
     required this.id,
@@ -29,6 +31,8 @@ class ServiceOfferingModel {
     required this.descriptionAr,
     required this.descriptionSp,
     required this.images,
+    required this.rating,
+    required this.reviewsCount,
   });
 
   factory ServiceOfferingModel.fromJson(Map<String, dynamic> json) {
@@ -54,6 +58,8 @@ class ServiceOfferingModel {
               ?.map((e) => e.toString())
               .toList() ??
           [],
+      rating: _parseDouble(json['rating']),
+      reviewsCount: _parseInt(json['reviewsCount']),
     );
   }
 
@@ -75,6 +81,13 @@ class ServiceOfferingModel {
     if (value is num) return value.toDouble();
     if (value is String) return double.tryParse(value);
     return null;
+  }
+
+  static int _parseInt(dynamic value) {
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
   }
 
   static String _firstNonEmpty(List<String> values) {

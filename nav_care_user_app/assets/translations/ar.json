@@ -107,7 +107,7 @@
   "home.featured_services.error": "تعذر تحميل الخدمات المميزة.",
   "services.offerings.title": "عروض الخدمات المتاحة",
   "services.offerings.error": "تعذر تحميل عروض الخدمات حاليًا.",
-  "services.offerings.empty": "لا توجد عروض متاحة لهذه الخدمة.",
+  "services.offerings.empty": "لا توجد عروض متاحة .",
   "services.offerings.retry": "حاول مرة أخرى",
   "services.offerings.price": "ابتداءً من {price} $",
   "services.detail.description": "الوصف",

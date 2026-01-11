@@ -240,7 +240,7 @@ class _DetailViewState extends State<_DetailView> {
           final providerRating = offering.provider.rating ?? 0;
           final serviceTitle = offering.localizedName(locale);
           final price = offering.price;
-          final rating = offering.provider.rating ?? 0;
+          final rating = offering.rating ?? 0;
           final description = _localizedDescription(offering, locale);
           final hasDescription = description.trim().isNotEmpty;
 

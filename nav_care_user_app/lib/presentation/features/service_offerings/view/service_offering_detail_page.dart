@@ -160,8 +160,8 @@ class _DetailViewState extends State<_DetailView> {
           final serviceTitle = offering.nameForLocale(locale);
 
           final price = offering.price;
-          final rating = offering.provider.rating ?? 0;
-          final reviewsCount = offering.provider.reviewsCount;
+          final rating = offering.rating ?? 0;
+          final reviewsCount = offering.reviewsCount;
           final description =
               _fallbackDescription(context.locale.languageCode, offering);
 
@@ -311,6 +311,11 @@ class _DetailViewState extends State<_DetailView> {
   }
 
   Future<void> _handleAddReview(BuildContext context) async {
+    final authState = context.read<AuthSessionCubit>().state;
+    if (!authState.isAuthenticated) {
+      _showSignInPrompt(context);
+      return;
+    }
     final result = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (_) => BlocProvider.value(
@@ -903,7 +908,7 @@ class _RelatedOfferingCard extends StatelessWidget {
               title: serviceTitle,
               subtitle: providerName,
               imagePath: coverImage ?? '',
-              rating: offering.provider.rating ?? 0,
+              rating: offering.rating ?? 0,
               description: '',
               type: SearchResultType.serviceOffering,
             ),

@@ -238,7 +238,7 @@ class _OfferingsGrid extends StatelessWidget {
               offering.descriptionFr ??
               offering.descriptionSp ??
               'service_offerings.detail.no_description'.tr();
-          final rating = offering.provider.rating;
+          final rating = offering.rating;
           final image = _resolveImage(
             offering.images.isNotEmpty
                 ? offering.images.first

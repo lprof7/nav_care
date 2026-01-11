@@ -627,6 +627,9 @@ class _DetailsTab extends StatelessWidget {
     final locale = context.locale.languageCode;
     final description = hospital.descriptionForLocale(locale);
     final theme = Theme.of(context);
+    final validSocialLinks = hospital.socialMedia
+        .where((link) => link.link.trim().isNotEmpty)
+        .toList(growable: false);
 
     return CustomScrollView(
       slivers: [
@@ -710,7 +713,7 @@ class _DetailsTab extends StatelessWidget {
                           hospital.address.isNotEmpty ? hospital.address : null,
                       placeholderKey: 'hospitals.detail.no_description',
                     ),
-                    if (hospital.socialMedia.isNotEmpty) ...[
+                    if (validSocialLinks.isNotEmpty) ...[
                       const SizedBox(height: 10),
                       HospitalInfoRow(
                         icon: Icons.group_rounded,
@@ -722,7 +725,7 @@ class _DetailsTab extends StatelessWidget {
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
-                        children: hospital.socialMedia
+                        children: validSocialLinks
                             .map((link) => SocialMediaIcon(
                                   type: link.type,
                                   onTap: () => onLaunchUrl(link.link),
@@ -1090,7 +1093,7 @@ class _DoctorsTabState extends State<_DoctorsTab> {
                 crossAxisCount: 2,
                 mainAxisSpacing: 14,
                 crossAxisSpacing: 14,
-                childAspectRatio: 0.62,
+                childAspectRatio: 0.60,
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
@@ -1177,7 +1180,7 @@ class _OfferingsTab extends StatelessWidget {
               crossAxisCount: crossAxisCount,
               mainAxisSpacing: 14,
               crossAxisSpacing: 14,
-              childAspectRatio: 0.66,
+              childAspectRatio: 0.60,
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
@@ -1300,7 +1303,7 @@ SearchResultItem _toSearchResult(
     title: serviceName,
     subtitle: offering.provider.name,
     description: offering.provider.specialty,
-    rating: offering.provider.rating,
+    rating: offering.rating,
     price: offering.price,
     imagePath: image,
     secondaryImagePath: avatar,

@@ -194,7 +194,6 @@ class SearchResultItem {
         imagePath = service?['image']?.toString();
         secondaryImagePath = providerUser?['profilePicture']?.toString();
         price = price ?? parseDouble(json['price']);
-        rating = rating ?? parseDouble(provider?['rating']);
         break;
       case SearchResultType.unknown:
         title = json['name']?.toString() ??

@@ -26,6 +26,8 @@ class ServiceOffering {
   final String? descriptionFr;
   final String? descriptionAr;
   final String? descriptionSp;
+  final double? rating;
+  final int reviewsCount;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -45,6 +47,8 @@ class ServiceOffering {
     this.descriptionFr,
     this.descriptionAr,
     this.descriptionSp,
+    this.rating,
+    this.reviewsCount = 0,
     this.createdAt,
     this.updatedAt,
   });
@@ -68,6 +72,8 @@ class ServiceOffering {
       descriptionFr: json['description_fr']?.toString(),
       descriptionAr: json['description_ar']?.toString(),
       descriptionSp: json['description_sp']?.toString(),
+      rating: _parseDouble(json['rating']),
+      reviewsCount: _parseInt(json['reviewsCount']),
       createdAt: _parseDate(json['createdAt'] ?? json['created_at']),
       updatedAt: _parseDate(json['updatedAt'] ?? json['updated_at']),
     );
@@ -243,6 +249,13 @@ double? _parseDouble(dynamic value) {
   if (value == null) return null;
   if (value is num) return value.toDouble();
   return double.tryParse(value.toString());
+}
+
+int _parseInt(dynamic value) {
+  if (value == null) return 0;
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.tryParse(value.toString()) ?? 0;
 }
 
 DateTime? _parseDate(dynamic value) {

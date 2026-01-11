@@ -107,7 +107,7 @@
   "home.featured_services.error": "Impossible de charger les services en vedette.",
   "services.offerings.title": "Offres de services disponibles",
   "services.offerings.error": "Impossible de charger les offres de services pour le moment.",
-  "services.offerings.empty": "Aucune offre disponible pour ce service.",
+  "services.offerings.empty": "Aucune offre disponible.",
   "services.offerings.retry": "Réessayer",
   "services.offerings.price": "À partir de {price} $",
   "services.detail.description": "Description",
