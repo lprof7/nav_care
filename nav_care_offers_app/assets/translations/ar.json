@@ -79,6 +79,7 @@
   "become_doctor_success": "تم إرسال طلب ملفك كطبيب!",
   "shell": {
     "nav_home": "الرئيسية",
+    "nav_search": "بحث",
     "nav_appointments": "المواعيد",
     "nav_hospitals": "المستشفيات",
     "nav_profile": "الملف الشخصي",

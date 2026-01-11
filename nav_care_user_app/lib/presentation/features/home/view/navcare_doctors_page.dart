@@ -249,6 +249,17 @@ class _DoctorsGrid extends StatelessWidget {
         int crossAxisCount = 2;
         double childAspectRatio = 0.74;
 
+        if (maxWidth >= 1200) {
+          crossAxisCount = 4;
+          childAspectRatio = 0.78;
+        } else if (maxWidth >= 650) {
+          crossAxisCount = 3;
+          childAspectRatio = 0.76;
+        } else if (maxWidth >= 300) {
+          crossAxisCount = 2;
+          childAspectRatio = 0.74;
+        }
+
         return GridView.builder(
           padding: const EdgeInsets.all(16),
           controller: controller,

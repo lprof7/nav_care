@@ -79,6 +79,7 @@
   "become_doctor_success": "Your doctor profile request was sent!",
   "shell": {
     "nav_home": "Home",
+    "nav_search": "Search",
     "nav_appointments": "Appointments",
     "nav_hospitals": "Hospitals",
     "nav_profile": "Profile",

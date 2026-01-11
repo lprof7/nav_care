@@ -79,6 +79,7 @@
   "become_doctor_success": "Votre demande de profil médecin a été envoyée !",
   "shell": {
     "nav_home": "Accueil",
+    "nav_search": "Recherche",
     "nav_appointments": "Rendez-vous",
     "nav_hospitals": "Hôpitaux",
     "nav_profile": "Profil",

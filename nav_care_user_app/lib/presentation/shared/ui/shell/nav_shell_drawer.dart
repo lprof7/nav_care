@@ -6,6 +6,8 @@ import '../../../shared/theme/colors.dart';
 import '../molecules/sign_in_required_card.dart';
 import 'nav_shell_destination.dart';
 
+const double _drawerIconSlotWidth = 28;
+
 class NavShellDrawer extends StatelessWidget {
   final int selectedIndex;
   final List<NavShellDestination> destinations;
@@ -175,11 +177,16 @@ class NavShellDrawer extends StatelessWidget {
                           ),
                           child: Row(
                             children: [
-                              Icon(
-                                item.icon,
-                                color: isSelected
-                                    ? colorScheme.primary
-                                    : theme.iconTheme.color,
+                              SizedBox(
+                                width: _drawerIconSlotWidth,
+                                child: Center(
+                                  child: Icon(
+                                    item.icon,
+                                    color: isSelected
+                                        ? colorScheme.primary
+                                        : theme.iconTheme.color,
+                                  ),
+                                ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
@@ -218,9 +225,15 @@ class NavShellDrawer extends StatelessWidget {
             ),
             const Divider(height: 1),
             ListTile(
-              leading: Icon(
-                PhosphorIconsBold.signOut,
-                color: theme.iconTheme.color,
+              minLeadingWidth: _drawerIconSlotWidth,
+              leading: SizedBox(
+                width: _drawerIconSlotWidth,
+                child: Center(
+                  child: Icon(
+                    PhosphorIconsBold.signOut,
+                    color: theme.iconTheme.color,
+                  ),
+                ),
               ),
               title: Text(
                 'shell.drawer_logout'.tr(),
@@ -637,7 +650,13 @@ class _DrawerActionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return ListTile(
-      leading: Icon(icon, color: theme.iconTheme.color),
+      minLeadingWidth: _drawerIconSlotWidth,
+      leading: SizedBox(
+        width: _drawerIconSlotWidth,
+        child: Center(
+          child: Icon(icon, color: theme.iconTheme.color),
+        ),
+      ),
       title: Text(
         label,
         style: theme.textTheme.bodyMedium,

@@ -102,7 +102,7 @@ class _DoctorServiceOfferingsSectionState
                   crossAxisCount: crossAxisCount,
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
-                  childAspectRatio: 0.55,
+                  childAspectRatio: 0.74,
                 ),
                 itemCount: offerings.length,
                 itemBuilder: (context, index) {
