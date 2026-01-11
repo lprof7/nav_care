@@ -292,11 +292,14 @@ class _SignupFormState extends State<_SignupForm> {
 
   String _ensureAlgerianPhone(String input) {
     final sanitized = input.replaceAll(RegExp(r'[^0-9+]'), '');
-    if (sanitized.startsWith('+213')) {
+    if (sanitized.isEmpty) return sanitized;
+    if (sanitized.startsWith('+')) {
+      if (sanitized.startsWith('+2130')) {
+        return '+213${sanitized.substring(5)}';
+      }
       return sanitized;
     }
-    final trimmed = sanitized.replaceFirst(RegExp(r'^\+?213'), '');
-    final withoutLeadingZeros = trimmed.replaceFirst(RegExp(r'^0+'), '');
+    final withoutLeadingZeros = sanitized.replaceFirst(RegExp(r'^0+'), '');
     return '+213$withoutLeadingZeros';
   }
 

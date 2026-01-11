@@ -305,7 +305,7 @@
   "profile.password_requirement_number": "Password must contain at least one number",
   "profile.password_requirement_special": "at least one special character",
   "profile.save_changes": "Save changes",
-  "profile.updating": "Savingâ€¦",
+  "profile.updating": "Saving...",
   "profile.no_changes": "No changes to save.",
   "profile.update_success": "Profile updated successfully.",
   "profile.update_error": "Unable to update profile.",
@@ -594,8 +594,10 @@
       "comment_hint": "Share your experience...",
       "submit": "Submit",
       "cancel": "Cancel",
-      "validation.rating": "Please select a rating.",
-      "validation.comment": "Please enter a comment.",
+      "validation": {
+        "rating": "Please select a rating.",
+        "comment": "Please enter a comment."
+      },
       "submit_success": "Review added successfully.",
       "show_less": "Show less",
       "retry": "Try again",

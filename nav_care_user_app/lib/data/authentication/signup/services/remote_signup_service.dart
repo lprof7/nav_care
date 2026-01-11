@@ -22,6 +22,8 @@ class RemoteSignupService implements SignupService {
     }
 
     final formData = FormData.fromMap(payload);
+    print('Signup FormData: $formData');
+    print("phone number: ${payload['phone_number']}");
 
     return _api.post(_api.apiConfig.register,
         body: formData, parser: (json) => json as Map<String, dynamic>);

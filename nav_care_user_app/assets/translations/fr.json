@@ -594,8 +594,10 @@
       "comment_hint": "Partagez votre expérience...",
       "submit": "Envoyer",
       "cancel": "Annuler",
-      "validation.rating": "Veuillez sélectionner une note.",
-      "validation.comment": "Veuillez saisir un commentaire.",
+      "validation": {
+        "rating": "Veuillez sélectionner une note.",
+        "comment": "Veuillez saisir un commentaire."
+      },
       "submit_success": "Avis ajouté avec succès.",
       "show_less": "Afficher moins",
       "retry": "Réessayer",

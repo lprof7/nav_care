@@ -594,8 +594,10 @@
       "comment_hint": "شارك تجربتك...",
       "submit": "إرسال",
       "cancel": "إلغاء",
-      "validation.rating": "يرجى اختيار تقييم.",
-      "validation.comment": "يرجى إدخال تعليق.",
+      "validation": {
+        "rating": "يرجى اختيار تقييم.",
+        "comment": "يرجى إدخال تعليق."
+      },
       "submit_success": "تمت إضافة التقييم بنجاح.",
       "show_less": "عرض أقل",
       "retry": "حاول مرة أخرى",

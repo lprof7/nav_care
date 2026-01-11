@@ -178,58 +178,18 @@ class NavShellDrawer extends StatelessWidget {
 
                   if (item is NavShellDestination) {
                     final isSelected = index == selectedIndex;
-                    return Material(
-                      color: isSelected
-                          ? colorScheme.primary.withValues(alpha: 0.08)
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(16),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(16),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          onDestinationSelected(index);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 12,
-                          ),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: _drawerIconSlotWidth,
-                                child: Center(
-                                  child: Icon(
-                                    item.icon,
-                                    color: isSelected
-                                        ? colorScheme.primary
-                                        : theme.iconTheme.color,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  item.label,
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    fontWeight: isSelected
-                                        ? FontWeight.w600
-                                        : FontWeight.w500,
-                                    color: isSelected
-                                        ? colorScheme.primary
-                                        : theme.textTheme.bodyMedium?.color,
-                                  ),
-                                ),
-                              ),
-                              if (item.badgeLabel != null)
-                                _BadgeChip(label: item.badgeLabel!),
-                            ],
-                          ),
-                        ),
-                      ),
+                    return _DrawerItem(
+                      icon: item.icon,
+                      label: item.label,
+                      isSelected: isSelected,
+                      badgeLabel: item.badgeLabel,
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        onDestinationSelected(index);
+                      },
                     );
                   } else if (item is _DrawerAction) {
-                    return _DrawerActionTile(
+                    return _DrawerItem(
                       icon: item.icon,
                       label: item.label,
                       badgeLabel: item.badgeLabel,
@@ -246,21 +206,9 @@ class NavShellDrawer extends StatelessWidget {
               ),
             ),
             const Divider(height: 1),
-            ListTile(
-              minLeadingWidth: _drawerIconSlotWidth,
-              leading: SizedBox(
-                width: _drawerIconSlotWidth,
-                child: Center(
-                  child: Icon(
-                    PhosphorIconsBold.signOut,
-                    color: theme.iconTheme.color,
-                  ),
-                ),
-              ),
-              title: Text(
-                'shell.drawer_logout'.tr(),
-                style: theme.textTheme.bodyMedium,
-              ),
+            _DrawerItem(
+              icon: PhosphorIconsBold.signOut,
+              label: 'shell.drawer_logout'.tr(),
               enabled: isAuthenticated && !isLogoutLoading,
               trailing: isLogoutLoading
                   ? const SizedBox(
@@ -655,15 +603,21 @@ class _BadgeChip extends StatelessWidget {
   }
 }
 
-class _DrawerActionTile extends StatelessWidget {
+class _DrawerItem extends StatelessWidget {
   final IconData icon;
   final String label;
+  final bool isSelected;
+  final bool enabled;
+  final Widget? trailing;
   final String? badgeLabel;
   final VoidCallback? onTap;
 
-  const _DrawerActionTile({
+  const _DrawerItem({
     required this.icon,
     required this.label,
+    this.isSelected = false,
+    this.enabled = true,
+    this.trailing,
     this.badgeLabel,
     this.onTap,
   });
@@ -671,21 +625,54 @@ class _DrawerActionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return ListTile(
-      minLeadingWidth: _drawerIconSlotWidth,
-      leading: SizedBox(
-        width: _drawerIconSlotWidth,
-        child: Center(
-          child: Icon(icon, color: theme.iconTheme.color),
+    final colorScheme = theme.colorScheme;
+    final textColor = isSelected
+        ? colorScheme.primary
+        : theme.textTheme.bodyMedium?.color;
+    final iconColor = isSelected ? colorScheme.primary : theme.iconTheme.color;
+
+    Widget content = Material(
+      color: isSelected
+          ? colorScheme.primary.withValues(alpha: 0.08)
+          : Colors.transparent,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: enabled ? onTap : null,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          child: Row(
+            children: [
+              SizedBox(
+                width: _drawerIconSlotWidth,
+                child: Center(
+                  child: Icon(icon, color: iconColor),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  label,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight:
+                        isSelected ? FontWeight.w600 : FontWeight.w500,
+                    color: textColor,
+                  ),
+                ),
+              ),
+              if (badgeLabel != null) _BadgeChip(label: badgeLabel!),
+              if (badgeLabel == null && trailing != null) trailing!,
+            ],
+          ),
         ),
       ),
-      title: Text(
-        label,
-        style: theme.textTheme.bodyMedium,
-      ),
-      trailing: badgeLabel == null ? null : _BadgeChip(label: badgeLabel!),
-      onTap: onTap,
     );
+
+    if (!enabled) {
+      content = Opacity(opacity: 0.5, child: content);
+    }
+
+    return content;
   }
 }
 
