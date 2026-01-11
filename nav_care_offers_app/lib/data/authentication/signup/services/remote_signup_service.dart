@@ -28,7 +28,6 @@ class RemoteSignupService implements SignupService {
       _api.apiConfig.register,
       body: formData,
       parser: (json) {
-        print('Signup Response JSON: $json');
         return json as Map<String, dynamic>;
       },
     );

@@ -63,7 +63,6 @@ class SigninPage extends StatelessWidget {
                         if (state is SigninSuccess) {
                           context.go('/home');
                         } else if (state is SigninFailure) {
-                          debugPrint(state.message);
                           final message =
                               (state.message.startsWith('signin.') ||
                                       state.message.startsWith('signin_'))

@@ -105,7 +105,6 @@ class RemoteHospitalsService implements HospitalsService {
   }
 
   Map<String, dynamic> _parseMap(dynamic value) {
-    print("Parsing map: $value");
     if (value is Map<String, dynamic>) {
       return value;
     }

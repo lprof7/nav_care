@@ -104,7 +104,6 @@ class AppointmentsRepository {
       payload: payload,
       useHospitalToken: useHospitalToken,
     );
-    print("data from repo is response data is ${response.data}");
 
     return response.fold(
       onSuccess: (data) {

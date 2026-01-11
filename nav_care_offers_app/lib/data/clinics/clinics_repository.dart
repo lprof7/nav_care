@@ -19,7 +19,6 @@ class ClinicsRepository {
 
   Future<Result<ClinicListModel>> getHospitalClinics(String hospitalId) async {
     final response = await _service.getHospitalClinics(hospitalId);
-    print("data from repository is ${response.data}");
 
     return response.fold(
       onSuccess: (data) {
@@ -87,7 +86,6 @@ class ClinicsRepository {
       _cache = _upsert(_cache, clinic);
       return Result.success(clinic);
     } catch (e) {
-      print("Error updating clinic: $e");
       return Result.failure(
         const Failure.server(message: 'Failed to update clinic'),
       );

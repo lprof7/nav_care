@@ -21,7 +21,6 @@ class RemoteAppointmentsService implements AppointmentsService {
     if (token == null || token.isEmpty) {
       return Result.failure(const Failure.unauthorized());
     }
-    print("the link is ${_apiClient.apiConfig.doctorAppointments}");
 
     return _apiClient.get(
       _apiClient.apiConfig.doctorAppointments,

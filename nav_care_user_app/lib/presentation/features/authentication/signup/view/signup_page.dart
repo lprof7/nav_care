@@ -283,9 +283,8 @@ class _SignupFormState extends State<_SignupForm> {
         .join(' ')
         .trim();
 
-    final phoneNumber = _ensureAlgerianPhone(
-      _completePhoneNumber ?? _phoneController.text.trim(),
-    );
+    final phoneNumber =
+        _completePhoneNumber ?? _phoneController.text.trim();
 
     final request = SignupRequest(
       name: name.isEmpty ? _emailController.text.trim() : name,
@@ -304,19 +303,6 @@ class _SignupFormState extends State<_SignupForm> {
           request,
           localeTag: context.locale.toLanguageTag(),
         );
-  }
-
-  String _ensureAlgerianPhone(String input) {
-    final sanitized = input.replaceAll(RegExp(r'[^0-9+]'), '');
-    if (sanitized.isEmpty) return sanitized;
-    if (sanitized.startsWith('+')) {
-      if (sanitized.startsWith('+2130')) {
-        return '+213${sanitized.substring(5)}';
-      }
-      return sanitized;
-    }
-    final withoutLeadingZeros = sanitized.replaceFirst(RegExp(r'^0+'), '');
-    return '+213$withoutLeadingZeros';
   }
 
   Future<void> _pickCountry() async {
@@ -507,9 +493,6 @@ class _SignupFormState extends State<_SignupForm> {
                 final number = phone?.number.trim() ?? '';
                 if (number.isEmpty) {
                   return 'field_required'.tr();
-                }
-                if ((phone?.countryCode ?? '') != '+213') {
-                  return 'algerian_phone_error'.tr();
                 }
                 return null;
               },

@@ -35,7 +35,6 @@ class RemoteClinicsService implements ClinicsService {
           jsonEncode(payload.socialMedia.map((e) => e.toJson()).toList());
     }
     final formData = FormData.fromMap(map);
-    print(formData.fields);
 
     for (final image in payload.images) {
       final bytes = await image.readAsBytes();
