@@ -26,16 +26,49 @@ class ServiceOfferingsByServicePage extends StatelessWidget {
   }
 }
 
-class _ServiceOfferingsByServiceView extends StatelessWidget {
+class _ServiceOfferingsByServiceView extends StatefulWidget {
   final ServiceModel service;
   const _ServiceOfferingsByServiceView({required this.service});
 
   @override
+  State<_ServiceOfferingsByServiceView> createState() =>
+      _ServiceOfferingsByServiceViewState();
+}
+
+class _ServiceOfferingsByServiceViewState
+    extends State<_ServiceOfferingsByServiceView> {
+  static const double _loadMoreTrigger = 160;
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    if (maxScroll - currentScroll <= _loadMoreTrigger) {
+      context.read<ServiceOfferingsByServiceCubit>().loadMoreOfferings();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final locale = context.locale.languageCode;
-    final serviceName = service.nameForLanguage(locale);
+    final serviceName = widget.service.nameForLanguage(locale);
     final theme = Theme.of(context);
-    final description = service.descriptionForLocale(locale,
+    final description = widget.service.descriptionForLocale(locale,
         fallback: 'services.details.no_description'.tr());
 
     return Scaffold(
@@ -45,11 +78,12 @@ class _ServiceOfferingsByServiceView extends StatelessWidget {
       body: RefreshIndicator(
         onRefresh: () => context
             .read<ServiceOfferingsByServiceCubit>()
-            .loadOfferings(service.id),
+            .loadOfferings(widget.service.id),
         child: ListView(
+          controller: _scrollController,
           padding: const EdgeInsets.all(16),
           children: [
-            _ServiceHeader(service: service),
+            _ServiceHeader(service: widget.service),
             const SizedBox(height: 12),
             Text(
               description,
@@ -58,26 +92,34 @@ class _ServiceOfferingsByServiceView extends StatelessWidget {
             const SizedBox(height: 16),
             BlocBuilder<ServiceOfferingsByServiceCubit,
                 ServiceOfferingsByServiceState>(
-              builder: (context, state) {
-                switch (state.status) {
-                  case ServiceOfferingsByServiceStatus.loading:
-                    return const _Loading();
-                  case ServiceOfferingsByServiceStatus.failure:
-                    return _Error(
-                      message: state.message ?? 'services.offerings.error'.tr(),
-                      onRetry: () => context
-                          .read<ServiceOfferingsByServiceCubit>()
-                          .loadOfferings(service.id),
-                    );
-                  case ServiceOfferingsByServiceStatus.success:
-                    if (state.offerings.isEmpty) {
-                      return _Empty(message: 'services.offerings.empty'.tr());
-                    }
-                    return _OfferingsList(offerings: state.offerings);
-                  case ServiceOfferingsByServiceStatus.initial:
-                  default:
-                    return const SizedBox.shrink();
+          builder: (context, state) {
+            switch (state.status) {
+              case ServiceOfferingsByServiceStatus.loading:
+                return state.offerings.isEmpty
+                    ? const _Loading()
+                    : _OfferingsList(
+                        offerings: state.offerings,
+                        isLoadingMore: true,
+                      );
+              case ServiceOfferingsByServiceStatus.failure:
+                return _Error(
+                  message: state.message ?? 'services.offerings.error'.tr(),
+                  onRetry: () => context
+                      .read<ServiceOfferingsByServiceCubit>()
+                      .loadOfferings(widget.service.id),
+                );
+              case ServiceOfferingsByServiceStatus.success:
+                if (state.offerings.isEmpty) {
+                  return _Empty(message: 'services.offerings.empty'.tr());
                 }
+                return _OfferingsList(
+                  offerings: state.offerings,
+                  isLoadingMore: state.isLoadingMore,
+                );
+              case ServiceOfferingsByServiceStatus.initial:
+              default:
+                return const SizedBox.shrink();
+            }
               },
             ),
           ],
@@ -136,7 +178,11 @@ class _ImagePlaceholder extends StatelessWidget {
 
 class _OfferingsList extends StatelessWidget {
   final List<ServiceOfferingModel> offerings;
-  const _OfferingsList({required this.offerings});
+  final bool isLoadingMore;
+  const _OfferingsList({
+    required this.offerings,
+    this.isLoadingMore = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -168,8 +214,11 @@ class _OfferingsList extends StatelessWidget {
             crossAxisSpacing: 12,
             childAspectRatio: 0.6,
           ),
-          itemCount: offerings.length,
+          itemCount: offerings.length + (isLoadingMore ? 1 : 0),
           itemBuilder: (context, index) {
+            if (index >= offerings.length) {
+              return const Center(child: CircularProgressIndicator());
+            }
             final offering = offerings[index];
             final serviceName = offering.nameForLocale(locale);
             final providerName = offering.provider.name;
@@ -215,19 +264,10 @@ class _Loading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.surfaceVariant;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: List.generate(
-        3,
-        (index) => Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          height: 90,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(14),
-          ),
-        ),
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 24),
+      child: Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }
