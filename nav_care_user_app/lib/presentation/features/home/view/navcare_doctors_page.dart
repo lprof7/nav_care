@@ -11,6 +11,7 @@ import 'package:nav_care_user_app/presentation/features/home/sections/featured_d
 import 'package:nav_care_user_app/presentation/features/home/sections/featured_doctors/viewmodel/featured_doctors_state.dart';
 import 'package:nav_care_user_app/presentation/features/home/sections/recent_doctors/viewmodel/recent_doctors_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/home/sections/recent_doctors/viewmodel/recent_doctors_state.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/cards/doctor_grid_card.dart';
 
 class NavcareDoctorsPage extends StatefulWidget {
   final List<DoctorModel> doctors;
@@ -242,25 +243,11 @@ class _DoctorsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-
     return LayoutBuilder(
       builder: (context, constraints) {
         final maxWidth = constraints.maxWidth;
-        int crossAxisCount = 1;
-        double childAspectRatio = 0.92;
-
-        if (maxWidth >= 1200) {
-          crossAxisCount = 4;
-          childAspectRatio = 0.78;
-        } else if (maxWidth >= 900) {
-          crossAxisCount = 3;
-          childAspectRatio = 0.8;
-        } else if (maxWidth >= 600) {
-          crossAxisCount = 2;
-          childAspectRatio = 0.75;
-        }
+        int crossAxisCount = 2;
+        double childAspectRatio = 0.74;
 
         return GridView.builder(
           padding: const EdgeInsets.all(16),
@@ -278,11 +265,9 @@ class _DoctorsGrid extends StatelessWidget {
             }
 
             final doctor = doctors[index];
-            final bio = doctor.bioForLocale(context.locale.languageCode);
             final baseUrl = sl<AppConfig>().api.baseUrl;
             final coverPath = doctor.avatarImage(baseUrl: baseUrl) ??
                 doctor.coverImage(baseUrl: baseUrl);
-            final avatarPath = doctor.avatarImage(baseUrl: baseUrl);
             final displayName = doctor.displayName.trim().isNotEmpty
                 ? doctor.displayName
                 : doctor.specialty;
@@ -290,256 +275,26 @@ class _DoctorsGrid extends StatelessWidget {
                 ? doctor.specialty
                 : 'home.doctors_choice.title'.tr();
 
-            return Card(
-              clipBehavior: Clip.antiAlias,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => DoctorDetailPage(
-                        doctorId: doctor.id,
-                        initial: doctor,
-                      ),
+            return DoctorGridCard(
+              title: displayName,
+              subtitle: specialtyLabel,
+              imageUrl: coverPath,
+              rating: doctor.rating > 0 ? doctor.rating : null,
+              buttonLabel: 'hospitals.detail.cta.view_profile'.tr(),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => DoctorDetailPage(
+                      doctorId: doctor.id,
+                      initial: doctor,
                     ),
-                  );
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    AspectRatio(
-                      aspectRatio: 16 / 7,
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          _DoctorCover(path: coverPath),
-                          Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.black.withOpacity(0.15),
-                                  Colors.black.withOpacity(0.45),
-                                ],
-                              ),
-                            ),
-                          ),
-                          if (doctor.rating > 0)
-                            Positioned(
-                              top: 12,
-                              right: 12,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.55),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.star_rounded,
-                                      size: 16,
-                                      color: Colors.amber,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      doctor.rating.toStringAsFixed(1),
-                                      style: textTheme.labelSmall?.copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                    if (avatarPath != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12),
-                        child: _DoctorAvatar(path: avatarPath, radius: 30),
-                      )
-                    else
-                      const SizedBox(height: 16),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              displayName,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              specialtyLabel,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: textTheme.bodySmall?.copyWith(
-                                color: colorScheme.primary,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Expanded(
-                              child: Text(
-                                bio,
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                style: textTheme.bodySmall,
-                              ),
-                            ),
-                            if (doctor.email != null &&
-                                doctor.email!.trim().isNotEmpty) ...[
-                              const SizedBox(height: 12),
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.email_outlined,
-                                    size: 16,
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Expanded(
-                                    child: Text(
-                                      doctor.email!,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: textTheme.bodySmall?.copyWith(
-                                        color: colorScheme.onSurfaceVariant,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             );
           },
         );
       },
-    );
-  }
-}
-
-class _DoctorCover extends StatelessWidget {
-  final String? path;
-
-  const _DoctorCover({required this.path});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    Widget placeholder(
-        {IconData icon = Icons.person_rounded, double size = 48}) {
-      return Container(
-        color: theme.colorScheme.surfaceVariant,
-        alignment: Alignment.center,
-        child: Icon(icon, size: size),
-      );
-    }
-
-    final imagePath = path;
-    if (imagePath == null || imagePath.isEmpty) {
-      return placeholder();
-    }
-
-    if (imagePath.startsWith('http')) {
-      return Image.network(
-        imagePath,
-        fit: BoxFit.cover,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return placeholder(icon: Icons.person_outline_rounded, size: 40);
-        },
-        errorBuilder: (context, error, stackTrace) =>
-            placeholder(icon: Icons.image_not_supported_rounded, size: 36),
-      );
-    }
-
-    return Image.asset(
-      imagePath,
-      fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) =>
-          placeholder(icon: Icons.image_not_supported_rounded, size: 36),
-    );
-  }
-}
-
-class _DoctorAvatar extends StatelessWidget {
-  final String path;
-  final double radius;
-
-  const _DoctorAvatar({required this.path, required this.radius});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    Widget fallback() {
-      return Container(
-        width: radius * 2,
-        height: radius * 2,
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          shape: BoxShape.circle,
-        ),
-        alignment: Alignment.center,
-        child: Icon(
-          Icons.person_rounded,
-          size: radius,
-        ),
-      );
-    }
-
-    if (path.startsWith('http')) {
-      return CircleAvatar(
-        radius: radius,
-        backgroundColor: Colors.white,
-        child: ClipOval(
-          child: Image.network(
-            path,
-            width: radius * 2 - 6,
-            height: radius * 2 - 6,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => fallback(),
-          ),
-        ),
-      );
-    }
-
-    return CircleAvatar(
-      radius: radius,
-      backgroundColor: Colors.white,
-      child: ClipOval(
-        child: Image.asset(
-          path,
-          width: radius * 2 - 6,
-          height: radius * 2 - 6,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => fallback(),
-        ),
-      ),
     );
   }
 }
