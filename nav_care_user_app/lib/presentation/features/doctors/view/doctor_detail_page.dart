@@ -12,6 +12,8 @@ import 'package:nav_care_user_app/presentation/features/doctors/view/doctor_revi
 import 'package:nav_care_user_app/presentation/features/doctors/view/widgets/doctor_reviews_section.dart';
 import 'package:nav_care_user_app/presentation/features/doctors/viewmodel/doctor_reviews_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/doctors/viewmodel/doctor_reviews_state.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/molecules/sign_in_required_card.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'widgets/doctor_service_offerings_section.dart';
@@ -34,6 +36,30 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
   void initState() {
     super.initState();
     _future = _load();
+  }
+
+  void _showSignInPrompt(BuildContext context) {
+    final rootContext = context;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: MediaQuery.of(sheetContext).viewInsets,
+          child: SignInRequiredCard(
+            onSignIn: () {
+              Navigator.of(sheetContext).pop();
+              rootContext.push('/signin');
+            },
+            onCreateAccount: () {
+              Navigator.of(sheetContext).pop();
+              rootContext.push('/signup');
+            },
+            onGoogleSignIn: null,
+          ),
+        ),
+      ),
+    );
   }
 
   Future<DoctorModel> _load() async {
@@ -230,14 +256,20 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                                   onRetry: () => context
                                       .read<DoctorReviewsCubit>()
                                       .loadReviews(doctorId: widget.doctorId),
-                                  onLoadMore: () =>
-                                      context.read<DoctorReviewsCubit>().loadMore(),
-                                  onAddReview: () async {
-                                    final result =
-                                        await Navigator.of(context).push<bool>(
-                                      MaterialPageRoute(
-                                        builder: (_) => BlocProvider.value(
-                                          value: context.read<DoctorReviewsCubit>(),
+                                    onLoadMore: () =>
+                                        context.read<DoctorReviewsCubit>().loadMore(),
+                                    onAddReview: () async {
+                                      final authState =
+                                          context.read<AuthSessionCubit>().state;
+                                      if (!authState.isAuthenticated) {
+                                        _showSignInPrompt(context);
+                                        return;
+                                      }
+                                      final result =
+                                          await Navigator.of(context).push<bool>(
+                                        MaterialPageRoute(
+                                          builder: (_) => BlocProvider.value(
+                                            value: context.read<DoctorReviewsCubit>(),
                                           child: const DoctorAddReviewPage(),
                                         ),
                                       ),
@@ -247,10 +279,10 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                                         _future = _load();
                                       });
                                       context.read<DoctorReviewsCubit>().refresh();
-                                    }
-                                  },
+                                      }
+                                    },
+                                  ),
                                 ),
-                              ),
                               const SizedBox(height: 16),
                               DoctorServiceOfferingsSection(providerId: doctor.id),
                             ],

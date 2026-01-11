@@ -17,16 +17,19 @@ import 'package:nav_care_user_app/presentation/features/hospitals/viewmodel/hosp
 import 'package:nav_care_user_app/presentation/features/hospitals/viewmodel/hospital_detail_state.dart';
 import 'package:nav_care_user_app/presentation/features/hospitals/viewmodel/hospital_reviews_cubit.dart';
 import 'package:nav_care_user_app/presentation/features/hospitals/viewmodel/hospital_reviews_state.dart';
+import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/cards/doctor_grid_card.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/cards/hospital_detail_cards.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/cards/hospital_review_card.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/cards/service_offering_card.dart';
 import 'package:nav_care_user_app/presentation/features/hospitals/view/hospital_add_review_page.dart';
+import 'package:nav_care_user_app/presentation/shared/ui/molecules/sign_in_required_card.dart';
 import 'package:nav_care_user_app/presentation/shared/ui/molecules/hospital_detail_components.dart';
 import 'package:nav_care_user_app/presentation/features/service_offerings/view/service_offering_detail_page.dart';
 import 'package:nav_care_user_app/presentation/features/doctors/view/doctor_detail_page.dart';
 import 'package:nav_care_user_app/presentation/features/hospitals/view/widgets/hospital_detail_shimmer.dart';
 import 'package:nav_care_user_app/presentation/features/hospitals/view/hospital_review_detail_page.dart';
+import 'package:go_router/go_router.dart';
 
 class HospitalDetailPage extends StatelessWidget {
   final String hospitalId;
@@ -87,6 +90,30 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  void _showSignInPrompt(BuildContext context) {
+    final rootContext = context;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: MediaQuery.of(sheetContext).viewInsets,
+          child: SignInRequiredCard(
+            onSignIn: () {
+              Navigator.of(sheetContext).pop();
+              rootContext.push('/signin');
+            },
+            onCreateAccount: () {
+              Navigator.of(sheetContext).pop();
+              rootContext.push('/signup');
+            },
+            onGoogleSignIn: null,
+          ),
+        ),
+      ),
+    );
   }
 
   void _copyText(String text, String feedback) {
@@ -267,6 +294,12 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
                   onReviewsLoadMore: () =>
                       context.read<HospitalReviewsCubit>().loadMore(),
                   onAddReview: () async {
+                    final authState =
+                        context.read<AuthSessionCubit>().state;
+                    if (!authState.isAuthenticated) {
+                      _showSignInPrompt(context);
+                      return;
+                    }
                     final result = await Navigator.of(context).push<bool>(
                       MaterialPageRoute(
                         builder: (_) => BlocProvider.value(
