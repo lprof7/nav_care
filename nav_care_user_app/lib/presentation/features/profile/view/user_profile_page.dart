@@ -44,120 +44,229 @@ class UserProfilePage extends StatelessWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: BlocBuilder<UserProfileCubit, UserProfileState>(
-          builder: (context, state) {
-            if (state.loadStatus == ProfileLoadStatus.loading) {
-              return const Center(child: CircularProgressIndicator());
+        child: BlocListener<UserProfileCubit, UserProfileState>(
+          listenWhen: (prev, curr) =>
+              prev.updateStatus != curr.updateStatus ||
+              prev.passwordStatus != curr.passwordStatus ||
+              prev.resetStatus != curr.resetStatus ||
+              prev.deleteStatus != curr.deleteStatus,
+          listener: (context, state) {
+            final hasSuccess =
+                state.updateStatus == ProfileUpdateStatus.success ||
+                    state.passwordStatus == PasswordUpdateStatus.success ||
+                    state.resetStatus == PasswordResetStatus.success;
+            if (hasSuccess) {
+              Future.delayed(const Duration(seconds: 3), () {
+                if (!context.mounted) return;
+                context.read<UserProfileCubit>().resetStatuses();
+              });
             }
-            if (state.loadStatus == ProfileLoadStatus.failure) {
-              return _ProfileError(
-                message: state.errorMessage ?? 'profile.load_error'.tr(),
-                onRetry: () => context.read<UserProfileCubit>().loadProfile(),
+            if (state.deleteStatus == ProfileDeleteStatus.success) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('profile.delete_account_success'.tr())),
+              );
+              if (context.mounted) {
+                context.go('/signin');
+              }
+              return;
+            }
+            if (state.deleteStatus == ProfileDeleteStatus.failure) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                      state.errorMessage ?? 'profile.delete_account_error'.tr()),
+                ),
               );
             }
-            if (state.profile == null) {
-              return _ProfileEmpty(
-                  onReload: () =>
-                      context.read<UserProfileCubit>().loadProfile());
-            }
+          },
+          child: BlocBuilder<UserProfileCubit, UserProfileState>(
+            builder: (context, state) {
+              if (state.loadStatus == ProfileLoadStatus.loading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state.loadStatus == ProfileLoadStatus.failure) {
+                return _ProfileError(
+                  message: state.errorMessage ?? 'profile.load_error'.tr(),
+                  onRetry: () => context.read<UserProfileCubit>().loadProfile(),
+                );
+              }
+              if (state.profile == null) {
+                return _ProfileEmpty(
+                    onReload: () =>
+                        context.read<UserProfileCubit>().loadProfile());
+              }
 
-            final profile = state.profile!;
-            final appConfig = sl<AppConfig>();
-            final avatarUrl = profile.avatarUrl(appConfig.api.baseUrl);
+              final profile = state.profile!;
+              final appConfig = sl<AppConfig>();
+              final avatarUrl = profile.avatarUrl(appConfig.api.baseUrl);
 
-            return RefreshIndicator(
-              onRefresh: () => context.read<UserProfileCubit>().loadProfile(),
-              color: colorScheme.primary,
-              child: ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: EdgeInsets.zero,
-                children: [
-                  _ProfileHeader(
-                    name: profile.name,
-                    email: profile.email,
-                    phone: profile.phone,
-                    avatarUrl: avatarUrl,
-                    backgroundColor: colorScheme.primary,
-                  ),
-                  Transform.translate(
-                    offset: const Offset(0, -36),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: _ProfileDetailsCard(
-                        emailLabel: 'profile.email'.tr(),
-                        email: profile.email,
-                        phoneLabel: 'profile.phone'.tr(),
-                        phone: profile.phone,
-                        addressLabel: 'profile.address_label'.tr(),
-                        address: _buildAddress(profile),
+              return RefreshIndicator(
+                onRefresh: () => context.read<UserProfileCubit>().loadProfile(),
+                color: colorScheme.primary,
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                  children: [
+                    _ProfileHeader(
+                      name: profile.name,
+                      email: profile.email,
+                      phone: profile.phone,
+                      avatarUrl: avatarUrl,
+                      backgroundColor: colorScheme.primary,
+                    ),
+                    Transform.translate(
+                      offset: const Offset(0, -36),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: _ProfileDetailsCard(
+                          emailLabel: 'profile.email'.tr(),
+                          email: profile.email,
+                          phoneLabel: 'profile.phone'.tr(),
+                          phone: profile.phone,
+                          addressLabel: 'profile.address_label'.tr(),
+                          address: _buildAddress(profile),
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        AppButton(
-                          text: 'profile.edit_profile'.tr(),
-                          onPressed: () => context.push('/profile/edit'),
-                        ),
-                        const SizedBox(height: 12),
-                        OutlinedButton.icon(
-                          icon: const Icon(Icons.lock_reset_rounded),
-                          onPressed: () => context.push('/profile/password'),
-                          label: Text('profile.update_password_short'.tr()),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.primary,
-                            side: const BorderSide(
-                                color: AppColors.primary, width: 1.2),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14)),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          AppButton(
+                            text: 'profile.edit_profile'.tr(),
+                            onPressed: () => context.push('/profile/edit'),
                           ),
-                        ),
-                        const SizedBox(height: 12),
-                        if (state.updateStatus == ProfileUpdateStatus.failure ||
-                            state.passwordStatus ==
-                                PasswordUpdateStatus.failure ||
-                            state.resetStatus == PasswordResetStatus.failure)
-                          _StatusBanner(
-                            message: state.errorMessage ?? '',
-                            color: Colors.red.shade100,
-                            textColor: Colors.red.shade800,
-                          )
-                        else if (state.updateStatus ==
-                            ProfileUpdateStatus.success)
-                          _StatusBanner(
-                            message: 'profile.update_success'.tr(),
-                            color: Colors.green.shade100,
-                            textColor: Colors.green.shade800,
-                          )
-                        else if (state.passwordStatus ==
-                            PasswordUpdateStatus.success)
-                          _StatusBanner(
-                            message: 'profile.password_update_success'.tr(),
-                            color: Colors.green.shade100,
-                            textColor: Colors.green.shade800,
-                          )
-                        else if (state.resetStatus ==
-                            PasswordResetStatus.success)
-                          _StatusBanner(
-                            message: 'profile.reset_link_sent'.tr(),
-                            color: Colors.green.shade100,
-                            textColor: Colors.green.shade800,
+                          const SizedBox(height: 12),
+                          OutlinedButton.icon(
+                            icon: const Icon(Icons.lock_reset_rounded),
+                            onPressed: () => context.push('/profile/password'),
+                            label: Text('profile.update_password_short'.tr()),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppColors.primary,
+                              side: const BorderSide(
+                                  color: AppColors.primary, width: 1.2),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14)),
+                            ),
                           ),
-                      ],
+                          const SizedBox(height: 12),
+                          AppButton(
+                            text: 'profile.delete_account'.tr(),
+                            color: AppColors.error,
+                            textColor: AppColors.textOnPrimary,
+                            icon: const Icon(Icons.delete_outline),
+                            onPressed: state.deleteStatus ==
+                                    ProfileDeleteStatus.deleting
+                                ? null
+                                : () => _confirmDeleteAccount(context),
+                          ),
+                          const SizedBox(height: 12),
+                          if (state.updateStatus ==
+                                  ProfileUpdateStatus.failure ||
+                              state.passwordStatus ==
+                                  PasswordUpdateStatus.failure ||
+                              state.resetStatus == PasswordResetStatus.failure)
+                            _StatusBanner(
+                              message: state.errorMessage ?? '',
+                              color: Colors.red.shade100,
+                              textColor: Colors.red.shade800,
+                            )
+                          else if (state.updateStatus ==
+                              ProfileUpdateStatus.success)
+                            _StatusBanner(
+                              message: 'profile.update_success'.tr(),
+                              color: Colors.green.shade100,
+                              textColor: Colors.green.shade800,
+                            )
+                          else if (state.passwordStatus ==
+                              PasswordUpdateStatus.success)
+                            _StatusBanner(
+                              message: 'profile.password_update_success'.tr(),
+                              color: Colors.green.shade100,
+                              textColor: Colors.green.shade800,
+                            )
+                          else if (state.resetStatus ==
+                              PasswordResetStatus.success)
+                            _StatusBanner(
+                              message: 'profile.reset_link_sent'.tr(),
+                              color: Colors.green.shade100,
+                              textColor: Colors.green.shade800,
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
   }
+}
+
+Future<void> _confirmDeleteAccount(BuildContext context) async {
+  final theme = Theme.of(context);
+  final isDeleting =
+      context.read<UserProfileCubit>().state.deleteStatus ==
+          ProfileDeleteStatus.deleting;
+  final cancelTextColor =
+      theme.brightness == Brightness.dark ? Colors.white : Colors.black87;
+
+  await showDialog<void>(
+    context: context,
+    builder: (ctx) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        title: Text('profile.delete_account_confirm_title'.tr()),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('profile.delete_account_confirm_message'.tr()),
+            const SizedBox(height: 18),
+            AppButton(
+              text: isDeleting
+                  ? 'profile.deleting_account'.tr()
+                  : 'profile.delete_account_confirm'.tr(),
+              color: theme.colorScheme.error,
+              textColor: theme.colorScheme.onError,
+              icon: isDeleting
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Icon(Icons.delete_outline, color: Colors.white),
+              onPressed: isDeleting
+                  ? null
+                  : () {
+                      Navigator.of(ctx).pop();
+                      context.read<UserProfileCubit>().deleteAccount();
+                    },
+            ),
+            const SizedBox(height: 10),
+            AppButton(
+              text: 'profile.delete_account_cancel'.tr(),
+              color: theme.colorScheme.surfaceVariant,
+              textColor: cancelTextColor,
+              icon: Icon(Icons.close_rounded, color: cancelTextColor),
+              onPressed: () => Navigator.of(ctx).pop(),
+            ),
+          ],
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      );
+    },
+  );
 }
 
 class _ProfileHeader extends StatelessWidget {

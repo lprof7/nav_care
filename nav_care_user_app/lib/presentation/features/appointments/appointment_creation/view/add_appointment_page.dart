@@ -108,9 +108,11 @@ class _AddAppointmentPageState extends State<AddAppointmentPage> {
                     ),
                   );
                 } else if (state.status == AppointmentCreationStatus.failure) {
-                  final localizedMessage = (state.errorMessage != null &&
-                          state.errorMessage!.isNotEmpty)
-                      ? state.errorMessage!
+                  final rawMessage = state.errorMessage?.trim() ?? '';
+                  final localizedMessage = rawMessage.isNotEmpty
+                      ? (rawMessage.contains('.') && !rawMessage.contains(' ')
+                          ? rawMessage.tr()
+                          : rawMessage)
                       : 'appointment_created_failure'.tr();
                   showDialog<void>(
                     context: context,
@@ -245,7 +247,10 @@ class _AddAppointmentPageState extends State<AddAppointmentPage> {
                                       );
                                       return;
                                     }
-                                    final cubit = context.read<AppointmentCreationCubit>();
+                                    Intl.defaultLocale =
+                                        context.locale.toLanguageTag();
+                                    final cubit =
+                                        context.read<AppointmentCreationCubit>();
                                     final typeToSend =
                                         _selectedType == 'virtual' ? 'teleconsultation' : 'in_person';
                                     final newAppointment = AppointmentModel(

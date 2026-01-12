@@ -74,6 +74,20 @@ class UserRemoteService {
     );
   }
 
+  Future<Result<Map<String, dynamic>>> deleteMe() async {
+    final token = await _tokenStore.getToken();
+    if (token == null || token.isEmpty) {
+      await handleUnauthorized();
+      return Result.failure(const Failure.unauthorized());
+    }
+
+    return _apiClient.delete<Map<String, dynamic>>(
+      '/api/users/me',
+      parser: (json) => json as Map<String, dynamic>,
+      headers: _authHeaders(token),
+    );
+  }
+
   Map<String, String> _authHeaders(String token) =>
       {'Authorization': 'Bearer $token'};
 }

@@ -81,6 +81,11 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
     DoctorModel doctor,
     String? imageUrl,
   ) async {
+    final authState = context.read<AuthSessionCubit>().state;
+    if (!authState.isAuthenticated) {
+      _showSignInPrompt(context);
+      return;
+    }
     final userId = doctor.userId?.trim() ?? '';
     if (userId.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
