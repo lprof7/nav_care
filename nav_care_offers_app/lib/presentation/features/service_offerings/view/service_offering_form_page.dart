@@ -155,6 +155,19 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                         onTap: () => _openServicePicker(context),
                       ),
                       const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _nameEnController,
+                        decoration: InputDecoration(
+                          labelText: 'service_offerings.form.name_en'.tr(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'field_required'.tr();
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
                       Row(
                         children: [
                           Expanded(
@@ -171,7 +184,9 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                               ],
                               decoration: InputDecoration(
                                 labelText: _requiredLabel(
-                                    'service_offerings.form.price'.tr()),
+                                  '${'service_offerings.form.price'.tr()} '
+                                  '(${_priceCurrencyLabel(context)})',
+                                ),
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -191,19 +206,6 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                               child: CircularProgressIndicator(strokeWidth: 2),
                             ),
                         ],
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _nameEnController,
-                        decoration: InputDecoration(
-                          labelText: 'service_offerings.form.name_en'.tr(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'field_required'.tr();
-                          }
-                          return null;
-                        },
                       ),
                       const SizedBox(height: 16),
                       _MultilineField(
@@ -326,6 +328,17 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
   }
 
   String _requiredLabel(String text) => '$text *';
+
+  String _priceCurrencyLabel(BuildContext context) {
+    switch (context.locale.languageCode) {
+      case 'ar':
+        return 'بالدولار الامريكي';
+      case 'fr':
+        return 'en dollars americains';
+      default:
+        return 'in US dollars';
+    }
+  }
 }
 
 class _MultilineField extends StatelessWidget {

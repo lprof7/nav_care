@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:intl_phone_field/countries.dart';
 import 'package:nav_care_offers_app/core/config/app_config.dart';
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/data/hospitals/models/hospital.dart';
@@ -51,6 +52,8 @@ class _HospitalFormView extends StatefulWidget {
 }
 
 class _HospitalFormViewState extends State<_HospitalFormView> {
+  static const _defaultCountryCode = 'DZ';
+
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _descriptionController;
@@ -58,6 +61,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
   FacilityType _facilityType = FacilityType.hospital;
   final List<TextEditingController> _phoneControllers = [];
   final List<String?> _completePhoneNumbers = [];
+  final List<String> _phoneCountryCodes = [];
   final List<_SocialField> _socialFields = [];
   final List<XFile> _selectedImages = []; // Changed to store XFile
   final List<String> _existingImages = [];
@@ -318,14 +322,18 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     required List<TextEditingController> target,
   }) {
     _completePhoneNumbers.clear();
+    _phoneCountryCodes.clear();
     if (source.isEmpty) {
       target.add(TextEditingController());
       _completePhoneNumbers.add(null);
+      _phoneCountryCodes.add(_defaultCountryCode);
       return;
     }
     for (final value in source) {
-      target.add(TextEditingController(text: _normalizePhone(value)));
-      _completePhoneNumbers.add(value.trim());
+      final seed = _seedPhone(value);
+      target.add(TextEditingController(text: seed.nationalNumber));
+      _completePhoneNumbers.add(seed.completeNumber);
+      _phoneCountryCodes.add(seed.countryCode);
     }
   }
 
@@ -348,9 +356,15 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                   child: PhoneNumberField(
                     controller: controllers[i],
                     labelText: hint,
+                    initialCountryCode: _phoneCountryCodes[i],
                     onChanged: (value) {
                       final raw = controllers[i].text.trim();
                       _completePhoneNumbers[i] = raw.isEmpty ? null : value;
+                      final inferred =
+                          _resolveCountryCodeFromComplete(value);
+                      if (inferred != null) {
+                        _phoneCountryCodes[i] = inferred;
+                      }
                     },
                   ),
                 ),
@@ -382,6 +396,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     setState(() {
       _phoneControllers.add(TextEditingController());
       _completePhoneNumbers.add(null);
+      _phoneCountryCodes.add(_defaultCountryCode);
     });
   }
 
@@ -589,20 +604,102 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
       final controller = controllers.removeAt(index);
       controller.dispose();
       _completePhoneNumbers.removeAt(index);
+      _phoneCountryCodes.removeAt(index);
       if (controllers.isEmpty) controllers.add(TextEditingController());
       if (_completePhoneNumbers.isEmpty) _completePhoneNumbers.add(null);
+      if (_phoneCountryCodes.isEmpty) {
+        _phoneCountryCodes.add(_defaultCountryCode);
+      }
     });
   }
 
-  String _normalizePhone(String value) {
-    final digits = value.replaceAll(RegExp(r'\D'), '');
-    if (digits.startsWith('213') && digits.length > 9) {
-      return digits.substring(3);
+  _PhoneSeed _seedPhone(String value) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) {
+      return const _PhoneSeed(
+        countryCode: _defaultCountryCode,
+        nationalNumber: '',
+      );
     }
-    if (digits.startsWith('0') && digits.length > 9) {
-      return digits.substring(1);
+
+    final digits = _digitsOnly(trimmed);
+    if (digits.isEmpty) {
+      return const _PhoneSeed(
+        countryCode: _defaultCountryCode,
+        nationalNumber: '',
+      );
     }
-    return digits;
+
+    if (trimmed.startsWith('+') || trimmed.startsWith('00')) {
+      final normalized = trimmed.startsWith('00')
+          ? '+${digits.substring(2)}'
+          : '+$digits';
+      final dialDigits =
+          normalized.startsWith('+') ? normalized.substring(1) : digits;
+      final countryCode = _resolveCountryCodeByDial(dialDigits) ??
+          _defaultCountryCode;
+      final dialCode = _dialCodeForCountry(countryCode);
+      final nationalNumber = dialCode != null && dialDigits.startsWith(dialCode)
+          ? dialDigits.substring(dialCode.length)
+          : dialDigits;
+      return _PhoneSeed(
+        countryCode: countryCode,
+        nationalNumber: nationalNumber,
+        completeNumber: normalized,
+      );
+    }
+
+    final inferredCountry = _resolveCountryCodeByDial(digits);
+    if (inferredCountry != null && digits.length > 9) {
+      final dialCode = _dialCodeForCountry(inferredCountry);
+      final nationalNumber = dialCode != null && digits.startsWith(dialCode)
+          ? digits.substring(dialCode.length)
+          : digits;
+      return _PhoneSeed(
+        countryCode: inferredCountry,
+        nationalNumber: nationalNumber,
+        completeNumber: '+$digits',
+      );
+    }
+
+    return _PhoneSeed(
+      countryCode: _defaultCountryCode,
+      nationalNumber: digits,
+    );
+  }
+
+  String _digitsOnly(String value) =>
+      value.replaceAll(RegExp(r'\D'), '');
+
+  String? _resolveCountryCodeFromComplete(String value) {
+    final digits = _digitsOnly(value);
+    if (digits.isEmpty) return null;
+    return _resolveCountryCodeByDial(digits);
+  }
+
+  String? _resolveCountryCodeByDial(String digits) {
+    final sorted = _sortedCountriesByDial();
+    for (final country in sorted) {
+      if (digits.startsWith(country.dialCode)) {
+        return country.code;
+      }
+    }
+    return null;
+  }
+
+  String? _dialCodeForCountry(String countryCode) {
+    for (final country in countries) {
+      if (country.code == countryCode) return country.dialCode;
+    }
+    return null;
+  }
+
+  List<Country> _sortedCountriesByDial() {
+    final list = countries.toList(growable: false);
+    list.sort(
+      (a, b) => b.dialCode.length.compareTo(a.dialCode.length),
+    );
+    return list;
   }
 
   void _submit(BuildContext context) {
@@ -754,6 +851,18 @@ class _SocialField {
   final TextEditingController controller;
 
   _SocialField({required this.type, required this.controller});
+}
+
+class _PhoneSeed {
+  final String countryCode;
+  final String nationalNumber;
+  final String? completeNumber;
+
+  const _PhoneSeed({
+    required this.countryCode,
+    required this.nationalNumber,
+    this.completeNumber,
+  });
 }
 
 const _socialTypes = [
