@@ -429,6 +429,7 @@
         "label": "Images"
       },
       "add_image": "Add image",
+      "change_image": "Change image",
       "select_service": "Please select a service.",
       "create_button": "Create offering",
       "update_button": "Update offering",

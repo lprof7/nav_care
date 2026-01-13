@@ -425,11 +425,12 @@
       "create_service_success": "تم إنشاء الخدمة بنجاح.",
       "create_service_error": "تعذر إنشاء الخدمة.",
       "load_services_error": "تعذر تحميل الخدمات.",
-      "images": {
-        "label": "الصور"
-      },
-      "add_image": "إضافة صورة",
-      "select_service": "يرجى اختيار خدمة.",
+        "images": {
+          "label": "الصور"
+        },
+        "add_image": "إضافة صورة",
+        "change_image": "تغيير صورة",
+        "select_service": "يرجى اختيار خدمة.",
       "create_button": "إنشاء العرض",
       "update_button": "تحديث العرض",
       "create_success": "تم إنشاء عرض الخدمة بنجاح.",

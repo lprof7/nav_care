@@ -352,7 +352,8 @@ class _SignupFormState extends State<_SignupForm> {
     if (result != null) {
       setState(() {
         _selectedCountry = result;
-        _countryController.text = result.name;
+        _countryController.text =
+            result.localizedName(context.locale.languageCode);
       });
     }
     _countrySearchController.clear();

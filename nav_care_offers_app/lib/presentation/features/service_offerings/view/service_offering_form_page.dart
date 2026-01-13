@@ -1,4 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -224,19 +226,26 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                         style: theme.textTheme.titleMedium,
                       ),
                       const SizedBox(height: 8),
-                      ..._selectedImages.map((image) => ListTile(
-                            title: Text(image.name ?? ''),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () => setState(() {
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: [
+                          ..._selectedImages.map(
+                            (image) => _buildLocalImageTile(
+                              image: image,
+                              onRemove: () => setState(() {
                                 _selectedImages.remove(image);
                               }),
                             ),
-                          )),
+                          ),
+                        ],
+                      ),
                       TextButton.icon(
                         onPressed: _pickImage,
                         icon: const Icon(Icons.add_photo_alternate),
-                        label: Text('service_offerings.form.add_image'.tr()),
+                        label: Text(isEdit
+                            ? 'service_offerings.form.change_image'.tr()
+                            : 'service_offerings.form.add_image'.tr()),
                       ),
                       const SizedBox(height: 32),
                       AppButton(
@@ -338,6 +347,70 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
       default:
         return 'in US dollars';
     }
+  }
+
+  Widget _buildLocalImageTile({
+    required XFile image,
+    required VoidCallback onRemove,
+  }) {
+    return _ImageTile(
+      onRemove: onRemove,
+      child: Image.file(
+        File(image.path),
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => const Icon(Icons.broken_image_outlined),
+      ),
+    );
+  }
+}
+
+class _ImageTile extends StatelessWidget {
+  final Widget child;
+  final VoidCallback? onRemove;
+
+  const _ImageTile({
+    required this.child,
+    this.onRemove,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return SizedBox(
+      width: 86,
+      height: 86,
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              color: theme.colorScheme.surfaceVariant,
+              child: SizedBox.expand(child: child),
+            ),
+          ),
+          if (onRemove != null)
+            Positioned(
+              right: 4,
+              top: 4,
+              child: InkWell(
+                onTap: onRemove,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surface.withOpacity(0.9),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.delete_outline,
+                    size: 16,
+                    color: theme.colorScheme.error,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }
 
