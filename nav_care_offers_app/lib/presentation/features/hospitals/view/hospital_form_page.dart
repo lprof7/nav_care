@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +16,7 @@ import 'package:nav_care_offers_app/presentation/shared/utils/hospitals_refresh_
 import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
 import 'package:nav_care_offers_app/presentation/shared/theme/colors.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/network_image.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/molecules/phone_number_field.dart';
 import 'package:nav_care_offers_app/core/routing/app_router.dart';
 
 class HospitalFormPage extends StatelessWidget {
@@ -54,6 +57,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
   late final TextEditingController _addressController;
   FacilityType _facilityType = FacilityType.hospital;
   final List<TextEditingController> _phoneControllers = [];
+  final List<String?> _completePhoneNumbers = [];
   final List<_SocialField> _socialFields = [];
   final List<XFile> _selectedImages = []; // Changed to store XFile
   final List<String> _existingImages = [];
@@ -313,12 +317,15 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     required List<String> source,
     required List<TextEditingController> target,
   }) {
+    _completePhoneNumbers.clear();
     if (source.isEmpty) {
       target.add(TextEditingController());
+      _completePhoneNumbers.add(null);
       return;
     }
     for (final value in source) {
-      target.add(TextEditingController(text: value));
+      target.add(TextEditingController(text: _normalizePhone(value)));
+      _completePhoneNumbers.add(value.trim());
     }
   }
 
@@ -336,9 +343,16 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
           child: Row(
             children: [
               Expanded(
-                child: TextFormField(
-                  controller: controllers[i],
-                  decoration: InputDecoration(hintText: hint),
+                child: Directionality(
+                  textDirection: ui.TextDirection.ltr,
+                  child: PhoneNumberField(
+                    controller: controllers[i],
+                    labelText: hint,
+                    onChanged: (value) {
+                      final raw = controllers[i].text.trim();
+                      _completePhoneNumbers[i] = raw.isEmpty ? null : value;
+                    },
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
@@ -365,7 +379,10 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
   }
 
   void _addPhoneField() {
-    setState(() => _phoneControllers.add(TextEditingController()));
+    setState(() {
+      _phoneControllers.add(TextEditingController());
+      _completePhoneNumbers.add(null);
+    });
   }
 
   void _initSocialFields() {
@@ -571,8 +588,21 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     setState(() {
       final controller = controllers.removeAt(index);
       controller.dispose();
+      _completePhoneNumbers.removeAt(index);
       if (controllers.isEmpty) controllers.add(TextEditingController());
+      if (_completePhoneNumbers.isEmpty) _completePhoneNumbers.add(null);
     });
+  }
+
+  String _normalizePhone(String value) {
+    final digits = value.replaceAll(RegExp(r'\D'), '');
+    if (digits.startsWith('213') && digits.length > 9) {
+      return digits.substring(3);
+    }
+    if (digits.startsWith('0') && digits.length > 9) {
+      return digits.substring(1);
+    }
+    return digits;
   }
 
   void _submit(BuildContext context) {
@@ -581,7 +611,16 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     final isEditing = widget.initial != null;
 
     final phones = _phoneControllers
-        .map((controller) => controller.text.trim())
+        .asMap()
+        .entries
+        .map((entry) {
+          final index = entry.key;
+          final raw = entry.value.text.trim();
+          final complete = _completePhoneNumbers[index];
+          return (complete != null && complete.trim().isNotEmpty)
+              ? complete.trim()
+              : raw;
+        })
         .where((value) => value.isNotEmpty)
         .toList();
 

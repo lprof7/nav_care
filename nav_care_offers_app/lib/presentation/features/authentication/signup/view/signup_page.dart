@@ -151,21 +151,29 @@ class _SignupFormState extends State<_SignupForm> {
   bool _hasUpper = false;
   bool _hasNumber = false;
   bool _hasSpecial = false;
-  bool _showPhoneValidation = false;
 
   DateTime? _selectedBirthDate;
   String? _completePhoneNumber;
   XFile? _profileImage;
   bool _acceptTerms = false;
   late final TapGestureRecognizer _privacyRecognizer;
+  bool _didInitCountry = false;
 
   @override
   void initState() {
     super.initState();
     _passwordController.addListener(_onPasswordChanged);
     _privacyRecognizer = TapGestureRecognizer()..onTap = _openPrivacyPolicy;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_didInitCountry) return;
     _selectedCountry = countries.firstWhere((country) => country.code == 'DZ');
-    _countryController.text = _selectedCountry!.name;
+    _countryController.text =
+        _selectedCountry!.localizedName(context.locale.languageCode);
+    _didInitCountry = true;
   }
 
   @override
@@ -229,19 +237,7 @@ class _SignupFormState extends State<_SignupForm> {
   }
 
   void _submit() {
-    print("phone number: ${_phoneController.text}");
     FocusScope.of(context).unfocus();
-    if (!_showPhoneValidation) {
-      setState(() {
-        _showPhoneValidation = true;
-      });
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _formKey.currentState?.validate();
-        }
-      });
-      return;
-    }
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -472,9 +468,6 @@ class _SignupFormState extends State<_SignupForm> {
               controller: _phoneController,
               labelText: 'phone_number'.tr(),
               languageCode: context.locale.languageCode,
-              autovalidateMode: _showPhoneValidation
-                  ? AutovalidateMode.always
-                  : AutovalidateMode.disabled,
               onChanged: (value) => _completePhoneNumber = value,
               validator: (phone) {
                 final number = phone?.number.trim() ?? '';
@@ -487,7 +480,7 @@ class _SignupFormState extends State<_SignupForm> {
           ),
           const SizedBox(height: 16),
           AppTextField(
-            hintText: 'address'.tr(),
+            hintText: 'profile.address_label'.tr(),
             controller: _addressController,
             maxLines: 2,
             textCapitalization: TextCapitalization.sentences,

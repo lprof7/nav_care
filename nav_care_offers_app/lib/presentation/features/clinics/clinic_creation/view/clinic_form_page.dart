@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'dart:ui' as ui;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +11,7 @@ import 'package:nav_care_offers_app/data/hospitals/models/hospital_payload.dart'
 import 'package:nav_care_offers_app/presentation/features/clinics/clinic_creation/viewmodel/clinic_creation_cubit.dart';
 import 'package:nav_care_offers_app/presentation/features/clinics/clinic_creation/viewmodel/clinic_creation_state.dart';
 import 'package:nav_care_offers_app/presentation/shared/ui/atoms/app_button.dart';
+import 'package:nav_care_offers_app/presentation/shared/ui/molecules/phone_number_field.dart';
 import 'package:nav_care_offers_app/presentation/shared/theme/spacing.dart';
 import 'package:nav_care_offers_app/presentation/shared/utils/hospitals_refresh_bus.dart';
 
@@ -51,6 +53,7 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
   late final TextEditingController _descriptionController;
   late final TextEditingController _addressController;
   final List<TextEditingController> _phoneControllers = [];
+  final List<String?> _completePhoneNumbers = [];
   final List<_SocialField> _socialFields = [];
   final List<XFile> _selectedImages = [];
   final ImagePicker _picker = ImagePicker();
@@ -260,12 +263,15 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
     required List<String> source,
     required List<TextEditingController> target,
   }) {
+    _completePhoneNumbers.clear();
     if (source.isEmpty) {
       target.add(TextEditingController());
+      _completePhoneNumbers.add(null);
       return;
     }
     for (final value in source) {
-      target.add(TextEditingController(text: value));
+      target.add(TextEditingController(text: _normalizePhone(value)));
+      _completePhoneNumbers.add(value.trim());
     }
   }
 
@@ -283,10 +289,17 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
           child: Row(
             children: [
               Expanded(
-                child: TextFormField(
-                  controller: controllers[i],
-                    decoration: InputDecoration(hintText: hint),
+                child: Directionality(
+                  textDirection: ui.TextDirection.ltr,
+                  child: PhoneNumberField(
+                    controller: controllers[i],
+                    labelText: hint,
+                    onChanged: (value) {
+                      final raw = controllers[i].text.trim();
+                      _completePhoneNumbers[i] = raw.isEmpty ? null : value;
+                    },
                   ),
+                ),
               ),
               const SizedBox(width: AppSpacing.sm),
               IconButton(
@@ -312,7 +325,10 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
   }
 
   void _addPhoneField() {
-    setState(() => _phoneControllers.add(TextEditingController()));
+    setState(() {
+      _phoneControllers.add(TextEditingController());
+      _completePhoneNumbers.add(null);
+    });
   }
 
   void _initSocialFields() {
@@ -433,7 +449,9 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
     setState(() {
       final controller = controllers.removeAt(index);
       controller.dispose();
+      _completePhoneNumbers.removeAt(index);
       if (controllers.isEmpty) controllers.add(TextEditingController());
+      if (_completePhoneNumbers.isEmpty) _completePhoneNumbers.add(null);
     });
   }
 
@@ -444,7 +462,16 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
     final cubit = context.read<ClinicCreationCubit>();
 
     final phones = _phoneControllers
-        .map((controller) => controller.text.trim())
+        .asMap()
+        .entries
+        .map((entry) {
+          final index = entry.key;
+          final raw = entry.value.text.trim();
+          final complete = _completePhoneNumbers[index];
+          return (complete != null && complete.trim().isNotEmpty)
+              ? complete.trim()
+              : raw;
+        })
         .where((value) => value.isNotEmpty)
         .toList();
     final socialLinks = _socialFields
@@ -476,6 +503,17 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
     );
 
     cubit.submitClinic(payload);
+  }
+
+  String _normalizePhone(String value) {
+    final digits = value.replaceAll(RegExp(r'\D'), '');
+    if (digits.startsWith('213') && digits.length > 9) {
+      return digits.substring(3);
+    }
+    if (digits.startsWith('0') && digits.length > 9) {
+      return digits.substring(1);
+    }
+    return digits;
   }
 }
 

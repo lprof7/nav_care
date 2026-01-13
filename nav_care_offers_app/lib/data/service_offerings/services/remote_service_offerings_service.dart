@@ -72,9 +72,18 @@ class RemoteServiceOfferingsService implements ServiceOfferingsService {
   Future<Result<Map<String, dynamic>>> updateOffering(
     String offeringId,
     ServiceOfferingPayload payload,
-    {bool useHospitalToken = true}) {
+    {bool useHospitalToken = true}) async {
     final useDoctorToken = !useHospitalToken;
     final formData = FormData.fromMap(payload.toJson());
+    if (payload.images != null) {
+      for (final image in payload.images!) {
+        final bytes = await image.readAsBytes();
+        formData.files.add(MapEntry(
+          'images',
+          MultipartFile.fromBytes(bytes, filename: image.name),
+        ));
+      }
+    }
     return _apiClient.patch(
       _apiClient.apiConfig.serviceOfferingById(offeringId),
       body: formData,

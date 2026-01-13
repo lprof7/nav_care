@@ -187,14 +187,23 @@ class _SignupFormState extends State<_SignupForm> {
   XFile? _profileImage;
   bool _acceptTerms = false;
   late final TapGestureRecognizer _privacyRecognizer;
+  bool _didInitCountry = false;
 
   @override
   void initState() {
     super.initState();
     _passwordController.addListener(_onPasswordChanged);
     _privacyRecognizer = TapGestureRecognizer()..onTap = _openPrivacyPolicy;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_didInitCountry) return;
     _selectedCountry = countries.firstWhere((country) => country.code == 'DZ');
-    _countryController.text = _selectedCountry!.name;
+    _countryController.text =
+        _selectedCountry!.localizedName(context.locale.languageCode);
+    _didInitCountry = true;
   }
 
   @override
@@ -372,7 +381,8 @@ class _SignupFormState extends State<_SignupForm> {
     if (result != null) {
       setState(() {
         _selectedCountry = result;
-        _countryController.text = result.name;
+        _countryController.text =
+            result.localizedName(context.locale.languageCode);
       });
     }
     _countrySearchController.clear();
