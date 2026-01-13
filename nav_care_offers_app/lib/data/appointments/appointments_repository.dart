@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:nav_care_offers_app/core/responses/result.dart';
 import 'package:nav_care_offers_app/core/responses/pagination.dart'
     as core_pagination;
@@ -343,7 +344,14 @@ class AppointmentsRepository {
   String? _extractLocalizedName(dynamic value) {
     final map = _asMap(value);
     if (map == null) return null;
-    for (final key in ['en', 'ar', 'fr', 'sp', 'es']) {
+    final locale = Intl.getCurrentLocale();
+    final code = locale.split('_').first.toLowerCase();
+    final primaryKey = code == 'es' ? 'sp' : code;
+    final primary = map[primaryKey];
+    if (primary is String && primary.trim().isNotEmpty) {
+      return primary;
+    }
+    for (final key in ['en', 'fr', 'ar', 'sp']) {
       final v = map[key];
       if (v is String && v.trim().isNotEmpty) return v;
     }
