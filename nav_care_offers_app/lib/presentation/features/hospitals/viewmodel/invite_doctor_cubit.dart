@@ -29,8 +29,8 @@ class InviteDoctorState extends Equatable {
     return doctors
         .where((doctor) {
           final name = doctor.displayName.toLowerCase();
-          final id = doctor.id.toLowerCase();
-          return name.contains(term) || id.contains(term);
+          final email = doctor.email?.toLowerCase() ?? '';
+          return name.contains(term) || email.contains(term);
         })
         .toList(growable: false);
   }

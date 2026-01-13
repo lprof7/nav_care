@@ -283,7 +283,7 @@
       "invite_doctor": "Inviter un médecin",
       "invite_doctor_title": "Inviter un médecin",
       "invite_doctor_subtitle": "Recherchez et sélectionnez un médecin à inviter.",
-      "invite_doctor_search": "Rechercher par nom ou ID",
+      "invite_doctor_search": "Rechercher par nom ou email",
       "invite_doctor_empty": "Aucun médecin ne correspond à votre recherche.",
       "invite_doctor_reload": "Recharger la liste",
       "invite_doctor_view_profile": "Voir le profil",
