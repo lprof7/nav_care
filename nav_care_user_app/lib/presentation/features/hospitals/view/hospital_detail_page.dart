@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -171,6 +173,19 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
         final facility =
             hospital.field.isNotEmpty ? hospital.field : hospital.facilityType;
         final cover = hospital.primaryImage(baseUrl: baseUrl);
+        final imageUrls = hospital.images
+            .map((image) => _resolveImage(image, baseUrl))
+            .whereType<String>()
+            .where((image) => image.trim().isNotEmpty)
+            .toList(growable: false);
+        final heroImages = imageUrls.isNotEmpty && cover != null
+            ? [
+                ...imageUrls,
+                if (!imageUrls.contains(cover)) cover,
+              ]
+            : (imageUrls.isNotEmpty
+                ? imageUrls
+                : (cover != null ? [cover] : const <String>[]));
         final tabBar = TabBar(
           controller: _tabController,
           isScrollable: true,
@@ -220,7 +235,7 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
                     SizedBox(
                       height: 240,
                       width: double.infinity,
-                      child: _HeroBackdropLayer(imageUrl: cover),
+                      child: _HeroBackdropLayer(imageUrls: heroImages),
                     ),
                     Container(
                       height: 300,
@@ -353,20 +368,112 @@ class _HospitalDetailViewState extends State<_HospitalDetailView>
   }
 }
 
-class _HeroBackdropLayer extends StatelessWidget {
-  final String? imageUrl;
+class _HeroBackdropLayer extends StatefulWidget {
+  final List<String> imageUrls;
 
-  const _HeroBackdropLayer({required this.imageUrl});
+  const _HeroBackdropLayer({required this.imageUrls});
+
+  @override
+  State<_HeroBackdropLayer> createState() => _HeroBackdropLayerState();
+}
+
+class _HeroBackdropLayerState extends State<_HeroBackdropLayer> {
+  late final PageController _controller;
+  int _pageIndex = 0;
+  Timer? _autoSlideTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = PageController();
+    _startAutoSlide();
+  }
+
+  @override
+  void dispose() {
+    _autoSlideTimer?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant _HeroBackdropLayer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.imageUrls.length != widget.imageUrls.length) {
+      if (widget.imageUrls.isEmpty) {
+        _pageIndex = 0;
+      } else if (_pageIndex >= widget.imageUrls.length) {
+        _pageIndex = widget.imageUrls.length - 1;
+      }
+      _startAutoSlide();
+    }
+  }
+
+  void _startAutoSlide() {
+    _autoSlideTimer?.cancel();
+    if (widget.imageUrls.length <= 1) return;
+    _autoSlideTimer = Timer.periodic(
+      const Duration(seconds: 4),
+      (_) {
+        if (!mounted || !_controller.hasClients) return;
+        final next = (_pageIndex + 1) % widget.imageUrls.length;
+        _controller.animateToPage(
+          next,
+          duration: const Duration(milliseconds: 450),
+          curve: Curves.easeOut,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final images = widget.imageUrls;
+
     return Stack(
       fit: StackFit.expand,
       children: [
-        _HeroImageLayer(imageUrl: imageUrl),
-        const _HeroGradientLayer(),
-        _HeroEdgeHighlight(color: theme.colorScheme.surface),
+        if (images.isEmpty)
+          const _HeroImageLayer(imageUrl: null)
+        else
+          PageView.builder(
+            controller: _controller,
+            itemCount: images.length,
+            onPageChanged: (index) => setState(() => _pageIndex = index),
+            physics: const PageScrollPhysics(),
+            itemBuilder: (context, index) {
+              return _HeroImageLayer(imageUrl: images[index]);
+            },
+          ),
+        const IgnorePointer(child: _HeroGradientLayer()),
+        IgnorePointer(
+          child: _HeroEdgeHighlight(color: theme.colorScheme.surface),
+        ),
+        if (images.length > 1)
+          Positioned(
+            bottom: 16,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                images.length,
+                (index) => AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  height: 6,
+                  width: _pageIndex == index ? 18 : 6,
+                  decoration: BoxDecoration(
+                    color: _pageIndex == index
+                        ? Colors.white
+                        : Colors.white.withOpacity(0.55),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }
