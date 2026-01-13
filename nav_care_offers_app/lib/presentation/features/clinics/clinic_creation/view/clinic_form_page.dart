@@ -347,10 +347,21 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
   }
 
   void _initSocialFields() {
-    if (_socialFields.isEmpty) {
-      _socialFields
-          .add(_SocialField(type: _socialTypes.first, controller: TextEditingController()));
+    if (_socialFields.isNotEmpty) return;
+    final existing = widget.initial?.socialMedia ?? const [];
+    if (existing.isNotEmpty) {
+      for (final link in existing) {
+        _socialFields.add(
+          _SocialField(
+            type: _normalizeSocialType(link.type),
+            controller: TextEditingController(text: link.link),
+          ),
+        );
+      }
+      return;
     }
+    _socialFields
+        .add(_SocialField(type: _socialTypes.first, controller: TextEditingController()));
   }
 
   List<Widget> _buildSocialFields() {
@@ -443,6 +454,14 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
     } catch (_) {
       return null;
     }
+  }
+
+  String _normalizeSocialType(String? value) {
+    final normalized = value?.trim().toLowerCase();
+    if (normalized == null || normalized.isEmpty) {
+      return _socialTypes.first;
+    }
+    return _socialTypes.contains(normalized) ? normalized : 'other';
   }
 
   Future<void> _pickImage() async {

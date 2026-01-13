@@ -10,6 +10,7 @@ class Hospital extends Equatable {
   final String? descriptionAr;
   final String? address; // New address field
   final List<String> phones;
+  final List<SocialMediaLink> socialMedia;
   final HospitalCoordinates? coordinates;
   final FacilityType facilityType;
   final List<String> images;
@@ -28,6 +29,7 @@ class Hospital extends Equatable {
     this.descriptionAr,
     this.address, // Add to constructor
     this.phones = const [],
+    this.socialMedia = const [],
     this.coordinates,
     this.facilityType = FacilityType.unknown,
     this.images = const [],
@@ -69,6 +71,8 @@ class Hospital extends Equatable {
       descriptionAr: descriptionAr,
       address: json['address']?.toString(), // Parse address
       phones: _parsePhones(json['phone'] ?? json['phones']),
+      socialMedia:
+          _parseSocialMedia(json['social_media'] ?? json['socialMedia']),
       coordinates: HospitalCoordinates.fromJson(json['coordinates']),
       facilityType: FacilityTypeMapper.fromJson(json['facility_type']),
       images: _parseStringList(json['images'], baseUrl: baseUrl),
@@ -89,6 +93,7 @@ class Hospital extends Equatable {
     String? descriptionAr,
     String? address, // Add to copyWith
     List<String>? phones,
+    List<SocialMediaLink>? socialMedia,
     HospitalCoordinates? coordinates,
     FacilityType? facilityType,
     List<String>? images,
@@ -107,6 +112,7 @@ class Hospital extends Equatable {
       descriptionAr: descriptionAr ?? this.descriptionAr,
       address: address ?? this.address, // Update address
       phones: phones ?? this.phones,
+      socialMedia: socialMedia ?? this.socialMedia,
       coordinates: coordinates ?? this.coordinates,
       facilityType: facilityType ?? this.facilityType,
       images: images ?? this.images,
@@ -128,6 +134,8 @@ class Hospital extends Equatable {
       if (descriptionAr != null) 'description_ar': descriptionAr,
       if (address != null) 'address': address, // Add address to toJson
       if (phones.isNotEmpty) 'phones': phones,
+      if (socialMedia.isNotEmpty)
+        'social_media': socialMedia.map((entry) => entry.toJson()).toList(),
       if (coordinates != null) 'coordinates': coordinates!.toJson(),
       'facility_type': facilityType.apiValue,
       if (images.isNotEmpty) 'images': images,
@@ -153,6 +161,16 @@ class Hospital extends Equatable {
           .split(RegExp(r'[,;]'))
           .map((phone) => phone.trim())
           .where((p) => p.isNotEmpty)
+          .toList();
+    }
+    return const [];
+  }
+
+  static List<SocialMediaLink> _parseSocialMedia(dynamic value) {
+    if (value is Iterable) {
+      return value
+          .whereType<Map<String, dynamic>>()
+          .map(SocialMediaLink.fromJson)
           .toList();
     }
     return const [];
@@ -214,6 +232,7 @@ class Hospital extends Equatable {
         descriptionAr,
         address, // Add to props
         phones,
+        socialMedia,
         coordinates,
         facilityType,
         images,
@@ -222,6 +241,25 @@ class Hospital extends Equatable {
         createdAt,
         updatedAt,
       ];
+}
+
+class SocialMediaLink extends Equatable {
+  final String type;
+  final String link;
+
+  const SocialMediaLink({required this.type, required this.link});
+
+  factory SocialMediaLink.fromJson(Map<String, dynamic> json) {
+    return SocialMediaLink(
+      type: json['type']?.toString() ?? 'other',
+      link: json['link']?.toString() ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {'type': type, 'link': link};
+
+  @override
+  List<Object?> get props => [type, link];
 }
 
 class HospitalClinic extends Equatable {

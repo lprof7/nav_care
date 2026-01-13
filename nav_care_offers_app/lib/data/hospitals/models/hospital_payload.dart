@@ -102,12 +102,3 @@ class HospitalPayload {
     );
   }
 }
-
-class SocialMediaLink {
-  final String type;
-  final String link;
-
-  const SocialMediaLink({required this.type, required this.link});
-
-  Map<String, dynamic> toJson() => {'type': type, 'link': link};
-}

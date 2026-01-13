@@ -9,6 +9,7 @@ class ClinicModel extends Equatable {
   final String? description;
   final String? address;
   final List<String> phones;
+  final List<SocialMediaLink> socialMedia;
 
   const ClinicModel({
     required this.id,
@@ -17,6 +18,7 @@ class ClinicModel extends Equatable {
     this.description,
     this.address,
     this.phones = const [],
+    this.socialMedia = const [],
   });
 
   factory ClinicModel.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,8 @@ class ClinicModel extends Equatable {
           json['description_en']?.toString(),
       address: json['address']?.toString(),
       phones: _parsePhones(json['phone'] ?? json['phones']),
+      socialMedia:
+          _parseSocialMedia(json['social_media'] ?? json['socialMedia']),
     );
   }
 
@@ -39,6 +43,8 @@ class ClinicModel extends Equatable {
       if (description != null) 'description_en': description,
       if (address != null) 'address': address,
       'phones': phones,
+      if (socialMedia.isNotEmpty)
+        'social_media': socialMedia.map((entry) => entry.toJson()).toList(),
     };
   }
 
@@ -69,6 +75,16 @@ class ClinicModel extends Equatable {
     return const [];
   }
 
+  static List<SocialMediaLink> _parseSocialMedia(dynamic value) {
+    if (value is Iterable) {
+      return value
+          .whereType<Map<String, dynamic>>()
+          .map(SocialMediaLink.fromJson)
+          .toList(growable: false);
+    }
+    return const [];
+  }
+
   Hospital toHospital() {
     return Hospital(
       id: id,
@@ -76,6 +92,7 @@ class ClinicModel extends Equatable {
       descriptionEn: description,
       address: address,
       phones: phones,
+      socialMedia: socialMedia,
       images: images,
       facilityType: FacilityType.clinic,
       clinics: const [],
@@ -85,7 +102,15 @@ class ClinicModel extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, images, description, address, phones];
+  List<Object?> get props => [
+        id,
+        name,
+        images,
+        description,
+        address,
+        phones,
+        socialMedia,
+      ];
 }
 
 class ClinicListModel extends Equatable {
