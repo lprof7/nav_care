@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:feedback/feedback.dart';
+import 'package:intl/intl.dart';
 import 'package:nav_care_user_app/core/di/di.dart';
 import 'package:nav_care_user_app/core/routing/app_router.dart';
 import 'package:nav_care_user_app/presentation/features/authentication/session/auth_session_cubit.dart';
@@ -56,6 +57,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         },
         child: BlocBuilder<ThemeModeCubit, ThemeMode>(
           builder: (context, themeMode) {
+            Intl.defaultLocale = context.locale.toLanguageTag();
             return BetterFeedback(
               child: MaterialApp.router(
                 debugShowCheckedModeBanner: false,

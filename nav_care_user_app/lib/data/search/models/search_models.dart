@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 enum SearchResultType { doctor, hospital, serviceOffering, unknown }
 
 SearchResultType searchResultTypeFrom(String? raw) {
@@ -118,6 +120,7 @@ class SearchResultItem {
       return '';
     }
 
+    final languageCode = _languageCode();
     final type = resolveType();
 
     String title = json['name']?.toString() ?? '';
@@ -143,9 +146,18 @@ class SearchResultItem {
             : null;
         title = user?['name']?.toString() ?? title;
         subtitle = json['specialty']?.toString() ?? '';
-        description = json['bio_en']?.toString() ??
-            json['bio']?.toString() ??
-            description;
+        final bioEn = firstNonEmpty([json['bio_en'], json['bio']]);
+        final bioFr = firstNonEmpty([json['bio_fr']]);
+        final bioAr = firstNonEmpty([json['bio_ar']]);
+        final bioSp = firstNonEmpty([json['bio_sp']]);
+        description = _pickLocalized(
+          languageCode,
+          en: bioEn,
+          fr: bioFr,
+          ar: bioAr,
+          sp: bioSp,
+          fallback: description,
+        );
         imagePath = json['cover']?.toString();
         secondaryImagePath = user?['profilePicture']?.toString();
         rating ??= parseDouble(json['rating']);
@@ -153,9 +165,18 @@ class SearchResultItem {
       case SearchResultType.hospital:
         title = json['name']?.toString() ?? title;
         facilityType = json['facility_type']?.toString() ?? facilityType;
-        description = json['description_en']?.toString() ??
-            json['description']?.toString() ??
-            description;
+        final descEn = firstNonEmpty([json['description_en'], json['description']]);
+        final descFr = firstNonEmpty([json['description_fr']]);
+        final descAr = firstNonEmpty([json['description_ar']]);
+        final descSp = firstNonEmpty([json['description_sp']]);
+        description = _pickLocalized(
+          languageCode,
+          en: descEn,
+          fr: descFr,
+          ar: descAr,
+          sp: descSp,
+          fallback: description,
+        );
         final coordinates = json['coordinates'] as Map<String, dynamic>?;
         if (coordinates != null) {
           location = SearchLocation.fromJson(coordinates);
@@ -175,19 +196,47 @@ class SearchResultItem {
         final providerUser = provider?['user'] is Map
             ? Map<String, dynamic>.from(provider?['user'] as Map)
             : null;
-        final offeringName = firstNonEmpty([
+        final nameEn = firstNonEmpty([
           json['name_en'],
-          json['name_fr'],
-          json['name_ar'],
-          json['name_sp'],
-          json['name'],
           extra['name_en'],
-          extra['name'],
+          extra['nameEn'],
           service?['name_en'],
-          service?['name_fr'],
-          service?['name_ar'],
-          service?['name_sp'],
+          service?['nameEn'],
         ]);
+        final nameFr = firstNonEmpty([
+          json['name_fr'],
+          extra['name_fr'],
+          extra['nameFr'],
+          service?['name_fr'],
+          service?['nameFr'],
+        ]);
+        final nameAr = firstNonEmpty([
+          json['name_ar'],
+          extra['name_ar'],
+          extra['nameAr'],
+          service?['name_ar'],
+          service?['nameAr'],
+        ]);
+        final nameSp = firstNonEmpty([
+          json['name_sp'],
+          extra['name_sp'],
+          extra['nameSp'],
+          service?['name_sp'],
+          service?['nameSp'],
+        ]);
+        final nameFallback = firstNonEmpty([
+          json['name'],
+          extra['name'],
+          service?['name'],
+        ]);
+        final offeringName = _pickLocalized(
+          languageCode,
+          en: nameEn,
+          fr: nameFr,
+          ar: nameAr,
+          sp: nameSp,
+          fallback: nameFallback,
+        );
         title = offeringName.isNotEmpty ? offeringName : title;
         subtitle = providerUser?['name']?.toString() ?? '';
         description = provider?['specialty']?.toString() ?? '';
@@ -227,6 +276,43 @@ class SearchResultItem {
       extra: extra,
     );
   }
+}
+
+String _languageCode() {
+  final locale = Intl.getCurrentLocale();
+  final normalized = locale.split('@').first;
+  final parts = normalized.split(RegExp(r'[-_]'));
+  return parts.isNotEmpty ? parts.first.toLowerCase() : '';
+}
+
+String _pickLocalized(
+  String languageCode, {
+  String? en,
+  String? fr,
+  String? ar,
+  String? sp,
+  String? fallback,
+}) {
+  switch (languageCode) {
+    case 'ar':
+      return _firstNonEmptyStrings([ar, en, fr, sp, fallback]);
+    case 'fr':
+      return _firstNonEmptyStrings([fr, en, ar, sp, fallback]);
+    case 'es':
+    case 'sp':
+      return _firstNonEmptyStrings([sp, en, fr, ar, fallback]);
+    default:
+      return _firstNonEmptyStrings([en, fr, ar, sp, fallback]);
+  }
+}
+
+String _firstNonEmptyStrings(List<String?> values) {
+  for (final value in values) {
+    if (value == null) continue;
+    final trimmed = value.trim();
+    if (trimmed.isNotEmpty) return trimmed;
+  }
+  return '';
 }
 
 class SearchPagination {

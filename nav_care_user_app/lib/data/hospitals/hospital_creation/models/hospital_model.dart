@@ -2,6 +2,10 @@ class HospitalModel {
   final String id;
   final String name;
   final String description;
+  final String descriptionEn;
+  final String descriptionFr;
+  final String descriptionAr;
+  final String descriptionSp;
   final double? latitude;
   final double? longitude;
   final List<String> phones;
@@ -12,6 +16,10 @@ class HospitalModel {
     required this.id,
     required this.name,
     required this.description,
+    required this.descriptionEn,
+    required this.descriptionFr,
+    required this.descriptionAr,
+    required this.descriptionSp,
     required this.phones,
     required this.facilityType,
     this.latitude,
@@ -39,11 +47,26 @@ class HospitalModel {
     }
 
     final idValue = json['id'] ?? json['_id'] ?? json['hospital_id'];
+    final descriptionEn = json['description_en']?.toString() ?? '';
+    final descriptionFr = json['description_fr']?.toString() ?? '';
+    final descriptionAr = json['description_ar']?.toString() ?? '';
+    final descriptionSp = json['description_sp']?.toString() ?? '';
+    final description = _firstNonEmptyStrings([
+      json['description']?.toString(),
+      descriptionEn,
+      descriptionFr,
+      descriptionAr,
+      descriptionSp,
+    ]);
 
     return HospitalModel(
       id: idValue?.toString() ?? '',
       name: json['name']?.toString() ?? '',
-      description: json['description']?.toString() ?? '',
+      description: description,
+      descriptionEn: descriptionEn,
+      descriptionFr: descriptionFr,
+      descriptionAr: descriptionAr,
+      descriptionSp: descriptionSp,
       latitude: latitude,
       longitude: longitude,
       phones: phones,
@@ -54,5 +77,14 @@ class HospitalModel {
           json['imageUrl']?.toString() ??
           json['file']?.toString(),
     );
+  }
+
+  static String _firstNonEmptyStrings(List<String?> values) {
+    for (final value in values) {
+      if (value == null) continue;
+      final trimmed = value.trim();
+      if (trimmed.isNotEmpty) return trimmed;
+    }
+    return '';
   }
 }

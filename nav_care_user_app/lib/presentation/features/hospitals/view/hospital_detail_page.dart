@@ -1039,6 +1039,7 @@ class _ClinicsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.locale.languageCode;
     if (isLoading && clinics.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -1085,8 +1086,9 @@ class _ClinicsTab extends StatelessWidget {
                 final image = clinic.images.isNotEmpty
                     ? _resolveImage(clinic.images.first, baseUrl)
                     : null;
-                final subtitle = clinic.description ??
-                    'hospitals.detail.no_description'.tr();
+                final subtitle = clinic.descriptionForLocale(locale).isNotEmpty
+                    ? clinic.descriptionForLocale(locale)
+                    : 'hospitals.detail.no_description'.tr();
                 return InfoGridCard(
                   title: clinic.name,
                   subtitle: subtitle,

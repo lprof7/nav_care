@@ -19,7 +19,9 @@ class _AddServicePageState extends State<AddServicePage> {
   final _nameEnController = TextEditingController();
   final _nameFrController = TextEditingController();
   final _nameArController = TextEditingController();
+  final _nameSpController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _descriptionSpController = TextEditingController();
   final _imagePicker = ImagePicker();
 
   XFile? _selectedImage;
@@ -29,7 +31,9 @@ class _AddServicePageState extends State<AddServicePage> {
     _nameEnController.dispose();
     _nameFrController.dispose();
     _nameArController.dispose();
+    _nameSpController.dispose();
     _descriptionController.dispose();
+    _descriptionSpController.dispose();
     super.dispose();
   }
 
@@ -57,7 +61,10 @@ class _AddServicePageState extends State<AddServicePage> {
       'name_en': _nameEnController.text.trim(),
       'name_fr': _nameFrController.text.trim(),
       'name_ar': _nameArController.text.trim(),
+      'name_sp': _nameSpController.text.trim(),
       'description': _descriptionController.text.trim(),
+      'description_en': _descriptionController.text.trim(),
+      'description_sp': _descriptionSpController.text.trim(),
       'file': _selectedImage,
     };
 
@@ -195,8 +202,38 @@ class _AddServicePageState extends State<AddServicePage> {
                               ),
                               const SizedBox(height: 16),
                               AppTextField(
+                                controller: _nameSpController,
+                                hintText: 'Service name (Spanish)',
+                                textCapitalization: TextCapitalization.words,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Required';
+                                  }
+                                  if (value.trim().length > 255) {
+                                    return 'Max 255 characters';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              AppTextField(
                                 controller: _descriptionController,
                                 hintText: 'Description',
+                                maxLines: 4,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Required';
+                                  }
+                                  if (value.trim().length > 1000) {
+                                    return 'Max 1000 characters';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              AppTextField(
+                                controller: _descriptionSpController,
+                                hintText: 'Description (Spanish)',
                                 maxLines: 4,
                                 validator: (value) {
                                   if (value == null || value.trim().isEmpty) {
