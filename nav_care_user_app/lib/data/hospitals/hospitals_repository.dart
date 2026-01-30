@@ -134,8 +134,13 @@ class HospitalsRepository {
   Future<Paged<HospitalModel>> getRecentHospitals({
     int page = 1,
     int limit = 6,
-  }) {
-    return _fetchHospitals(page: page, limit: limit);
+  }) async {
+    final requestLimit = limit < 1
+        ? 1
+        : limit > 20
+            ? 20
+            : limit;
+    return _fetchHospitals(page: page, limit: requestLimit);
   }
 
   Future<List<HospitalModel>> getFakeFeaturedHospitals({int limit = 6}) async {

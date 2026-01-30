@@ -1,0 +1,776 @@
+{
+  "sign_in": "Iniciar sesión",
+  "sign_up": "Registrarse",
+  "sign_up_subtitle": "Crea una cuenta para empezar",
+  "email": "Correo electrónico",
+  "email_or_phone": "Correo electrónico o número de teléfono",
+  "password": "Contraseña",
+  "confirm_password": "Confirmar contraseña",
+  "first_name": "Nombre",
+  "last_name": "Apellido",
+  "birth_date_hint": "Selecciona tu fecha de nacimiento",
+  "phone_number": "Número de teléfono",
+  "algerian_phone_error": "Introduce un número de teléfono argelino válido",
+  "upload_profile_picture": "Subir foto de perfil",
+  "upload_photo_hint": "Toca para añadir o actualizar tu foto de perfil",
+  "change_photo": "Cambiar foto",
+  "remove_photo": "Eliminar foto",
+  "passwords_do_not_match": "Las contraseñas no coinciden",
+  "accept_terms_error": "Por favor, acepta los Términos y la Política de Privacidad",
+  "invalid_email_format": "Por favor, introduce una dirección de correo electrónico válida.",
+  "i_accept": "Acepto",
+  "terms_and_policy": "Términos y Política de Privacidad",
+  "already_have_account": "¿Ya tienes una cuenta?",
+  "dont_have_account": "¿No tienes una cuenta?",
+  "or": "O",
+  "book_an_appointment": "Reservar una cita",
+  "sign_in_subtitle": "Inicia sesión para continuar",
+  "remember_me": "Recordarme",
+  "forgot_password": "¿Olvidaste tu contraseña?",
+  "reset_password": {
+    "title": "Restablecer contraseña",
+    "subtitle": "Ingresa tu correo electrónico para recibir un código de restablecimiento.",
+    "email_hint": "Tu dirección de correo electrónico",
+    "send_code": "Enviar código",
+    "code_title": "Ingresar código de verificación",
+    "code_subtitle": "Enviamos un código de 6 dígitos a {email}",
+    "code_hint": "Código de 6 dígitos",
+    "verify": "Siguiente",
+    "timer_title": "El código expira en",
+    "timer_label": "{seconds}s restantes",
+    "timer_expired": "El código expiró",
+    "back_to_email": "Volver al correo electrónico",
+    "code_sent": "Código de restablecimiento enviado a tu correo.",
+    "code_verified": "Código verificado. Establece tu nueva contraseña.",
+    "password_title": "Establecer una nueva contraseña",
+    "password_subtitle": "Crea una contraseña segura para proteger tu cuenta.",
+    "new_password": "Nueva contraseña",
+    "confirm_password": "Confirmar contraseña",
+    "submit": "Restablecer contraseña",
+    "success": "Contraseña restablecida con éxito. Por favor, inicia sesión.",
+    "error": "No se pudo procesar tu solicitud. Inténtalo de nuevo."
+  },
+  "sign_in_with_google": "Iniciar sesión con Google",
+  "sign_in_with_apple": "Iniciar sesión con Apple",
+  "sign_up_with_google": "Registrarse con Google",
+  "sign_up_with_apple": "Registrarse con Apple",
+  "signin_success_message": "Bienvenido {name}",
+  "signin_error_message": "Error: {message}",
+  "signin_account_not_found": "No pudimos encontrar una cuenta con esas credenciales.",
+  "signin_doctor_profile_required": "Encontramos tu cuenta de usuario, pero aún necesitas completar tu perfil de médico.",
+  "signup_success_message": "Cuenta creada con éxito",
+  "signup_error_message": "Error: {message}",
+  "loading": "Cargando...",
+  "field_required": "Este campo es obligatorio",
+  "become_doctor_title": "Conviértete en médico",
+  "become_doctor_heading": "Completa tu perfil de médico",
+  "become_doctor_description": "Hola {name}, para continuar necesitas confirmar tu información profesional.",
+  "become_doctor_default_name": "Doctor",
+  "become_doctor_next_steps": "Te guiaremos a través de los pasos restantes en breve.",
+  "become_doctor_back_to_signin": "Volver a iniciar sesión",
+  "become_doctor_image_label": "Imagen de perfil",
+  "become_doctor_image_hint": "Añade una foto clara y profesional para completar tu perfil.",
+  "become_doctor_image_cta": "Subir imagen",
+  "become_doctor_image_required": "Se requiere una imagen de perfil.",
+  "become_doctor_bio_label": "Biografía corta (Inglés)",
+  "become_doctor_bio_hint": "Describe tu experiencia y lo que los pacientes pueden esperar.",
+  "become_doctor_submit": "Enviar solicitud",
+  "become_doctor_submitting": "Enviando...",
+  "become_doctor_success": "¡Tu solicitud de perfil de médico fue enviada!",
+  "shell": {
+    "nav_home": "Inicio",
+    "nav_search": "Buscar",
+    "nav_appointments": "Citas",
+    "nav_hospitals": "Hospitales",
+    "nav_profile": "Perfil",
+    "badge_new": "Nuevo",
+    "drawer_settings": "Ajustes",
+    "drawer_theme": "Tema",
+    "drawer_default_name": "Dr. NavCare",
+    "drawer_default_email": "doctor@navcare.com",
+    "drawer_verify_phone": "Verificar número de teléfono",
+    "language": {
+      "en": "Inglés",
+      "ar": "Árabe",
+      "fr": "Francés"
+    },
+    "app_bar": {
+      "menu": "Abrir menú",
+      "support": "Soporte",
+      "favorites": "Favoritos",
+      "notifications": "Notificaciones",
+      "exit": "Salir"
+    },
+    "onboarding": {
+      "hospital_title": "Has iniciado sesión como hospital",
+      "clinic_title": "Has iniciado sesión como clínica",
+      "welcome": "Bienvenido {name}",
+      "exit_hospital_title": "Has cerrado sesión del hospital",
+      "exit_clinic_title": "Has cerrado sesión de la clínica",
+      "exit_message": "Hasta pronto, {name}"
+    },
+    "drawer_logout": "Cerrar sesión"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "empty_title": "No hay notificaciones todavía",
+    "empty_subtitle": "¡Estás al día! Cuando haya nuevas actualizaciones, aparecerán aquí.",
+    "refresh": "Actualizar"
+  },
+  "messages": {
+    "title": "Mensajes",
+    "search_placeholder": "Busca médicos para iniciar un chat",
+    "empty_title": "No hay mensajes todavía",
+    "empty_subtitle": "Inicia una conversación buscando un médico.",
+    "search_doctors_title": "Buscar Médicos",
+    "search_doctors_subtitle": "Escribe un nombre o especialidad para encontrar médicos.",
+    "search_doctors_hint": "Buscar médicos",
+    "search_empty": "No se encontraron médicos.",
+    "search_retry": "Intentar de nuevo",
+    "search_failed": "No se pudieron cargar los médicos.",
+    "search_error": "Búsqueda fallida: {message}",
+    "search_doctor_view_profile": "Ver perfil",
+    "send_message": "Enviar mensaje",
+    "chat_title": "Chat",
+    "chat_subtitle": "La mensajería estará disponible pronto.",
+    "chat_demo_doctor": "¡Hola! ¿Cómo puedo ayudarte hoy?",
+    "chat_demo_user": "Me gustaría preguntar sobre la disponibilidad de citas.",
+    "chat_input_placeholder": "Escribe tu mensaje...",
+    "last_message_none": "No hay mensajes todavía",
+    "last_message_media": "Mensaje multimedia",
+    "conversations_error": "No se pudieron cargar las conversaciones. {message}",
+    "chat_empty_title": "No hay mensajes todavía",
+    "chat_empty_subtitle": "Inicia un chat desde la lista de mensajes.",
+    "chat_error": "No se pudieron cargar los mensajes. {message}",
+    "chat_send_error": "No se pudo enviar el mensaje. {message}"
+  },
+  "doctor_invitations": {
+    "title": "Invitaciones",
+    "empty": "No hay invitaciones todavía.",
+    "retry": "Intentar de nuevo",
+    "accept": "Aceptar",
+    "decline": "Rechazar",
+    "accept_success": "Invitación aceptada.",
+    "decline_success": "Invitación rechazada.",
+    "error_generic": "No se pudieron cargar las invitaciones.",
+    "invited_by": "Invitado por {name}"
+  },
+  "home": {
+    "welcome_message": "Esto es lo que está sucediendo hoy",
+    "appointments": {
+      "title": "Próximas citas",
+      "subtitle": "Gestiona el horario de pacientes de hoy",
+      "empty": "No hay citas disponibles todavía."
+    },
+    "quick_actions": {
+      "title": "Acciones rápidas",
+      "add_offer": "Añadir nueva oferta",
+      "manage_calendar": "Gestionar calendario",
+      "view_reports": "Ver informes"
+    },
+    "services_manage": {
+      "title": "Gestionar servicios",
+      "subtitle": "Revisa, actualiza y publica tus ofertas",
+      "prompt": "Toca la tarjeta de arriba para cargar tus servicios.",
+      "loading": "Cargando tus servicios...",
+      "error": "No pudimos cargar tus servicios",
+      "retry": "Intentar de nuevo",
+      "empty": "Aún no has añadido ningún servicio.",
+      "list_title": "Tus servicios activos",
+      "more": "+{count} más servicios"
+    }
+  },
+  "appointments": {
+    "status": {
+      "pending": "Pendiente",
+      "confirmed": "Confirmada",
+      "completed": "Completada",
+      "cancelled": "Cancelada"
+    },
+    "edit": {
+      "title": "Actualizar cita",
+      "start_label": "Hora de inicio",
+      "end_label": "Hora de finalización",
+      "status_label": "Estado",
+      "cancel": "Cancelar",
+      "submit": "Guardar cambios"
+    },
+    "messages": {
+      "update_success": "Cita actualizada con éxito",
+      "update_failure": "No se pudo actualizar la cita"
+    },
+    "validation": {
+      "invalid_range": "La hora de finalización debe ser posterior a la hora de inicio",
+      "invalid_dates": "Las fechas de la cita no son válidas"
+    },
+    "list": {
+      "change_status": "Cambiar estado"
+    }
+  },
+  "hospitals": {
+    "list": {
+      "title": "Red de hospitales",
+      "subtitle": "Organiza tus hospitales y clínicas en un solo lugar",
+      "empty": "Aún no has añadido ninguna instalación.",
+      "error_network": "No pudimos conectar con el servidor. Comprueba tu conexión e inténtalo de nuevo.",
+      "error_timeout": "El servidor está tardando más de lo esperado. Por favor, inténtalo de nuevo.",
+      "error_unauthorized": "Tu sesión ha expirado. Por favor, inicia sesión de nuevo.",
+      "error_generic": "No pudimos cargar tus hospitales en este momento."
+    },
+    "actions": {
+      "add": "Añadir hospital",
+      "reload": "Recargar",
+      "retry": "Intentar de nuevo",
+      "view_details": "Ver detalles",
+      "add_clinic": "Añadir clínica",
+      "add_offering": "Añadir oferta"
+    },
+    "stats": {
+      "clinics": "{0} clínicas",
+      "doctors": "{0} médicos"
+    },
+    "facility_type": {
+      "hospital": "Hospital",
+      "clinic": "Clínica",
+      "unknown": "Instalación"
+    },
+    "detail": {
+      "app_bar": "Hospital # {0}",
+      "tabs": {
+        "details": "Detalles",
+        "clinics": "Clínicas",
+        "doctors": "Médicos",
+        "invitations": "Invitaciones",
+        "offerings": "Ofertas de servicios"
+      },
+      "stats": {
+        "clinics": "Clínicas",
+        "doctors": "Médicos",
+        "offerings": "Ofertas",
+        "rating": "Calificación"
+      },
+      "cta": {
+        "view_service": "Gestionar"
+      },
+      "facility_type": "Tipo de instalación",
+      "phone": "Teléfono de contacto",
+      "coordinates": "Coordenadas de ubicación",
+      "manage_clinics": "Gestionar clínicas",
+      "manage_doctors": "Gestionar médicos",
+      "clinics_title": "Clínicas dentro de este hospital",
+      "doctors_title": "Médicos asociados",
+      "edit": "Editar hospital",
+      "delete": "Eliminar hospital",
+      "deleting": "Eliminando...",
+      "delete_confirm_title": "Eliminar hospital",
+      "delete_confirm_message": "¿Estás seguro de que quieres eliminar este hospital? Esta acción no se puede deshacer.",
+      "delete_cancel": "Cancelar",
+      "delete_confirm": "Eliminar",
+      "delete_success": "Hospital eliminado con éxito.",
+      "not_found": "No pudimos encontrar el hospital solicitado.",
+      "manage_offerings": "Gestionar ofertas de servicios",
+      "about": "Acerca de",
+      "no_description": "No hay descripción disponible.",
+      "overview": "Resumen",
+      "contact": "Información de contacto",
+      "filters": "Filtros",
+      "sorting": "Ordenar por",
+      "search_doctors": "Buscar médicos...",
+      "offerings_subtitle": "Servicio proporcionado por este hospital",
+      "clinics_empty": "No hay clínicas disponibles para este hospital.",
+      "doctors_empty": "No hay médicos disponibles para este hospital.",
+      "offerings_empty": "No hay ofertas de servicios disponibles para este hospital.",
+      "invite_doctor": "Invitar a un médico",
+      "invite_doctor_title": "Invitar a un médico",
+      "invite_doctor_subtitle": "Busca y elige un médico para invitar.",
+      "invite_doctor_search": "Buscar por nombre o correo electrónico",
+      "invite_doctor_empty": "Ningún médico coincide con tu búsqueda.",
+      "invite_doctor_reload": "Recargar lista",
+      "invite_doctor_view_profile": "Ver perfil",
+      "invitations_title": "Invitaciones",
+      "invitations_empty": "No hay invitaciones todavía.",
+      "invitation_send": "Enviar invitación",
+      "invitation_sent": "Invitación enviada",
+      "invitation_request_sent": "Solicitud de invitación enviada",
+      "invitation_cancel": "Cancelar invitación",
+      "invitation_cancel_success": "Invitación cancelada"
+    },
+    "invitations": {
+      "status": {
+        "pending": "Pendiente",
+        "accepted": "Aceptada",
+        "rejected": "Rechazada",
+        "cancelled": "Cancelada"
+      }
+    },
+    "form": {
+      "create_title": "Añadir hospital o clínica",
+      "edit_title": "Editar hospital",
+      "name": "Nombre de la instalación",
+      "description_en": "Descripción (Inglés)",
+      "facility_type": {
+        "label": "Tipo de instalación",
+        "hospital": "Hospital",
+        "clinic": "Clínica",
+        "unknown": "Instalación"
+      },
+      "phone_label": "Números de teléfono",
+      "phone_hint": "+1234567890",
+      "coordinates": {
+        "label": "Coordenadas",
+        "latitude": "Latitud",
+        "longitude": "Longitud"
+      },
+      "images": {
+        "label": "Imágenes",
+        "hint": "https://example.com/hospital.jpg"
+      },
+      "add_image": "Añadir imagen",
+      "social": {
+        "label": "Redes sociales",
+        "add": "Añadir enlace social",
+        "type_label": "Plataforma",
+        "link_label": "Enlace",
+        "link_hint": "https://facebook.com/your-page",
+        "types": {
+          "facebook": "Facebook",
+          "instagram": "Instagram",
+          "youtube": "YouTube",
+          "x": "X (Twitter)",
+          "linkedin": "LinkedIn",
+          "other": "Otros enlaces"
+        }
+      },
+      "address": "Dirección",
+      "add_entry": "Añadir otro",
+      "saving": "Guardando...",
+      "save": "Guardar hospital",
+      "success_create": "Hospital creado con éxito.",
+      "success_update": "Hospital actualizado con éxito.",
+      "images_required": "Se requiere al menos una imagen."
+    },
+    "manage": {
+      "title": "{0}",
+      "clinics_title": "Gestionar clínicas",
+      "doctors_title": "Gestionar médicos",
+      "clinics_description": "Pronto podrás crear, actualizar y organizar tus clínicas desde aquí.",
+      "doctors_description": "Pronto podrás gestionar los médicos asociados a este hospital.",
+      "placeholder": "Todavía estamos construyendo esta experiencia. ¡Mantente atento!"
+    }
+  },
+  "service_offerings": {
+    "list": {
+      "title": "Gestionar ofertas de servicios",
+      "heading": "Tus ofertas de servicios",
+      "subtitle": "Revisa y actualiza las ofertas adjuntas a este hospital.",
+      "price": "Precio: {price} $",
+      "add": "Añadir oferta de servicio",
+      "empty": "No hay ofertas de servicios todavía. Empieza añadiendo la primera.",
+      "reload": "Recargar",
+      "retry": "Intentar de nuevo"
+    },
+    "detail": {
+      "title": "Oferta de servicio",
+      "not_found": "No pudimos encontrar esta oferta de servicio.",
+      "price": "Precio: ",
+      "provider": "Proveedor",
+      "specialty": "Especialidad",
+      "offers": "Ofertas incluidas",
+      "no_offers": "No se han añadido ofertas a este servicio todavía.",
+      "description": "Descripción",
+      "no_description": "No hay descripción disponible.",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "delete_title": "¿Eliminar oferta de servicio?",
+      "delete_message": "Esta acción no se puede deshacer. ¿Quieres eliminar esta oferta de servicio?",
+      "price_label": "Precio"
+    },
+    "reviews": {
+      "title": "Opiniones",
+      "empty": "No hay opiniones todavía.",
+      "error": "No se pudieron cargar las opiniones.",
+      "retry": "Intentar de nuevo",
+      "no_comment": "No se proporcionó ningún comentario.",
+      "anonymous": "Anónimo",
+      "load_more": "Mostrar más",
+      "show_less": "Mostrar menos"
+    },
+    "form": {
+      "create_title": "Añadir oferta de servicio",
+      "edit_title": "Editar oferta de servicio",
+      "description": "Rellena los detalles para publicar esta oferta.",
+      "service": "Servicio",
+      "reload_services": "Recargar servicios",
+      "price": "Precio",
+      "price_invalid": "Introduce un precio válido",
+      "offers": "Ofertas incluidas",
+      "offers_hint": "Ofertas o beneficios separados por comas",
+      "name_en": "Nombre (Inglés)",
+      "name_ar": "Nombre (Árabe)",
+      "name_fr": "Nombre (Francés)",
+      "service_name": "Nombre del servicio",
+      "description_en": "Descripción (Inglés)",
+      "description_ar": "Descripción (Árabe)",
+      "description_fr": "Descripción (Francés)",
+      "service_description": "Descripción del servicio",
+      "select_service_title": "Seleccionar un servicio",
+      "search_services_hint": "Buscar servicios...",
+      "add_service": "Añadir servicio",
+      "services_empty": "No se han encontrado servicios todavía.",
+      "create_service_title": "Añadir un servicio",
+      "create_service_subtitle": "Crea un nuevo servicio para usar en tu oferta.",
+      "service_image_label": "Imagen del servicio",
+      "service_image_add": "Subir imagen",
+      "create_service_submit": "Crear servicio",
+      "create_service_success": "Servicio creado con éxito.",
+      "create_service_error": "No se pudo crear el servicio.",
+      "load_services_error": "No se pudieron cargar los servicios.",
+      "images": {
+        "label": "Imágenes"
+      },
+      "add_image": "Añadir imagen",
+      "change_image": "Cambiar imagen",
+      "select_service": "Por favor, selecciona un servicio.",
+      "create_button": "Crear oferta",
+      "update_button": "Actualizar oferta",
+      "create_success": "Oferta de servicio creada con éxito.",
+      "update_success": "Oferta de servicio actualizada con éxito.",
+      "error": "No se pudo guardar la oferta de servicio."
+    },
+    "errors": {
+      "parse_list": "No se pudo analizar la respuesta de las ofertas de servicios",
+      "parse_detail": "No se pudo cargar la oferta de servicio seleccionada",
+      "parse_submit": "No se pudo guardar la oferta de servicio",
+      "parse_catalog": "No se pudo cargar el catálogo de servicios"
+    }
+  },
+  "clinics": {
+    "list": {
+      "error_generic": "No pudimos cargar tus clínicas en este momento."
+    },
+    "actions": {
+      "add_offering": "Añadir oferta",
+      "delete": "Eliminar clínica",
+      "edit": "Editar clínica",
+      "manage": "Gestionar clínica",
+      "retry": "Intentar de nuevo",
+      "view_details": "Ver detalles"
+    },
+    "facility_type": {
+      "hospital": "Hospital",
+      "clinic": "Clínica",
+      "unknown": "Instalación"
+    },
+    "detail": {
+      "about": "Acerca de",
+      "contact": "Información de contacto",
+      "delete": "Eliminar clínica",
+      "deleting": "Eliminando...",
+      "delete_confirm_title": "Eliminar clínica",
+      "delete_confirm_message": "¿Estás seguro de que quieres eliminar esta clínica? Esta acción no se puede deshacer.",
+      "delete_cancel": "Cancelar",
+      "delete_confirm": "Eliminar",
+      "delete_success": "Clínica eliminada con éxito.",
+      "edit": "Editar clínica",
+      "facility_type": "Tipo de instalación",
+      "invite_doctor": "Invitar a un médico",
+      "no_description": "No hay descripción disponible.",
+      "overview": "Resumen",
+      "phone": "Teléfono de contacto",
+      "search_doctors": "Buscar médicos...",
+      "tabs": {
+        "clinics": "Clínicas",
+        "doctors": "Médicos",
+        "invitations": "Invitaciones",
+        "offerings": "Ofertas de servicios"
+      },
+      "stats": {
+        "clinics": "Clínicas",
+        "doctors": "Médicos",
+        "offerings": "Ofertas"
+      },
+      "clinics_empty": "No hay clínicas disponibles para esta clínica.",
+      "doctors_empty": "No hay médicos disponibles para esta clínica.",
+      "offerings_empty": "No hay ofertas de servicios disponibles para esta clínica.",
+      "invitations_empty": "No hay invitaciones todavía."
+    },
+    "form": {
+      "create_title": "Añadir clínica",
+      "edit_title": "Editar clínica",
+      "name": "Nombre de la clínica",
+      "description_en": "Descripción (Inglés)",
+      "facility_type": {
+        "label": "Tipo de instalación",
+        "hospital": "Hospital",
+        "clinic": "Clínica",
+        "unknown": "Instalación"
+      },
+      "address": "Dirección",
+      "phone_label": "Números de teléfono",
+      "phone_hint": "+1234567890",
+      "add_entry": "Añadir teléfono",
+      "images": {
+        "label": "Imágenes"
+      },
+      "add_image": "Añadir imagen",
+      "social": {
+        "label": "Redes sociales",
+        "add": "Añadir enlace social",
+        "type_label": "Plataforma",
+        "link_label": "Enlace",
+        "link_hint": "https://facebook.com/your-page",
+        "types": {
+          "facebook": "Facebook",
+          "instagram": "Instagram",
+          "youtube": "YouTube",
+          "x": "X (Twitter)",
+          "linkedin": "LinkedIn",
+          "other": "Otros enlaces"
+        }
+      },
+      "images_required": "Por favor, añade al menos una imagen.",
+      "saving": "Guardando...",
+      "save": "Guardar clínica",
+      "success_create": "Clínica creada con éxito.",
+      "success_update": "Clínica actualizada con éxito."
+    }
+  },
+  "doctor": "Médico",
+  "logout_success_message": "Has cerrado sesión.",
+  "logout_error_message": "No se pudo cerrar sesión: {message}",
+  "reviews": "opiniones",
+  "auth_required": {
+    "title": "Se requiere iniciar sesión",
+    "description": "Por favor, inicia sesión o crea una cuenta para continuar.",
+    "create_account": "Crear cuenta"
+  },
+  "doctor_required": {
+    "title": "Se requiere acceso de médico",
+    "description": "Solo los médicos pueden acceder a esta sección. Completa tu perfil de médico para continuar.",
+    "cta": "Conviértete en médico"
+  },
+  "shell.drawer_faq": "Preguntas frecuentes",
+  "shell.drawer_contact": "Contacto",
+  "shell.drawer_settings": "Ajustes",
+  "shell.drawer_about": "Acerca de",
+  "shell.drawer_feedback": "Comentarios",
+  "shell.drawer_invitations": "Invitaciones",
+  "shell.drawer_support": "Soporte",
+  "shell.drawer_placeholder": "{0} próximamente",
+  "city": "Ciudad",
+  "state": "Estado / Provincia",
+  "country": "País",
+  "profile.title": "Mi perfil",
+  "profile.edit_profile": "Editar perfil",
+  "profile.address_label": "Dirección",
+  "profile.first_name": "Nombre",
+  "profile.last_name": "Apellido",
+  "profile.update_profile_button": "Actualizar perfil",
+  "profile.update_password_short": "Actualizar contraseña",
+  "profile.password_current": "Contraseña actual",
+  "profile.password_new": "Nueva contraseña",
+  "profile.password_confirm_new": "Confirmar nueva contraseña",
+  "profile.forgot_password": "Olvidé mi contraseña",
+  "profile.reset_password_hint": "Introduce tu correo electrónico para recibir un enlace de restablecimiento.",
+  "profile.send_reset": "Enviar enlace de restablecimiento",
+  "profile.reset_link_sent": "Enlace de restablecimiento enviado, por favor revisa tu bandeja de entrada.",
+  "profile.reset_link_failed": "No se pudo enviar el enlace de restablecimiento.",
+  "profile.password_update_success": "Contraseña actualizada con éxito.",
+  "profile.password_update_error": "No se pudo actualizar la contraseña.",
+  "profile.invalid_email": "Por favor, introduce una dirección de correo electrónico válida.",
+  "profile.edit_section": "Editar perfil",
+  "profile.name_label": "Nombre completo",
+  "profile.password_label": "Nueva contraseña",
+  "profile.password_helper": "Déjalo en blanco para mantener tu contraseña actual",
+  "profile.password_invalid": "La contraseña debe tener al menos 8 caracteres",
+  "profile.confirm_password_label": "Confirmar nueva contraseña",
+  "profile.confirm_password_required": "Por favor, confirma tu nueva contraseña",
+  "profile.password_mismatch": "Las contraseñas no coinciden",
+  "profile.password_requirements_title": "Requisitos de la contraseña:",
+  "profile.password_requirement_length": "al menos 8 caracteres",
+  "profile.password_requirement_upper": "al menos una letra mayúscula",
+  "profile.password_requirement_number": "La contraseña debe contener al menos un número",
+  "profile.password_requirement_special": "al menos un carácter especial",
+  "profile.save_changes": "Guardar cambios",
+  "profile.updating": "Guardando...",
+  "profile.no_changes": "No hay cambios que guardar.",
+  "profile.update_success": "Perfil actualizado con éxito.",
+  "profile.update_error": "No se pudo actualizar el perfil.",
+  "profile.delete_account": "Eliminar cuenta",
+  "profile.delete_account_confirm_title": "Eliminar cuenta",
+  "profile.delete_account_confirm_message": "Esto eliminará permanentemente tu cuenta y todos tus datos. Esta acción no se puede deshacer.",
+  "profile.delete_account_confirm": "Eliminar",
+  "profile.delete_account_cancel": "Cancelar",
+  "profile.deleting_account": "Eliminando...",
+  "profile.delete_account_success": "Cuenta eliminada con éxito.",
+  "profile.delete_account_error": "No se pudo eliminar la cuenta.",
+  "profile.load_error": "No se pudo cargar tu perfil.",
+  "profile.retry": "Intentar de nuevo",
+  "profile.empty": "Los datos del perfil no están disponibles.",
+  "profile.phone": "Teléfono",
+  "profile.email": "Correo electrónico",
+  "profile.verified": "Cuenta verificada",
+  "profile.not_verified": "No verificado",
+  "profile.member_since_unknown": "Miembro desde -",
+  "profile.drawer_status_loading": "Cargando perfil...",
+  "profile.drawer_status_error": "Error al cargar los datos del perfil.",
+  "profile.view_profile": "Ver perfil",
+  "services": {
+    "detail": {
+      "description": "Descripción",
+      "read_more": "Leer más"
+    }
+  },
+  "about": {
+    "title": "Sobre nosotros",
+    "hero": {
+      "title": "Bienvenido a NavCare",
+      "subtitle": "Conectando pacientes y proveedores de atención médica en todo el mundo con reservas seguras, mensajería y pagos."
+    },
+    "about_us": {
+      "title": "Acerca de NavCare",
+      "body": "NavCare es una plataforma web y móvil creada para conectar a pacientes con proveedores de atención médica en todo el mundo. Con reserva de citas, mensajería integrada y opciones de pago seguras, ofrece una forma sencilla y segura de acceder a servicios médicos. Más que una plataforma, es una visión para una atención internacional optimizada que evolucionará hacia un centro multiservicio con soluciones de salud digital, soporte personalizado y experiencias fluidas en cada paso."
+    },
+    "story": {
+      "title": "Nuestra historia",
+      "body": "Fundada en 2024, NavMarket fue creada para superar las brechas que vimos en los mercados existentes. Nos propusimos construir un espacio seguro, eficiente y rico en funciones que eleven la experiencia de cada usuario."
+    },
+    "priorities": {
+      "title": "Nuestras prioridades",
+      "body": "La calidad, la fiabilidad y la seguridad guían cómo diseñamos y entregamos cada solución.",
+      "quality": {
+        "title": "Calidad",
+        "body": "La calidad es un estándar integrado en cada servicio. Entregamos productos de primer nivel a través de controles rigurosos en cada etapa, asegurando fiabilidad, eficiencia y un ajuste perfecto a las necesidades de nuestros clientes."
+      },
+      "reliability": {
+        "title": "Fiabilidad",
+        "body": "La fiabilidad está en el corazón de nuestro trabajo. Creamos productos robustos, estables y de alto rendimiento que cumplen con las expectativas a lo largo del tiempo a través de procesos disciplinados y monitoreo continuo."
+      },
+      "security": {
+        "title": "Seguridad",
+        "body": "La seguridad es una máxima prioridad. Salvaguardamos los datos y las transacciones financieras con protocolos avanzados, actualizando constantemente nuestras defensas para que los clientes operen con confianza y tranquilidad."
+      }
+    },
+    "company": {
+      "title": "Nuestra compañía",
+      "body": "KIG (Koudri Innovations Group) es una extensión dinámica e innovadora de nuestra organización, ya especializada en tres dominios. Como nueva subsidiaria, nos mantenemos cerca de las tendencias y los avances tecnológicos, combinando la experiencia establecida con una mentalidad ágil y centrada en el cliente para ofrecer software, tecnología y experiencias digitales de vanguardia. Nuestra dedicación a la innovación y la excelencia nos posiciona para enfrentar los desafíos del mañana mientras creamos valor duradero para clientes y socios."
+    },
+    "offerings": {
+      "title": "Lo que ofrecemos",
+      "body": "Una plataforma diseñada para alojar y destacar los servicios que la gente busca todos los días.",
+      "diverse_listings": {
+        "title": "Listados diversos",
+        "body": "Desde bienes raíces hasta automóviles, servicios y artículos de uso diario, reunimos una amplia gama de listados para satisfacer todas las necesidades."
+      },
+      "user_experience": {
+        "title": "Experiencia fácil de usar",
+        "body": "Un diseño intuitivo y una interfaz fácil de usar hacen que comprar y vender sea sencillo y sin estrés."
+      },
+      "subscriptions": {
+        "title": "Planes de suscripción",
+        "body": "Los planes de suscripción flexibles desbloquean beneficios adicionales y oportunidades de promoción."
+      }
+    },
+    "values": {
+      "title": "Nuestros valores",
+      "body": "La comunidad, el enfoque en el cliente y la innovación dan forma a cómo construimos NavCare.",
+      "community": {
+        "title": "Comunidad",
+        "body": "Más allá de las transacciones, nuestro mercado fomenta una comunidad vibrante donde el apoyo y el crecimiento se unen."
+      },
+      "customer_first": {
+        "title": "El cliente primero",
+        "body": "Los usuarios están en el centro de cada decisión, asegurando que sus necesidades y satisfacción siempre sean lo primero."
+      },
+      "innovation": {
+        "title": "Innovación",
+        "body": "Mejoramos continuamente para ofrecer funciones modernas que mantengan la experiencia fresca y con visión de futuro."
+      }
+    },
+    "cta": {
+      "title": "Construyendo el futuro de la atención conectada",
+      "body": "A medida que NavCare se convierte en un centro multiservicio, seguimos comprometidos con consultas seguras, soporte personalizado y experiencias fluidas para cada usuario."
+    }
+  },
+  "contact": {
+    "title": "Contáctanos",
+    "heading": "Hablemos",
+    "subtitle": "¿Preguntas, comentarios o sugerencias? Simplemente completa el formulario y nos pondremos en contacto en breve.",
+    "first_name": "Nombre",
+    "last_name": "Apellido",
+    "email": "Correo electrónico",
+    "phone": "Número de teléfono",
+    "message": "Tu mensaje*",
+    "message_hint": "Escribe tu mensaje aquí",
+    "remaining": "{count} caracteres restantes",
+    "send": "Enviar mensaje",
+    "submit_placeholder": "El envío de mensajes se configurará más tarde."
+  },
+  "feedback": {
+    "auth_required": "Por favor, inicia sesión para enviar comentarios.",
+    "comment_required": "Por favor, añade una nota antes de enviar tus comentarios.",
+    "submit_error": "No se pudieron enviar los comentarios: {message}",
+    "submit_success": "¡Gracias! Tus comentarios fueron enviados.",
+    "hint": "Comparte tus pensamientos o problemas aquí"
+  },
+  "faq.title": "Ayuda y preguntas frecuentes",
+  "faq.subtitle": "Respuestas rápidas sobre reservas, cuentas y cómo aprovechar al máximo Nav Care.",
+  "faq.tags.general": "Acerca de la aplicación",
+  "faq.tags.appointments": "Citas",
+  "faq.tags.accounts": "Cuenta",
+  "faq.tags.app_settings": "Ajustes de la aplicación",
+  "faq.tags.search": "Búsqueda",
+  "faq.tags.support": "Solución de problemas",
+  "faq.questions.about_app.question": "¿Qué es Nav Care y cómo puede ayudarme?",
+  "faq.questions.about_app.answer": "Nav Care te permite explorar hospitales, médicos y ofertas de servicios, ver detalles como precios y ubicaciones, y gestionar todas tus citas desde un solo lugar.",
+  "faq.questions.account_needed.question": "¿Necesito una cuenta para usar la aplicación?",
+  "faq.questions.account_needed.answer": "Puedes navegar libremente, pero es necesario iniciar sesión para reservar, reprogramar o cancelar citas y para sincronizar los detalles de tu perfil en todos los dispositivos.",
+  "faq.questions.book_appointment.question": "¿Cómo reservo una cita?",
+  "faq.questions.book_appointment.answer": "Abre cualquier oferta de servicio desde Inicio o Búsqueda, toca \"Hacer una cita\", elige la hora de inicio y finalización que más te convenga y confirma. Si aún no has iniciado sesión, la aplicación te pedirá que lo hagas primero.",
+  "faq.questions.manage_appointment.question": "¿Cómo edito, reprogramo o cancelo una reserva?",
+  "faq.questions.manage_appointment.answer": "Ve a la pestaña Citas, selecciona la tarjeta de la cita, luego ajusta la hora de inicio/finalización o cambia su estado a cancelada. La lista se actualiza automáticamente cuando la actualización tiene éxito.",
+  "faq.questions.search_services.question": "¿Cuál es la mejor manera de encontrar al médico o servicio adecuado?",
+  "faq.questions.search_services.answer": "Usa la pestaña de Búsqueda para escribir el nombre de un médico, hospital o servicio. Aplica los filtros disponibles (ubicación, calificación, precio o idioma cuando se proporcione) para acotar los resultados, luego abre un resultado para ver los detalles y reservar.",
+  "faq.questions.profile_updates.question": "¿Dónde puedo actualizar mi perfil o número de teléfono?",
+  "faq.questions.profile_updates.answer": "Abre la pestaña Perfil y toca \"Editar perfil\" para cambiar tu nombre, teléfono, dirección o foto de perfil. Desliza hacia abajo para actualizar si necesitas obtener los últimos datos después de guardar.",
+  "faq.questions.language_switch.question": "¿Puedo cambiar el idioma de la aplicación?",
+  "faq.questions.language_switch.answer": "Sí. Abre el menú lateral, elige árabe, inglés o francés en el selector de idiomas, y la interfaz se actualiza al instante sin reiniciar la aplicación.",
+  "faq.questions.password_reset.question": "Olvidé mi contraseña. ¿Cómo la restablezco?",
+  "faq.questions.password_reset.answer": "Usa la opción \"Olvidé mi contraseña\" en la pantalla de inicio de sesión para solicitar un restablecimiento. Sigue los pasos en pantalla para establecer una nueva contraseña con tu correo electrónico o número de teléfono.",
+  "faq.questions.data_sync.question": "La aplicación no carga datos. ¿Qué debo intentar?",
+  "faq.questions.data_sync.answer": "Comprueba tu conexión a internet, luego desliza para actualizar en Inicio, Búsqueda o Citas. Si el problema persiste, cierra sesión y vuelve a iniciarla para refrescar tu sesión antes de intentarlo de nuevo.",
+  "appointment_status": {
+    "pending": "Pendiente",
+    "confirmed": "Confirmada",
+    "completed": "Completada",
+    "cancelled": "Cancelada"
+  },
+  "network_error": {
+    "title": "Sin conexión a Internet",
+    "subtitle": "Comprueba tu Wi-Fi o datos móviles, y luego inténtalo de nuevo.",
+    "retry": "Reintentar"
+  },
+  "server_error": {
+    "title": "Servidor inaccesible",
+    "subtitle": "No pudimos conectar con nuestros servidores. Por favor, reintenta."
+  },
+  "signup_image_too_large": "La imagen es demasiado grande. Por favor, elige una imagen más pequeña.",
+  "stats": {
+    "title": "Estadísticas",
+    "overview": "Resumen",
+    "appointments_total": "Total de citas",
+    "services_total": "Total de servicios",
+    "clinics_total": "Total de clínicas",
+    "doctors_total": "Total de médicos",
+    "appointments_by_status": "Citas por estado",
+    "appointments_by_type": "Citas por tipo",
+    "status_pending": "Pendiente",
+    "status_confirmed": "Confirmada",
+    "status_completed": "Completada",
+    "status_cancelled": "Cancelada",
+    "type_in_person": "En persona",
+    "type_teleconsultation": "Teleconsulta",
+    "retry": "Reintentar",
+    "error_generic": "No se pudieron cargar las estadísticas"
+  }
+}

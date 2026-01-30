@@ -54,8 +54,36 @@ class DoctorsRepository {
   Future<Paged<DoctorModel>> getRecentDoctors({
     int page = 1,
     int limit = 6,
-  }) {
-    return getNavcareDoctorsChoice(page: page, limit: limit);
+  }) async {
+    final requestLimit = limit < 1
+        ? 1
+        : limit > 20
+            ? 20
+            : limit;
+    final result = await remoteService.listDoctors(
+      page: page,
+      limit: requestLimit,
+    );
+
+    if (!result.isSuccess || result.data == null) {
+      final message = _extractMessage(result.error?.message) ??
+          'Failed to load recent doctors.';
+      throw Exception(message);
+    }
+
+    final payload = result.data!;
+    final data = _asMap(payload['data']) ?? _asMap(payload);
+    final doctorMaps = _extractDoctorMaps(data);
+    final pagination = _parsePagination(
+        _asMap(payload['pagination']) ?? _asMap(data?['pagination']));
+
+    final doctors =
+        doctorMaps.map(DoctorModel.fromJson).toList(growable: false);
+
+    return Paged<DoctorModel>(
+      items: doctors,
+      meta: pagination,
+    );
   }
 
   Future<List<DoctorModel>> getNavcareFeaturedDoctors({int limit = 3}) async {
