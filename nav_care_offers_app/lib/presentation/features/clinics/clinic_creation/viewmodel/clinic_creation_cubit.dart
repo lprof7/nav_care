@@ -16,21 +16,43 @@ class ClinicCreationCubit extends Cubit<ClinicCreationState> {
 
   Future<void> submitClinic(HospitalPayload payload) async {
     emit(const ClinicCreationState.loading());
-    final translations = await _translateDescription(payload.descriptionEn);
-    final fallbackDescription = payload.descriptionEn;
-    final updatedPayload = translations == null
-        ? payload.copyWith(
-            descriptionEn: fallbackDescription,
-            descriptionFr: null,
-            descriptionAr: null,
-          )
-        : payload.copyWith(
-            descriptionEn: translations['en'] ?? fallbackDescription,
-            descriptionFr:
-                translations['fr'] ?? translations['en'] ?? fallbackDescription,
-            descriptionAr:
-                translations['ar'] ?? translations['en'] ?? fallbackDescription,
-          );
+
+    // Check if manual translations are provided
+    final hasManualAr = payload.descriptionAr != null &&
+        payload.descriptionAr!.trim().isNotEmpty;
+    final hasManualFr = payload.descriptionFr != null &&
+        payload.descriptionFr!.trim().isNotEmpty;
+
+    HospitalPayload updatedPayload;
+
+    if (hasManualAr && hasManualFr) {
+      // Use manual translations directly, skip API
+      updatedPayload = payload;
+    } else {
+      // Call translation API for missing translations
+      final translations = await _translateDescription(payload.descriptionEn);
+      final fallbackDescription = payload.descriptionEn;
+
+      updatedPayload = translations == null
+          ? payload.copyWith(
+              descriptionEn: fallbackDescription,
+              descriptionFr: hasManualFr ? payload.descriptionFr : null,
+              descriptionAr: hasManualAr ? payload.descriptionAr : null,
+            )
+          : payload.copyWith(
+              descriptionEn: translations['en'] ?? fallbackDescription,
+              descriptionFr: hasManualFr
+                  ? payload.descriptionFr
+                  : (translations['fr'] ??
+                      translations['en'] ??
+                      fallbackDescription),
+              descriptionAr: hasManualAr
+                  ? payload.descriptionAr
+                  : (translations['ar'] ??
+                      translations['en'] ??
+                      fallbackDescription),
+            );
+    }
 
     final result = await _clinicsRepository.createClinic(updatedPayload);
     result.fold(

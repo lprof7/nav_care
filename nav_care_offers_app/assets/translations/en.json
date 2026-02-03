@@ -74,6 +74,9 @@
   "become_doctor_image_required": "Profile image is required.",
   "become_doctor_bio_label": "Short bio (English)",
   "become_doctor_bio_hint": "Describe your expertise and what patients can expect.",
+  "become_doctor_bio_translations": "Bio Translations",
+  "become_doctor_bio_ar_hint": "Enter bio in Arabic",
+  "become_doctor_bio_fr_hint": "Enter bio in French",
   "become_doctor_submit": "Send request",
   "become_doctor_submitting": "Submitting...",
   "become_doctor_success": "Your doctor profile request was sent!",
@@ -92,7 +95,8 @@
     "language": {
       "en": "English",
       "ar": "Arabic",
-      "fr": "French"
+      "fr": "French",
+      "es": "Spanish"
     },
     "app_bar": {
       "menu": "Open menu",
@@ -308,6 +312,11 @@
       "edit_title": "Edit hospital",
       "name": "Facility name",
       "description_en": "Description (English)",
+      "advanced_translations": "Advanced Translations",
+      "description_ar": "Description (Arabic)",
+      "description_ar_hint": "Enter Arabic description",
+      "description_fr": "Description (French)",
+      "description_fr_hint": "Enter French description",
       "facility_type": {
         "label": "Facility type",
         "hospital": "Hospital",
@@ -406,10 +415,14 @@
       "offers": "Included offers",
       "offers_hint": "Comma-separated offers or perks",
       "name_en": "Name (English)",
+      "name_translations": "Name Translations",
+      "name_ar_hint": "Enter Arabic name",
+      "name_fr_hint": "Enter French name",
       "name_ar": "Name (Arabic)",
       "name_fr": "Name (French)",
       "service_name": "Service name",
       "description_en": "Description (English)",
+      "description_translations": "Description Translations",
       "description_ar": "Description (Arabic)",
       "description_fr": "Description (French)",
       "service_description": "Service description",
@@ -499,6 +512,11 @@
       "edit_title": "Edit clinic",
       "name": "Clinic name",
       "description_en": "Description (English)",
+      "advanced_translations": "Advanced Translations",
+      "description_ar": "Description (Arabic)",
+      "description_ar_hint": "Enter Arabic description",
+      "description_fr": "Description (French)",
+      "description_fr_hint": "Enter French description",
       "facility_type": {
         "label": "Facility type",
         "hospital": "Hospital",

@@ -84,32 +84,61 @@ class ServiceOfferingFormCubit extends Cubit<ServiceOfferingFormState> {
       isSuccess: false,
     ));
 
-    final nameTranslations = await _translateText(nameEn);
-    final descriptionTranslations = await _translateText(descriptionEn);
+    // Name translations logic
+    final hasManualNameAr = nameAr != null && nameAr.trim().isNotEmpty;
+    final hasManualNameFr = nameFr != null && nameFr.trim().isNotEmpty;
+    Map<String, String>? nameTranslations;
+
+    if (hasManualNameAr && hasManualNameFr) {
+      nameTranslations = null; // Skip API
+    } else {
+      nameTranslations = await _translateText(nameEn);
+    }
+
+    // Description translations logic
+    final hasManualDescAr =
+        descriptionAr != null && descriptionAr.trim().isNotEmpty;
+    final hasManualDescFr =
+        descriptionFr != null && descriptionFr.trim().isNotEmpty;
+    Map<String, String>? descriptionTranslations;
+
+    if (hasManualDescAr && hasManualDescFr) {
+      descriptionTranslations = null; // Skip API
+    } else {
+      descriptionTranslations = await _translateText(descriptionEn);
+    }
 
     final payload = ServiceOfferingPayload(
       serviceId: serviceId,
       price: price,
       offers: offers?.trim().isEmpty ?? true ? null : offers?.trim(),
       descriptionEn: descriptionTranslations?['en'] ?? descriptionEn,
-      descriptionFr: descriptionTranslations == null
-          ? null
-          : descriptionTranslations['fr'] ??
-              descriptionTranslations['en'] ??
-              descriptionEn,
-      descriptionAr: descriptionTranslations == null
-          ? null
-          : descriptionTranslations['ar'] ??
-              descriptionTranslations['en'] ??
-              descriptionEn,
+      descriptionFr: hasManualDescFr
+          ? descriptionFr
+          : (descriptionTranslations == null
+              ? null
+              : descriptionTranslations['fr'] ??
+                  descriptionTranslations['en'] ??
+                  descriptionEn),
+      descriptionAr: hasManualDescAr
+          ? descriptionAr
+          : (descriptionTranslations == null
+              ? null
+              : descriptionTranslations['ar'] ??
+                  descriptionTranslations['en'] ??
+                  descriptionEn),
       descriptionSp: null,
       nameEn: nameTranslations?['en'] ?? nameEn,
-      nameFr: nameTranslations == null
-          ? null
-          : nameTranslations['fr'] ?? nameTranslations['en'] ?? nameEn,
-      nameAr: nameTranslations == null
-          ? null
-          : nameTranslations['ar'] ?? nameTranslations['en'] ?? nameEn,
+      nameFr: hasManualNameFr
+          ? nameFr
+          : (nameTranslations == null
+              ? null
+              : nameTranslations['fr'] ?? nameTranslations['en'] ?? nameEn),
+      nameAr: hasManualNameAr
+          ? nameAr
+          : (nameTranslations == null
+              ? null
+              : nameTranslations['ar'] ?? nameTranslations['en'] ?? nameEn),
       images: images,
     );
 

@@ -21,6 +21,8 @@ class BecomeDoctorCubit extends Cubit<BecomeDoctorState> {
 
   Future<void> submit({
     required String bioEn,
+    String? bioFr,
+    String? bioAr,
     XFile? image,
     String? specialty,
     String? availabilityJson,
@@ -31,16 +33,28 @@ class BecomeDoctorCubit extends Cubit<BecomeDoctorState> {
       clearError: true,
     ));
 
-    final translations = await _translateBio(bioEn);
+    final hasManualAr = bioAr != null && bioAr.trim().isNotEmpty;
+    final hasManualFr = bioFr != null && bioFr.trim().isNotEmpty;
+    Map<String, String>? translations;
+
+    if (hasManualAr && hasManualFr) {
+      translations = null; // Skip API
+    } else {
+      translations = await _translateBio(bioEn);
+    }
 
     final result = await _repository.becomeDoctor(
       bioEn: translations?['en'] ?? bioEn,
-      bioFr: translations == null
-          ? null
-          : translations['fr'] ?? translations['en'] ?? bioEn,
-      bioAr: translations == null
-          ? null
-          : translations['ar'] ?? translations['en'] ?? bioEn,
+      bioFr: hasManualFr
+          ? bioFr
+          : (translations == null
+              ? null
+              : translations['fr'] ?? translations['en'] ?? bioEn),
+      bioAr: hasManualAr
+          ? bioAr
+          : (translations == null
+              ? null
+              : translations['ar'] ?? translations['en'] ?? bioEn),
       image: image,
       specialty: specialty,
       availabilityJson: availabilityJson,

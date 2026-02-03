@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -63,11 +64,17 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
   late final TextEditingController _priceController;
   late final TextEditingController _offersController;
   late final TextEditingController _descriptionEnController;
+  late final TextEditingController _descriptionArController; // Added Ar desc
+  late final TextEditingController _descriptionFrController; // Added Fr desc
   String? _selectedServiceId;
   ServiceCategory? _selectedService;
   late final TextEditingController _nameEnController;
+  late final TextEditingController _nameArController; // Added Ar name
+  late final TextEditingController _nameFrController; // Added Fr name
   final List<XFile> _selectedImages = [];
   final ImagePicker _picker = ImagePicker();
+  bool _showNameTranslations = false;
+  bool _showDescTranslations = false;
 
   @override
   void initState() {
@@ -81,8 +88,16 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
     );
     _descriptionEnController =
         TextEditingController(text: initial?.descriptionEn ?? '');
+    _descriptionArController =
+        TextEditingController(text: initial?.descriptionAr ?? '');
+    _descriptionFrController =
+        TextEditingController(text: initial?.descriptionFr ?? '');
     _nameEnController = TextEditingController(
         text: initial?.nameEn ?? initial?.service.nameEn ?? '');
+    _nameArController = TextEditingController(
+        text: initial?.nameAr ?? initial?.service.nameAr ?? '');
+    _nameFrController = TextEditingController(
+        text: initial?.nameFr ?? initial?.service.nameFr ?? '');
     _selectedServiceId = initial?.service.id;
     _selectedService = initial?.service;
   }
@@ -92,7 +107,11 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
     _priceController.dispose();
     _offersController.dispose();
     _descriptionEnController.dispose();
+    _descriptionArController.dispose();
+    _descriptionFrController.dispose();
     _nameEnController.dispose();
+    _nameArController.dispose();
+    _nameFrController.dispose();
     super.dispose();
   }
 
@@ -169,6 +188,47 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                           return null;
                         },
                       ),
+                      const SizedBox(height: 8),
+                      // Name Translations
+                      Theme(
+                        data: Theme.of(context)
+                            .copyWith(dividerColor: Colors.transparent),
+                        child: ExpansionTile(
+                          tilePadding: EdgeInsets.zero,
+                          title: Text(
+                            'service_offerings.form.name_translations'.tr(),
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                          initiallyExpanded: _showNameTranslations,
+                          onExpansionChanged: (expanded) {
+                            setState(() => _showNameTranslations = expanded);
+                          },
+                          children: [
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              controller: _nameArController,
+                              decoration: InputDecoration(
+                                labelText:
+                                    'service_offerings.form.name_ar'.tr(),
+                                hintText:
+                                    'service_offerings.form.name_ar_hint'.tr(),
+                              ),
+                              textDirection: ui.TextDirection.rtl,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _nameFrController,
+                              decoration: InputDecoration(
+                                labelText:
+                                    'service_offerings.form.name_fr'.tr(),
+                                hintText:
+                                    'service_offerings.form.name_fr_hint'.tr(),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                        ),
+                      ),
                       const SizedBox(height: 16),
                       Row(
                         children: [
@@ -220,7 +280,40 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 8),
+                      // Description Translations
+                      Theme(
+                        data: Theme.of(context)
+                            .copyWith(dividerColor: Colors.transparent),
+                        child: ExpansionTile(
+                          tilePadding: EdgeInsets.zero,
+                          title: Text(
+                            'service_offerings.form.description_translations'
+                                .tr(),
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                          initiallyExpanded: _showDescTranslations,
+                          onExpansionChanged: (expanded) {
+                            setState(() => _showDescTranslations = expanded);
+                          },
+                          children: [
+                            const SizedBox(height: 8),
+                            _MultilineField(
+                              controller: _descriptionArController,
+                              label:
+                                  'service_offerings.form.description_ar'.tr(),
+                            ),
+                            const SizedBox(height: 16),
+                            _MultilineField(
+                              controller: _descriptionFrController,
+                              label:
+                                  'service_offerings.form.description_fr'.tr(),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
                       Text(
                         'service_offerings.form.images.label'.tr(),
                         style: theme.textTheme.titleMedium,
@@ -252,9 +345,8 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
                         text: isEdit
                             ? 'service_offerings.form.update_button'.tr()
                             : 'service_offerings.form.create_button'.tr(),
-                        onPressed: state.isSubmitting
-                            ? null
-                            : () => _submit(context),
+                        onPressed:
+                            state.isSubmitting ? null : () => _submit(context),
                       ),
                     ],
                   ),
@@ -303,7 +395,19 @@ class _ServiceOfferingFormViewState extends State<_ServiceOfferingFormView> {
           descriptionEn: _descriptionEnController.text.trim().isEmpty
               ? null
               : _descriptionEnController.text.trim(),
+          descriptionAr: _descriptionArController.text.trim().isEmpty
+              ? null
+              : _descriptionArController.text.trim(),
+          descriptionFr: _descriptionFrController.text.trim().isEmpty
+              ? null
+              : _descriptionFrController.text.trim(),
           nameEn: _nameEnController.text.trim(),
+          nameAr: _nameArController.text.trim().isEmpty
+              ? null
+              : _nameArController.text.trim(),
+          nameFr: _nameFrController.text.trim().isEmpty
+              ? null
+              : _nameFrController.text.trim(),
           images: _selectedImages,
         );
   }

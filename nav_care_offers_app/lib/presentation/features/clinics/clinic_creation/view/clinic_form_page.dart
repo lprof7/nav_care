@@ -54,6 +54,10 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _descriptionController;
+  late final TextEditingController
+      _descriptionArController; // Added Ar controller
+  late final TextEditingController
+      _descriptionFrController; // Added Fr controller
   late final TextEditingController _addressController;
   final List<TextEditingController> _phoneControllers = [];
   final List<String?> _completePhoneNumbers = [];
@@ -61,6 +65,7 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
   final List<_SocialField> _socialFields = [];
   final List<XFile> _selectedImages = [];
   final ImagePicker _picker = ImagePicker();
+  bool _showTranslationFields = false; // Added toggle field
 
   @override
   void initState() {
@@ -69,6 +74,10 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
     _descriptionController = TextEditingController(
         text:
             widget.initial?.description ?? ''); // ClinicModel has 'description'
+    _descriptionArController = TextEditingController(
+        text: widget.initial?.descriptionAr ?? ''); // Added init Ar
+    _descriptionFrController = TextEditingController(
+        text: widget.initial?.descriptionFr ?? ''); // Added init Fr
     _addressController =
         TextEditingController(text: widget.initial?.address ?? '');
     _initPhoneControllers(
@@ -82,6 +91,8 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
+    _descriptionArController.dispose(); // Added dispose Ar
+    _descriptionFrController.dispose(); // Added dispose Fr
     _addressController.dispose();
     for (final controller in _phoneControllers) {
       controller.dispose();
@@ -115,8 +126,7 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
         } else if (state is ClinicCreationFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content:
-                  Text(state.failure.message ?? 'unknown_error'.tr()),
+              content: Text(state.failure.message ?? 'unknown_error'.tr()),
             ),
           );
         }
@@ -158,6 +168,45 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
                     validator: (value) => value == null || value.trim().isEmpty
                         ? 'field_required'.tr()
                         : null,
+                  ),
+                  const SizedBox(height: 12),
+                  // Expandable Advanced Translations Section
+                  Theme(
+                    data: Theme.of(context)
+                        .copyWith(dividerColor: Colors.transparent),
+                    child: ExpansionTile(
+                      tilePadding: EdgeInsets.zero,
+                      title: Text(
+                        'clinics.form.advanced_translations'.tr(),
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      initiallyExpanded: _showTranslationFields,
+                      onExpansionChanged: (expanded) {
+                        setState(() => _showTranslationFields = expanded);
+                      },
+                      children: [
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: _descriptionArController,
+                          decoration: InputDecoration(
+                            labelText: 'clinics.form.description_ar'.tr(),
+                            hintText: 'clinics.form.description_ar_hint'.tr(),
+                          ),
+                          maxLines: 3,
+                          textDirection: ui.TextDirection.rtl,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _descriptionFrController,
+                          decoration: InputDecoration(
+                            labelText: 'clinics.form.description_fr'.tr(),
+                            hintText: 'clinics.form.description_fr_hint'.tr(),
+                          ),
+                          maxLines: 3,
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.md),
                   TextFormField(
@@ -228,7 +277,8 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: TextButton.icon(
-                      onPressed: _nextAvailableType() == null ? null : _addSocialField,
+                      onPressed:
+                          _nextAvailableType() == null ? null : _addSocialField,
                       icon: const Icon(Icons.add),
                       label: Text('clinics.form.social.add'.tr()),
                     ),
@@ -250,8 +300,9 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
                               ),
                             )
                           : const Icon(Icons.check_outlined),
-                      onPressed:
-                          state is ClinicCreationLoading ? null : () => _submit(context),
+                      onPressed: state is ClinicCreationLoading
+                          ? null
+                          : () => _submit(context),
                     ),
                   ),
                 ],
@@ -306,8 +357,7 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
                     onChanged: (value) {
                       final raw = controllers[i].text.trim();
                       _completePhoneNumbers[i] = raw.isEmpty ? null : value;
-                      final inferred =
-                          _resolveCountryCodeFromComplete(value);
+                      final inferred = _resolveCountryCodeFromComplete(value);
                       if (inferred != null) {
                         _phoneCountryCodes[i] = inferred;
                       }
@@ -360,8 +410,8 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
       }
       return;
     }
-    _socialFields
-        .add(_SocialField(type: _socialTypes.first, controller: TextEditingController()));
+    _socialFields.add(_SocialField(
+        type: _socialTypes.first, controller: TextEditingController()));
   }
 
   List<Widget> _buildSocialFields() {
@@ -411,8 +461,9 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
             ),
             const SizedBox(width: AppSpacing.sm),
             IconButton(
-              onPressed:
-                  _socialFields.length > 1 ? () => _removeSocialField(index) : null,
+              onPressed: _socialFields.length > 1
+                  ? () => _removeSocialField(index)
+                  : null,
               icon: const Icon(Icons.remove_circle_outline),
             ),
           ],
@@ -436,15 +487,19 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
       removed.controller.dispose();
       if (_socialFields.isEmpty) {
         _socialFields.add(
-          _SocialField(type: _socialTypes.first, controller: TextEditingController()),
+          _SocialField(
+              type: _socialTypes.first, controller: TextEditingController()),
         );
       }
     });
   }
 
   List<String> _availableTypesForField(_SocialField current) {
-    final used = _socialFields.where((f) => f != current).map((f) => f.type).toSet();
-    return _socialTypes.where((t) => !used.contains(t) || t == current.type).toList();
+    final used =
+        _socialFields.where((f) => f != current).map((f) => f.type).toSet();
+    return _socialTypes
+        .where((t) => !used.contains(t) || t == current.type)
+        .toList();
   }
 
   String? _nextAvailableType() {
@@ -511,13 +566,12 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
     }
 
     if (trimmed.startsWith('+') || trimmed.startsWith('00')) {
-      final normalized = trimmed.startsWith('00')
-          ? '+${digits.substring(2)}'
-          : '+$digits';
+      final normalized =
+          trimmed.startsWith('00') ? '+${digits.substring(2)}' : '+$digits';
       final dialDigits =
           normalized.startsWith('+') ? normalized.substring(1) : digits;
-      final countryCode = _resolveCountryCodeByDial(dialDigits) ??
-          _defaultCountryCode;
+      final countryCode =
+          _resolveCountryCodeByDial(dialDigits) ?? _defaultCountryCode;
       final dialCode = _dialCodeForCountry(countryCode);
       final nationalNumber = dialCode != null && dialDigits.startsWith(dialCode)
           ? dialDigits.substring(dialCode.length)
@@ -548,8 +602,7 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
     );
   }
 
-  String _digitsOnly(String value) =>
-      value.replaceAll(RegExp(r'\D'), '');
+  String _digitsOnly(String value) => value.replaceAll(RegExp(r'\D'), '');
 
   String? _resolveCountryCodeFromComplete(String value) {
     final digits = _digitsOnly(value);
@@ -621,6 +674,12 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
       id: widget.initial?.id,
       name: _nameController.text.trim(),
       descriptionEn: _descriptionController.text.trim(),
+      descriptionAr: _descriptionArController.text.trim().isEmpty
+          ? null
+          : _descriptionArController.text.trim(),
+      descriptionFr: _descriptionFrController.text.trim().isEmpty
+          ? null
+          : _descriptionFrController.text.trim(),
       address: _addressController.text.trim(),
       phones: phones,
       images: _selectedImages,
@@ -631,7 +690,6 @@ class _ClinicFormViewState extends State<_ClinicFormView> {
 
     cubit.submitClinic(payload);
   }
-
 }
 
 class _SectionLabel extends StatelessWidget {

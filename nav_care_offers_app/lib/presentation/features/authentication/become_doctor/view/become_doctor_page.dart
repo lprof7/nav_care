@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:ui' as ui; // Added import
 import 'package:nav_care_offers_app/core/di/di.dart';
 import 'package:nav_care_offers_app/data/authentication/models.dart';
 import 'package:nav_care_offers_app/presentation/features/authentication/become_doctor/viewmodel/become_doctor_cubit.dart';
@@ -38,12 +39,17 @@ class _BecomeDoctorView extends StatefulWidget {
 class _BecomeDoctorViewState extends State<_BecomeDoctorView> {
   final _formKey = GlobalKey<FormState>();
   final _bioEnController = TextEditingController();
+  final _bioArController = TextEditingController(); // Added Ar
+  final _bioFrController = TextEditingController(); // Added Fr
   final ImagePicker _picker = ImagePicker();
   XFile? _selectedImage;
+  bool _showTranslationFields = false; // Added toggle
 
   @override
   void dispose() {
     _bioEnController.dispose();
+    _bioArController.dispose(); // Added dispose
+    _bioFrController.dispose(); // Added dispose
     super.dispose();
   }
 
@@ -71,6 +77,12 @@ class _BecomeDoctorViewState extends State<_BecomeDoctorView> {
 
     context.read<BecomeDoctorCubit>().submit(
           bioEn: _bioEnController.text.trim(),
+          bioAr: _bioArController.text.trim().isEmpty
+              ? null
+              : _bioArController.text.trim(),
+          bioFr: _bioFrController.text.trim().isEmpty
+              ? null
+              : _bioFrController.text.trim(),
           image: _selectedImage,
         );
   }
@@ -201,6 +213,45 @@ class _BecomeDoctorViewState extends State<_BecomeDoctorView> {
                                   }
                                   return null;
                                 },
+                              ),
+                              const SizedBox(height: 12),
+                              // Advanced Translations
+                              Theme(
+                                data: Theme.of(context)
+                                    .copyWith(dividerColor: Colors.transparent),
+                                child: ExpansionTile(
+                                  tilePadding: EdgeInsets.zero,
+                                  title: Text(
+                                    'become_doctor_bio_translations'.tr(),
+                                    style: theme.textTheme.titleSmall?.copyWith(
+                                      color: headingColor,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  initiallyExpanded: _showTranslationFields,
+                                  onExpansionChanged: (expanded) {
+                                    setState(() =>
+                                        _showTranslationFields = expanded);
+                                  },
+                                  children: [
+                                    const SizedBox(height: 8),
+                                    AppTextField(
+                                      controller: _bioArController,
+                                      hintText:
+                                          'become_doctor_bio_ar_hint'.tr(),
+                                      maxLines: 4,
+                                      textDirection: ui.TextDirection.rtl,
+                                    ),
+                                    const SizedBox(height: 12),
+                                    AppTextField(
+                                      controller: _bioFrController,
+                                      hintText:
+                                          'become_doctor_bio_fr_hint'.tr(),
+                                      maxLines: 4,
+                                    ),
+                                    const SizedBox(height: 8),
+                                  ],
+                                ),
                               ),
                               const SizedBox(height: 24),
                               AppButton(

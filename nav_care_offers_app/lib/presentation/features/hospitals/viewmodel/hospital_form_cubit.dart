@@ -20,21 +20,43 @@ class HospitalFormCubit extends Cubit<HospitalFormState> {
 
   Future<void> submit(HospitalPayload payload) async {
     emit(state.copyWith(isSubmitting: true, errorMessage: null));
-    final translations = await _translateDescription(payload.descriptionEn);
-    final fallbackDescription = payload.descriptionEn;
-    final enrichedPayload = translations == null
-        ? payload.copyWith(
-            descriptionEn: fallbackDescription,
-            descriptionFr: null,
-            descriptionAr: null,
-          )
-        : payload.copyWith(
-            descriptionEn: translations['en'] ?? fallbackDescription,
-            descriptionFr:
-                translations['fr'] ?? translations['en'] ?? fallbackDescription,
-            descriptionAr:
-                translations['ar'] ?? translations['en'] ?? fallbackDescription,
-          );
+
+    // Check if manual translations are provided
+    final hasManualAr = payload.descriptionAr != null &&
+        payload.descriptionAr!.trim().isNotEmpty;
+    final hasManualFr = payload.descriptionFr != null &&
+        payload.descriptionFr!.trim().isNotEmpty;
+
+    HospitalPayload enrichedPayload;
+
+    if (hasManualAr && hasManualFr) {
+      // Use manual translations directly, skip API
+      enrichedPayload = payload;
+    } else {
+      // Call translation API for missing translations
+      final translations = await _translateDescription(payload.descriptionEn);
+      final fallbackDescription = payload.descriptionEn;
+
+      enrichedPayload = translations == null
+          ? payload.copyWith(
+              descriptionEn: fallbackDescription,
+              descriptionFr: hasManualFr ? payload.descriptionFr : null,
+              descriptionAr: hasManualAr ? payload.descriptionAr : null,
+            )
+          : payload.copyWith(
+              descriptionEn: translations['en'] ?? fallbackDescription,
+              descriptionFr: hasManualFr
+                  ? payload.descriptionFr
+                  : (translations['fr'] ??
+                      translations['en'] ??
+                      fallbackDescription),
+              descriptionAr: hasManualAr
+                  ? payload.descriptionAr
+                  : (translations['ar'] ??
+                      translations['en'] ??
+                      fallbackDescription),
+            );
+    }
 
     final result = state.isEditing
         ? await _repository.updateHospital(enrichedPayload)
@@ -57,7 +79,8 @@ class HospitalFormCubit extends Cubit<HospitalFormState> {
     if (trimmed.isEmpty) return <String, String>{};
     final translationResult = await _translationService.translate(trimmed);
     return translationResult.fold(
-      onFailure: (_) => null, // On translation failure proceed with description_en only
+      onFailure: (_) =>
+          null, // On translation failure proceed with description_en only
       onSuccess: (data) => data,
     );
   }

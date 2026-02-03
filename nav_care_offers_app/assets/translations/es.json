@@ -74,6 +74,9 @@
   "become_doctor_image_required": "Se requiere una imagen de perfil.",
   "become_doctor_bio_label": "Biografía corta (Inglés)",
   "become_doctor_bio_hint": "Describe tu experiencia y lo que los pacientes pueden esperar.",
+  "become_doctor_bio_translations": "Traducciones de la biografía",
+  "become_doctor_bio_ar_hint": "Introduce la biografía en árabe",
+  "become_doctor_bio_fr_hint": "Introduce la biografía en francés",
   "become_doctor_submit": "Enviar solicitud",
   "become_doctor_submitting": "Enviando...",
   "become_doctor_success": "¡Tu solicitud de perfil de médico fue enviada!",
@@ -92,7 +95,8 @@
     "language": {
       "en": "Inglés",
       "ar": "Árabe",
-      "fr": "Francés"
+      "fr": "Francés",
+      "es": "Español"
     },
     "app_bar": {
       "menu": "Abrir menú",
@@ -308,6 +312,11 @@
       "edit_title": "Editar hospital",
       "name": "Nombre de la instalación",
       "description_en": "Descripción (Inglés)",
+      "advanced_translations": "Traducciones avanzadas",
+      "description_ar": "Descripción (Árabe)",
+      "description_ar_hint": "Introduce la descripción en árabe",
+      "description_fr": "Descripción (Francés)",
+      "description_fr_hint": "Introduce la descripción en francés",
       "facility_type": {
         "label": "Tipo de instalación",
         "hospital": "Hospital",
@@ -406,10 +415,14 @@
       "offers": "Ofertas incluidas",
       "offers_hint": "Ofertas o beneficios separados por comas",
       "name_en": "Nombre (Inglés)",
+      "name_translations": "Traducciones del nombre",
+      "name_ar_hint": "Introduce el nombre en árabe",
+      "name_fr_hint": "Introduce el nombre en francés",
       "name_ar": "Nombre (Árabe)",
       "name_fr": "Nombre (Francés)",
       "service_name": "Nombre del servicio",
       "description_en": "Descripción (Inglés)",
+      "description_translations": "Traducciones de la descripción",
       "description_ar": "Descripción (Árabe)",
       "description_fr": "Descripción (Francés)",
       "service_description": "Descripción del servicio",
@@ -499,6 +512,11 @@
       "edit_title": "Editar clínica",
       "name": "Nombre de la clínica",
       "description_en": "Descripción (Inglés)",
+      "advanced_translations": "Traducciones avanzadas",
+      "description_ar": "Descripción (Árabe)",
+      "description_ar_hint": "Introduce la descripción en árabe",
+      "description_fr": "Descripción (Francés)",
+      "description_fr_hint": "Introduce la descripción en francés",
       "facility_type": {
         "label": "Tipo de instalación",
         "hospital": "Hospital",

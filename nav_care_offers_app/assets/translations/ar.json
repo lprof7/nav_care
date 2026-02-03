@@ -74,6 +74,9 @@
   "become_doctor_image_required": "صورة الملف الشخصي مطلوبة.",
   "become_doctor_bio_label": "نبذة قصيرة (بالإنجليزية)",
   "become_doctor_bio_hint": "صف خبرتك وما الذي يمكن للمرضى توقعه.",
+  "become_doctor_bio_translations": "ترجمات السيرة الذاتية",
+  "become_doctor_bio_ar_hint": "أدخل السيرة الذاتية بالعربية",
+  "become_doctor_bio_fr_hint": "أدخل السيرة الذاتية بالفرنسية",
   "become_doctor_submit": "إرسال الطلب",
   "become_doctor_submitting": "جارٍ الإرسال...",
   "become_doctor_success": "تم إرسال طلب ملفك كطبيب!",
@@ -92,7 +95,8 @@
     "language": {
       "en": "الإنجليزية",
       "ar": "العربية",
-      "fr": "الفرنسية"
+      "fr": "الفرنسية",
+      "es": "الإسبانية"
     },
     "app_bar": {
       "menu": "فتح القائمة",
@@ -308,6 +312,11 @@
       "edit_title": "تعديل المستشفى",
       "name": "اسم المنشأة",
       "description_en": "الوصف (بالإنجليزية)",
+      "advanced_translations": "ترجمات متقدمة",
+      "description_ar": "الوصف (بالعربية)",
+      "description_ar_hint": "أدخل الوصف بالعربية",
+      "description_fr": "الوصف (بالفرنسية)",
+      "description_fr_hint": "أدخل الوصف بالفرنسية",
       "facility_type": {
         "label": "نوع المنشأة",
         "hospital": "مستشفى",
@@ -406,10 +415,14 @@
       "offers": "العروض المضمنة",
       "offers_hint": "عروض أو مزايا مفصولة بفواصل",
       "name_en": "الاسم (بالإنجليزية)",
+      "name_translations": "ترجمات الاسم",
+      "name_ar_hint": "أدخل الاسم بالعربية",
+      "name_fr_hint": "أدخل الاسم بالفرنسية",
       "name_ar": "الاسم (بالعربية)",
       "name_fr": "الاسم (بالفرنسية)",
       "service_name": "اسم الخدمة",
       "description_en": "الوصف (بالإنجليزية)",
+      "description_translations": "ترجمات الوصف",
       "description_ar": "الوصف (بالعربية)",
       "description_fr": "الوصف (بالفرنسية)",
       "service_description": "وصف الخدمة",
@@ -425,12 +438,12 @@
       "create_service_success": "تم إنشاء الخدمة بنجاح.",
       "create_service_error": "تعذر إنشاء الخدمة.",
       "load_services_error": "تعذر تحميل الخدمات.",
-        "images": {
-          "label": "الصور"
-        },
-        "add_image": "إضافة صورة",
-        "change_image": "تغيير صورة",
-        "select_service": "يرجى اختيار خدمة.",
+      "images": {
+        "label": "الصور"
+      },
+      "add_image": "إضافة صورة",
+      "change_image": "تغيير صورة",
+      "select_service": "يرجى اختيار خدمة.",
       "create_button": "إنشاء العرض",
       "update_button": "تحديث العرض",
       "create_success": "تم إنشاء عرض الخدمة بنجاح.",
@@ -499,6 +512,11 @@
       "edit_title": "تعديل العيادة",
       "name": "اسم العيادة",
       "description_en": "الوصف (بالإنجليزية)",
+      "advanced_translations": "ترجمات متقدمة",
+      "description_ar": "الوصف (بالعربية)",
+      "description_ar_hint": "أدخل الوصف بالعربية",
+      "description_fr": "الوصف (بالفرنسية)",
+      "description_fr_hint": "أدخل الوصف بالفرنسية",
       "facility_type": {
         "label": "نوع المنشأة",
         "hospital": "مستشفى",
@@ -756,22 +774,21 @@
   },
   "signup_image_too_large": "حجم الصورة كبير جدًا. يرجى اختيار صورة أصغر.",
   "stats": {
-  "title": "الإحصائيات",
-  "overview": "نظرة عامة",
-  "appointments_total": "إجمالي المواعيد",
-  "services_total": "إجمالي الخدمات",
-  "clinics_total": "إجمالي العيادات",
-  "doctors_total": "إجمالي الأطباء",
-  "appointments_by_status": "المواعيد حسب الحالة",
-  "appointments_by_type": "المواعيد حسب النوع",
-  "status_pending": "قيد الانتظار",
-  "status_confirmed": "مؤكدة",
-  "status_completed": "مكتملة",
-  "status_cancelled": "ملغاة",
-  "type_in_person": "حضوري",
-  "type_teleconsultation": "استشارة عن بُعد",
-  "retry": "إعادة المحاولة",
-  "error_generic": "تعذر تحميل الإحصائيات"
-}
-
+    "title": "الإحصائيات",
+    "overview": "نظرة عامة",
+    "appointments_total": "إجمالي المواعيد",
+    "services_total": "إجمالي الخدمات",
+    "clinics_total": "إجمالي العيادات",
+    "doctors_total": "إجمالي الأطباء",
+    "appointments_by_status": "المواعيد حسب الحالة",
+    "appointments_by_type": "المواعيد حسب النوع",
+    "status_pending": "قيد الانتظار",
+    "status_confirmed": "مؤكدة",
+    "status_completed": "مكتملة",
+    "status_cancelled": "ملغاة",
+    "type_in_person": "حضوري",
+    "type_teleconsultation": "استشارة عن بُعد",
+    "retry": "إعادة المحاولة",
+    "error_generic": "تعذر تحميل الإحصائيات"
+  }
 }

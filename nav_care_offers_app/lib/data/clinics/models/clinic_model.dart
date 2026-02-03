@@ -7,6 +7,8 @@ class ClinicModel extends Equatable {
   final String name;
   final List<String> images;
   final String? description;
+  final String? descriptionAr;
+  final String? descriptionFr;
   final String? address;
   final List<String> phones;
   final List<SocialMediaLink> socialMedia;
@@ -16,6 +18,8 @@ class ClinicModel extends Equatable {
     required this.name,
     this.images = const [],
     this.description,
+    this.descriptionAr,
+    this.descriptionFr,
     this.address,
     this.phones = const [],
     this.socialMedia = const [],
@@ -26,8 +30,10 @@ class ClinicModel extends Equatable {
       id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
       name: json['name']?.toString() ?? '',
       images: _parseImages(json['images']),
-      description: json['description']?.toString() ??
-          json['description_en']?.toString(),
+      description:
+          json['description']?.toString() ?? json['description_en']?.toString(),
+      descriptionAr: json['description_ar']?.toString(),
+      descriptionFr: json['description_fr']?.toString(),
       address: json['address']?.toString(),
       phones: _parsePhones(json['phone'] ?? json['phones']),
       socialMedia:
@@ -41,6 +47,8 @@ class ClinicModel extends Equatable {
       'name': name,
       'images': images,
       if (description != null) 'description_en': description,
+      if (descriptionAr != null) 'description_ar': descriptionAr,
+      if (descriptionFr != null) 'description_fr': descriptionFr,
       if (address != null) 'address': address,
       'phones': phones,
       if (socialMedia.isNotEmpty)

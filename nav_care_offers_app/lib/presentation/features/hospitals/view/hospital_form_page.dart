@@ -24,7 +24,8 @@ class HospitalFormPage extends StatelessWidget {
   final Hospital? initial;
   final bool isClinicContext;
 
-  const HospitalFormPage({super.key, this.initial, this.isClinicContext = false});
+  const HospitalFormPage(
+      {super.key, this.initial, this.isClinicContext = false});
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +58,8 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _descriptionController;
+  late final TextEditingController _descriptionArController;
+  late final TextEditingController _descriptionFrController;
   late final TextEditingController _addressController;
   FacilityType _facilityType = FacilityType.hospital;
   final List<TextEditingController> _phoneControllers = [];
@@ -68,6 +71,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
   final List<String> _deletedImages = [];
   final ImagePicker _picker = ImagePicker(); // Image picker instance
   bool _isDeleting = false;
+  bool _showTranslationFields = false;
 
   String get _prefix => widget.isClinicContext ? 'clinics' : 'hospitals';
 
@@ -77,6 +81,10 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     _nameController = TextEditingController(text: widget.initial?.name ?? '');
     _descriptionController =
         TextEditingController(text: widget.initial?.descriptionEn ?? '');
+    _descriptionArController =
+        TextEditingController(text: widget.initial?.descriptionAr ?? '');
+    _descriptionFrController =
+        TextEditingController(text: widget.initial?.descriptionFr ?? '');
     _addressController =
         TextEditingController(text: widget.initial?.address ?? '');
     _facilityType = widget.initial?.facilityType ?? FacilityType.hospital;
@@ -94,6 +102,8 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
+    _descriptionArController.dispose();
+    _descriptionFrController.dispose();
     _addressController.dispose();
     for (final controller in _phoneControllers) {
       controller.dispose();
@@ -168,6 +178,45 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                     validator: (value) => value == null || value.trim().isEmpty
                         ? 'field_required'.tr()
                         : null,
+                  ),
+                  const SizedBox(height: 12),
+                  // Expandable Advanced Translations Section
+                  Theme(
+                    data: Theme.of(context)
+                        .copyWith(dividerColor: Colors.transparent),
+                    child: ExpansionTile(
+                      tilePadding: EdgeInsets.zero,
+                      title: Text(
+                        '$_prefix.form.advanced_translations'.tr(),
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      initiallyExpanded: _showTranslationFields,
+                      onExpansionChanged: (expanded) {
+                        setState(() => _showTranslationFields = expanded);
+                      },
+                      children: [
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: _descriptionArController,
+                          decoration: InputDecoration(
+                            labelText: '$_prefix.form.description_ar'.tr(),
+                            hintText: '$_prefix.form.description_ar_hint'.tr(),
+                          ),
+                          maxLines: 3,
+                          textDirection: ui.TextDirection.rtl,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _descriptionFrController,
+                          decoration: InputDecoration(
+                            labelText: '$_prefix.form.description_fr'.tr(),
+                            hintText: '$_prefix.form.description_fr_hint'.tr(),
+                          ),
+                          maxLines: 3,
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 20),
                   if (!isEditing) ...[
@@ -278,8 +327,9 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                                   ),
                                 )
                               : const Icon(Icons.check_outlined),
-                          onPressed:
-                              state.isSubmitting ? null : () => _submit(context),
+                          onPressed: state.isSubmitting
+                              ? null
+                              : () => _submit(context),
                         ),
                         if (isEditing) ...[
                           const SizedBox(height: 12),
@@ -360,8 +410,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
                     onChanged: (value) {
                       final raw = controllers[i].text.trim();
                       _completePhoneNumbers[i] = raw.isEmpty ? null : value;
-                      final inferred =
-                          _resolveCountryCodeFromComplete(value);
+                      final inferred = _resolveCountryCodeFromComplete(value);
                       if (inferred != null) {
                         _phoneCountryCodes[i] = inferred;
                       }
@@ -509,8 +558,11 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
   }
 
   List<String> _availableTypesForField(_SocialField current) {
-    final used = _socialFields.where((f) => f != current).map((f) => f.type).toSet();
-    return _socialTypes.where((t) => !used.contains(t) || t == current.type).toList();
+    final used =
+        _socialFields.where((f) => f != current).map((f) => f.type).toSet();
+    return _socialTypes
+        .where((t) => !used.contains(t) || t == current.type)
+        .toList();
   }
 
   String? _nextAvailableType() {
@@ -650,13 +702,12 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     }
 
     if (trimmed.startsWith('+') || trimmed.startsWith('00')) {
-      final normalized = trimmed.startsWith('00')
-          ? '+${digits.substring(2)}'
-          : '+$digits';
+      final normalized =
+          trimmed.startsWith('00') ? '+${digits.substring(2)}' : '+$digits';
       final dialDigits =
           normalized.startsWith('+') ? normalized.substring(1) : digits;
-      final countryCode = _resolveCountryCodeByDial(dialDigits) ??
-          _defaultCountryCode;
+      final countryCode =
+          _resolveCountryCodeByDial(dialDigits) ?? _defaultCountryCode;
       final dialCode = _dialCodeForCountry(countryCode);
       final nationalNumber = dialCode != null && dialDigits.startsWith(dialCode)
           ? dialDigits.substring(dialCode.length)
@@ -687,8 +738,7 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
     );
   }
 
-  String _digitsOnly(String value) =>
-      value.replaceAll(RegExp(r'\D'), '');
+  String _digitsOnly(String value) => value.replaceAll(RegExp(r'\D'), '');
 
   String? _resolveCountryCodeFromComplete(String value) {
     final digits = _digitsOnly(value);
@@ -763,6 +813,12 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
       id: widget.initial?.id,
       name: _nameController.text.trim(),
       descriptionEn: _descriptionController.text.trim(),
+      descriptionAr: _descriptionArController.text.trim().isEmpty
+          ? null
+          : _descriptionArController.text.trim(),
+      descriptionFr: _descriptionFrController.text.trim().isEmpty
+          ? null
+          : _descriptionFrController.text.trim(),
       address: _addressController.text.trim(), // Added address
       phones: phones,
       // Coordinates will be set to 0,0 in HospitalPayload
@@ -785,8 +841,10 @@ class _HospitalFormViewState extends State<_HospitalFormView> {
         final cancelTextColor =
             theme.brightness == Brightness.dark ? Colors.white : Colors.black87;
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-          insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          insetPadding:
+              const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           title: Text('$_prefix.detail.delete_confirm_title'.tr()),
           content: Column(
             mainAxisSize: MainAxisSize.min,
